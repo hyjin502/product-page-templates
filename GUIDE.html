@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>상품페이지 템플릿 사용 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f6f6f8; --panel: #ffffff; --ink: #17181b; --ink-2: #4c505a; --ink-3: #868a93;
+  --rule: #e3e4e8; --soft: #eef0f6; --accent: #3a50c9; --accent-soft: #e8ebfa;
+  --ok: #1f9d55; --ok-soft: #e6f6ec; --warn: #b7791f; --warn-soft: #fdf3e1; --code: #f1f2f5;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111214; --panel: #1a1b1e; --ink: #ececef; --ink-2: #b3b6be; --ink-3: #80838c;
+    --rule: #2c2e33; --soft: #22242a; --accent: #93a3ff; --accent-soft: #232845;
+    --ok: #4ade80; --ok-soft: #16261c; --warn: #f5c16c; --warn-soft: #2b2416; --code: #141518;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  font-size: 16px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere;
+}
+a { color: var(--accent); }
+code, kbd { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: .88em; }
+code { background: var(--code); padding: 1px 6px; border-radius: 5px; }
+kbd { border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; background: var(--panel); }
+
+.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 40px; max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }
+.toc { position: sticky; top: 24px; align-self: start; font-size: 14px; }
+.toc__title { font-weight: 800; font-size: 15px; margin: 0 0 12px; }
+.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: t; }
+.toc li { counter-increment: t; }
+.toc a { display: flex; gap: 8px; padding: 6px 10px; border-radius: 8px; color: var(--ink-2); text-decoration: none; }
+.toc a::before { content: counter(t); font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-3); min-width: 14px; padding-top: 1px; }
+.toc a:hover { background: var(--soft); color: var(--ink); }
+
+main { min-width: 0; }
+.hero { background: var(--panel); border: 1px solid var(--rule); border-radius: 20px; padding: 36px 36px 28px; margin-bottom: 28px; }
+.hero__eyebrow { margin: 0 0 6px; color: var(--accent); font-weight: 700; font-size: 14px; }
+.hero h1 { margin: 0 0 12px; font-size: 32px; line-height: 1.3; letter-spacing: -0.6px; }
+.hero p { margin: 0; color: var(--ink-2); font-size: 17px; }
+
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+.flow__step { position: relative; background: var(--soft); border-radius: 14px; padding: 16px; }
+.flow__step:not(:last-child)::after { content: "→"; position: absolute; right: -11px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-weight: 700; }
+.flow__n { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; }
+.flow__t { margin: 8px 0 2px; font-weight: 700; }
+.flow__d { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+section.card { background: var(--panel); border: 1px solid var(--rule); border-radius: 20px; padding: 28px 32px; margin-bottom: 20px; }
+section.card > h2 { margin: 0 0 6px; font-size: 22px; letter-spacing: -0.4px; display: flex; align-items: center; gap: 10px; }
+section.card > h2 .num { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); font-size: 14px; }
+.lead { margin: 0 0 18px; color: var(--ink-2); }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+
+.who { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.who > div { border: 1px solid var(--rule); border-radius: 14px; padding: 16px; }
+.who b { display: block; margin-bottom: 4px; }
+.who p { margin: 0; font-size: 14px; color: var(--ink-2); }
+
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+.steps > li { counter-increment: s; position: relative; padding: 0 0 18px 44px; }
+.steps > li::before {
+  content: counter(s); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--ink); color: var(--panel); font-size: 13px; font-weight: 700;
+}
+.steps > li:not(:last-child)::after { content: ""; position: absolute; left: 13.5px; top: 32px; bottom: 4px; width: 1px; background: var(--rule); }
+.steps > li > b { display: block; }
+.steps p { margin: 2px 0 0; color: var(--ink-2); }
+
+.cmd { display: flex; align-items: center; gap: 8px; margin: 8px 0 4px; background: var(--code); border: 1px solid var(--rule); border-radius: 10px; padding: 8px 8px 8px 14px; }
+.cmd code { flex: 1; background: none; padding: 0; font-size: 14px; white-space: pre-wrap; }
+.copy { flex: none; border: 1px solid var(--rule); background: var(--panel); color: var(--ink-2); border-radius: 7px; padding: 4px 10px; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.copy:hover { color: var(--accent); border-color: var(--accent); }
+.copy.is-done { color: var(--ok); border-color: var(--ok); }
+
+.say { margin: 8px 0 4px; padding: 12px 14px 12px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; display: flex; gap: 8px; align-items: center; }
+.say span { flex: 1; }
+.say::before { content: "💬"; }
+
+.tabs { display: inline-flex; gap: 2px; background: var(--soft); border-radius: 10px; padding: 3px; margin: 4px 0 12px; }
+.tabs button { border: 0; background: none; font: inherit; font-size: 14px; font-weight: 700; color: var(--ink-3); padding: 5px 14px; border-radius: 8px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+[data-os-panel][hidden] { display: none; }
+
+.note { border-radius: 12px; padding: 12px 16px; margin: 14px 0 0; font-size: 14px; }
+.note--ok { background: var(--ok-soft); }
+.note--warn { background: var(--warn-soft); }
+.note b { margin-right: 4px; }
+
+.rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.rules li { border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; }
+.rules li b { display: block; margin-bottom: 2px; }
+.rules li span { font-size: 14px; color: var(--ink-2); }
+
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-size: 13px; color: var(--ink-3); font-weight: 700; white-space: nowrap; }
+td:first-child { font-weight: 700; white-space: nowrap; }
+
+details { border: 1px solid var(--rule); border-radius: 12px; padding: 0 16px; margin-bottom: 8px; background: var(--panel); }
+details[open] { padding-bottom: 12px; }
+summary { cursor: pointer; padding: 12px 0; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; color: var(--ink-3); font-weight: 400; font-size: 20px; line-height: 1; }
+details[open] summary::after { content: "−"; }
+details p { margin: 0 0 6px; color: var(--ink-2); }
+
+footer { color: var(--ink-3); font-size: 13px; text-align: center; margin-top: 32px; }
+
+@media (max-width: 960px) {
+  .layout { grid-template-columns: minmax(0, 1fr); padding: 16px 16px 60px; gap: 16px; }
+  .toc { position: static; background: var(--panel); border: 1px solid var(--rule); border-radius: 16px; padding: 14px; }
+  .toc ol { display: flex; flex-wrap: wrap; gap: 2px; }
+  .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow__step:nth-child(2)::after { content: none; }
+  .who, .rules { grid-template-columns: minmax(0, 1fr); }
+  .hero { padding: 24px 20px; }
+  .hero h1 { font-size: 26px; }
+  section.card { padding: 22px 18px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="toc" aria-label="목차">
+    <p class="toc__title">사용 가이드</p>
+    <ol>
+      <li><a href="#what">이게 뭐예요?</a></li>
+      <li><a href="#setup">처음 한 번만 준비하기</a></li>
+      <li><a href="#library">라이브러리에서 섹션 가져다 쓰기</a></li>
+      <li><a href="#compose">조합기로 페이지 미리 보기</a></li>
+      <li><a href="#claude">Claude 에게 부탁하기</a></li>
+      <li><a href="#share">팀·개발자에게 전달하기</a></li>
+      <li><a href="#rules">디자인할 때 지킬 것</a></li>
+      <li><a href="#words">용어 풀이</a></li>
+      <li><a href="#faq">막힐 때</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero" id="what">
+      <p class="hero__eyebrow">상품페이지 템플릿 · 사용 가이드</p>
+      <h1>피그마에서 고른 섹션이<br>그대로 HTML 페이지가 되는 도구</h1>
+      <p>상품페이지는 늘 비슷한 섹션(첫 화면, 고민 공감, 문제 정의, 기능 소개, 가격, FAQ …)으로 만들어요. 이 도구는 그 섹션들을 <b>피그마 템플릿</b>과 <b>코드 템플릿</b>으로 짝지어 두었어요. 그래서 디자이너가 피그마에서 섹션을 골라 조합하면, 똑같은 모양의 HTML 페이지가 만들어져 개발자에게 전달돼요.</p>
+      <div class="flow" aria-label="전체 흐름">
+        <div class="flow__step"><span class="flow__n">1</span><p class="flow__t">섹션 고르기</p><p class="flow__d">라이브러리 사이트에서 섹션을 보고 피그마로 이동</p></div>
+        <div class="flow__step"><span class="flow__n">2</span><p class="flow__t">피그마에서 조합</p><p class="flow__d">섹션을 복사해 내 페이지에 붙이고 글·이미지만 바꾸기</p></div>
+        <div class="flow__step"><span class="flow__n">3</span><p class="flow__t">HTML 만들기</p><p class="flow__d">Claude 에게 피그마 주소를 주면 자동으로 HTML 생성</p></div>
+        <div class="flow__step"><span class="flow__n">4</span><p class="flow__t">전달</p><p class="flow__d">만들어진 폴더를 개발자에게 전달하거나 사내 서버에 올리기</p></div>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>누가 무엇을 하나요?</h2>
+      <div class="who">
+        <div><b>🎨 디자이너</b><p>라이브러리에서 섹션을 고르고, 피그마에서 조합해요. 규칙(아래 7번)만 지키면 돼요.</p></div>
+        <div><b>🤖 Claude</b><p>피그마 페이지를 읽어 글·이미지를 뽑고, 정해진 템플릿으로 HTML 을 조립해요.</p></div>
+        <div><b>💻 프론트 개발자</b><p>만들어진 HTML 을 받아 실제 서비스에 붙여요. 코드도 라이브러리에서 바로 볼 수 있어요.</p></div>
+      </div>
+    </section>
+
+    <section class="card" id="setup">
+      <h2><span class="num">2</span>처음 한 번만 준비하기</h2>
+      <p class="lead">컴퓨터마다 처음 한 번만 하면 돼요. 명령어는 <b>복사 버튼</b>을 눌러 그대로 붙여넣기만 하세요.</p>
+      <div class="tabs" role="tablist" aria-label="운영체제">
+        <button type="button" role="tab" data-os="mac" aria-selected="true">Mac</button>
+        <button type="button" role="tab" data-os="win" aria-selected="false">Windows</button>
+      </div>
+      <ol class="steps">
+        <li><b>Node.js 설치</b><p><a href="https://nodejs.org/ko" target="_blank" rel="noopener">nodejs.org</a> 에서 <b>LTS</b>(권장) 버튼을 눌러 받은 파일을 설치해요. 다음 → 다음으로 끝까지 누르면 돼요. 이미 있으면 건너뛰어요.</p></li>
+        <li><b>받은 zip 풀기</b><p><code>product-page-templates-src-….zip</code> 을 원하는 곳(예: 문서 폴더)에 풀어요.</p></li>
+        <li><b>그 폴더에서 터미널 열기</b>
+          <p data-os-panel="mac">Finder 에서 푼 폴더를 <b>오른쪽 클릭 → 서비스 → 폴더에서 새로운 터미널 열기</b>. (메뉴가 없으면 <kbd>⌘</kbd>+<kbd>Space</kbd> → "터미널" 실행 후 <code>cd </code> 를 입력하고 폴더를 창에 끌어다 놓고 <kbd>Enter</kbd>)</p>
+          <p data-os-panel="win" hidden>탐색기에서 푼 폴더를 연 뒤, 위쪽 <b>주소창을 클릭</b>하고 <code>cmd</code> 라고 입력한 다음 <kbd>Enter</kbd>. 검은 창이 열리면 성공이에요.</p>
+        </li>
+        <li><b>준비 명령 실행</b> (1~2분 걸려요)
+          <div class="cmd"><code>npm install</code><button type="button" class="copy" data-copy="npm install">복사</button></div>
+        </li>
+        <li><b>사이트 만들기</b>
+          <div class="cmd"><code>npm run build</code><button type="button" class="copy" data-copy="npm run build">복사</button></div>
+          <p>✓ 표시가 나오면 성공이에요. 폴더 안에 <code>dist</code> 가 생겨요.</p>
+        </li>
+        <li><b>라이브러리 열기</b><p><code>dist</code> 폴더의 <code>index.html</code> 을 더블클릭하면 브라우저에서 열려요. 즐겨찾기에 추가해 두세요.</p></li>
+      </ol>
+      <p class="note note--ok"><b>팁</b>파일을 고친 뒤 화면이 그대로면 <code>npm run build</code> 를 한 번 더 실행하고 브라우저를 새로고침하세요.</p>
+    </section>
+
+    <section class="card" id="library">
+      <h2><span class="num">3</span>라이브러리에서 섹션 가져다 쓰기</h2>
+      <p class="lead">왼쪽 목록에서 섹션(hero, concern, problem …)을 누르면 종류가 펼쳐지고, 오른쪽에 실제 화면이 보여요.</p>
+      <ol class="steps">
+        <li><b>기기 바꿔 보기</b><p>오른쪽 위 <b>PC 1920 · TB 1024 · MO 375</b> 를 누르면 데스크톱·태블릿·모바일에서 어떻게 보이는지 바로 확인돼요.</p></li>
+        <li><b>옵션 바꿔 보기</b><p>각 섹션 위의 칩으로 라이트/다크, 콘텐츠 폭(body), 모바일 전용 배치(compact), <b>카드 수</b>와 <b>한 줄 최대 개수</b>를 바꿔 볼 수 있어요. 카드가 적으면 넓어지고, 많으면 좌우로 넘기는 점(•••)이 생겨요.</p></li>
+        <li><b>피그마로 이동</b><p>섹션 오른쪽 <b>Figma ▾</b> 버튼 → PC 또는 MO 컴포넌트 열기. 피그마에서 그 섹션이 바로 열려요.</p></li>
+        <li><b>내 페이지에 복사</b><p>피그마에서 컴포넌트를 <b>인스턴스로 복사</b>(<kbd>⌥</kbd>+드래그 또는 <kbd>⌘C</kbd>→<kbd>⌘V</kbd>)해서 내 페이지 프레임에 붙이고, 글과 이미지만 바꿔요.</p></li>
+      </ol>
+      <p class="note note--warn"><b>주의</b>인스턴스를 <b>분리(Detach)</b>하거나 레이어 이름을 바꾸면 나중에 HTML 로 바꿀 수 없어요.</p>
+    </section>
+
+    <section class="card" id="compose">
+      <h2><span class="num">4</span>조합기로 페이지 미리 보기</h2>
+      <p class="lead">피그마 작업 전에 "이런 순서면 어떨까?"를 코드 화면으로 빠르게 볼 수 있어요. 상단 <b>조합기</b> 를 누르세요.</p>
+      <ol class="steps">
+        <li><b>섹션 순서 정하기</b><p>왼쪽에서 섹션을 추가(아래 선택 → 추가)·삭제(✕)·이동(↑↓)하고, 종류(variant)를 골라요.</p></li>
+        <li><b>카드 수·배치 조절</b><p>카드형 섹션은 <b>− 3장 +</b> 로 카드 수를, PC·TB·MO 칸으로 한 줄 최대 개수를 바꿔요.</p></li>
+        <li><b>저장</b><p>왼쪽 아래 <b>page.json 받기</b> 를 누르면 지금 구성이 파일로 저장돼요. 이 파일을 Claude 나 개발자에게 주면 같은 구성으로 HTML 을 만들 수 있어요.</p></li>
+      </ol>
+    </section>
+
+    <section class="card" id="claude">
+      <h2><span class="num">5</span>Claude 에게 부탁하기</h2>
+      <p class="lead">프로젝트 폴더에서 Claude Code 를 열고 아래처럼 <b>말로</b> 부탁하면 돼요. 규칙은 Claude 가 폴더 안의 설명서(CLAUDE.md)를 읽고 알아서 지켜요.</p>
+      <h3>피그마 페이지 → HTML 만들기</h3>
+      <div class="say"><span>이 피그마 페이지 코드로 만들어줘 https://www.figma.com/design/…?node-id=…</span><button type="button" class="copy" data-copy="이 피그마 페이지 코드로 만들어줘 ">복사</button></div>
+      <p class="lead" style="margin-top:6px">PC 프레임 주소(필수)와 MO 프레임 주소(있으면)를 함께 주세요. 결과는 <code>dist/pages/이름/</code> 폴더에 생겨요.</p>
+      <h3>새 섹션 템플릿 추가하기</h3>
+      <div class="say"><span>이 피그마 섹션을 템플릿에 추가해줘 https://www.figma.com/design/…</span><button type="button" class="copy" data-copy="이 피그마 섹션을 템플릿에 추가해줘 ">복사</button></div>
+      <h3>결과 확인하기</h3>
+      <div class="say"><span>방금 바꾼 거 PC·태블릿·모바일로 캡처해서 보여줘</span><button type="button" class="copy" data-copy="방금 바꾼 거 PC·태블릿·모바일로 캡처해서 보여줘">복사</button></div>
+      <p class="note note--ok"><b>준비물</b>Claude 가 피그마를 읽으려면 <b>Figma 연결</b>이 필요해요. Claude Code 에서 <code>/mcp</code> 를 입력해 Figma 가 연결됐는지 확인하세요. (피그마 파일 열람 권한도 필요해요)</p>
+    </section>
+
+    <section class="card" id="share">
+      <h2><span class="num">6</span>팀·개발자에게 전달하기</h2>
+      <table>
+        <thead><tr><th>하고 싶은 것</th><th>방법</th></tr></thead>
+        <tbody>
+          <tr><td>완성 페이지 전달</td><td><code>dist/pages/페이지이름/</code> 폴더를 통째로 압축해서 프론트 개발자에게 전달해요. 안에 <code>index.html</code> 과 이미지가 다 들어 있어요.</td></tr>
+          <tr><td>라이브러리를 팀에 공유</td><td>아래 명령으로 <code>release</code> 폴더에 <b>site zip</b> 이 생겨요. 사내 웹서버 담당자에게 "이 zip 을 풀어서 올려 주세요"라고 전달하면 돼요.
+            <div class="cmd"><code>npm run pack</code><button type="button" class="copy" data-copy="npm run pack">복사</button></div></td></tr>
+          <tr><td>다른 PC·동료에게 도구 자체 전달</td><td>같은 <code>npm run pack</code> 으로 생긴 <b>src zip</b> 을 주면 돼요. 받는 사람은 2번(처음 한 번만 준비하기)부터 하면 돼요.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" id="rules">
+      <h2><span class="num">7</span>디자인할 때 지킬 것</h2>
+      <p class="lead">이 네 가지만 지키면 피그마 → HTML 변환이 정확해져요.</p>
+      <ul class="rules">
+        <li><b>① 인스턴스 그대로 쓰기</b><span>라이브러리 컴포넌트를 복사해서 쓰고, 분리(Detach)하지 않아요.</span></li>
+        <li><b>② 레이어 이름 바꾸지 않기</b><span>eyebrow · title · description · cta · image 같은 이름이 글자를 찾는 열쇠예요.</span></li>
+        <li><b>③ 위에서 아래로 쌓기</b><span>페이지 프레임 바로 안에 섹션을 위→아래 순서로 둬요. 섹션을 그룹으로 묶지 않아요.</span></li>
+        <li><b>④ PC·MO 순서 맞추기</b><span>모바일 프레임도 같은 섹션을 같은 순서로 두면 줄바꿈까지 알아서 맞춰져요.</span></li>
+      </ul>
+    </section>
+
+    <section class="card" id="words">
+      <h2><span class="num">8</span>용어 풀이</h2>
+      <table>
+        <tbody>
+          <tr><td>섹션</td><td>페이지를 이루는 큰 덩어리. 예) hero(첫 화면), concern(고민 공감), faq(자주 묻는 질문)</td></tr>
+          <tr><td>variant</td><td>같은 섹션의 다른 모양. 예) hero 의 center-inline · center-bottom · split</td></tr>
+          <tr><td>옵션</td><td>같은 variant 안에서 켜고 끄는 변형. 예) 모바일에서 좌우로 넘기는 compact, 다크 모드</td></tr>
+          <tr><td>PC · TB · MO</td><td>데스크톱(1280px 이상) · 태블릿(768–1279px) · 모바일(767px 이하) 화면</td></tr>
+          <tr><td>page.json</td><td>"어떤 섹션을 어떤 순서로, 어떤 글로" 쓸지 적어 둔 설명서 파일. 이걸로 HTML 을 만들어요</td></tr>
+          <tr><td>빌드(build)</td><td>템플릿과 page.json 을 합쳐 실제 화면(HTML)을 만드는 일. <code>npm run build</code></td></tr>
+          <tr><td>라이브러리 / 조합기</td><td>섹션을 하나씩 보는 화면 / 섹션을 이어 붙여 페이지로 보는 화면</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" id="faq">
+      <h2><span class="num">9</span>막힐 때</h2>
+      <details><summary>"npm 을 찾을 수 없습니다" 라고 나와요</summary><p>Node.js 가 설치되지 않았어요. 2번의 ① 을 다시 하고, 터미널을 <b>닫았다가 새로</b> 열어 주세요.</p></details>
+      <details><summary>index.html 을 열었는데 화면이 비어 있거나 예전 모습이에요</summary><p>터미널에서 <code>npm run build</code> 를 다시 실행하고 브라우저를 새로고침(<kbd>⌘</kbd>+<kbd>R</kbd> / <kbd>F5</kbd>)하세요.</p></details>
+      <details><summary>Figma 버튼을 눌렀는데 "권한이 없습니다" 라고 나와요</summary><p>그 피그마 파일에 초대되지 않은 계정이에요. 파일 담당자에게 보기(또는 편집) 권한을 요청하세요.</p></details>
+      <details><summary>Claude 가 피그마를 못 읽는대요</summary><p>Claude Code 에서 <code>/mcp</code> 로 Figma 연결 상태를 확인하고, 끊겨 있으면 다시 연결(로그인)해 주세요. 피그마 파일 열람 권한도 필요해요.</p></details>
+      <details><summary>HTML 로 바꿨는데 어떤 섹션이 빠졌어요</summary><p>그 섹션이 분리(Detach)됐거나, 아직 코드 템플릿이 없는 섹션일 수 있어요. Claude 가 결과와 함께 "변환하지 못한 섹션" 목록을 알려줘요. 인스턴스로 다시 넣거나 "이 섹션 템플릿에 추가해줘"라고 부탁하세요.</p></details>
+      <details><summary>줄바꿈이 피그마와 조금 달라요</summary><p>웹은 글자 폭이 기기마다 조금씩 달라서 자동 줄바꿈 위치가 바뀔 수 있어요. 꼭 바꿀 곳은 피그마에서 직접 줄을 바꿔(<kbd>Shift</kbd>+<kbd>Enter</kbd>) 두면 그대로 옮겨져요.</p></details>
+    </section>
+
+    <footer>상품페이지 템플릿 · 버전 0.1.0 · 피그마 원본: [UI] 커피 정수기 / Page 18</footer>
+  </main>
+</div>
+<script>
+// 명령어 복사
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var done = function () { var t = b.textContent; b.textContent = '복사됨'; b.classList.add('is-done'); setTimeout(function () { b.textContent = t; b.classList.remove('is-done'); }, 1400); };
+  if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(done, done); else done();
+});
+// Mac / Windows 탭
+(function () {
+  var os = /Win/i.test(navigator.platform || navigator.userAgent) ? 'win' : 'mac';
+  function set(k) {
+    document.querySelectorAll('[data-os]').forEach(function (t) { t.setAttribute('aria-selected', String(t.dataset.os === k)); });
+    document.querySelectorAll('[data-os-panel]').forEach(function (p) { p.hidden = p.dataset.osPanel !== k; });
+  }
+  document.addEventListener('click', function (e) { var t = e.target.closest('[data-os]'); if (t) set(t.dataset.os); });
+  set(os);
+})();
+</script>
+</body>
+</html>

@@ -11,6 +11,8 @@ sections/<section>/<layout>/  (meta.json · template.njk · style.css · sample.
                               dist/index.html  (라이브러리 사이트 · 조합기)
 ```
 
+> 개발자가 아니라면 **`GUIDE.html`**(쉬운 사용 가이드)을 먼저 열어 보세요. 빌드 후에는 라이브러리 상단 `사용 가이드` 링크로도 열려요.
+
 ## 처음 받았을 때
 1. **Node.js 18 이상**을 설치해요 (`node -v` 로 확인)
 2. 소스 zip 을 풀고 그 폴더에서:

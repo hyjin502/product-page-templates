@@ -137,6 +137,7 @@ export function build() {
   const baseCss = fs.readFileSync(BASE_CSS_PATH, 'utf8');
   fs.mkdirSync(DIST, { recursive: true });
   buildLibrary(reg, env, baseCss);
+  fs.copyFileSync(path.join(ROOT, 'GUIDE.html'), path.join(DIST, 'guide.html')); // 비개발자용 사용 가이드
   fs.writeFileSync(path.join(DIST, '.nojekyll'), ''); // GitHub Pages 가 _ 로 시작하는 파일을 숨기지 않게
   const pages = buildPages(reg, env, baseCss);
   return { variants: reg.variants.length, pages };
