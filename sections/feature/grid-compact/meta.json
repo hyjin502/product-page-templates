@@ -1,0 +1,106 @@
+{
+  "id": "feature-grid-compact",
+  "section": "feature",
+  "layout": "grid",
+  "style": "compact",
+  "order": 5,
+  "when": "리포트·책 표지처럼 세로형 이미지만 나열할 때",
+  "figma": {
+    "pc": "6187:3825",
+    "mo": "6187:3871",
+    "tb": null
+  },
+  "body": 1200,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "타이틀 아래 설명"
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "img",
+      "aliases": [
+        "image 22",
+        "image 23",
+        "image 25",
+        "image 26",
+        "image 27"
+      ],
+      "min": 1,
+      "max": 24,
+      "label": "표지 이미지",
+      "note": "PC 는 img 프레임, MO 는 image NN 사각형이 항목이에요 — 둘 다 item 으로 변경 요청. PC 5열 / TB 1024 미만 3열 / MO 2열",
+      "item": {
+        "image": {
+          "type": "image",
+          "figmaLayer": "image",
+          "aliases": [
+            "image 22",
+            "image 23",
+            "image 25",
+            "image 26",
+            "image 27"
+          ],
+          "label": "표지 (세로형, 원본 비율 유지)"
+        },
+        "href": {
+          "type": "url",
+          "optional": true,
+          "label": "링크",
+          "note": "Figma 에 없음 — 넣으면 카드 전체가 링크가 돼요"
+        },
+        "device": {
+          "type": "enum",
+          "values": [
+            "pc",
+            "mo"
+          ],
+          "optional": true,
+          "label": "표시 기기",
+          "note": "Figma PC·MO 컴포넌트의 카드 구성이 다를 때만 넣어요(비우면 둘 다). 추출기는 PC 목록과 MO 목록을 비교해 한쪽에만 있는 항목에 붙여요"
+        }
+      }
+    },
+    "note": {
+      "type": "richtext",
+      "figmaLayer": "note",
+      "aliases": [
+        "현재 가장 중요한 경영 이슈와 트렌드를 적시에 얻고, 비즈니스에 필요한 통찰을 얻으세요!"
+      ],
+      "optional": true,
+      "label": "하단 강조 박스",
+      "note": "마지막 줄은 Bold 로 보여요(Figma 스타일 그대로). 레이어 이름이 문구 그대로라 note 로 변경 요청"
+    }
+  },
+  "pager": {
+    "slot": "items",
+    "mode": {
+      "pc": "fill",
+      "tb": "fill",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 6,
+      "tb": 4,
+      "mo": 0
+    },
+    "note": "Figma PC 오토레이아웃: 가로 한 줄 + 채우기(Fill) · per = 한 줄 최대 카드 수(넘치면 페이지)"
+  }
+}

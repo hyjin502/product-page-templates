@@ -1,0 +1,101 @@
+{
+  "id": "problem-quote",
+  "section": "problem",
+  "layout": "quote",
+  "order": 2,
+  "when": "담당자의 실제 목소리를 아바타·후기 카드로 보여줄 때",
+  "figma": {
+    "pc": "6187:2667",
+    "mo": "6187:2936",
+    "tb": null
+  },
+  "body": 980,
+  "options": {
+    "compact": {
+      "label": "MO compact · 좌우로 넘기기",
+      "class": "problem--compact",
+      "moOnly": true,
+      "figma": {
+        "mo": "6187:2958"
+      }
+    }
+  },
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "note": "MO: heading-mo/Frame 2147238960/title (문서 순서상 첫 title)",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "cards": {
+      "type": "list",
+      "figmaLayer": "card1",
+      "aliases": [
+        "card2"
+      ],
+      "min": 1,
+      "max": 24,
+      "label": "후기 카드",
+      "item": {
+        "avatar": {
+          "type": "image",
+          "figmaLayer": "avatar",
+          "optional": true,
+          "label": "아바타 (60×60 원형)",
+          "note": "avatar type=default-01/08 일러스트는 assets/problem/avatar-default-01.svg / -08.svg"
+        },
+        "title": {
+          "type": "richtext",
+          "figmaLayer": "title",
+          "label": "후기 제목"
+        },
+        "role": {
+          "type": "text",
+          "figmaLayer": "description",
+          "figmaPath": "Frame 2147238927/description",
+          "label": "작성자 (직무·회사)"
+        },
+        "body": {
+          "type": "richtext",
+          "figmaLayer": "description",
+          "figmaPath": "text/description",
+          "aliases": [
+            "Frame 2147238926/description"
+          ],
+          "label": "후기 본문",
+          "note": "PC 는 text/description, MO 는 Frame 2147238926/description"
+        }
+      }
+    }
+  },
+  "pager": {
+    "slot": "cards",
+    "mode": {
+      "pc": "fill",
+      "tb": "fill",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 3,
+      "tb": 2,
+      "mo": 0
+    },
+    "note": "Figma PC 오토레이아웃: 가로 한 줄 + 채우기(Fill) · per = 한 줄 최대 카드 수(넘치면 페이지)"
+  }
+}

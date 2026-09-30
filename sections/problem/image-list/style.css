@@ -1,0 +1,30 @@
+/* .problem, __body 는 _shared.css */
+.problem__rows { display: flex; flex-direction: column; gap: 32px; }
+.problem__row { display: flex; align-items: stretch; gap: 80px; padding-bottom: 80px; }
+.problem__row:nth-child(even) { flex-direction: row-reverse; }
+.problem__row-text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 32px; }
+.problem--image-list .problem__card-title { font-size: 28px; }
+.problem--image-list .problem__row-desc { font-size: 18px; font-weight: 500; color: var(--t-60); }
+.problem__row-media { flex: 1 1 0; min-width: 0; height: 280px; border-radius: 16px; overflow: hidden; background: var(--bg-ghost); }
+.problem__row-media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* TB 768–1279 — 1024 미만은 이미지 위, 글 아래로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .problem__row { gap: 48px; padding-bottom: 64px; }
+  .problem__row-text { gap: 24px; }
+  .problem--image-list .problem__card-title { font-size: 24px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .problem__rows { gap: 56px; }
+  .problem__row, .problem__row:nth-child(even) { flex-direction: column; gap: 24px; padding-bottom: 0; }
+  .problem__row-media { order: -1; flex: none; height: 320px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .problem__row, .problem__row:nth-child(even) { flex-direction: column; gap: 16px; padding-bottom: 0; }
+  .problem__row-media { order: -1; flex: none; height: 200px; }
+  .problem__row-text { gap: 12px; }
+  .problem--image-list .problem__card-title { font-size: 20px; }
+  .problem--image-list .problem__row-desc { font-size: 14px; font-weight: 400; color: var(--t-80); }
+}

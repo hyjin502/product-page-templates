@@ -1,0 +1,63 @@
+{
+  "id": "logo-wall-default",
+  "section": "logo-wall",
+  "layout": "default",
+  "order": 1,
+  "when": "고객사 로고를 끝없이 흘러가는 띠로 보여줄 때",
+  "figma": {
+    "pc": "6187:4248",
+    "mo": "6187:4463",
+    "tb": null
+  },
+  "body": 1200,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "aliases": [
+        "성공하는 조직의 리더는 휴넷과 함께"
+      ],
+      "label": "타이틀",
+      "note": "heading 인스턴스가 아닌 단독 TEXT — 레이어 이름을 title 로 변경 요청"
+    },
+    "logos": {
+      "type": "list",
+      "figmaLayer": "item",
+      "aliases": [
+        "1",
+        "Group 15",
+        "Group 16",
+        "Group 17",
+        "Group 19",
+        "Group 20",
+        "Group 21"
+      ],
+      "min": 1,
+      "max": 40,
+      "label": "고객사 로고",
+      "note": "PC 한 줄 / MO 두 줄로 흘러가요(움직임 줄이기 설정이면 멈춤). 타일 레이어 이름(1, Group NN) → item 으로 변경 요청",
+      "item": {
+        "image": {
+          "type": "image",
+          "figmaLayer": "logo",
+          "aliases": [
+            "Bitmap",
+            "KB_s_kr3",
+            "SK-telecom_RGB_EN",
+            "Untitled-1",
+            "삼성생명서비스_로고타입_커뮤니케이션명"
+          ],
+          "label": "로고 (118×80 영역, 236×160 PNG 권장)",
+          "note": "Figma 원본 비트맵은 마스크(118×80) 안 위치·크기가 제각각이에요. assets/logo-wall/*.png 는 그 영역을 Figma 배치 그대로 합성한 236×160 투명 PNG 예요 — 새 로고도 같은 규격으로 넣어요. 레이어 이름 → logo 로 변경 요청"
+        },
+        "name": {
+          "type": "text",
+          "label": "회사명",
+          "note": "레이어 이름이 회사명 그대로(LG전자 …) — name 으로 변경 요청",
+          "figmaLayer": "*",
+          "nth": 0
+        }
+      }
+    }
+  }
+}

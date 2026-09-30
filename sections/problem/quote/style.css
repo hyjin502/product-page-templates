@@ -1,0 +1,24 @@
+/* .problem, __body, __content, __track, __card, __avatar, __dots 는 _shared.css */
+.problem--quote .problem__track { align-items: stretch; }
+.problem--quote .problem__card { gap: 32px; padding: 40px; }
+.problem--quote .problem__who { display: flex; align-items: flex-start; gap: 16px; }
+.problem--quote .problem__avatar { width: 60px; height: 60px; }
+.problem--quote .problem__who-text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; }
+.problem--quote .problem__quote { text-align: justify; }
+
+/* TB 768–1279 — 1024 미만은 1열로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .problem--quote .problem__card { padding: 32px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .problem--quote .problem__track { flex-direction: column; }
+  .problem--quote .problem__card { flex: none; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .problem--quote .problem__card { padding: 32px 24px; border-radius: 8px; }
+  .problem--quote .problem__card-title { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .problem--quote.problem--compact .problem__card { flex: 0 0 290px; }
+  .problem--quote.problem--compact .problem__quote { font-size: 14px; }
+}

@@ -1,0 +1,58 @@
+{% from "_partials/ui.njk" import media %}
+<section class="benefit benefit--detail-slide">
+  <div class="benefit__body">
+    <div class="benefit__slider" role="region" aria-roledescription="carousel" aria-label="슬라이드">
+      <ul class="benefit__slides" tabindex="0">
+{% for it in slides %}
+{# title 1번째 줄 = 타이틀, 나머지 줄 = 큰 헤드라인 — PC/MO 값을 각각 나눠요 #}
+{% set tpc = it.title.pc if (it.title.pc is defined) else it.title %}
+{% set tmo = it.title.mo if (it.title.mo is defined) else tpc %}
+{% if not tpc %}{% set tpc = tmo %}{% endif %}
+{% set lp = tpc.split("\n") %}
+{% set lm = tmo.split("\n") %}
+{% set head = { "pc": lp[0], "mo": lm[0] } %}
+{% set tail = { "pc": lp.slice(1).join("\n"), "mo": lm.slice(1).join("\n") } %}
+        <li class="benefit__slide" role="group" aria-roledescription="slide" aria-label="{{ loop.index }} / {{ slides.length }}">
+          <div class="benefit__slide-text">
+            <h3 class="benefit__slide-title">
+              <span class="benefit__slide-num">{{ loop.index }}.</span>
+              <span class="benefit__slide-heading">
+                <span class="benefit__slide-kr">{{ head | rt }}</span>
+{% if tail.pc or tail.mo %}
+                <span class="benefit__slide-en">{{ tail | rt }}</span>
+{% endif %}
+              </span>
+            </h3>
+{% if it.lead or it.description %}
+            <div class="benefit__slide-copy">
+{% if it.lead %}
+              <p class="benefit__slide-lead">{{ it.lead | rt }}</p>
+{% endif %}
+{% if it.description %}
+              <p class="benefit__slide-desc">{{ it.description | rt }}</p>
+{% endif %}
+            </div>
+{% endif %}
+          </div>
+          <div class="benefit__media benefit__slide-media">
+{% if it.image and it.image.src %}
+            {{ media(it.image, "benefit__img") }}
+{% endif %}
+          </div>
+        </li>
+{% endfor %}
+      </ul>
+{% if slides.length > 1 %}
+      <div class="benefit__pager">
+        <button type="button" class="benefit__arrow benefit__arrow--prev" aria-label="이전 슬라이드" disabled>{{ 'benefit-chevron-right-16' | icon }}</button>
+        <div class="benefit__dots">
+{% for it in slides %}
+          <button type="button" class="benefit__dot-btn" aria-label="{{ loop.index }}번 슬라이드 보기"{% if loop.first %} aria-current="true"{% endif %}></button>
+{% endfor %}
+        </div>
+        <button type="button" class="benefit__arrow benefit__arrow--next" aria-label="다음 슬라이드">{{ 'benefit-chevron-right-16' | icon }}</button>
+      </div>
+{% endif %}
+    </div>
+  </div>
+</section>

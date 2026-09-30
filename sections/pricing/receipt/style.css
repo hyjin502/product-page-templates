@@ -1,0 +1,80 @@
+/* 영수증 — Figma Subtract(불리언) 채움 = bg-surface. 아래 톱니 모양은 반지름 9 · 간격 28 반원 구멍(같은 치수)을 mask 로 그려요 */
+.pricing__receipt-wrap { filter: drop-shadow(0 8px 32px rgba(102, 102, 102, 0.16)) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.1)); }
+.pricing__receipt {
+  position: relative; overflow: hidden;
+  border-radius: 20px 20px 0 0; background: var(--bg-surface); color: var(--t-100);
+  -webkit-mask:
+    linear-gradient(#000 0 0) top / 100% calc(100% - 9px) no-repeat,
+    radial-gradient(circle 9px at 50% 100%, transparent 98%, #000) calc(50% + 14px) 100% / 28px 9px repeat-x;
+  mask:
+    linear-gradient(#000 0 0) top / 100% calc(100% - 9px) no-repeat,
+    radial-gradient(circle 9px at 50% 100%, transparent 98%, #000) calc(50% + 14px) 100% / 28px 9px repeat-x;
+}
+.pricing__receipt-card {
+  display: flex; flex-direction: column; gap: 32px;
+  padding: 48px 48px 80px;
+}
+.pricing__receipt-head {
+  padding-bottom: 32px; border-bottom: 1px solid var(--line-outline);
+  font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter);
+}
+
+/* 비용 항목 — 항목명 | 단가×수량(140) | 금액 */
+.pricing__lines {
+  margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 20px;
+  font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.pricing__line { display: grid; grid-template-columns: minmax(0, 1fr) 140px minmax(104px, auto); align-items: start; }
+.pricing__line-qty, .pricing__line-amount { text-align: right; }
+.pricing__line-amount { font-weight: 700; }
+
+/* 점선 구분 — Figma 는 '-' 글자 반복 텍스트, 코드는 1px 점선으로 그려요 */
+.pricing__sum { --dash: repeating-linear-gradient(90deg, var(--t-100) 0 4px, transparent 4px 7px); }
+.pricing__sum::before { content: ""; display: block; height: 1px; margin: 10px 0; background: var(--dash); }
+.pricing__totals { margin: 0; }
+.pricing__totals::after {
+  content: ""; display: block; height: 5px; margin: 8px 0 33px;
+  background: var(--dash) top / 100% 1px no-repeat, var(--dash) bottom / 100% 1px no-repeat;
+}
+.pricing__total, .pricing__final {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 45px;
+  font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.pricing__total-value, .pricing__final-value {
+  margin: 0; display: inline-flex; align-items: center; justify-content: flex-end; gap: 2px; white-space: nowrap;
+}
+.pricing__total-num { font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.pricing__total--muted .pricing__total-num { color: var(--t-45); }
+.pricing__final { font-weight: 700; }
+.pricing__final-num { font-size: 48px; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--error); }
+
+.pricing__final-wrap { display: flex; flex-direction: column; gap: 8px; }
+.pricing__foot {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.pricing__footnote { color: var(--t-60); }
+.pricing__per { margin-left: auto; color: var(--t-80); text-align: right; white-space: nowrap; }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .pricing__receipt-card { padding: 40px 40px 64px; }
+  .pricing__receipt-head { font-size: 28px; }
+  .pricing__final-num { font-size: 40px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .pricing__receipt-card { padding: 40px 20px 56px; }
+  .pricing__receipt-head { padding-bottom: 24px; font-size: 24px; }
+  .pricing__lines { gap: 16px; font-size: 14px; }
+  /* Figma 는 130/110/70 칸이 살짝 겹쳐요 — 항목명 칸을 넓히고 단가 칸은 넘치면 왼쪽으로 */
+  .pricing__line { grid-template-columns: minmax(0, 1fr) 100px 66px; align-items: center; }
+  .pricing__line-qty { justify-self: end; white-space: nowrap; }
+  .pricing__totals::after { margin: 8px 0 25px; }
+  .pricing__total { min-height: 0; font-size: 14px; }
+  .pricing__total-num { font-size: 28px; }
+  .pricing__final-unit { font-size: 14px; }
+  .pricing__final-num { font-size: 32px; }
+  .pricing__footnote { display: none; }
+}

@@ -1,0 +1,33 @@
+{% from "_partials/ui.njk" import ctas as ctaList, secHead %}
+<section class="concern concern--before-after">
+  <div class="concern__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="concern-ba">
+      <article class="concern-ba__card concern-ba__card--before">
+        <div class="concern-ba__head">
+          <span class="concern-ba__icon only-pc">{{ 'alert-48' | icon }}</span>
+          <span class="concern-ba__icon only-mo">{{ 'alert-32' | icon }}</span>
+          <h3 class="concern-ba__title">{{ beforeTitle | rt }}</h3>
+        </div>
+        <ul class="concern-ba__list">
+{% for it in beforeItems %}
+          <li><span class="concern-ba__mark">{{ 'x-round' | icon }}</span><span>{{ it.text | rt }}</span></li>
+{% endfor %}
+        </ul>
+      </article>
+      <article class="concern-ba__card concern-ba__card--after">
+        <div class="concern-ba__head">
+          <span class="concern-ba__icon only-pc">{{ 'check-48' | icon }}</span>
+          <span class="concern-ba__icon only-mo">{{ 'check-32' | icon }}</span>
+          <h3 class="concern-ba__title">{{ afterTitle | rt }}</h3>
+        </div>
+        <ul class="concern-ba__list">
+{% for it in afterItems %}
+          <li><span class="concern-ba__mark">{{ 'check-round' | icon }}</span><span>{{ it.text | rt }}</span></li>
+{% endfor %}
+        </ul>
+      </article>
+    </div>
+    {{ ctaList(ctas, "concern__btns") }}
+  </div>
+</section>

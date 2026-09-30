@@ -1,0 +1,68 @@
+{
+  "id": "countdown-boxed",
+  "section": "countdown",
+  "layout": "boxed",
+  "order": 2,
+  "when": "마감 임박을 강하게 강조하고 싶을 때 — 숫자를 진한 박스에 담아요",
+  "figma": {
+    "pc": "6187:4201",
+    "mo": "6187:4233",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "deadline": {
+      "type": "text",
+      "label": "마감 일시 (ISO 8601)",
+      "note": "예: 2026-10-31T23:59:59+09:00 — Figma에 없는 값. script.js 가 이 시각까지 남은 일·시·분·초를 1초마다 갱신해요"
+    },
+    "days": {
+      "type": "text",
+      "figmaPath": "days/360",
+      "optional": true,
+      "label": "초기 숫자 · 일",
+      "note": "JS 실행 전(또는 JS 없이) 보이는 값"
+    },
+    "hours": {
+      "type": "text",
+      "figmaLayer": "24",
+      "optional": true,
+      "label": "초기 숫자 · 시",
+      "note": "Figma 부모 프레임 이름이 HOURS 로 3개 중복 — 디자이너 이름 변경 요청"
+    },
+    "minutes": {
+      "type": "text",
+      "figmaLayer": "60",
+      "optional": true,
+      "label": "초기 숫자 · 분",
+      "note": "Figma 레이어 \"60\" 이 분·초에 중복 — 디자이너 이름 변경 요청"
+    },
+    "seconds": {
+      "type": "text",
+      "figmaLayer": "60",
+      "optional": true,
+      "label": "초기 숫자 · 초",
+      "note": "Figma 레이어 \"60\" 이 분·초에 중복 — 디자이너 이름 변경 요청"
+    },
+    "labelDays": {
+      "type": "text",
+      "figmaLayer": "DAYS",
+      "label": "단위 라벨 · 일"
+    },
+    "labelHours": {
+      "type": "text",
+      "figmaLayer": "HOURS",
+      "label": "단위 라벨 · 시"
+    },
+    "labelMinutes": {
+      "type": "text",
+      "figmaLayer": "MUNUTES",
+      "label": "단위 라벨 · 분"
+    },
+    "labelSeconds": {
+      "type": "text",
+      "figmaLayer": "SECONDS",
+      "label": "단위 라벨 · 초"
+    }
+  }
+}

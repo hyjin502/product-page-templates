@@ -1,0 +1,49 @@
+{# feature 공통 매크로 — grid-default / card / article / media / compact 가 함께 써요 #}
+{% from "_partials/ui.njk" import media %}
+
+{# 하단 강조 박스(Figma 레이어: text > TEXT). 마지막 줄은 Figma 스타일 그대로 굵게(Bold) 보여줘요.
+   값이 { pc, mo } 면 기기별로 따로 나눠서 같은 규칙을 적용해요. #}
+{% macro _noteLines(v) %}
+{% set ls = (v | trim).split('\n') %}
+{% for l in ls %}{% if loop.last %}<strong>{{ l | trim }}</strong>{% else %}{{ l | trim }}<br> {% endif %}{% endfor %}
+{% endmacro %}
+
+{% macro note(value) %}
+{% if value %}
+<p class="feature__note">
+{% if value.pc or value.mo %}
+  <span class="only-pc">{{ _noteLines(value.pc or value.mo) }}</span><span class="only-mo">{{ _noteLines(value.mo or value.pc) }}</span>
+{% else %}
+  {{ _noteLines(value) }}
+{% endif %}
+</p>
+{% endif %}
+{% endmacro %}
+
+{# 기기 전용 항목 — item.device 가 pc/mo 면 그 기기에서만 보여요 (Figma PC·MO 컴포넌트의 카드 구성이 다를 때) #}
+{% macro only(item) %}{% if item.device %} only-{{ item.device }}{% endif %}{% endmacro %}
+
+{# feature-thumbnail type=thumbnail1(뱃지 + 제목 20) / thumbnail2(제목 24) 카드 #}
+{% macro thumb(c) %}
+{% set tag = 'a' if c.href else 'article' %}
+<{{ tag }} class="feature-thumb feature-thumb--{{ c.type or 'thumbnail1' }}{{ only(c) }}"{% if c.href %} href="{{ c.href }}"{% endif %}>
+  <div class="feature-thumb__media">
+    {{ media(c.image, "feature-thumb__img") }}
+  </div>
+  <div class="feature-thumb__meta">
+{% if c.badges and c.badges.length %}
+    <div class="feature-thumb__badges">
+{% for b in c.badges %}
+      <span class="badge badge--{{ b.state or 'normal' }}">{{ b.label }}</span>
+{% endfor %}
+    </div>
+{% endif %}
+    <div class="feature-thumb__text">
+      <h3 class="feature-thumb__title">{{ c.title | rt }}</h3>
+{% if c.description %}
+      <p class="feature-thumb__desc">{{ c.description | rt }}</p>
+{% endif %}
+    </div>
+  </div>
+</{{ tag }}>
+{% endmacro %}

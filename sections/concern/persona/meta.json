@@ -1,0 +1,126 @@
+{
+  "id": "concern-persona",
+  "section": "concern",
+  "layout": "persona",
+  "order": 1,
+  "when": "역할(담당자·팀장·학습자 등)마다 다른 고민을 인물 카드로 나란히 보여줄 때",
+  "figma": {
+    "pc": "6187:4049",
+    "mo": "6187:4153",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "타이틀 아래 설명",
+      "note": "Figma PC·MO 문구가 달라요 → { pc, mo }"
+    },
+    "personas": {
+      "type": "list",
+      "figmaLayer": "persona-card",
+      "min": 1,
+      "max": 24,
+      "label": "인물 카드",
+      "note": "PC는 한 화면에 3장. 4장 이상이면 좌우로 넘기고 아래 점 페이지네이션이 생겨요",
+      "item": {
+        "avatar": {
+          "type": "image",
+          "figmaLayer": "avatar",
+          "label": "프로필 이미지 (80×80, 원형)"
+        },
+        "name": {
+          "type": "text",
+          "figmaLayer": "avatar",
+          "figmaPath": "profile/avatar",
+          "label": "이름/역할명",
+          "note": "피그마 TEXT 레이어 이름이 이미지와 같은 avatar 예요 — name 으로 변경 요청"
+        },
+        "role": {
+          "type": "text",
+          "figmaLayer": "description",
+          "optional": true,
+          "label": "역할 설명"
+        },
+        "title": {
+          "type": "richtext",
+          "figmaLayer": "title",
+          "figmaPath": "message/title",
+          "label": "고민 한 줄"
+        },
+        "description": {
+          "type": "richtext",
+          "figmaLayer": "body",
+          "optional": true,
+          "label": "고민 설명"
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "note": "피그마 컴포넌트에서 기본 숨김",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "type"
+        }
+      }
+    }
+  },
+  "options": {
+    "compact": {
+      "label": "MO compact · 좌우로 넘기기",
+      "class": "concern--compact",
+      "moOnly": true,
+      "figma": {
+        "mo": "6187:4159"
+      }
+    }
+  },
+  "pager": {
+    "slot": "personas",
+    "mode": {
+      "pc": "fill",
+      "tb": "fill",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 4,
+      "tb": 3,
+      "mo": 0
+    },
+    "note": "Figma PC 오토레이아웃: 가로 한 줄 + 채우기(Fill) · per = 한 줄 최대 카드 수(넘치면 페이지)"
+  }
+}

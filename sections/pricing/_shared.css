@@ -1,0 +1,51 @@
+/* pricing 공통 — single-item / plan-comparison / receipt 가 함께 써요 */
+.pricing {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 120px var(--container-pad);
+  background: var(--bg-surface); color: var(--t-100);
+}
+/* 검은 배경 variant (single-item, receipt) — Figma static/black, 테마와 무관 */
+.pricing--on-black { background: var(--static-black, #000); }
+.pricing__body {
+  width: var(--body, 740px); max-width: 100%;
+  display: flex; flex-direction: column; gap: 48px;
+}
+.pricing__title {
+  font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter);
+}
+.pricing--on-black .pricing__title { color: var(--static-white, #fff); }
+
+/* action button (style=solid) — Figma "action button" 컴포넌트, HDS button(.btn) 과 크기·모양이 달라 섹션 안에서만 덮어써요 */
+.pricing .btn--solid {
+  width: 300px; max-width: 100%; height: 64px; padding: 0 24px; gap: 12px; border-radius: 4px;
+  background: var(--brand); color: var(--static-white, #fff);
+  font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.pricing .btn--solid svg { width: 16px; height: 32px; }
+
+/* 한 줄 안에서 일반 글자 / 굵은 밑줄 링크를 섞는 문구 (runs) */
+.pricing__runs {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100);
+  text-align: center;
+}
+.pricing__run--link { font-weight: 700; color: inherit; text-decoration: underline; text-underline-position: from-font; }
+.pricing__run--bold { font-weight: 700; }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .pricing { padding: 96px var(--container-pad); }
+  .pricing__title { font-size: 30px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .pricing { padding: 64px var(--container-pad) 80px; }
+  .pricing__title { font-size: 28px; }
+  .pricing .btn--solid {
+    width: 100%; height: 48px; padding: 0 20px; gap: 8px; border-radius: 8px;
+    font-size: 16px; font-weight: 400;
+  }
+  .pricing .btn--solid svg { width: 12px; height: 24px; }
+  .pricing__runs { font-size: 14px; }
+}

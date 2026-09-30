@@ -1,0 +1,42 @@
+{# 공통 매크로 — 섹션 템플릿이 import 해서 써요 #}
+
+{# CTA 버튼 목록. items: [{ label, href, style: neutral|subtle }] — 피그마 button type 값. 생략 시 1번째 neutral(진한), 2번째부터 subtle(연한) #}
+{% macro ctas(items, cls="hero__btns") %}
+{% if items and items.length %}
+<div class="{{ cls }}">
+{% for c in items %}
+  <a class="btn btn--{{ c.style or ('neutral' if loop.first else 'subtle') }}" href="{{ c.href or '#' }}">{{ c.label }} {{ 'chevron-right' | icon }}</a>
+{% endfor %}
+</div>
+{% endif %}
+{% endmacro %}
+
+{# 섹션 제목 블록 — 피그마 컴포넌트 heading-pc / heading-mo (레이어: eyebrow, title, subtitle)
+   슬롯 이름도 eyebrow / title / subtitle 로 맞춰요. cls 로 정렬 등 modifier 를 붙여요 (예: "sec-head--center") #}
+{% macro secHead(eyebrow, title, subtitle, cls="") %}
+<div class="sec-head{% if cls %} {{ cls }}{% endif %}">
+  <div class="sec-head__titles">
+{% if eyebrow %}
+    <p class="sec-head__eyebrow">{{ eyebrow | rt }}</p>
+{% endif %}
+    <h2 class="sec-head__title">{{ title | rt }}</h2>
+  </div>
+{% if subtitle %}
+  <p class="sec-head__lead">{{ subtitle | rt }}</p>
+{% endif %}
+</div>
+{% endmacro %}
+
+{# 이미지 슬롯. image: { src, alt, width?, height? } — 비어 있으면 피그마 플레이스홀더(157×157) #}
+{% macro media(image, cls) %}
+{% if image and image.src %}
+<img class="{{ cls }} {{ cls }}--filled" src="{{ image.src }}" alt="{{ image.alt or '' }}"{% if image.width %} width="{{ image.width }}"{% endif %}{% if image.height %} height="{{ image.height }}"{% endif %}>
+{% else %}
+<img class="{{ cls }}" src="assets/ph-visual.svg" width="157" height="157" alt="">
+{% endif %}
+{% endmacro %}
+
+{# 카드형 페이지 넘김 점 자리 — tokens/pager.js 가 카드 수·기기별 한 화면 개수에 맞춰 채워요 #}
+{% macro pagerDots(label="페이지") %}
+<div class="pager-dots" data-pager-dots role="group" aria-label="{{ label }}"></div>
+{% endmacro %}

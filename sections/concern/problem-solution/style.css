@@ -1,0 +1,66 @@
+.concern--problem-solution .concern__body { width: var(--body, 860px); gap: 48px; }
+.concern-ps {
+  position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 48px; row-gap: 16px;
+}
+/* chips-item (type=option, selected) */
+.concern-ps__chip {
+  justify-self: start; display: inline-flex; align-items: center; height: 32px; padding: 0 12px;
+  border-radius: 900px; white-space: nowrap;
+  font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: #fff;
+}
+.concern-ps__chip--problem { background: var(--selected-fill); }
+.concern-ps__chip--solution { background: var(--brand); }
+.concern-ps__card {
+  position: relative; display: flex; align-items: flex-start; gap: 16px;
+  padding: 24px; border: 1px solid var(--line-outline); border-radius: 20px; background: var(--bg-surface);
+}
+.concern-ps__card--solution { background: var(--blue-200); border-color: var(--blue-200); }
+.concern-ps__icon { flex: none; display: block; padding: 6px; border-radius: 4px; background: var(--bg-ghost); color: var(--t-100); }
+.concern-ps__card--solution .concern-ps__icon { background: var(--bg-surface); }
+.concern-ps__icon svg { display: block; width: 24px; height: 24px; }
+.concern-ps__text {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px;
+  line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.concern-ps__title { font-size: 18px; font-weight: 700; color: var(--t-100); }
+.concern-ps__desc { font-size: 16px; font-weight: 400; color: var(--t-80); }
+/* 가운데 화살표(PC) / 줄마다 화살표(MO) — 원색 static/white · color/blue/400 */
+.concern-ps__arrow,
+.concern-ps__row-arrow {
+  display: grid; place-items: center; border-radius: 900px;
+  background: #fff; border: 1px solid var(--blue-400);
+}
+.concern-ps__arrow {
+  position: absolute; left: 50%; top: calc(50% + 24px); transform: translate(-50%, -50%);
+  width: 60px; height: 60px;
+  box-shadow: 0 4px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 4px -1px rgba(0, 0, 0, 0.05);
+}
+.concern-ps__arrow svg { display: block; width: 24px; height: 24px; }
+.concern-ps__row-arrow { display: none; }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .concern-ps { column-gap: 40px; }
+  .concern-ps__arrow { width: 52px; height: 52px; }
+}
+/* 1024 미만도 문제·해결 짝이 보이도록 2열 유지 — 카드 안은 MO처럼 세로로 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .concern-ps__card { flex-direction: column; }
+}
+
+/* MO ≤767 — 2열 그대로, 카드 안 세로 배치, 줄마다 작은 화살표 */
+@media (max-width: 767px) {
+  .concern-ps { column-gap: 16px; }
+  .concern-ps__chip { justify-self: center; font-size: 14px; }
+  .concern-ps__card { flex-direction: column; padding: 24px 16px; border-radius: 16px; }
+  .concern-ps__card--solution { border-color: transparent; }
+  .concern-ps__desc { font-size: 14px; }
+  .concern-ps__arrow { display: none; }
+  .concern-ps__row-arrow {
+    display: grid; position: absolute; z-index: 1; left: -25px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+  .concern-ps__row-arrow svg { display: block; width: 12px; height: 12px; }
+}

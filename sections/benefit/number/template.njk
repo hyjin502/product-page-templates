@@ -1,0 +1,17 @@
+{% from "_partials/ui.njk" import secHead %}
+<section class="benefit benefit--number">
+  <div class="benefit__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <ol class="benefit__values">
+{% for it in items %}
+      <li class="benefit__value">
+        <span class="benefit__num" aria-hidden="true">{{ ("0" ~ loop.index) if loop.index < 10 else loop.index }}</span>
+        <h3 class="benefit__item-title">{{ it.title | rt }}</h3>
+{% if it.description %}
+        <p class="benefit__item-desc">{{ it.description | rt }}</p>
+{% endif %}
+      </li>
+{% endfor %}
+    </ol>
+  </div>
+</section>

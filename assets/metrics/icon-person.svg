@@ -1,0 +1,5 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" transform="translate(10 30)" d="M60 40C59.9745 22.7631 53.6976 7.76719 44.4441 0C40.8227 5.84885 35.6913 9.50001 29.9999 9.50001C24.3087 9.50001 19.1773 5.84885 15.5559 0C6.30239 7.76719 0.025518 22.7631 0 40H60Z" fill="url(#mp)"/>
+<circle cx="40" cy="20" r="20" fill="#FFC9C9"/>
+<defs><linearGradient id="mp" x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#F03E3E"/><stop offset="1" stop-color="#F03E3E" stop-opacity="0.01"/></linearGradient></defs>
+</svg>

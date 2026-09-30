@@ -1,0 +1,162 @@
+{
+  "id": "pricing-receipt",
+  "section": "pricing",
+  "layout": "receipt",
+  "order": 3,
+  "when": "도입 비용을 영수증처럼 항목별로 합산하고 실제 부담금을 강조할 때",
+  "figma": {
+    "pc": "6187:4930",
+    "mo": "6187:5064",
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "title": {
+      "type": "text",
+      "figmaLayer": "title",
+      "label": "섹션 타이틀"
+    },
+    "heading": {
+      "type": "richtext",
+      "label": "영수증 제목",
+      "figmaLayer": "*",
+      "figmaPath": "Header Text/*",
+      "nth": 0
+    },
+    "lines": {
+      "type": "list",
+      "figmaLayer": "Frame 1",
+      "figmaPath": "Frame 2147238994",
+      "aliases": [
+        "Frame 2",
+        "Frame 3",
+        "Frame 4",
+        "Frame 5",
+        "Frame 6",
+        "Frame 7",
+        "item"
+      ],
+      "min": 1,
+      "max": 12,
+      "label": "비용 항목 (항목명 · 단가×수량 · 금액)",
+      "note": "각 행의 TEXT 3개 중 앞의 2개 이름이 같아요 — name / qty / amount 로 변경 요청",
+      "item": {
+        "name": {
+          "type": "richtext",
+          "note": "행 안 첫 번째 TEXT",
+          "figmaLayer": "*",
+          "nth": 0
+        },
+        "qty": {
+          "type": "text",
+          "note": "행 안 두 번째 TEXT",
+          "figmaLayer": "*",
+          "nth": 1
+        },
+        "amount": {
+          "type": "text",
+          "figmaLayer": "*",
+          "nth": 2
+        }
+      }
+    },
+    "totals": {
+      "type": "list",
+      "min": 0,
+      "max": 4,
+      "label": "소계 행 (교육비 합계 · 지원금)",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaLayer": "*",
+          "nth": 0
+        },
+        "value": {
+          "type": "text",
+          "note": "Frame 2147238995 안 첫 번째 TEXT",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 2147238995/*",
+          "nth": 0
+        },
+        "unit": {
+          "type": "text",
+          "note": "Frame 2147238995 안 두 번째 TEXT",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 2147238995/*",
+          "nth": 1
+        },
+        "tone": {
+          "type": "enum",
+          "values": [
+            "muted",
+            "normal"
+          ],
+          "optional": true,
+          "label": "숫자 색 — muted = 연한 회색(black-45)"
+        }
+      },
+      "figmaLayer": "Frame 8",
+      "aliases": [
+        "Frame 9"
+      ],
+      "scope": {
+        "figmaLayer": "Frame 2147238998",
+        "nth": 0
+      }
+    },
+    "finalLabel": {
+      "type": "text",
+      "label": "최종 부담금 라벨",
+      "figmaLayer": "*",
+      "nth": 0,
+      "scope": {
+        "figmaLayer": "Frame 2147238999",
+        "nth": 0
+      }
+    },
+    "finalValue": {
+      "type": "text",
+      "label": "최종 부담금 숫자 (빨간 큰 글자)",
+      "note": "Frame 2147238995 안 첫 번째 TEXT",
+      "figmaLayer": "*",
+      "figmaPath": "Frame 2147238995/*",
+      "nth": 0,
+      "scope": {
+        "figmaLayer": "Frame 2147238999",
+        "nth": 0
+      }
+    },
+    "finalUnit": {
+      "type": "text",
+      "optional": true,
+      "label": "최종 부담금 단위",
+      "note": "Frame 2147238995 안 두 번째 TEXT",
+      "figmaLayer": "*",
+      "figmaPath": "Frame 2147238995/*",
+      "nth": 1,
+      "scope": {
+        "figmaLayer": "Frame 2147238999",
+        "nth": 0
+      }
+    },
+    "footnote": {
+      "type": "richtext",
+      "figmaLayer": "*200인 규모 사업장 기준 예시이며, 연회비에 따른 교육비는 기업 규모에 따라 상이합니다.",
+      "aliases": [
+        "footnote"
+      ],
+      "optional": true,
+      "label": "하단 안내 (MO 에서는 숨김 — Figma MO 레이어 hidden)"
+    },
+    "perPerson": {
+      "type": "text",
+      "figmaLayer": "(직원 1인당 연 5만 원)",
+      "aliases": [
+        "per-person"
+      ],
+      "optional": true,
+      "label": "하단 오른쪽 보조 문구"
+    }
+  },
+  "extractFrom": "pc"
+}

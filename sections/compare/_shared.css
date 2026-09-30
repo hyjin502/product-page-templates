@@ -1,0 +1,22 @@
+/* compare 공통 — vs-simple / vs-spec 이 함께 써요. 우리 쪽(ours)은 항상 브랜드 색으로 강조해요 */
+.compare {
+  --compare-hl: var(--brand-hunet-red, #fa2e43);   /* Figma 변수 brand/hunet-red — base.css 에 없음 */
+  --compare-hl-tint: var(--red-200);                 /* color/red/200 */
+  display: flex; flex-direction: column; align-items: center;
+  padding: 120px var(--container-pad);
+  background: var(--bg-surface); color: var(--t-100);
+}
+.compare__body { width: var(--body, 740px); max-width: 100%; display: flex; flex-direction: column; gap: 60px; }
+.compare__ours-label { color: #fff; }
+
+/* TB 768–1279 — 패딩 약 80% */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .compare { padding: 96px var(--container-pad); }
+  .compare__body { gap: 48px; }
+}
+
+/* MO ≤767 — Figma MO 프레임 없음(제안값) */
+@media (max-width: 767px) {
+  .compare { padding: 72px var(--container-pad); }
+  .compare__body { width: 100%; gap: 40px; }
+}

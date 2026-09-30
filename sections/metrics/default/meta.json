@@ -1,0 +1,77 @@
+{
+  "id": "metrics-default",
+  "section": "metrics",
+  "layout": "default",
+  "order": 1,
+  "when": "핵심 성과를 아이콘 + 큰 숫자 3개로 보여줄 때",
+  "figma": {
+    "pc": "6187:4678",
+    "mo": "6187:4720",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "aliases": [
+        "숫자로 보는 휴넷 리더십 교육"
+      ],
+      "label": "타이틀",
+      "note": "PC 는 heading-pc/title, MO 는 단독 TEXT(레이어 이름 = 문구) — title 로 변경 요청"
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "item",
+      "aliases": [
+        "Frame 58",
+        "Frame 59",
+        "Frame 57"
+      ],
+      "min": 1,
+      "max": 4,
+      "label": "수치",
+      "note": "PC 가로 3열 / MO 세로. 항목 프레임(Frame 57~59) → item 으로 변경 요청",
+      "item": {
+        "icon": {
+          "type": "image",
+          "figmaLayer": "icon",
+          "label": "아이콘 (80×80)",
+          "note": "Figma icon 은 벡터 도형이라 IMAGE fill 이 없어요 — assets/metrics/icon-*.svg 를 기본값으로 써요"
+        },
+        "value": {
+          "type": "text",
+          "label": "숫자",
+          "note": "숫자·단위 TEXT 가 둘 다 \"3,000개\" — 첫 번째가 숫자. value 로 변경 요청",
+          "figmaLayer": "3,000개",
+          "aliases": [
+            "value"
+          ],
+          "nth": 0
+        },
+        "unit": {
+          "type": "text",
+          "optional": true,
+          "label": "단위",
+          "note": "두 번째 \"3,000개\" TEXT — unit 으로 변경 요청",
+          "figmaLayer": "3,000개",
+          "aliases": [
+            "unit"
+          ],
+          "nth": 1
+        },
+        "description": {
+          "type": "text",
+          "figmaLayer": "description",
+          "aliases": [
+            "3천여 개 기업에서 선택",
+            "20만여명 배출",
+            "200만 시간의 학습"
+          ],
+          "label": "설명",
+          "note": "레이어 이름이 문구 그대로 — description 으로 변경 요청"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "title": "더 자세한 정보가\n필요하신가요?",
+  "links": [
+    { "label": "안전보건교육 소개자료", "href": "#", "icon": "download" },
+    { "label": "공개교육 일정", "href": "#", "icon": "calendar" },
+    { "label": "안전보건공단 자료실", "href": "#", "icon": "arrow" },
+    { "label": "안전보건교육 집체교육 신청하기", "href": "#", "icon": "arrow" }
+  ]
+}

@@ -1,0 +1,39 @@
+<section class="faq faq--default">
+  <div class="faq__body">
+    <div class="faq__main">
+      <h2 class="faq__title">{{ title | rt }}</h2>
+      <div class="faq__list">
+{% for it in items %}
+        <details class="faq__item"{% if it.state == 'up' %} open{% endif %}>
+          <summary class="faq__q">
+            <span class="faq__q-text">{{ it.question | rt }}</span>
+            <span class="faq__icon">{{ 'faq-chevron-down' | icon }}</span>
+          </summary>
+{% if it.answer or it.linkLabel %}
+          <div class="faq__a">
+{% if it.answer %}
+            <p class="faq__a-text">{{ it.answer | rt }}</p>
+{% endif %}
+{% if it.linkLabel %}
+            <a class="faq__link" href="{{ it.linkHref or '#' }}">{{ it.linkLabel | rt }}</a>
+{% endif %}
+          </div>
+{% endif %}
+        </details>
+{% endfor %}
+      </div>
+    </div>
+{% if notes.length %}
+    <div class="faq__notes">
+{% if noteTitle %}
+      <h3 class="faq__notes-title">{{ noteTitle | rt }}</h3>
+{% endif %}
+      <ul class="faq__notes-list">
+{% for n in notes %}
+        <li>{{ n.text | rt }}</li>
+{% endfor %}
+      </ul>
+    </div>
+{% endif %}
+  </div>
+</section>

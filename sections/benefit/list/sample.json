@@ -1,0 +1,23 @@
+{
+  "eyebrow": "우리 조직의 고민",
+  "title": "실제 교육 담당자들은\n이런 고민을 하고 있습니다.",
+  "subtitle": "변화하는 업무 환경 속에서\n실제 담당자들의 고민을 확인해 보세요.",
+  "ctas": [],
+  "items": [
+    {
+      "icon": "benefit-bar-chart-10",
+      "title": "성과 중심의 학습 설계",
+      "description": "학습에서 끝나지 않고 실제 업무 성과까지 \n연결되는 교육을 설계합니다."
+    },
+    {
+      "icon": "benefit-dataflow-03",
+      "title": "더 간편한 교육 운영",
+      "description": "반복되는 운영 업무를 줄이고 교육 담당자가\n핵심 업무에 집중할 수 있습니다."
+    },
+    {
+      "icon": "benefit-building-05",
+      "title": "조직에 맞는 맞춤형 교육",
+      "description": "기업과 구성원의 상황에 맞춰 필요한 교육을 \n유연하게 제공합니다."
+    }
+  ]
+}

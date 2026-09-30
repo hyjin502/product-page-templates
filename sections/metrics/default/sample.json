@@ -1,0 +1,32 @@
+{
+  "title": "숫자로 보는 휴넷 리더십 교육",
+  "items": [
+    {
+      "icon": {
+        "src": "assets/metrics/icon-building.svg",
+        "alt": ""
+      },
+      "value": "3,000",
+      "unit": "개",
+      "description": "3천여 개 기업에서 선택"
+    },
+    {
+      "icon": {
+        "src": "assets/metrics/icon-person.svg",
+        "alt": ""
+      },
+      "value": "200,000",
+      "unit": "명",
+      "description": "20만여명 배출"
+    },
+    {
+      "icon": {
+        "src": "assets/metrics/icon-clock.svg",
+        "alt": ""
+      },
+      "value": "2,000,000",
+      "unit": "시간",
+      "description": "200만 시간의 학습"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "id": "problem-card-list",
+  "section": "problem",
+  "layout": "card-list",
+  "order": 5,
+  "when": "교육 패키지처럼 구성 항목·이미지·추천대상을 한 카드에 담아 나란히 비교할 때",
+  "figma": {
+    "pc": "6187:2741",
+    "mo": "6187:3099",
+    "tb": null
+  },
+  "body": 980,
+  "options": {
+    "compact": {
+      "label": "MO compact · 좌우로 넘기기",
+      "class": "problem--compact",
+      "moOnly": true,
+      "figma": {
+        "mo": "6187:3183"
+      }
+    }
+  },
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "note": "MO: heading-mo/Frame 2147238960/title",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "cards": {
+      "type": "list",
+      "min": 1,
+      "max": 24,
+      "label": "패키지 카드",
+      "note": "PC 는 card/리스트, MO 는 리스트/리스트(바깥 컨테이너도 이름이 '리스트') — 항목을 item 으로 변경 요청",
+      "item": {
+        "title": {
+          "type": "text",
+          "label": "카드 제목",
+          "note": "Frame 2147238933 의 1번째 TEXT",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 2147238933/*",
+          "nth": 0
+        },
+        "subtitle": {
+          "type": "richtext",
+          "optional": true,
+          "label": "카드 부제",
+          "note": "Frame 2147238933 의 2번째 TEXT — 카드2 는 제목과 같은 이름('휴넷 Executive MBA')",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 2147238933/*",
+          "nth": 1
+        },
+        "chips": {
+          "type": "list",
+          "min": 0,
+          "max": 8,
+          "label": "구성 과정 (2열)",
+          "item": {
+            "label": {
+              "type": "text",
+              "label": "과정 이름",
+              "note": "program 안의 유일한 TEXT — 레이어 이름이 문구 자체",
+              "figmaLayer": "*",
+              "nth": 0
+            }
+          },
+          "figmaLayer": "program"
+        },
+        "image": {
+          "type": "image",
+          "figmaLayer": "Rectangle 2",
+          "optional": true,
+          "label": "대표 이미지 (PC 398×210)"
+        },
+        "meta": {
+          "type": "list",
+          "min": 0,
+          "max": 2,
+          "label": "하단 정보 (추천대상·난이도)",
+          "item": {
+            "label": {
+              "type": "text",
+              "label": "항목명",
+              "figmaLayer": "타이틀"
+            },
+            "value": {
+              "type": "text",
+              "label": "값",
+              "figmaLayer": "설명"
+            }
+          },
+          "figmaLayer": "Frame 2147238923",
+          "aliases": [
+            "Frame 2147238924"
+          ],
+          "scope": {
+            "figmaLayer": "Frame 2147238925",
+            "nth": 0
+          }
+        }
+      },
+      "figmaLayer": "리스트"
+    }
+  },
+  "pager": {
+    "slot": "cards",
+    "mode": {
+      "pc": "fill",
+      "tb": "fill",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 3,
+      "tb": 2,
+      "mo": 0
+    },
+    "note": "Figma PC 오토레이아웃: 가로 한 줄 + 채우기(Fill) · per = 한 줄 최대 카드 수(넘치면 페이지)"
+  }
+}

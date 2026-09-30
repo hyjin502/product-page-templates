@@ -1,0 +1,32 @@
+/* feature grid · media — 사진 배경 + 흰 글씨 카드 3열 (feature-thumbnail type=thumbnail5) */
+.feature-media {
+  position: relative; isolation: isolate; overflow: hidden; min-width: 0; height: 413px; border-radius: 16px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 40px;
+  background: var(--bg-muted); color: var(--white-100, #ffffff); text-decoration: none;
+}
+.feature-media__bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+/* bg/ver=2 dim — 왼쪽 위가 어두운 그라데이션 */
+.feature-media::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(140.79deg, var(--dim-50, rgba(18, 18, 18, 0.5)) 31.478%, transparent 141.36%);
+}
+.feature-media__text { display: flex; flex-direction: column; gap: 12px; }
+.feature-media__caption { font-size: 14px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--white-60, rgba(255, 255, 255, 0.6)); }
+.feature-media__title { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.feature-media__icon { display: flex; }
+.feature-media__icon svg { width: 32px; height: 32px; }
+
+/* TB 768–1279 — 3열 유지, 안쪽 여백 80% */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .feature-media { padding: 32px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .feature-media { padding: 24px; }
+  .feature-media__title { font-size: 20px; }
+}
+
+/* MO ≤767 — 290px 카드 가로 스크롤(.feature__rail), 안쪽 여백 32 */
+@media (max-width: 767px) {
+  .feature--grid-media .feature__body { gap: 48px; }
+  .feature-media { padding: 32px; }
+}

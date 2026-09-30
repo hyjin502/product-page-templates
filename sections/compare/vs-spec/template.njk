@@ -1,0 +1,26 @@
+{% from "_partials/ui.njk" import secHead %}
+<section class="compare compare--vs-spec">
+  <div class="compare__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="compare__table-wrap">
+      <table class="compare__table">
+        <thead>
+          <tr>
+            <td class="compare__corner"><span class="compare__head-box"></span></td>
+            <th scope="col" class="compare__th compare__th--other"><span class="compare__head-box">{{ otherLabel | rt }}</span></th>
+            <th scope="col" class="compare__th compare__th--ours compare__ours-label">{{ oursLabel | rt }}</th>
+          </tr>
+        </thead>
+        <tbody>
+{% for r in rows %}
+          <tr>
+            <th scope="row" class="compare__rowhead">{{ r.label | rt }}</th>
+            <td class="compare__cell compare__cell--other">{{ r.other | rt }}</td>
+            <td class="compare__cell compare__cell--ours">{{ r.ours | rt }}</td>
+          </tr>
+{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

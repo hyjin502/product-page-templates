@@ -1,0 +1,21 @@
+{# 카운트다운 박스형 — 단위마다 진한 정사각 박스. 숫자는 script.js 가 deadline 기준으로 갱신해요 #}
+<section class="countdown countdown--boxed"{% if deadline %} data-deadline="{{ deadline }}"{% endif %}>
+  <div class="countdown__timer" role="timer">
+    <div class="countdown__unit">
+      <span class="countdown__num" data-unit="days">{{ days }}</span>
+      <span class="countdown__label">{{ labelDays }}</span>
+    </div>
+    <div class="countdown__unit">
+      <span class="countdown__num" data-unit="hours">{{ hours }}</span>
+      <span class="countdown__label">{{ labelHours }}</span>
+    </div>
+    <div class="countdown__unit">
+      <span class="countdown__num" data-unit="minutes">{{ minutes }}</span>
+      <span class="countdown__label">{{ labelMinutes }}</span>
+    </div>
+    <div class="countdown__unit">
+      <span class="countdown__num" data-unit="seconds">{{ seconds }}</span>
+      <span class="countdown__label">{{ labelSeconds }}</span>
+    </div>
+  </div>
+</section>

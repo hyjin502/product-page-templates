@@ -1,0 +1,11 @@
+{
+  "deadline": "2026-10-31T23:59:59+09:00",
+  "days": "47",
+  "hours": "13",
+  "minutes": "45",
+  "seconds": "56",
+  "labelDays": "DAYS",
+  "labelHours": "HOURS",
+  "labelMinutes": "MINUTES",
+  "labelSeconds": "SECONDS"
+}

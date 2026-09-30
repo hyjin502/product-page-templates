@@ -1,0 +1,177 @@
+{
+  "id": "pricing-plan-comparison",
+  "section": "pricing",
+  "layout": "plan-comparison",
+  "order": 2,
+  "when": "여러 요금제(플랜)의 가격과 제공 항목을 표로 비교할 때",
+  "figma": {
+    "pc": "6187:5142",
+    "mo": null,
+    "tb": null
+  },
+  "body": 980,
+  "note": "Figma에는 PC 프레임만 있어요(캔버스 메모 'px only' = PC only 로 추정). TB·MO 배치는 코드 제안안(미확정) — MO는 표를 좌우 스크롤, 항목 열 고정.",
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "figmaPath": [
+        "heading-pc/eyebrow",
+        "heading-mo/eyebrow"
+      ],
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "figmaPath": [
+        "heading-pc/subtitle",
+        "heading-mo/subtitle"
+      ],
+      "optional": true,
+      "label": "설명"
+    },
+    "specHeader": {
+      "type": "text",
+      "figmaLayer": "text",
+      "figmaPath": "Membership Type/text",
+      "label": "왼쪽 위 머리 칸 (항목 열 제목)"
+    },
+    "specs": {
+      "type": "list",
+      "figmaLayer": "row",
+      "figmaPath": "spec-column/row",
+      "min": 1,
+      "max": 12,
+      "label": "비교 항목 (왼쪽 열)",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaLayer": "text"
+        }
+      }
+    },
+    "plans": {
+      "type": "list",
+      "figmaLayer": "plan",
+      "aliases": [
+        "plan-basic",
+        "plan-standard",
+        "plan-premium"
+      ],
+      "min": 1,
+      "max": 4,
+      "label": "플랜 (열)",
+      "note": "플랜 열 이름이 plan-basic / plan-standard / plan-premium 으로 달라요 — plan 으로 통일 요청",
+      "item": {
+        "name": {
+          "type": "text",
+          "figmaLayer": "name",
+          "aliases": [
+            "타기관 임원 교육 강사 중심의 교육"
+          ],
+          "note": "현재 이름·가격 레이어 이름이 같음 — name / price 로 변경 요청"
+        },
+        "badge": {
+          "type": "text",
+          "figmaLayer": "badge",
+          "aliases": [
+            "휴넷 FLEX 멤버 특전"
+          ],
+          "optional": true,
+          "label": "추천 뱃지"
+        },
+        "price": {
+          "type": "text",
+          "figmaLayer": "price",
+          "figmaPath": "Frame 4045/타기관 임원 교육 강사 중심의 교육"
+        },
+        "unit": {
+          "type": "text",
+          "figmaLayer": "description",
+          "aliases": [
+            "unit"
+          ],
+          "optional": true,
+          "label": "가격 단위 (1인당/연간)"
+        },
+        "featured": {
+          "type": "enum",
+          "values": [
+            true,
+            false
+          ],
+          "optional": true,
+          "label": "강조 열 (진한 머리 + 굵은 테두리)",
+          "note": "Figma 값 없음 — plan-standard 처럼 머리 칸이 진한 열이면 true"
+        },
+        "cells": {
+          "type": "list",
+          "figmaLayer": "cell",
+          "aliases": [
+            "Frame 4029",
+            "Frame 4039",
+            "Frame 4030",
+            "Frame 4031",
+            "Frame 4041",
+            "Frame 4042",
+            "Frame 4040"
+          ],
+          "label": "항목별 값 (specs 순서와 같아요)",
+          "item": {
+            "value": {
+              "type": "text",
+              "figmaLayer": "value",
+              "aliases": [
+                "경영학 기본 커리큘럼 강사 중심 운영",
+                "1~3개월",
+                "300~500만원"
+              ]
+            },
+            "tag": {
+              "type": "text",
+              "figmaLayer": "tag",
+              "figmaPath": "Frame 4074/tag",
+              "optional": true,
+              "label": "검은 알약 뱃지 — 있으면 값은 연한 회색",
+              "extract": false
+            }
+          }
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "action button",
+      "min": 0,
+      "max": 1,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "버튼명"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "solid"
+          ],
+          "figmaProp": "style"
+        }
+      }
+    }
+  }
+}

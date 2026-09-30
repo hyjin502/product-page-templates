@@ -1,0 +1,26 @@
+{% from "_partials/ui.njk" import secHead, pagerDots %}
+<section class="problem problem--card-grid">
+  <div class="problem__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="problem__content">
+      <div data-pager-track class="problem__track">
+{% for c in cards %}
+        <article class="problem__card">
+{% if c.icon %}
+          <span class="problem__icon only-pc" aria-hidden="true">{{ (c.icon ~ '-48') | icon }}</span>
+          <span class="problem__icon only-mo" aria-hidden="true">{{ (c.icon ~ '-32') | icon }}</span>
+{% endif %}
+          <div class="problem__card-text">
+            <h3 class="problem__card-title">{{ c.title | rt }}</h3>
+{% if c.description %}
+            <p class="problem__text">{{ c.description | rt }}</p>
+{% endif %}
+          </div>
+        </article>
+{% endfor %}
+      </div>
+      {{ pagerDots() }}
+      <div class="problem__bar" aria-hidden="true"><span class="problem__thumb"></span></div>
+    </div>
+  </div>
+</section>

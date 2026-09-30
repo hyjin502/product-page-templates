@@ -1,0 +1,12 @@
+<section class="notice notice--default">
+  <div class="notice__body">
+{% if title %}
+    <h2 class="notice__title">{{ title | rt }}</h2>
+{% endif %}
+    <ul class="notice__list">
+{% for it in items %}
+      <li>{{ it.text | rt }}</li>
+{% endfor %}
+    </ul>
+  </div>
+</section>

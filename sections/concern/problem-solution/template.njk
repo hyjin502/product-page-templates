@@ -1,0 +1,35 @@
+{% from "_partials/ui.njk" import ctas as ctaList, secHead %}
+{# 2열 그리드 — 칩 2개, 그다음 [문제 i, 해결 i] 를 한 줄씩. 같은 줄 카드 높이가 맞아요 #}
+<section class="concern concern--problem-solution">
+  <div class="concern__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="concern-ps">
+      <p class="concern-ps__chip concern-ps__chip--problem">{{ problemLabel | rt }}</p>
+      <p class="concern-ps__chip concern-ps__chip--solution">{{ solutionLabel | rt }}</p>
+{% for p in problems %}
+{% set s = solutions[loop.index0] %}
+      <article class="concern-ps__card">
+        <span class="concern-ps__icon">{{ (p.icon or 'face-neutral') | icon }}</span>
+        <div class="concern-ps__text">
+          <h3 class="concern-ps__title">{{ p.title | rt }}</h3>
+          <p class="concern-ps__desc">{{ p.description | rt }}</p>
+        </div>
+      </article>
+{% if s %}
+      <article class="concern-ps__card concern-ps__card--solution">
+        <span class="concern-ps__row-arrow" aria-hidden="true">{{ 'concern-arrow-right-12' | icon }}</span>
+        <span class="concern-ps__icon">{{ (s.icon or 'face-smile') | icon }}</span>
+        <div class="concern-ps__text">
+          <h3 class="concern-ps__title">{{ s.title | rt }}</h3>
+          <p class="concern-ps__desc">{{ s.description | rt }}</p>
+        </div>
+      </article>
+{% else %}
+      <div></div>
+{% endif %}
+{% endfor %}
+      <span class="concern-ps__arrow" aria-hidden="true">{{ 'arrow-right' | icon }}</span>
+    </div>
+    {{ ctaList(ctas, "concern__btns") }}
+  </div>
+</section>

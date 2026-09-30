@@ -1,0 +1,77 @@
+{
+  "id": "awards-certification",
+  "section": "awards",
+  "layout": "certification",
+  "order": 2,
+  "when": "대표 인증 3개 안팎을 한 줄로 강조할 때 — 엠블럼 위, 설명 아래 세로 카드",
+  "figma": {
+    "pc": "6187:4827",
+    "mo": "6187:4846",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "제목 위 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "aliases": [
+        "기업교육 업계 1위! 휴넷과 함께하세"
+      ],
+      "label": "섹션 제목"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "제목 아래 설명"
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "item",
+      "aliases": [
+        "row1",
+        "row2",
+        "row3",
+        "Group 9",
+        "Group 12",
+        "Group 13"
+      ],
+      "min": 1,
+      "max": 4,
+      "label": "인증 카드 (PC 한 줄 · MO 1열)",
+      "item": {
+        "emblem": {
+          "type": "image",
+          "figmaLayer": "수상내역/엠블럼",
+          "figmaProp": "type",
+          "optional": true,
+          "label": "엠블럼 (70×70, MO 48×48)",
+          "note": "수상내역/엠블럼 type → assets/awards/emblem-*.png : 우수훈련기관→training, ISMS→isms, BHA→bha, 베스트HRD→besthrd, 트로피→trophy"
+        },
+        "title": {
+          "type": "richtext",
+          "figmaLayer": "최대 수강생 보유",
+          "aliases": [
+            "title"
+          ],
+          "label": "항목 제목"
+        },
+        "description": {
+          "type": "richtext",
+          "figmaLayer": "・ 누적 기업수 50,000여 개 ・",
+          "aliases": [
+            "description"
+          ],
+          "optional": true,
+          "label": "항목 설명 (줄마다 ・ 로 시작)"
+        }
+      }
+    }
+  }
+}

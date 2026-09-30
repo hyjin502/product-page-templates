@@ -1,0 +1,48 @@
+{
+  "title": {
+    "pc": "기업교육 업계 1위! 휴넷과 함께하세요.",
+    "mo": "기업교육 업계 1위!\n휴넷과 함께하세요."
+  },
+  "items": [
+    {
+      "emblem": {
+        "src": "assets/awards/emblem-trophy.png",
+        "alt": ""
+      },
+      "title": "최대 수강생 보유",
+      "description": "・ 누적 기업수 50,000여 개\n・ 누적 수강생 850만 명"
+    },
+    {
+      "emblem": {
+        "src": "assets/awards/emblem-training.png",
+        "alt": ""
+      },
+      "title": "고용노동부 기관평가 5년 인증",
+      "description": "・ 운영의 독보적 안정성\n・ 2020.12~2025.11까지 우수훈련기관 선정"
+    },
+    {
+      "emblem": {
+        "src": "assets/awards/emblem-isms.png",
+        "alt": ""
+      },
+      "title": "ISMS(정보보호 관리체계) 인증",
+      "description": "・ 철저한 보안으로 고객정보 보호\n・ 2023.05~2026.05 정보보호 관리체계 인증"
+    },
+    {
+      "emblem": {
+        "src": "assets/awards/emblem-besthrd.png",
+        "alt": ""
+      },
+      "title": "Best HRD 인적자원개발 우수 기관",
+      "description": "・ 고용노동부/교육부가 인정한 L&D 전문성 보유\n・ 국내 최초 L&D 연구소 설립"
+    },
+    {
+      "emblem": {
+        "src": "assets/awards/emblem-bha.png",
+        "alt": ""
+      },
+      "title": "BHA(Best HRD Academy)\n최우수 훈련 기관 인증",
+      "description": "・ 원격훈련기관 중 유일 최우수 훈련 기관 선정\n・ 2021.06~2025.12까지 BHA(베스트훈련기관) 인증"
+    }
+  ]
+}

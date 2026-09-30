@@ -1,0 +1,20 @@
+{% from "_partials/ui.njk" import secHead %}
+{# 링크 그리드 — 왼쪽 제목, 오른쪽 바로가기 카드(PC 2열) #}
+{% set icons = { "download": "utility-download", "calendar": "utility-calendar", "arrow": "chev-r" } %}
+<section class="utility utility--link-grid">
+  <div class="utility__body">
+    {{ secHead(eyebrow, title, subtitle, "utility__head") }}
+{% if links.length %}
+    <ul class="utility__links">
+{% for link in links %}
+      <li>
+        <a class="utility__link" href="{{ link.href or '#' }}">
+          <span class="utility__link-label">{{ link.label }}</span>
+          {{ (icons[link.icon] or 'chev-r') | icon }}
+        </a>
+      </li>
+{% endfor %}
+    </ul>
+{% endif %}
+  </div>
+</section>

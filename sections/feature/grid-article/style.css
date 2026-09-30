@@ -1,0 +1,36 @@
+/* feature grid · article — 카테고리 · 요약 · View More 카드 3열 (feature-thumbnail type=thumbnail6) */
+.feature-article { display: flex; flex-direction: column; min-width: 0; color: inherit; text-decoration: none; }
+.feature-article__media {
+  position: relative; aspect-ratio: 426 / 260; border-radius: 8px 8px 0 0; overflow: hidden; background: var(--bg-ghost);
+  display: grid; place-items: center;
+}
+.feature-article__media::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--scrim-20, rgba(0, 0, 0, 0.2)));
+}
+.feature-article__img--filled { width: 100%; height: 100%; object-fit: cover; }
+.feature-article__body {
+  flex: 1; display: flex; flex-direction: column; gap: 20px; padding: 20px;
+  background: var(--bg-surface); border: 1px solid var(--line-outline); border-top: 0; border-radius: 0 0 8px 8px;
+}
+.feature-article__head { display: flex; flex-direction: column; gap: 4px; }
+.feature-article__category { font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--error); }
+.feature-article__title { font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }
+.feature-article__desc {
+  font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--gray-06, #888888);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+}
+/* button-ghost-text — 오른쪽 정렬, 14px + fn/button-right(12×24) */
+.feature-article__more {
+  align-self: flex-end; display: inline-flex; align-items: center; gap: 4px; padding: 0 4px; border-radius: 4px;
+  font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100);
+}
+.feature-article__more svg { width: 12px; height: 24px; flex: none; }
+
+/* TB 768–1279 — 3열 유지 */
+
+/* MO ≤767 — 290px 카드 가로 스크롤(.feature__rail), 요약 4줄 */
+@media (max-width: 767px) {
+  .feature--grid-article .feature__body { gap: 48px; }
+  .feature-article__desc { -webkit-line-clamp: 4; }
+}

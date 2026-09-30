@@ -1,0 +1,25 @@
+.hero--inline { padding: 120px var(--container-pad); }
+.hero--inline .hero__body {
+  width: var(--body, 980px); max-width: 100%;
+  display: flex; flex-direction: column; align-items: center; gap: 60px; text-align: center;
+}
+.hero--inline .hero__heading,
+.hero--inline .hero__titles { display: flex; flex-direction: column; gap: 24px; }
+.hero--inline .hero__action { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.hero--inline .hero__btns { display: flex; gap: 16px; }
+.hero--inline .hero__ph--filled { width: auto; height: auto; max-height: 480px; border-radius: 12px; }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--inline { padding: 96px var(--container-pad); }
+  .hero--inline .hero__body { gap: 52px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .hero--inline { padding: 72px var(--container-pad); }
+  .hero--inline .hero__body { gap: 48px; }
+  .hero--inline .hero__action { gap: 32px; width: 100%; }
+  .hero--inline .hero__btns { flex-direction: column; gap: 12px; width: 100%; }
+  .hero--inline .btn { width: 100%; }
+}

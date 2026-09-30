@@ -1,0 +1,28 @@
+{# 하단 고정 신청 바 — PC: [시작일 안내] … [D-day][버튼 2개] / MO: [D-day 2줄][버튼 2개] #}
+<aside class="sticky-cta sticky-cta--default">
+  <div class="sticky-cta__bar">
+{% if startLabel %}
+    <p class="sticky-cta__info"><b>{{ startLabel | rt }}</b>{% if deadline %} <span class="sticky-cta__deadline">{{ deadline | rt }}</span>{% endif %}</p>
+{% endif %}
+    <div class="sticky-cta__right">
+{% if ddayValue %}
+      <p class="sticky-cta__dday">
+{% if ddayIcon %}
+        <span class="sticky-cta__emoji" aria-hidden="true">{{ ddayIcon }}</span>
+{% endif %}
+{% if ddayLabel %}
+        <span class="sticky-cta__dday-label">{{ ddayLabel }}</span>
+{% endif %}
+        <span class="sticky-cta__count"><span class="sticky-cta__chip">{{ ddayValue }}</span>{% if ddaySuffix %} <span>{{ ddaySuffix }}</span>{% endif %}</span>
+      </p>
+{% endif %}
+{% if ctas and ctas.length %}
+      <div class="sticky-cta__btns">
+{% for c in ctas %}
+        <a class="btn btn--{{ c.style or ('subtle' if (loop.first and not loop.last) else 'neutral') }} sticky-cta__btn" href="{{ c.href or '#' }}">{{ c.label }}</a>
+{% endfor %}
+      </div>
+{% endif %}
+    </div>
+  </div>
+</aside>

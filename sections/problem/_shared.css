@@ -1,0 +1,54 @@
+/* problem 공통 — card-grid / quote / image-grid / icon-grid / card-list / image-list / text-highlight / step-split 이 함께 써요 */
+.problem { display: flex; flex-direction: column; align-items: center; padding: 120px var(--container-pad); background: var(--bg-surface); }
+.problem__body { width: var(--body, 980px); max-width: 100%; display: flex; flex-direction: column; gap: 60px; }
+.problem__content { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.problem__track { display: flex; gap: 24px; width: 100%; }
+
+/* 카드 공통 틀 — 선 1px(line-outline) + 흰 면 */
+.problem__card {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line-outline); border-radius: 16px; background: var(--bg-surface);
+}
+.problem__card-title { font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }
+.problem__text { font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+
+/* avatar — HDS avatar (원형, default 일러스트는 다크에서도 색 고정) */
+.problem__avatar { flex: none; display: block; border-radius: 50%; overflow: hidden; object-fit: cover; }
+
+/* pagination size=sm — 위치 표시 전용(점) */
+.problem__dots { display: flex; gap: 8px; }
+.problem__dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--t-disabled); }
+.problem__dots i:first-child { background: var(--selected-fill); }
+
+/* MO compact 진행 막대 — 기본은 숨김, .problem--compact 의 MO 에서만 보여요 (script.js 가 길이·위치 계산) */
+.problem__bar { display: none; }
+.problem__thumb { position: absolute; top: 0; left: 0; width: 154px; height: 4px; border-radius: 4px; background: var(--bg-muted); }
+
+/* TB 768–1279 — 패딩 약 80% */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .problem { padding: 96px var(--container-pad); }
+  .problem__body { gap: 48px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .problem { padding: 72px var(--container-pad); align-items: stretch; }
+  .problem__body { gap: 48px; }
+  .problem__track { flex-direction: column; }
+  .problem__card { flex: none; }
+  .problem__dots { display: none; }
+
+  /* compact — 카드를 좌우로 넘겨요. 오른쪽 끝까지 흘려서 더 있다는 걸 보여줘요 */
+  .problem--compact .problem__content { align-items: stretch; gap: 20px; }
+  .problem--compact .problem__track {
+    flex-direction: row; width: auto;
+    margin: 0 calc(var(--container-pad) * -1);
+    padding: 0 var(--container-pad);
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--container-pad);
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .problem--compact .problem__track::-webkit-scrollbar { display: none; }
+  .problem--compact .problem__card { scroll-snap-align: start; }
+  .problem--compact .problem__bar { display: block; position: relative; height: 4px; }
+}

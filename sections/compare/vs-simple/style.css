@@ -1,0 +1,53 @@
+/* compare-vs-simple — 타사 열 + 우리 열(빨간 머리 · 테두리 · 그림자, 5px 겹침) */
+.compare__cols { display: flex; align-items: center; }
+.compare__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.compare--vs-simple .compare__col-head { text-align: center; }
+.compare--vs-simple .compare__rows { margin: 0; list-style: none; display: flex; flex-direction: column; }
+.compare--vs-simple .compare__row {
+  display: flex; align-items: center; justify-content: center; min-height: 99px; padding: 20px 24px;
+  text-align: center; font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.compare--vs-simple .compare__row:last-child { border-bottom: 0; }
+
+/* 타사 */
+.compare__col--other .compare__col-head {
+  padding: 20px 24px; border-top-left-radius: 8px; background: var(--bg-page);
+  font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80);
+}
+.compare__col--other .compare__rows { padding: 0 20px; }
+.compare__col--other .compare__row { border-bottom: 1px solid var(--line-outline); color: var(--t-45); }
+
+/* 우리 — 항상 강조 */
+.compare__col--ours {
+  position: relative; z-index: 1; margin-left: -5px; border-radius: 16px;
+  box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.05), 0 16px 32px -4px rgba(0, 0, 0, 0.1);
+}
+.compare__col--ours .compare__col-head {
+  padding: 30px 24px 24px; border-radius: 16px 16px 0 0; background: var(--compare-hl);
+  font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter);
+}
+.compare__col--ours .compare__rows {
+  padding: 0 20px; border: 2px solid var(--compare-hl); border-top: 0; border-radius: 0 0 16px 16px;
+  background: var(--bg-surface);
+}
+.compare__col--ours .compare__row { border-bottom: 1px solid var(--compare-hl-tint); font-weight: 600; color: var(--t-100); }
+.compare__col--ours .compare__row:last-child { min-height: 118px; padding-bottom: 40px; }
+
+/* TB 768–1279 — PC 구조 그대로, 좌우 여백만 줄여요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .compare--vs-simple .compare__row { padding: 20px 16px; }
+  .compare__col--other .compare__rows,
+  .compare__col--ours .compare__rows { padding: 0 16px; }
+}
+
+/* MO ≤767 — Figma 없음(제안): 2열 유지, 글자·여백 축소 */
+@media (max-width: 767px) {
+  .compare--vs-simple .compare__row { min-height: 76px; padding: 14px 6px; font-size: 15px; }
+  .compare__col--other .compare__col-head { padding: 14px 6px; font-size: 15px; }
+  .compare__col--other .compare__rows,
+  .compare__col--ours .compare__rows { padding: 0 8px; }
+  .compare__col--ours { margin-left: -4px; border-radius: 12px; }
+  .compare__col--ours .compare__col-head { padding: 20px 6px 16px; border-radius: 12px 12px 0 0; font-size: 18px; }
+  .compare__col--ours .compare__rows { border-radius: 0 0 12px 12px; }
+  .compare__col--ours .compare__row:last-child { min-height: 90px; padding-bottom: 28px; }
+}

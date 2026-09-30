@@ -1,0 +1,41 @@
+{% from "_partials/ui.njk" import secHead %}
+<section class="problem problem--step-split">
+  <div class="problem__body problem__split">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="problem__steps-col">
+{% if nav and nav.length %}
+      <ol class="problem__nav">
+{% for n in nav %}
+        <li class="problem__nav-item{% if loop.first %} is-active{% endif %}">
+          <button type="button" class="problem__nav-btn" data-step="{{ loop.index0 }}">
+            <span class="problem__num">{{ loop.index }}</span>
+            <span class="problem__nav-label">{{ n.label | rt }}</span>
+          </button>
+        </li>
+{% endfor %}
+      </ol>
+{% endif %}
+      <ol class="problem__steps">
+{% for s in steps %}
+        <li class="problem__step{% if loop.first %} is-active{% endif %}">
+          <span class="problem__num" aria-hidden="true">{{ loop.index }}</span>
+          <div class="problem__step-body">
+            <h3 class="problem__card-title">{{ s.title | rt }}</h3>
+            <div class="problem__step-media">
+{% if s.image and s.image.src %}
+              <img src="{{ s.image.src }}" alt="{{ s.image.alt or '' }}" loading="lazy">
+{% endif %}
+            </div>
+            <div class="problem__step-text">
+              <p class="problem__text">{{ s.description | rt }}</p>
+{% if s.note %}
+              <p class="problem__text">{{ s.note | rt }}</p>
+{% endif %}
+            </div>
+          </div>
+        </li>
+{% endfor %}
+      </ol>
+    </div>
+  </div>
+</section>

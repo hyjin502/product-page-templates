@@ -1,0 +1,22 @@
+{% from "_partials/ui.njk" import media %}
+{# 로고 띠 — 같은 목록을 두 벌 이어 붙여 끊김 없이 흘러가요(두 번째 벌은 스크린리더에서 숨김). MO 는 한 벌을 두 줄로 나눠요 #}
+{% set cols = (logos.length / 2) | round(0, "ceil") %}
+<section class="logo-wall logo-wall--default">
+  <div class="logo-wall__body">
+    <h2 class="logo-wall__title">{{ title | rt }}</h2>
+    <div class="logo-wall__viewport">
+      <div class="logo-wall__track" style="--cols: {{ cols }}">
+{% for copy in [0, 1] %}
+        <ul class="logo-wall__list"{% if copy %} aria-hidden="true"{% endif %}>
+{% for l in logos %}
+          <li class="logo-wall__item">
+            <span class="logo-wall__logo">{{ media(l.image, "logo-wall__img") }}</span>
+            <span class="logo-wall__name">{{ l.name }}</span>
+          </li>
+{% endfor %}
+        </ul>
+{% endfor %}
+      </div>
+    </div>
+  </div>
+</section>

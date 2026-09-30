@@ -1,0 +1,62 @@
+{
+  "id": "hero-split",
+  "section": "hero",
+  "layout": "split",
+  "order": 3,
+  "when": "상품/솔루션을 설명하면서 비주얼을 함께 보여줄 때",
+  "figma": {
+    "pc": "6187:2582",
+    "mo": "6187:2602",
+    "tb": null
+  },
+  "body": 1200,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀"
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "설명"
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "type"
+        }
+      }
+    },
+    "image": {
+      "type": "image",
+      "figmaLayer": "image",
+      "optional": true,
+      "label": "오른쪽 비주얼 (PC 592×592)"
+    }
+  }
+}

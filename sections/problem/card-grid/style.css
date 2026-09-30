@@ -1,0 +1,24 @@
+/* .problem, __body, __content, __track, __card, __dots, __bar 는 _shared.css */
+.problem--card-grid .problem__card { gap: 24px; padding: 32px 32px 40px; }
+.problem--card-grid .problem__icon { display: block; width: 48px; height: 48px; color: var(--t-80); }
+.problem--card-grid .problem__icon svg { display: block; }
+.problem--card-grid .problem__card-text { display: flex; flex-direction: column; gap: 16px; }
+.problem--card-grid .problem__card-title { font-size: 24px; }
+
+/* TB 768–1279 — 1024 미만은 2열로 줄여요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .problem--card-grid .problem__card { padding: 28px 28px 32px; }
+  .problem--card-grid .problem__card-title { font-size: 22px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .problem--card-grid .problem__track { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .problem--card-grid .problem__card { padding: 32px 24px 40px; }
+  .problem--card-grid .problem__icon { width: 32px; height: 32px; }
+  .problem--card-grid .problem__card-title { font-size: 20px; }
+  .problem--card-grid.problem--compact .problem__track { gap: 20px; }
+  .problem--card-grid.problem--compact .problem__card { flex: 0 0 290px; }
+}

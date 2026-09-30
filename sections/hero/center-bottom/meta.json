@@ -1,0 +1,65 @@
+{
+  "id": "hero-center-bottom",
+  "section": "hero",
+  "layout": "center-bottom",
+  "order": 2,
+  "when": "제품 UI, 영상, 큰 비주얼을 강조할 때",
+  "figma": {
+    "pc": "6187:2542",
+    "mo": "6187:2562",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀"
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "설명"
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "type"
+        }
+      }
+    },
+    "image": {
+      "type": "image",
+      "figmaLayer": "image",
+      "aliases": [
+        "visual"
+      ],
+      "optional": true,
+      "label": "하단 풀폭 비주얼 (PC 높이 360)"
+    }
+  }
+}

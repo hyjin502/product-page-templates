@@ -1,0 +1,30 @@
+.countdown--default { padding-top: 80px; padding-bottom: 80px; }
+.countdown--default .countdown__inner { width: var(--body, 740px); max-width: 100%; display: flex; justify-content: center; }
+.countdown--default .countdown__timer { align-items: flex-start; gap: 26px; padding: 4px 0; }
+.countdown--default .countdown__unit { min-width: 104px; padding: 0 12px; gap: 16px; }
+.countdown--default .countdown__num { font-size: 64px; line-height: 1.2; color: var(--t-100); }
+.countdown--default .countdown__label {
+  font-size: 16px; font-weight: 700; line-height: 1.2;
+  letter-spacing: var(--tracking-tight); color: var(--t-45);
+}
+.countdown--default .countdown__sep { font-size: 50px; font-weight: 700; line-height: 60px; color: var(--t-80); }
+
+/* TB 768–1279 — 숫자는 PC(64)와 MO(32) 사이 48, 간격 약 80% */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .countdown--default { padding-top: 64px; padding-bottom: 64px; }
+  .countdown--default .countdown__timer { gap: 20px; }
+  .countdown--default .countdown__unit { min-width: 88px; padding: 0 8px; gap: 12px; }
+  .countdown--default .countdown__num { font-size: 48px; }
+  .countdown--default .countdown__label { font-size: 14px; }
+  .countdown--default .countdown__sep { font-size: 40px; line-height: 48px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .countdown--default { padding-top: 64px; padding-bottom: 80px; }
+  .countdown--default .countdown__timer { gap: 4px; padding: 2px 0; }
+  .countdown--default .countdown__unit { min-width: 0; padding: 0 12px; gap: 8px; }
+  .countdown--default .countdown__num { font-size: 32px; line-height: 1.4; }
+  .countdown--default .countdown__label { font-size: 12px; }
+  .countdown--default .countdown__sep { font-size: 32px; line-height: 1.4; }
+}

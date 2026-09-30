@@ -1,0 +1,44 @@
+{% from "_partials/ui.njk" import ctas as ctaList, secHead, media %}
+{# PC: 카드를 순서대로 3열에 나눠 담아요 (피그마 열 순서 그대로). MO: 열을 풀어 한 줄로 이어 붙여요 #}
+{% set per = cards.length // 3 %}
+{% set extra = cards.length % 3 %}
+<section class="concern concern--card">
+  <div class="concern__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="concern-card">
+      <div class="concern-card__wall">
+{% for col in cards | slice(3) %}
+{% set ci = loop.index0 %}
+{% set start = ci * per + (ci if ci < extra else extra) %}
+        <div class="concern-card__col">
+{% for c in col %}
+          <article class="concern-card__item" data-i="{{ start + loop.index0 }}">
+            <div class="concern-card__top">
+              <h3 class="concern-card__title"><span class="concern-card__icon">{{ 'annotation' | icon }}</span>{{ c.title | rt }}</h3>
+              <p class="concern-card__desc">{{ c.description | rt }}</p>
+            </div>
+            <div class="concern-card__who">
+{% if c.avatar and c.avatar.src %}
+              {{ media(c.avatar, "concern-card__avatar") }}
+{% endif %}
+              <p class="concern-card__person"><b>{{ c.name | rt }}</b>{% if c.role %}<span>{{ c.role | rt }}</span>{% endif %}</p>
+            </div>
+          </article>
+{% endfor %}
+        </div>
+{% endfor %}
+      </div>
+      {# MO compact 페이지네이션(pagination size=lg) — 2장씩, 페이지 수는 카드 수로 계산해요 #}
+      <nav class="concern-card__pager" aria-label="페이지">
+        <button type="button" class="concern-card__arrow concern-card__arrow--prev" data-dir="-1" aria-label="이전" disabled>{{ 'chev-r' | icon }}</button>
+        <span class="concern-card__pages">
+{% for i in range(0, (cards.length / 2) | round(0, "ceil")) %}
+          <button type="button" class="concern-card__page{% if loop.first %} is-active{% endif %}" data-page="{{ i }}"{% if loop.first %} aria-current="page"{% endif %}>{{ i + 1 }}</button>
+{% endfor %}
+        </span>
+        <button type="button" class="concern-card__arrow" data-dir="1" aria-label="다음">{{ 'chev-r' | icon }}</button>
+      </nav>
+    </div>
+    {{ ctaList(ctas, "concern__btns") }}
+  </div>
+</section>

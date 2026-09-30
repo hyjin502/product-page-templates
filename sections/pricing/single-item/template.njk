@@ -1,0 +1,52 @@
+{% from "_partials/ui.njk" import ctas as ctaList %}
+<section class="pricing pricing--single-item pricing--on-black">
+  <div class="pricing__body">
+    <h2 class="pricing__title">{{ title | rt }}</h2>
+    <div class="pricing__card">
+      <h3 class="pricing__name">{{ name | rt }}</h3>
+      <div class="pricing__price">
+        <p class="pricing__price-row">
+{% if priceLabel %}
+          <span class="pricing__price-label">{{ priceLabel | rt }}</span>
+{% endif %}
+          <strong class="pricing__price-num">{{ price | rt }}</strong>
+        </p>
+{% if monthlyPrice %}
+        <p class="pricing__price-row">
+{% if installmentLabel %}
+          <span class="pricing__price-label">{{ installmentLabel | rt }}</span>
+{% endif %}
+          <strong class="pricing__price-month">
+{% if monthlyUnit %}
+            <span class="pricing__price-unit">{{ monthlyUnit | rt }}</span>
+{% endif %}
+            <span class="pricing__price-num">{{ monthlyPrice | rt }}</span>
+          </strong>
+        </p>
+{% endif %}
+      </div>
+{% if rows.length %}
+      <dl class="pricing__rows">
+{% for r in rows %}
+        <div class="pricing__row">
+          <dt class="pricing__row-label">{{ r.label | rt }}</dt>
+          <dd class="pricing__row-value">{{ r.value | rt }}</dd>
+        </div>
+{% endfor %}
+      </dl>
+{% endif %}
+{% if ctas.length or note.length %}
+      <div class="pricing__actions">
+        {{ ctaList(ctas, "pricing__btns") }}
+{% if note.length %}
+        <p class="pricing__runs">
+{% for n in note %}
+{% if n.style == 'link' %}<a class="pricing__run pricing__run--link" href="{{ n.href or '#' }}">{{ n.text }}</a>{% else %}<span class="pricing__run">{{ n.text }}</span>{% endif %}
+{% endfor %}
+        </p>
+{% endif %}
+      </div>
+{% endif %}
+    </div>
+  </div>
+</section>

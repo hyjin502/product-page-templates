@@ -1,0 +1,97 @@
+{
+  "eyebrow": "이렇게 완벽한 휴넷 산업안전보건교육",
+  "title": { "pc": "늦기 전에 지금 컨설턴트와 상담해보세요", "mo": "늦기 전에 지금 컨설턴트와\n상담해보세요" },
+  "action": "#",
+  "formId": "inquiry",
+  "quickLinkLabel": "50인 이하 기업, 빠른 견적 확인하기 ",
+  "quickLinkHref": "#",
+  "lead": [
+    { "text": "1인 수강 문의는 우측 상단 ", "style": "normal" },
+    { "text": "1:1 상담", "style": "bold" },
+    { "text": "을 확인해주세요.", "style": "normal" }
+  ],
+  "groups": [
+    {
+      "title": "개인정보",
+      "fields": [
+        { "label": "이름", "required": true, "controls": [
+          { "kind": "input", "name": "name", "placeholder": "김휴넷" }
+        ] },
+        { "label": "연락처", "required": true, "controls": [
+          { "kind": "input", "name": "phone", "inputType": "tel", "placeholder": "010-1234-5678" }
+        ] },
+        { "label": "이메일", "required": true, "controls": [
+          { "kind": "input", "name": "emailId", "placeholder": "hunet" },
+          { "kind": "text", "name": "emailAt", "label": "@" },
+          { "kind": "input", "name": "emailDomain", "placeholder": "이메일 선택" },
+          { "kind": "checkbox", "name": "emailDirect", "label": "직접입력", "checked": false }
+        ] }
+      ]
+    },
+    {
+      "title": "회사정보",
+      "fields": [
+        { "label": "기업유형", "required": true, "controls": [
+          { "kind": "select", "name": "companyType", "placeholder": "대기업", "options": [] }
+        ] },
+        { "label": { "pc": "임직원수/교육인원", "mo": "임직원수/예상 교육인원" }, "required": true, "controls": [
+          { "kind": "select", "name": "employees", "placeholder": "~100명", "options": [] },
+          { "kind": "input", "name": "trainees", "placeholder": "00명" }
+        ] },
+        { "label": "기업명", "required": true, "controls": [
+          { "kind": "search", "name": "company", "placeholder": "기업명 검색", "help": { "pc": "기업명 또는 사업자등록번호(숫자만 가능)로 검색해주세요.", "mo": "※ 기업명 또는 사업자등록번호(숫자만 가능)로 검색해 주세요." } }
+        ] },
+        { "label": "소속/직책", "required": true, "controls": [
+          { "kind": "input", "name": "dept", "placeholder": "인재경영팀" },
+          { "kind": "input", "name": "position", "placeholder": "과장" }
+        ] }
+      ]
+    },
+    {
+      "title": "문의하기",
+      "fields": [
+        { "label": "문의유형", "required": true, "controls": [
+          { "kind": "select", "name": "inquiryType", "placeholder": "서비스 분류", "options": [] }
+        ] },
+        { "label": "문의내용", "required": true, "controls": [
+          { "kind": "textarea", "name": "message", "placeholder": "• 교육대상 : 신입사원, 개발부서, CS팀 등\n• 교육일정 : 6월 말(예정), 매달 1회 등\n• 교육내용 : 솔루션이나 연수원도 같이 상담 받고 싶어요.", "help": "※ 교육대상, 일정 및 내용에 대해 기재해 주시면, 더욱 빠르고 정확한 안내를 도와드립니다." }
+        ] },
+        { "label": "기업명", "required": true, "only": "pc", "controls": [
+          { "kind": "search", "name": "company2", "placeholder": "기업명 검색", "help": "기업명 또는 사업자등록번호(숫자만 가능)로 검색해주세요." }
+        ] },
+        { "label": "방문경로", "controls": [
+          { "kind": "radio", "name": "visitPath", "options": [
+            { "label": "온라인 검색", "checked": true },
+            { "label": "이메일" },
+            { "label": "라이브세미나" },
+            { "label": "SNS" },
+            { "label": "배너광고" },
+            { "label": "유튜브" },
+            { "label": "지인추천" },
+            { "label": "기타" }
+          ] },
+          { "kind": "input", "name": "referrer", "placeholder": "추천인 회사명/이름" }
+        ] }
+      ]
+    }
+  ],
+  "privacy": [
+    { "text": "개인정보 보호법 제15조(개인정보의 수집ㆍ이용) 1항 4호에 의해 서비스 이용에 필수적인 개인정보를 수집하고 있습니다.\n자세한 내용은 ", "style": "normal" },
+    { "text": "개인정보 처리방침", "style": "link", "href": "#" },
+    { "text": "을 통해 확인하실 수 있습니다.", "style": "normal" }
+  ],
+  "consentLabel": "마케팅 수신동의(선택)",
+  "consentName": "marketing",
+  "consentChecked": true,
+  "consentLinkLabel": "자세히 보기",
+  "consentLinkHref": "#",
+  "channels": [
+    { "label": "이메일", "name": "marketingEmail", "checked": false },
+    { "label": "SNS", "name": "marketingSns", "checked": false }
+  ],
+  "consentNote": {
+    "pc": "*위 선택 동의 항목에 동의하지 않으셔도 기업교육 문의 이용이 가능합니다.\n다만 상품 소개 및 이벤트 안내가 제한 될 수 있습니다.",
+    "mo": "*위 선택 동의 항목에 동의하지 않으셔도 기업교육 문의 이용이 가능합니다. 다만 상품 소개 및 이벤트 안내가 제한 될 수 있습니다."
+  },
+  "submitLabel": "휴넷에 문의하기"
+}

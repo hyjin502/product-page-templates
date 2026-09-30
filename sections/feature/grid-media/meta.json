@@ -1,0 +1,125 @@
+{
+  "id": "feature-grid-media",
+  "section": "feature",
+  "layout": "grid",
+  "style": "media",
+  "order": 4,
+  "when": "사진 위에 흰 글씨로 메시지를 얹은 카드를 보여줄 때",
+  "figma": {
+    "pc": "6187:3816",
+    "mo": "6187:3888",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "타이틀 아래 설명"
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "item",
+      "aliases": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "min": 1,
+      "max": 24,
+      "label": "미디어 카드",
+      "note": "항목은 feature-thumbnail(type=thumbnail5) 인스턴스(레이어 이름 1~3 → item 으로 변경 요청). PC 3열 / MO 가로 스크롤(290px)",
+      "item": {
+        "image": {
+          "type": "image",
+          "figmaLayer": "image",
+          "aliases": [
+            "dim"
+          ],
+          "label": "배경 사진 (카드 311×413 를 덮어요)",
+          "note": "배경 사진이 bg 인스턴스 안 \"dim\" 사각형 fill 에 있어요 — image 로 변경 요청"
+        },
+        "caption": {
+          "type": "text",
+          "figmaLayer": "caption",
+          "aliases": [
+            "캡션"
+          ],
+          "optional": true,
+          "label": "캡션",
+          "note": "캡션 → caption 으로 변경 요청"
+        },
+        "title": {
+          "type": "richtext",
+          "figmaLayer": "title",
+          "aliases": [
+            "타이틀"
+          ],
+          "label": "타이틀",
+          "note": "\"타이틀\" TEXT(부모 프레임도 \"타이틀\") — title 로 변경 요청"
+        },
+        "href": {
+          "type": "url",
+          "optional": true,
+          "label": "링크",
+          "note": "Figma 에 없음 — 넣으면 카드 전체가 링크가 돼요"
+        },
+        "device": {
+          "type": "enum",
+          "values": [
+            "pc",
+            "mo"
+          ],
+          "optional": true,
+          "label": "표시 기기",
+          "note": "Figma PC·MO 컴포넌트의 카드 구성이 다를 때만 넣어요(비우면 둘 다). 추출기는 PC 목록과 MO 목록을 비교해 한쪽에만 있는 항목에 붙여요"
+        }
+      }
+    },
+    "note": {
+      "type": "richtext",
+      "figmaLayer": "note",
+      "aliases": [
+        "현재 가장 중요한 경영 이슈와 트렌드를 적시에 얻고, 비즈니스에 필요한 통찰을 얻으세요!"
+      ],
+      "optional": true,
+      "label": "하단 강조 박스",
+      "note": "마지막 줄은 Bold 로 보여요(Figma 스타일 그대로). 레이어 이름이 문구 그대로라 note 로 변경 요청"
+    }
+  },
+  "pager": {
+    "slot": "items",
+    "mode": {
+      "pc": "fill",
+      "tb": "fill",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 4,
+      "tb": 3,
+      "mo": 0
+    },
+    "note": "Figma PC 오토레이아웃: 가로 한 줄 + 채우기(Fill) · per = 한 줄 최대 카드 수(넘치면 페이지)"
+  }
+}

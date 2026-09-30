@@ -1,0 +1,64 @@
+{
+  "id": "benefit-list",
+  "section": "benefit",
+  "layout": "list",
+  "order": 1,
+  "when": "왼쪽 제목 + 오른쪽 아이콘 목록으로 기대효과 3~4개를 나열할 때",
+  "figma": {
+    "pc": "6187:3271",
+    "mo": "6187:3382",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "note": "heading-pc / heading-mo 인스턴스 안의 title (항목의 title 보다 문서 순서가 앞)",
+      "label": "섹션 제목"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "제목 아래 설명"
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 1,
+      "label": "버튼 (Figma 기본값은 숨김)",
+      "item": {
+        "label": { "type": "text", "figmaProp": "text-name" },
+        "href": { "type": "url" },
+        "style": { "type": "enum", "values": ["neutral", "subtle"], "figmaProp": "type" }
+      }
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "card1",
+      "aliases": ["card", "item"],
+      "min": 1,
+      "max": 6,
+      "label": "기대효과 항목",
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": ["benefit-bar-chart-10", "benefit-dataflow-03", "benefit-building-05"],
+          "optional": true,
+          "label": "아이콘",
+          "note": "Figma 아이콘 인스턴스 이름 charts/bar-chart-10 · development/dataflow-03 · general/building-05 에 대응 — 인스턴스 속성이 아니라 컴포넌트 교체라 자동 추출 안 됨(sample 값 사용)"
+        },
+        "title": { "type": "text", "figmaLayer": "title", "label": "항목 제목" },
+        "description": { "type": "richtext", "figmaLayer": "description", "optional": true, "label": "항목 설명" }
+      }
+    }
+  }
+}

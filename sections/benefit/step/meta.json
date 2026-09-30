@@ -1,0 +1,71 @@
+{
+  "id": "benefit-step",
+  "section": "benefit",
+  "layout": "step",
+  "order": 4,
+  "when": "핵심 기능 하나를 설명 · 체크 포인트 · 이미지로 자세히 보여줄 때",
+  "figma": {
+    "pc": "6187:3357",
+    "mo": "6187:3418",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "note": "PC 는 Body/heading 프레임, MO 는 heading-mo 인스턴스 안의 title (문서 순서 1번째)",
+      "label": "섹션 제목"
+    },
+    "headline": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": "Frame 2147238915/title",
+      "label": "기능 제목"
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "figmaPath": "Frame 2147238921/description",
+      "optional": true,
+      "label": "기능 설명"
+    },
+    "points": {
+      "type": "list",
+      "figmaLayer": "item",
+      "aliases": ["Frame 2147238916", "Frame 2147238917"],
+      "min": 0,
+      "max": 4,
+      "label": "체크 포인트",
+      "item": {
+        "label": { "type": "text", "figmaLayer": "description", "label": "포인트 문구" },
+        "href": { "type": "url", "label": "링크 (있으면 > 화살표와 함께 링크로)" }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 1,
+      "label": "버튼 (Figma 기본값은 숨김)",
+      "item": {
+        "label": { "type": "text", "figmaProp": "text-name" },
+        "href": { "type": "url" },
+        "style": { "type": "enum", "values": ["neutral", "subtle"], "figmaProp": "type" }
+      }
+    },
+    "image": {
+      "type": "image",
+      "figmaLayer": "image",
+      "aliases": ["Rectangle 1"],
+      "optional": true,
+      "label": "오른쪽 이미지 (PC 458×300, MO 343×200) — 비우면 회색 박스"
+    }
+  }
+}

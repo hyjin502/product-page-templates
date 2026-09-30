@@ -1,0 +1,29 @@
+.countdown--boxed { padding-top: 115px; padding-bottom: 115px; }
+.countdown--boxed .countdown__timer { width: var(--body, 980px); max-width: 100%; align-items: center; gap: 40px; }
+/* 박스는 typography/black-100 배경 + 흰 글자 — 다크에서는 두 토큰이 함께 뒤집혀요 */
+.countdown--boxed .countdown__unit {
+  flex: none; width: 200px; height: 200px; justify-content: center; gap: 4px;
+  border-radius: 20px; background: var(--t-100);
+}
+.countdown--boxed .countdown__num { font-size: 64px; line-height: 1.3; color: var(--bg-surface); }
+.countdown--boxed .countdown__label {
+  font-size: 16px; font-weight: 400; line-height: 1.6;
+  letter-spacing: var(--tracking-tight); color: var(--bg-surface); opacity: 0.6;
+}
+
+/* TB 768–1279 — 박스 160, 간격 32, 숫자 52 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .countdown--boxed { padding-top: 92px; padding-bottom: 92px; }
+  .countdown--boxed .countdown__timer { gap: 32px; }
+  .countdown--boxed .countdown__unit { width: 160px; height: 160px; border-radius: 16px; }
+  .countdown--boxed .countdown__num { font-size: 52px; }
+}
+
+/* MO ≤767 — 80 박스 4개를 양끝 정렬 */
+@media (max-width: 767px) {
+  .countdown--boxed { padding-top: 64px; padding-bottom: 80px; }
+  .countdown--boxed .countdown__timer { justify-content: space-between; gap: 0; }
+  .countdown--boxed .countdown__unit { width: 80px; height: 80px; border-radius: 20px; }
+  .countdown--boxed .countdown__num { font-size: 32px; line-height: 1.2; }
+  .countdown--boxed .countdown__label { font-size: 12px; font-weight: 500; }
+}

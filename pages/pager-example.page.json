@@ -1,0 +1,367 @@
+{
+  "title": "카드 수에 따른 배치 예시",
+  "source": {
+    "note": "Figma 오토레이아웃(채우기)과 같은 동작 — 카드가 적으면 넓어지고, 한 줄 최대를 넘으면 페이지로 넘겨요. 반복 카드는 Page 18 샘플을 순서대로 반복"
+  },
+  "sections": [
+    {
+      "variant": "concern-persona",
+      "content": {
+        "eyebrow": "우리 조직의 고민",
+        "title": "교육 현장에서는\n역할마다 고민이 다릅니다.",
+        "subtitle": {
+          "pc": "각자의 위치에서 마주하는 현실적인 고민,\n지금 여러분의 이야기일지도 모릅니다.",
+          "mo": "반복적인 운영 업무는 관리 부담만 키우기 쉽습니다.\n이제 더 단순하고 효율적인 방식으로 바꿔보세요."
+        },
+        "personas": [
+          {
+            "avatar": {
+              "src": "assets/concern/persona-1.png",
+              "alt": ""
+            },
+            "name": "교육담당자",
+            "role": "교육 운영 전반을 책임지는 담당자",
+            "title": "운영해야 할 과정은 많은데 반복 업무까지 관리하기 벅차요.",
+            "description": "과정 개설, 대상자 안내, 출결·수료 확인까지 반복적인 운영 업무가 계속 쌓입니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-2.png",
+              "alt": ""
+            },
+            "name": "팀장",
+            "role": "팀의 성장과 성과를 책임지는 리더",
+            "title": "교육이 실제 업무 성과로 이어졌는지 확인하기 어려워요.",
+            "description": "구성원이 교육을 들었다는 사실은 알 수 있지만, 실제 행동 변화나 성과까지는 확인하기 어렵습니다."
+          }
+        ],
+        "ctas": []
+      }
+    },
+    {
+      "variant": "concern-persona",
+      "content": {
+        "eyebrow": "우리 조직의 고민",
+        "title": "교육 현장에서는\n역할마다 고민이 다릅니다.",
+        "subtitle": {
+          "pc": "각자의 위치에서 마주하는 현실적인 고민,\n지금 여러분의 이야기일지도 모릅니다.",
+          "mo": "반복적인 운영 업무는 관리 부담만 키우기 쉽습니다.\n이제 더 단순하고 효율적인 방식으로 바꿔보세요."
+        },
+        "personas": [
+          {
+            "avatar": {
+              "src": "assets/concern/persona-1.png",
+              "alt": ""
+            },
+            "name": "교육담당자",
+            "role": "교육 운영 전반을 책임지는 담당자",
+            "title": "운영해야 할 과정은 많은데 반복 업무까지 관리하기 벅차요.",
+            "description": "과정 개설, 대상자 안내, 출결·수료 확인까지 반복적인 운영 업무가 계속 쌓입니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-2.png",
+              "alt": ""
+            },
+            "name": "팀장",
+            "role": "팀의 성장과 성과를 책임지는 리더",
+            "title": "교육이 실제 업무 성과로 이어졌는지 확인하기 어려워요.",
+            "description": "구성원이 교육을 들었다는 사실은 알 수 있지만, 실제 행동 변화나 성과까지는 확인하기 어렵습니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-3.png",
+              "alt": ""
+            },
+            "name": "학습자",
+            "role": "업무에 필요한 성장을 찾는 구성원",
+            "title": "내 업무에 필요한 교육을 빠르게 찾기 어려워요.",
+            "description": "과정은 많지만 지금 내 역할과 상황에 맞는 교육이 무엇인지 판단하기 어렵습니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-1.png",
+              "alt": ""
+            },
+            "name": "교육담당자",
+            "role": "교육 운영 전반을 책임지는 담당자",
+            "title": "운영해야 할 과정은 많은데 반복 업무까지 관리하기 벅차요.",
+            "description": "과정 개설, 대상자 안내, 출결·수료 확인까지 반복적인 운영 업무가 계속 쌓입니다."
+          }
+        ],
+        "ctas": []
+      }
+    },
+    {
+      "variant": "concern-persona",
+      "content": {
+        "eyebrow": "우리 조직의 고민",
+        "title": "교육 현장에서는\n역할마다 고민이 다릅니다.",
+        "subtitle": {
+          "pc": "각자의 위치에서 마주하는 현실적인 고민,\n지금 여러분의 이야기일지도 모릅니다.",
+          "mo": "반복적인 운영 업무는 관리 부담만 키우기 쉽습니다.\n이제 더 단순하고 효율적인 방식으로 바꿔보세요."
+        },
+        "personas": [
+          {
+            "avatar": {
+              "src": "assets/concern/persona-1.png",
+              "alt": ""
+            },
+            "name": "교육담당자",
+            "role": "교육 운영 전반을 책임지는 담당자",
+            "title": "운영해야 할 과정은 많은데 반복 업무까지 관리하기 벅차요.",
+            "description": "과정 개설, 대상자 안내, 출결·수료 확인까지 반복적인 운영 업무가 계속 쌓입니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-2.png",
+              "alt": ""
+            },
+            "name": "팀장",
+            "role": "팀의 성장과 성과를 책임지는 리더",
+            "title": "교육이 실제 업무 성과로 이어졌는지 확인하기 어려워요.",
+            "description": "구성원이 교육을 들었다는 사실은 알 수 있지만, 실제 행동 변화나 성과까지는 확인하기 어렵습니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-3.png",
+              "alt": ""
+            },
+            "name": "학습자",
+            "role": "업무에 필요한 성장을 찾는 구성원",
+            "title": "내 업무에 필요한 교육을 빠르게 찾기 어려워요.",
+            "description": "과정은 많지만 지금 내 역할과 상황에 맞는 교육이 무엇인지 판단하기 어렵습니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-1.png",
+              "alt": ""
+            },
+            "name": "교육담당자",
+            "role": "교육 운영 전반을 책임지는 담당자",
+            "title": "운영해야 할 과정은 많은데 반복 업무까지 관리하기 벅차요.",
+            "description": "과정 개설, 대상자 안내, 출결·수료 확인까지 반복적인 운영 업무가 계속 쌓입니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-2.png",
+              "alt": ""
+            },
+            "name": "팀장",
+            "role": "팀의 성장과 성과를 책임지는 리더",
+            "title": "교육이 실제 업무 성과로 이어졌는지 확인하기 어려워요.",
+            "description": "구성원이 교육을 들었다는 사실은 알 수 있지만, 실제 행동 변화나 성과까지는 확인하기 어렵습니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-3.png",
+              "alt": ""
+            },
+            "name": "학습자",
+            "role": "업무에 필요한 성장을 찾는 구성원",
+            "title": "내 업무에 필요한 교육을 빠르게 찾기 어려워요.",
+            "description": "과정은 많지만 지금 내 역할과 상황에 맞는 교육이 무엇인지 판단하기 어렵습니다."
+          },
+          {
+            "avatar": {
+              "src": "assets/concern/persona-1.png",
+              "alt": ""
+            },
+            "name": "교육담당자",
+            "role": "교육 운영 전반을 책임지는 담당자",
+            "title": "운영해야 할 과정은 많은데 반복 업무까지 관리하기 벅차요.",
+            "description": "과정 개설, 대상자 안내, 출결·수료 확인까지 반복적인 운영 업무가 계속 쌓입니다."
+          }
+        ],
+        "ctas": []
+      }
+    },
+    {
+      "variant": "problem-card-grid",
+      "content": {
+        "eyebrow": "우리 조직의 고민",
+        "title": {
+          "pc": "이런 어려움을 경험하고 있나요?",
+          "mo": "교육 현장에서는\n역할마다 고민이 다릅니다."
+        },
+        "subtitle": "변화하는 업무 환경 속에서 기업과 구성원이 겪는\n다양한 문제를 확인해 보세요.",
+        "cards": [
+          {
+            "icon": "pie",
+            "title": "교육 효과를 확인하기\n어려워요",
+            "description": "학습 이후 실제 업무 성과로 연결되었는지 확인하기 어렵습니다."
+          },
+          {
+            "icon": "settings",
+            "title": "운영 업무가\n너무 복잡해요",
+            "description": "반복되는 교육 운영과 관리 업무에\n많은 시간이 소요됩니다."
+          },
+          {
+            "icon": "building",
+            "title": "우리 조직에 맞는\n교육이 필요해요",
+            "description": "획일적인 교육이 아닌 조직과 구성원에게 적합한 학습이 필요합니다."
+          },
+          {
+            "icon": "pie",
+            "title": "교육 효과를 확인하기\n어려워요",
+            "description": "학습 이후 실제 업무 성과로 연결되었는지 확인하기 어렵습니다."
+          },
+          {
+            "icon": "settings",
+            "title": "운영 업무가\n너무 복잡해요",
+            "description": "반복되는 교육 운영과 관리 업무에\n많은 시간이 소요됩니다."
+          }
+        ]
+      },
+      "pager": {
+        "pc": 4,
+        "tb": 3,
+        "mo": 1
+      }
+    },
+    {
+      "variant": "problem-icon-grid",
+      "content": {
+        "eyebrow": "우리 조직의 고민",
+        "title": "왜 많은 기업이\n휴넷 FLEX를 선택할까요?",
+        "subtitle": "변화하는 업무 환경 속에서\n실제 담당자들의 고민을 확인해 보세요.",
+        "items": [
+          {
+            "title": "비즈니스리뷰",
+            "description": "탁월한 의사결정을 위한 데일리 인사이트 아티클",
+            "tone": "icon1"
+          },
+          {
+            "title": "인사이트클립",
+            "description": {
+              "pc": "매일 아침 전문가가 전하는\n10분 길이의 인사이트 영상",
+              "mo": "매일 아침 전문가가 전하는 10분 길이의 인사이트 영상"
+            },
+            "tone": "icon2"
+          },
+          {
+            "title": "인사이트클립",
+            "description": {
+              "pc": "매일 아침 전문가가 전하는\n10분 길이의 인사이트 영상",
+              "mo": "매일 아침 전문가가 전하는 10분 길이의 인사이트 영상"
+            },
+            "tone": "icon3"
+          },
+          {
+            "title": "CEO칼럼",
+            "description": "매주 새로운 주제로 펼쳐지는 CEO를 위한 비즈니스 칼럼",
+            "tone": "icon4"
+          },
+          {
+            "title": "비즈니스리뷰",
+            "description": "탁월한 의사결정을 위한 데일리 인사이트 아티클",
+            "tone": "icon1"
+          },
+          {
+            "title": "인사이트클립",
+            "description": {
+              "pc": "매일 아침 전문가가 전하는\n10분 길이의 인사이트 영상",
+              "mo": "매일 아침 전문가가 전하는 10분 길이의 인사이트 영상"
+            },
+            "tone": "icon2"
+          }
+        ]
+      }
+    },
+    {
+      "variant": "feature-grid-card",
+      "content": {
+        "eyebrow": "시류를 읽다.",
+        "title": {
+          "pc": "매일 업데이트되는 인사이트 콘텐츠",
+          "mo": "매일 업데이트되는\n인사이트 콘텐츠"
+        },
+        "subtitle": "신문보다 깊게 리포트보다 쉽게,\n전문가의 시각을 담은 아티클과 영상",
+        "items": [
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-dice.png",
+              "alt": ""
+            },
+            "title": "집채형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-meeting.png",
+              "alt": ""
+            },
+            "title": "집채형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙은 무엇인가?"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-hands.png",
+              "alt": ""
+            },
+            "title": "플립형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-portal.jpg",
+              "alt": ""
+            },
+            "title": "플립형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-dice.png",
+              "alt": ""
+            },
+            "title": "집채형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-meeting.png",
+              "alt": ""
+            },
+            "title": "집채형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙은 무엇인가?"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-hands.png",
+              "alt": ""
+            },
+            "title": "플립형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-portal.jpg",
+              "alt": ""
+            },
+            "title": "플립형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+          },
+          {
+            "type": "thumbnail2",
+            "image": {
+              "src": "assets/feature/th-dice.png",
+              "alt": ""
+            },
+            "title": "집채형 하이브리드",
+            "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+          }
+        ],
+        "note": "현재 가장 중요한 경영 이슈와 트렌드를 적시에 얻고,\n비즈니스에 필요한 통찰을 얻으세요!"
+      }
+    }
+  ]
+}

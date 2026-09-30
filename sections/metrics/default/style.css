@@ -1,0 +1,30 @@
+/* metrics default — 아이콘 + 큰 숫자 + 설명 3열 (PC 980) */
+.metrics { display: flex; flex-direction: column; align-items: center; padding: 120px var(--container-pad); background: var(--bg-surface); }
+.metrics__body { width: var(--body, 980px); max-width: 100%; display: flex; flex-direction: column; align-items: center; gap: 64px; }
+.metrics__body > .sec-head { width: 100%; }
+.metrics__list { width: 100%; display: flex; justify-content: space-between; margin: 0; padding: 0; list-style: none; }
+.metrics__item { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.metrics__icon { width: 80px; height: 80px; display: grid; place-items: center; }
+.metrics__img--filled { width: 80px; height: 80px; }
+.metrics__text { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.metrics__value { display: flex; align-items: flex-end; justify-content: center; font-weight: 700; color: var(--t-100); white-space: nowrap; }
+.metrics__num { font-size: 32px; line-height: 1; letter-spacing: var(--tracking-tighter); }
+.metrics__unit { font-size: 16px; line-height: 21px; letter-spacing: var(--tracking-tight); }
+.metrics__desc { font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+
+/* TB 768–1279 — 패딩 80%, 3열 유지 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .metrics { padding-top: 96px; padding-bottom: 96px; }
+  .metrics__body { gap: 56px; }
+  .metrics__num { font-size: 28px; }
+}
+
+/* MO ≤767 — 세로로 쌓고(간격 24), 숫자·단위 모두 24 */
+@media (max-width: 767px) {
+  .metrics { padding: 64px var(--container-pad) 80px; }
+  .metrics__body { gap: 48px; }
+  .metrics .sec-head__title { font-size: 24px; }
+  .metrics__list { flex-direction: column; align-items: stretch; gap: 24px; }
+  .metrics__value { align-items: center; }
+  .metrics__num, .metrics__unit { font-size: 24px; line-height: 1; letter-spacing: var(--tracking-tighter); }
+}

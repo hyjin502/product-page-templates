@@ -1,0 +1,28 @@
+/* benefit-list — 왼쪽 제목 · 오른쪽 아이콘 목록 (PC Body 980 = 450 + 80 + 450) */
+.benefit--list .benefit__body { flex-direction: row; align-items: flex-start; gap: 80px; }
+.benefit--list .benefit__heading { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
+.benefit--list .sec-head__lead { color: var(--t-60); }
+.benefit--list .benefit__btns { display: flex; gap: 16px; }
+.benefit__list { flex: 1 1 0; min-width: 0; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 32px; }
+.benefit__card {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding-bottom: 20px; border-bottom: 1px dashed var(--line-outline);
+}
+.benefit__icon { flex: none; display: flex; color: var(--t-80); }
+.benefit__card-text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+
+/* TB 768–1279 — 1024 이상은 좌우 배치(간격 축소), 그 아래는 세로로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .benefit--list .benefit__body { gap: 64px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .benefit--list .benefit__body { flex-direction: column; align-items: stretch; gap: 56px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .benefit--list .benefit__body { flex-direction: column; align-items: stretch; gap: 64px; }
+  .benefit--list .sec-head__lead { color: var(--t-80); }
+  .benefit--list .benefit__btns { flex-direction: column; }
+  .benefit--list .benefit__btns .btn { width: 100%; }
+}

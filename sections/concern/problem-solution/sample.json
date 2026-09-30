@@ -1,0 +1,16 @@
+{
+  "title": "실제 교육 담당자들은\n이런 고민을 하고 있습니다.",
+  "problemLabel": "Problem",
+  "solutionLabel": "Solution",
+  "problems": [
+    { "icon": "face-neutral", "title": "반복되는 수작업", "description": "교육 운영에 반복적인 업무가 많아 정작 중요한 업무에 집중하기 어렵습니다." },
+    { "icon": "file-question", "title": "흩어진 정보", "description": "여러 채널과 시스템에 정보가 분산되어 필요한 내용을 빠르게 찾기 어렵습니다." },
+    { "icon": "hourglass", "title": "느린 대응 속도", "description": "필요한 정보를 제때 확인하지 못해 의사결정과 대응이 늦어집니다." }
+  ],
+  "solutions": [
+    { "icon": "face-smile", "title": "업무 자동화", "description": "반복적인 업무를 자동화해 시간을 줄이고 더 중요한 업무에 집중할 수 있습니다." },
+    { "icon": "file-check", "title": "통합된 정보 관리", "description": "필요한 정보를 한 곳에서 관리해 빠르게 확인하고 활용할 수 있습니다." },
+    { "icon": "clock-rewind", "title": "빠른 데이터 활용", "description": "실시간으로 필요한 정보를 확인해 더 빠르고 정확하게 판단할 수 있습니다." }
+  ],
+  "ctas": []
+}

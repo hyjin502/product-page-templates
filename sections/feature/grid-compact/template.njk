@@ -1,0 +1,20 @@
+{% from "_partials/ui.njk" import secHead, media, pagerDots %}
+{% from "feature/_macros.njk" import only, note as noteBox %}
+<section class="feature feature--grid feature--grid-compact">
+  <div class="feature__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="feature__content">
+      <div data-pager-track class="feature__list">
+{% for c in items %}
+{% if c.href %}
+        <a class="feature-cover{{ only(c) }}" href="{{ c.href }}">{{ media(c.image, "feature-cover__img") }}</a>
+{% else %}
+        <div class="feature-cover{{ only(c) }}">{{ media(c.image, "feature-cover__img") }}</div>
+{% endif %}
+{% endfor %}
+      </div>
+      {{ pagerDots() }}
+      {{ noteBox(note) }}
+    </div>
+  </div>
+</section>

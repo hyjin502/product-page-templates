@@ -1,0 +1,179 @@
+/* ==========================================================================
+   공통 CSS — 모든 섹션이 함께 쓰는 토큰과 컴포넌트 (HDS Theme light/dark 값 기준)
+   페이지에 한 번만 넣으면 돼요.
+
+   브레이크포인트 (유일한 정의 — 섹션 CSS와 스킬은 이 값만 써요)
+     MO : max-width 767px             Figma device=mo (375)
+     TB : 768px – 1279px              코드 기본값 (Figma device=tb 추가 전까지)
+     PC : min-width 1280px            Figma device=pc (1920), 콘텐츠 폭 --body
+
+   PC 콘텐츠 폭은 --body 로 바꿔요 — Device 컬렉션 body 변수: 740 / 860 / 980 / 1200
+   (섹션마다 기본값이 달라 여기선 비워 둬요)
+   ========================================================================== */
+:root {
+  --bg-surface: #ffffff;
+  --bg-faint: #eaebec;
+  --bg-ghost: #f4f4f5;
+  --bg-muted: #aeb0b6;
+  --line-outline: #e1e2e4;
+  --t-100: #171719;
+  --t-80: rgba(23, 23, 25, 0.8);
+  --t-60: rgba(23, 23, 25, 0.6);
+  --t-45: rgba(23, 23, 25, 0.45);
+  --t-disabled: rgba(23, 23, 25, 0.25);
+  --btn-subtle: #70737c;
+  --selected-fill: #46474c;
+  --error: #fa2e43;
+  --gray-12: #333438;
+  --gray-1100: #5a5c63;
+  --gray-1600: #1b1c1e;
+  --tracking-tighter: -0.7px;
+  --tracking-tight: -0.5px;
+  --container-pad: 16px;
+  --bg-page: #f7f7f8;
+  --line-layout: #eaebec;
+  --brand: #0066ff;
+  /* 원색 팔레트 — Theme 토큰이 아니라 다크에서도 그대로예요 */
+  --red-200: #ffeef0;
+  --green-200: #ebfaf0;
+  --blue-200: #ebf3ff;
+  --violet-200: #f3f0fe;
+  --blue-400: #99c2ff;
+  --blue-600: #3385ff;
+  --brand-hunet-red: #fa2e43;   /* brand/hunet-red */
+  /* static — 테마와 상관없이 고정 */
+  --static-white: #ffffff;
+  --static-black: #000000;
+  --white-100: #ffffff;
+  --white-60: rgba(255, 255, 255, 0.6);
+  --scrim-20: rgba(0, 0, 0, 0.2);
+  --dim-50: rgba(18, 18, 18, 0.5);
+  --gray-06: #888888;
+  --gray-09: #70737c;
+  /* line / interaction */
+  --line-heavy: #70737c;        /* line/heavy */
+  --line-strong: #aeb0b6;       /* line/strong */
+  --btn-neutral: #292a2d;       /* interaction/button-neutral */
+}
+@media (min-width: 768px) and (max-width: 1279px) {
+  :root { --container-pad: 40px; }
+}
+
+/* HDS Theme 컬렉션 dark 모드 — <html data-theme="dark"> 또는 섹션 루트에 붙이면 전환돼요 */
+[data-theme="dark"] {
+  --bg-surface: #1b1c1e;
+  --bg-faint: #333438;
+  --bg-ghost: #292a2d;
+  --bg-muted: #878a93;
+  --line-outline: #333438;
+  --t-100: #f4f4f5;
+  --t-80: rgba(247, 247, 248, 0.75);
+  --t-60: rgba(247, 247, 248, 0.55);
+  --t-45: rgba(247, 247, 248, 0.4);
+  --t-disabled: rgba(247, 247, 248, 0.3);
+  --btn-subtle: #46474c;
+  --selected-fill: #70737c;
+  --bg-page: #0f0f10;
+  --line-layout: #292a2d;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: 'Pretendard', 'Pretendard Variable', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  color: var(--t-100);
+  background: var(--bg-surface);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+}
+p, h1, h2, h3 { margin: 0; }
+img { display: block; max-width: 100%; }
+
+/* PC/MO 전용 요소와 줄바꿈 — TB는 PC 줄바꿈을 따라요 */
+@media (min-width: 768px) { .only-mo { display: none !important; } }
+@media (max-width: 767px) { .only-pc { display: none !important; } }
+
+/* button — HDS button (size=xl 60). 클래스는 피그마 type 속성값 그대로예요.
+   type=neutral → 진한 회색(interaction/button-subtle 변수), type=subtle → 연한 회색(background/bg-faint) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 60px; padding: 0 32px; border: 0; border-radius: 12px;
+  font-family: inherit; font-size: 20px; font-weight: 500; line-height: 1.4;
+  letter-spacing: var(--tracking-tighter); white-space: nowrap;
+  text-decoration: none; cursor: pointer;
+}
+.btn svg { width: 20px; height: 40px; flex: none; }
+.btn--neutral { background: var(--btn-subtle); color: #fff; }
+.btn--subtle { background: var(--bg-faint); color: var(--t-80); }
+
+/* badge — HDS badge (state=error / normal) */
+.badge {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 20px; min-width: 20px; padding: 0 6px; border-radius: 900px;
+  font-size: 12px; font-weight: 600; line-height: 1.6;
+  letter-spacing: var(--tracking-tight); white-space: nowrap;
+}
+.badge::before { content: ""; position: absolute; inset: 0; background: currentColor; opacity: 0.06; }
+.badge--error { color: var(--error); }
+.badge--normal { color: var(--t-45); }
+
+/* heading-pc / heading-mo — 섹션 제목 블록 */
+.sec-head { display: flex; flex-direction: column; gap: 24px; }
+.sec-head__titles { display: flex; flex-direction: column; gap: 8px; }
+.sec-head__eyebrow { font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.sec-head__title { font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.sec-head--center { align-items: center; text-align: center; }
+.sec-head__lead { font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
+@media (max-width: 767px) {
+  .sec-head { gap: 16px; }
+  .sec-head__title { font-size: 28px; }
+  .sec-head__lead { font-size: 16px; }
+}
+
+/* ==========================================================================
+   pager — 카드형 섹션 공통 페이지 넘김
+   방식(--mode-pc/tb/mo) — Figma 오토레이아웃을 따라요
+     fill : 가로 한 줄 + 카드 채우기. --per 장 이하면 카드가 줄을 균등하게 채우고(2장이면 반씩), 넘치면 --per 장씩 페이지
+     grid : --per 열 고정 그리드 + 채우기. 줄이 늘고, --rows 줄을 넘치면 페이지
+     none : 섹션 기본 배치 그대로 (MO 세로 쌓기, 고정 폭 가로 스크롤 등)
+   개수는 --per-pc / --per-tb / --per-mo (0 = none), 줄 수는 --rows-*. 값은 build 가 meta.pager + page.json 으로 넣어요.
+   동작(점 생성·배치·스크롤)은 tokens/pager.js
+   ========================================================================== */
+[data-pager] { --per: var(--per-pc, 3); --rows: var(--rows-pc, 1); --pmode: var(--mode-pc, fill); }
+@media (min-width: 768px) and (max-width: 1279px) {
+  [data-pager] { --per: var(--per-tb, 2); --rows: var(--rows-tb, var(--rows-pc, 1)); --pmode: var(--mode-tb, var(--mode-pc, fill)); }
+}
+@media (max-width: 767px) {
+  [data-pager] { --per: var(--per-mo, 0); --rows: var(--rows-mo, 1); --pmode: var(--mode-mo, none); }
+}
+/* 한 화면 안에 들어갈 때 — Figma 오토레이아웃 채우기(Fill)처럼 카드가 줄을 균등하게 나눠요
+   (fill: 카드 수만큼 열, grid: --per 열 고정 + 줄 추가) */
+[data-pager].is-fill [data-pager-track] {
+  display: grid; grid-template-columns: repeat(var(--fcols, 1), minmax(0, 1fr));
+  grid-template-rows: none; grid-auto-rows: auto; align-items: stretch;
+  overflow: visible; scroll-snap-type: none;
+}
+[data-pager].is-fill [data-pager-track] > * { width: auto; min-width: 0; max-width: none; flex: none; }
+[data-pager].is-paged [data-pager-track] {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 1), calc((100% - (var(--per) - 1) * var(--pager-gap, 24px)) / var(--per)));
+  grid-template-rows: none; grid-auto-rows: auto;
+  justify-content: start; align-items: stretch;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
+  scrollbar-width: none; scroll-behavior: smooth;
+}
+[data-pager].is-paged [data-pager-track]::-webkit-scrollbar { display: none; }
+[data-pager].is-paged [data-pager-track] > * { width: auto; min-width: 0; max-width: none; flex: none; scroll-snap-align: none; }
+[data-pager].is-paged [data-pager-track] > [data-pager-start] { scroll-snap-align: start; }
+[data-pager].is-paged [data-pager-track]:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
+.pager-dots { display: none; justify-content: center; gap: 8px; }
+[data-pager].is-paged .pager-dots { display: flex; }
+.pager-dots button {
+  width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--t-disabled); cursor: pointer;
+}
+.pager-dots button[aria-current="true"] { background: var(--selected-fill); }
+@media (prefers-reduced-motion: reduce) { [data-pager].is-paged [data-pager-track] { scroll-behavior: auto; } }

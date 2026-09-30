@@ -1,0 +1,51 @@
+/* logo-wall default — 고객사 로고 타일이 한 줄(MO 두 줄)로 흘러가는 띠 */
+.logo-wall { display: flex; flex-direction: column; align-items: center; padding: 120px 0; background: var(--bg-surface); overflow: hidden; }
+.logo-wall__body { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 64px; }
+.logo-wall__title {
+  padding: 0 var(--container-pad); text-align: center;
+  font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100);
+}
+/* 띠가 화면보다 넓으면 가운데 기준으로 양옆이 잘려요 (움직임 줄이기일 때 Figma 배치 그대로) */
+.logo-wall__viewport { width: 100%; display: flex; justify-content: center; overflow: hidden; }
+.logo-wall__track { --gap: 16px; --tile: 150px; display: flex; flex: none; width: max-content; }
+.logo-wall__list { display: flex; gap: var(--gap); padding: 0 var(--gap) 0 0; margin: 0; list-style: none; }
+.logo-wall__item {
+  flex: none; position: relative; width: var(--tile); height: var(--tile);
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 16px; border: 1px solid var(--line-layout); border-radius: 12px; background: var(--white-100, #ffffff);
+}
+.logo-wall__logo { width: 118px; height: 80px; display: grid; place-items: center; overflow: hidden; }
+.logo-wall__img { width: 100%; height: 100%; object-fit: contain; }
+.logo-wall__name {
+  margin-top: 16px; max-width: 100%; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--gray-09, #70737c);
+}
+
+/* 흐르는 애니메이션 — 한 벌 너비만큼 이동하면 처음과 같은 모습이라 끊김이 없어요 */
+@keyframes logo-wall-marquee { to { transform: translateX(-50%); } }
+.logo-wall__track { animation: logo-wall-marquee 80s linear infinite; }
+.logo-wall__viewport:hover .logo-wall__track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .logo-wall__track { animation: none; }
+  .logo-wall__list[aria-hidden="true"] { display: none; }
+  .logo-wall__list { padding-right: 0; }
+}
+
+/* TB 768–1279 — 패딩 80%, 타이틀 PC·MO 중간 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .logo-wall { padding: 96px 0; }
+  .logo-wall__body { gap: 56px; }
+  .logo-wall__title { font-size: 28px; }
+}
+
+/* MO ≤767 — 100px 타일을 두 줄로(간격 8), 타이틀 24 */
+@media (max-width: 767px) {
+  .logo-wall { padding: 64px 0 80px; }
+  .logo-wall__body { gap: 48px; }
+  .logo-wall__title { font-size: 24px; }
+  .logo-wall__track { --gap: 8px; --tile: 100px; animation-duration: 60s; }
+  .logo-wall__list { display: grid; grid-template-columns: repeat(var(--cols), var(--tile)); grid-auto-rows: var(--tile); gap: var(--gap); }
+  .logo-wall__item { padding-top: 10.67px; border-radius: 8px; }
+  .logo-wall__logo { width: 78.67px; height: 53.33px; }
+  .logo-wall__name { margin-top: 9px; padding: 0; font-size: 12px; line-height: 14.67px; letter-spacing: -0.2px; color: var(--t-80); }
+}

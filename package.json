@@ -1,0 +1,22 @@
+{
+  "name": "product-page-templates",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Figma 섹션 템플릿 ↔ HTML 템플릿 레지스트리 · 라이브러리/조합기 사이트 · Figma→page.json 추출기",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --watch",
+    "validate": "node scripts/validate.mjs",
+    "preview": "node scripts/preview.mjs",
+    "shot": "node scripts/shot.mjs",
+    "serve": "node scripts/serve.mjs",
+    "pack": "node scripts/pack.mjs"
+  },
+  "dependencies": {
+    "nunjucks": "^3.2.4"
+  }
+}

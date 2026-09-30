@@ -1,0 +1,152 @@
+{
+  "id": "pricing-single-item",
+  "section": "pricing",
+  "layout": "single-item",
+  "order": 1,
+  "when": "상품 하나의 가격·할부·구성 조건을 카드 한 장으로 보여줄 때",
+  "figma": {
+    "pc": "6187:4926",
+    "mo": "6187:5022",
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "title": {
+      "type": "text",
+      "figmaLayer": "title",
+      "label": "섹션 타이틀"
+    },
+    "name": {
+      "type": "richtext",
+      "figmaLayer": "리더십이 필요한 순간, NEW 팀장리",
+      "aliases": [
+        "name"
+      ],
+      "label": "상품명 (카드 제목)"
+    },
+    "priceLabel": {
+      "type": "text",
+      "figmaLayer": "정가",
+      "aliases": [
+        "price-label"
+      ],
+      "optional": true,
+      "label": "정가 라벨"
+    },
+    "price": {
+      "type": "text",
+      "figmaLayer": "700,000원",
+      "aliases": [
+        "price"
+      ],
+      "label": "정가 금액"
+    },
+    "installmentLabel": {
+      "type": "text",
+      "figmaLayer": "12개월 무이자 할부 시",
+      "aliases": [
+        "installment-label"
+      ],
+      "optional": true,
+      "label": "할부 조건 라벨"
+    },
+    "monthlyUnit": {
+      "type": "text",
+      "figmaLayer": "월",
+      "aliases": [
+        "monthly-unit"
+      ],
+      "optional": true,
+      "label": "할부 단위 (파란 글자)"
+    },
+    "monthlyPrice": {
+      "type": "text",
+      "figmaLayer": "58,333원",
+      "aliases": [
+        "monthly-price"
+      ],
+      "optional": true,
+      "label": "월 할부 금액 (파란 글자)"
+    },
+    "rows": {
+      "type": "list",
+      "figmaLayer": "Frame 1",
+      "figmaPath": "List",
+      "aliases": [
+        "Frame 2",
+        "Frame 3",
+        "Frame 4",
+        "Frame 5",
+        "Frame 6",
+        "Frame 7",
+        "item"
+      ],
+      "min": 0,
+      "max": 12,
+      "label": "구성 조건 (라벨 · 값)",
+      "note": "List 프레임의 자식 행(Frame 1…7)이 항목이에요",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaLayer": "*",
+          "nth": 0
+        },
+        "value": {
+          "type": "text",
+          "figmaLayer": "*",
+          "nth": 1
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "action button",
+      "min": 0,
+      "max": 1,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "버튼명"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "solid"
+          ],
+          "figmaProp": "style"
+        }
+      }
+    },
+    "note": {
+      "type": "list",
+      "figmaLayer": "* 단체수강 시 할인이 가능하며, 자",
+      "figmaPath": "Frame 10/* 단체수강 시 할인이 가능하며, 자",
+      "optional": true,
+      "min": 0,
+      "max": 5,
+      "label": "버튼 아래 안내 문구 (일반 글자 / 굵은 밑줄 링크 조각)",
+      "note": "Frame 10 안의 TEXT 3개(이름이 모두 같음)를 문서 순서대로 한 조각씩 읽어요",
+      "item": {
+        "text": {
+          "type": "text",
+          "figmaLayer": "* 단체수강 시 할인이 가능하며, 자"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "normal",
+            "link"
+          ],
+          "label": "link = 굵은 밑줄 링크"
+        },
+        "href": {
+          "type": "url"
+        }
+      }
+    }
+  }
+}

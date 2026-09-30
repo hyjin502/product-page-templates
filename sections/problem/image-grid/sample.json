@@ -1,0 +1,22 @@
+{
+  "eyebrow": "우리 조직의 고민",
+  "title": "왜 많은 기업이\n휴넷 FLEX를 선택할까요?",
+  "subtitle": "변화하는 업무 환경 속에서\n실제 담당자들의 고민을 확인해 보세요.",
+  "cards": [
+    {
+      "avatar": { "src": "assets/problem/avatar-default-01.svg", "alt": "" },
+      "title": "교육은 많이 하는데\n성과를 확인하기 어려워요",
+      "role": "HR 담당자"
+    },
+    {
+      "avatar": { "src": "assets/problem/avatar-default-08.svg", "alt": "" },
+      "title": "구성원마다 필요한 교육이 다르고, 조직 상황도 달라서 운영 방식까지 함께 고민해야 해요",
+      "role": "교육 담당자"
+    },
+    {
+      "avatar": { "src": "assets/problem/avatar-default-08.svg", "alt": "" },
+      "title": "교육 비용을 절감하면서도 더 효과적인 교육이 되었어요",
+      "role": "컨설팅 J사 대표"
+    }
+  ]
+}

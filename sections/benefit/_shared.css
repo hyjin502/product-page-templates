@@ -1,0 +1,28 @@
+/* benefit 공통 — list / number / timeline / step / detail-slide 가 함께 써요 */
+.benefit {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 120px var(--container-pad);
+  background: var(--bg-surface); color: var(--t-100);
+}
+.benefit__body { width: var(--body, 980px); max-width: 100%; display: flex; flex-direction: column; gap: 60px; }
+.benefit .sec-head__lead { color: var(--t-80); }
+
+/* 항목 공통 타이포 — heading/heading-20(bold), body/body-16(regular) */
+.benefit__item-title { font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.benefit__item-desc { font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+
+/* 이미지 자리 — 비어 있으면 Figma처럼 회색 박스만 보여요 */
+.benefit__media { overflow: hidden; background: var(--bg-ghost); }
+.benefit__img { width: 100%; height: 100%; object-fit: cover; }
+
+/* TB 768–1279 — 패딩 약 80% */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .benefit { padding: 96px var(--container-pad); }
+  .benefit__body { gap: 48px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .benefit { padding: 72px var(--container-pad); }
+  .benefit__body { width: 100%; gap: 64px; }
+}

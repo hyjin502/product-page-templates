@@ -1,0 +1,49 @@
+<section class="pricing pricing--receipt pricing--on-black">
+  <div class="pricing__body">
+    <h2 class="pricing__title">{{ title | rt }}</h2>
+    <div class="pricing__receipt-wrap">
+      <div class="pricing__receipt">
+        <div class="pricing__receipt-card">
+          <h3 class="pricing__receipt-head">{{ heading | rt }}</h3>
+          <ul class="pricing__lines">
+{% for l in lines %}
+            <li class="pricing__line">
+              <span class="pricing__line-name">{{ l.name | rt }}</span>
+              <span class="pricing__line-qty">{{ l.qty | rt }}</span>
+              <strong class="pricing__line-amount">{{ l.amount | rt }}</strong>
+            </li>
+{% endfor %}
+          </ul>
+          <div class="pricing__sum">
+{% if totals.length %}
+            <dl class="pricing__totals">
+{% for t in totals %}
+              <div class="pricing__total{% if t.tone == 'muted' %} pricing__total--muted{% endif %}">
+                <dt class="pricing__total-label">{{ t.label | rt }}</dt>
+                <dd class="pricing__total-value"><strong class="pricing__total-num">{{ t.value | rt }}</strong>{% if t.unit %}<span class="pricing__total-unit">{{ t.unit | rt }}</span>{% endif %}</dd>
+              </div>
+{% endfor %}
+            </dl>
+{% endif %}
+            <div class="pricing__final-wrap">
+              <p class="pricing__final">
+                <span class="pricing__final-label">{{ finalLabel | rt }}</span>
+                <span class="pricing__final-value"><strong class="pricing__final-num">{{ finalValue | rt }}</strong>{% if finalUnit %}<span class="pricing__final-unit">{{ finalUnit | rt }}</span>{% endif %}</span>
+              </p>
+{% if footnote or perPerson %}
+              <div class="pricing__foot">
+{% if footnote %}
+                <p class="pricing__footnote">{{ footnote | rt }}</p>
+{% endif %}
+{% if perPerson %}
+                <p class="pricing__per">{{ perPerson | rt }}</p>
+{% endif %}
+              </div>
+{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

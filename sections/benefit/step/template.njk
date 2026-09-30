@@ -1,0 +1,35 @@
+{% from "_partials/ui.njk" import ctas as ctaList, secHead, media %}
+<section class="benefit benefit--step">
+  <div class="benefit__body">
+    {{ secHead(eyebrow, title, null, "benefit__head") }}
+    <div class="benefit__feature">
+      <div class="benefit__feature-text">
+        <div class="benefit__feature-copy">
+          <h3 class="benefit__headline">{{ headline | rt }}</h3>
+{% if description %}
+          <p class="benefit__item-desc">{{ description | rt }}</p>
+{% endif %}
+        </div>
+{% if points and points.length %}
+        <ul class="benefit__points">
+{% for p in points %}
+          <li>
+{% if p.href %}
+            <a class="benefit__point" href="{{ p.href }}">{{ 'benefit-check-circle' | icon }}<span>{{ p.label }}</span>{{ 'benefit-chevron-right-16' | icon }}</a>
+{% else %}
+            <span class="benefit__point">{{ 'benefit-check-circle' | icon }}<span>{{ p.label }}</span></span>
+{% endif %}
+          </li>
+{% endfor %}
+        </ul>
+{% endif %}
+        {{ ctaList(ctas, "benefit__btns") }}
+      </div>
+      <div class="benefit__media benefit__feature-media">
+{% if image and image.src %}
+        {{ media(image, "benefit__img") }}
+{% endif %}
+      </div>
+    </div>
+  </div>
+</section>

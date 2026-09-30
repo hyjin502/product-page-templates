@@ -1,0 +1,99 @@
+{
+  "id": "sticky-cta-default",
+  "section": "sticky-cta",
+  "layout": "default",
+  "order": 1,
+  "stage": "sticky",
+  "when": "학습 시작일·마감까지 남은 날과 신청 버튼을 화면 하단에 고정해서 보여줄 때",
+  "figma": {
+    "pc": "6187:5267",
+    "mo": "6187:5282",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "startLabel": {
+      "type": "text",
+      "label": "왼쪽 굵은 안내 (PC 전용)",
+      "note": "Frame 55 의 첫 번째 TEXT. 두 TEXT 레이어 이름이 같아요 — start / deadline 으로 변경 요청",
+      "figmaLayer": "학습시작일 06월 15일 (수강신청",
+      "nth": 0
+    },
+    "deadline": {
+      "type": "text",
+      "optional": true,
+      "label": "왼쪽 보조 안내 (PC 전용)",
+      "note": "Frame 55 의 두 번째 TEXT",
+      "figmaLayer": "학습시작일 06월 15일 (수강신청",
+      "nth": 1
+    },
+    "ddayIcon": {
+      "type": "text",
+      "figmaLayer": "🚨",
+      "optional": true,
+      "label": "D-day 앞 이모지 (PC 전용)"
+    },
+    "ddayLabel": {
+      "type": "text",
+      "figmaLayer": "마감까지",
+      "optional": true,
+      "label": "D-day 문구"
+    },
+    "ddayValue": {
+      "type": "text",
+      "figmaLayer": "10일",
+      "aliases": [
+        "10일 남음"
+      ],
+      "optional": true,
+      "label": "남은 기간 (빨간 글자)",
+      "note": "비우면 D-day 영역 전체를 숨겨요 (피그마 D-day 속성 off). MO는 '10일 남음' 한 TEXT 안에서 빨간 부분"
+    },
+    "ddaySuffix": {
+      "type": "text",
+      "figmaLayer": "남음",
+      "optional": true,
+      "label": "남은 기간 뒤 문구"
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "aliases": [
+        "btn_light",
+        "btn_dark",
+        "button"
+      ],
+      "min": 1,
+      "max": 2,
+      "label": "버튼",
+      "note": "피그마 버튼 type 이 둘 다 primary(색만 덮어씀)라 style 은 순서로 정해요: 1번째 subtle(연한), 2번째 neutral(진한)",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "subtle",
+            "neutral"
+          ]
+        }
+      }
+    }
+  },
+  "options": {
+    "dark": {
+      "label": "mode=dark · 어두운 바",
+      "class": "sticky-cta--dark",
+      "figma": {
+        "pc": "6187:5246",
+        "mo": "6187:5261"
+      }
+    }
+  },
+  "extractFrom": "pc"
+}

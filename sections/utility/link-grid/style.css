@@ -1,0 +1,36 @@
+.utility--link-grid { padding-top: 120px; padding-bottom: 120px; }
+.utility--link-grid .utility__body {
+  width: var(--body, 980px); max-width: 100%;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 64px;
+}
+.utility--link-grid .utility__head { flex: 0 1 276px; }
+.utility__links {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, 320px); gap: 12px;
+}
+.utility__link {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 24px; border: 1px solid var(--line-outline); border-radius: 8px;
+  background: var(--bg-surface); color: var(--t-100); text-decoration: none;
+}
+.utility__link-label { font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.utility__link svg { flex: none; width: 20px; height: 20px; }
+
+/* TB 768–1279 — 1024 이상은 좌우 배치(카드 폭 가변), 그 아래는 제목 위·카드 아래로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .utility--link-grid { padding-top: 96px; padding-bottom: 96px; }
+  .utility--link-grid .utility__body { gap: 48px; }
+  .utility--link-grid .utility__head { flex: 0 0 auto; }
+  .utility__links { flex: 1 1 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .utility--link-grid .utility__body { flex-direction: column; align-items: stretch; gap: 40px; }
+}
+
+/* MO ≤767 — 제목 위, 카드 1열 */
+@media (max-width: 767px) {
+  .utility--link-grid { padding-top: 64px; padding-bottom: 80px; }
+  .utility--link-grid .utility__body { flex-direction: column; align-items: stretch; gap: 48px; }
+  .utility--link-grid .utility__head { flex: none; }
+  .utility__links { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+}

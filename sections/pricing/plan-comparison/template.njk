@@ -1,0 +1,51 @@
+{% from "_partials/ui.njk" import ctas as ctaList, secHead %}
+<section class="pricing pricing--plan-comparison">
+  <div class="pricing__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="pricing__table-wrap">
+      <table class="pricing__table">
+        <thead>
+          <tr>
+            <th scope="col" class="pricing__spec pricing__spec--head">{{ specHeader | rt }}</th>
+{% for p in plans %}
+            <th scope="col" class="pricing__plan{% if p.featured %} is-featured{% endif %}">
+              <span class="pricing__plan-top">
+                <span class="pricing__plan-name">{{ p.name | rt }}</span>
+{% if p.badge %}
+                <span class="pricing__plan-badge">{{ p.badge | rt }}</span>
+{% endif %}
+              </span>
+              <span class="pricing__plan-price">
+                <strong class="pricing__plan-num">{{ p.price | rt }}</strong>
+{% if p.unit %}
+                <span class="pricing__plan-unit">{{ p.unit | rt }}</span>
+{% endif %}
+              </span>
+            </th>
+{% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+{% for s in specs %}
+{% set i = loop.index0 %}
+          <tr>
+            <th scope="row" class="pricing__spec">{{ s.label | rt }}</th>
+{% for p in plans %}
+{% set c = p.cells[i] if p.cells else null %}
+            <td class="pricing__cell{% if c and c.tag %} pricing__cell--tagged{% endif %}{% if p.featured %} is-featured{% endif %}">
+{% if c %}
+              <span class="pricing__cell-value">{{ c.value | rt }}</span>
+{% if c.tag %}
+              <span class="pricing__cell-tag">{{ c.tag | rt }}</span>
+{% endif %}
+{% endif %}
+            </td>
+{% endfor %}
+          </tr>
+{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {{ ctaList(ctas, "pricing__btns") }}
+  </div>
+</section>

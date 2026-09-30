@@ -1,0 +1,17 @@
+{% from "_partials/ui.njk" import secHead, media %}
+<section class="metrics metrics--default">
+  <div class="metrics__body">
+    {{ secHead(null, title, null, "sec-head--center") }}
+    <ul class="metrics__list">
+{% for m in items %}
+      <li class="metrics__item">
+        <span class="metrics__icon">{{ media(m.icon, "metrics__img") }}</span>
+        <div class="metrics__text">
+          <p class="metrics__value"><span class="metrics__num">{{ m.value }}</span>{% if m.unit %}<span class="metrics__unit">{{ m.unit }}</span>{% endif %}</p>
+          <p class="metrics__desc">{{ m.description }}</p>
+        </div>
+      </li>
+{% endfor %}
+    </ul>
+  </div>
+</section>

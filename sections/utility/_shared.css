@@ -1,0 +1,6 @@
+/* utility 공통 — link-grid / closing-banner 가 함께 써요 */
+.utility {
+  display: flex; flex-direction: column; align-items: center;
+  padding-left: var(--container-pad); padding-right: var(--container-pad);
+  background: var(--bg-surface);
+}

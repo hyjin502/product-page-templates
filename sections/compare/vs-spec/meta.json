@@ -1,0 +1,98 @@
+{
+  "id": "compare-vs-spec",
+  "section": "compare",
+  "layout": "vs-spec",
+  "order": 2,
+  "when": "항목(행)별로 기존 방식 vs 우리를 표로 대비할 때 (우리 열 강조)",
+  "figma": {
+    "pc": "6187:3506",
+    "mo": null,
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "섹션 제목"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "제목 아래 설명 (Figma 기본값은 없음)"
+    },
+    "otherLabel": {
+      "type": "text",
+      "figmaLayer": "타기관 임원 교육 강사 중심의 교육",
+      "figmaPath": "Frame 4041/Frame 4021/타기관 임원 교육 강사 중심의 교육",
+      "aliases": [
+        "other-label"
+      ],
+      "label": "비교 대상 열 제목"
+    },
+    "oursLabel": {
+      "type": "text",
+      "figmaLayer": "휴넷 Executive MBA",
+      "figmaPath": "Frame 4038/Frame 4020/휴넷 Executive MBA",
+      "aliases": [
+        "ours-label"
+      ],
+      "label": "우리 열 제목 (강조)"
+    },
+    "rows": {
+      "type": "list",
+      "figmaLayer": "row",
+      "note": "Figma 는 행이 아니라 열(Frame 4042 = 항목명, Frame 4041 = 비교 대상, Frame 4038 = 우리) 단위로 그려져 있어요. 각 열의 n번째 셀(머리 셀 제외)을 한 행으로 묶어야 해요 | Figma가 열 단위(Frame 4042/4041/4038)라 행으로 추출할 수 없어요 — 행 프레임으로 정리되면 extract 해제",
+      "min": 1,
+      "max": 10,
+      "label": "비교 행",
+      "item": {
+        "label": {
+          "type": "richtext",
+          "figmaLayer": "label",
+          "figmaPath": "Frame 4042/label",
+          "aliases": [
+            "강의방식",
+            "주요특징",
+            "학습기간",
+            "비용"
+          ],
+          "label": "항목명"
+        },
+        "other": {
+          "type": "richtext",
+          "figmaLayer": "other",
+          "figmaPath": "Frame 4041/other",
+          "aliases": [
+            "Only 오프라인 집체교육",
+            "경영학 기본 커리큘럼 강사 중심 운영",
+            "1~3개월",
+            "300~500만원"
+          ],
+          "label": "비교 대상 값"
+        },
+        "ours": {
+          "type": "richtext",
+          "figmaLayer": "ours",
+          "figmaPath": "Frame 4038/ours",
+          "aliases": [
+            "하이브리드(온+오프) or 온라인 중",
+            "총 100개 핵심 토픽 기반 콘텐츠",
+            "4개월",
+            "500만원 * only online"
+          ],
+          "note": "Figma 일부 셀은 굵기가 섞여 있지만(굵게+보통) 코드에서는 전부 굵게 표시",
+          "label": "우리 값 (강조)"
+        }
+      },
+      "extract": false
+    }
+  }
+}

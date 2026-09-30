@@ -1,0 +1,47 @@
+{
+  "eyebrow": "시류를 읽다.",
+  "title": {
+    "pc": "매일 업데이트되는 인사이트 콘텐츠",
+    "mo": "매일 업데이트되는\n인사이트 콘텐츠"
+  },
+  "subtitle": "신문보다 깊게 리포트보다 쉽게,\n전문가의 시각을 담은 아티클과 영상",
+  "items": [
+    {
+      "type": "thumbnail2",
+      "image": {
+        "src": "assets/feature/th-dice.png",
+        "alt": ""
+      },
+      "title": "집채형 하이브리드",
+      "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+    },
+    {
+      "type": "thumbnail2",
+      "image": {
+        "src": "assets/feature/th-meeting.png",
+        "alt": ""
+      },
+      "title": "집채형 하이브리드",
+      "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙은 무엇인가?"
+    },
+    {
+      "type": "thumbnail2",
+      "image": {
+        "src": "assets/feature/th-hands.png",
+        "alt": ""
+      },
+      "title": "플립형 하이브리드",
+      "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+    },
+    {
+      "type": "thumbnail2",
+      "image": {
+        "src": "assets/feature/th-portal.jpg",
+        "alt": ""
+      },
+      "title": "플립형 하이브리드",
+      "description": "전략 근시를 벗어나기 위한 다섯 가지 원칙"
+    }
+  ],
+  "note": "현재 가장 중요한 경영 이슈와 트렌드를 적시에 얻고,\n비즈니스에 필요한 통찰을 얻으세요!"
+}

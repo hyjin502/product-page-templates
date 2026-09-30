@@ -1,0 +1,15 @@
+{% from "_partials/ui.njk" import secHead %}
+{% from "feature/_macros.njk" import thumb, note as noteBox %}
+<section class="feature feature--grid feature--grid-default">
+  <div class="feature__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="feature__content">
+      <div class="feature__list">
+{% for c in items %}
+        {{ thumb(c) }}
+{% endfor %}
+      </div>
+      {{ noteBox(note) }}
+    </div>
+  </div>
+</section>

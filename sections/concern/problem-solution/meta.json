@@ -1,0 +1,190 @@
+{
+  "id": "concern-problem-solution",
+  "section": "concern",
+  "layout": "problem-solution",
+  "order": 3,
+  "when": "문제(Problem)와 해결(Solution)을 한 줄씩 1:1로 짝지어 보여줄 때",
+  "figma": {
+    "pc": "6187:3971",
+    "mo": "6187:4058",
+    "tb": null
+  },
+  "body": 860,
+  "darkNote": "Solution 카드 배경(color/blue/200)·가운데 화살표(static/white, color/blue/400)·칩 색은 원색이라 다크에서 바뀌지 않아요.",
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구",
+      "note": "피그마 heading 에서 숨김"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "타이틀 아래 설명",
+      "note": "피그마 heading 에서 숨김"
+    },
+    "problemLabel": {
+      "type": "text",
+      "label": "왼쪽 칩 (Problem)",
+      "note": "chips-item 인스턴스의 TEXT. MO는 두 열 프레임 이름이 모두 The-Problem 이라 첫 번째 열",
+      "figmaLayer": "필터명",
+      "nth": 0
+    },
+    "solutionLabel": {
+      "type": "text",
+      "label": "오른쪽 칩 (Solution)",
+      "note": "MO는 두 번째 The-Problem 열",
+      "figmaLayer": "필터명",
+      "nth": 1
+    },
+    "problems": {
+      "type": "list",
+      "min": 1,
+      "max": 6,
+      "label": "문제 카드 (왼쪽 열)",
+      "note": "solutions 와 같은 순서로 한 줄씩 짝지어요. 피그마 항목 프레임 이름이 1·2·3 이에요 — item 으로 변경 요청",
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": [
+            "face-neutral",
+            "file-question",
+            "hourglass",
+            "face-smile",
+            "file-check",
+            "clock-rewind"
+          ],
+          "label": "아이콘 (24)",
+          "note": "아이콘 인스턴스의 컴포넌트 이름으로 매핑: users/face-neutral → face-neutral, files/file-question-03 → file-question, time/hourglass-03 → hourglass, users/face-smile → face-smile, files/file-check-02 → file-check, time/clock-rewind → clock-rewind",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 2147238950/*",
+          "figmaProp": "$main"
+        },
+        "title": {
+          "type": "text",
+          "label": "제목",
+          "note": "피그마 TEXT 레이어 이름이 문구 그대로예요(예: 반복되는 수작업) — title 로 변경 요청. 지금은 Frame 42 의 첫 번째 TEXT",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 42/*",
+          "nth": 0
+        },
+        "description": {
+          "type": "richtext",
+          "label": "설명",
+          "note": "Frame 42 의 두 번째 TEXT — description 으로 변경 요청",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 42/*",
+          "nth": 1
+        }
+      },
+      "figmaLayer": "1",
+      "aliases": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "item"
+      ],
+      "scope": {
+        "figmaLayer": [
+          "Problem",
+          "Solution",
+          "The-Problem"
+        ],
+        "nth": 0
+      }
+    },
+    "solutions": {
+      "type": "list",
+      "min": 1,
+      "max": 6,
+      "label": "해결 카드 (오른쪽 열)",
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": [
+            "face-smile",
+            "file-check",
+            "clock-rewind",
+            "face-neutral",
+            "file-question",
+            "hourglass"
+          ],
+          "label": "아이콘 (24)",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 2147238950/*",
+          "figmaProp": "$main"
+        },
+        "title": {
+          "type": "text",
+          "label": "제목",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 42/*",
+          "nth": 0
+        },
+        "description": {
+          "type": "richtext",
+          "label": "설명",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 42/*",
+          "nth": 1
+        }
+      },
+      "figmaLayer": "1",
+      "aliases": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "item"
+      ],
+      "scope": {
+        "figmaLayer": [
+          "Problem",
+          "Solution",
+          "The-Problem"
+        ],
+        "nth": 1
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "note": "피그마 컴포넌트에서 기본 숨김",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "type"
+        }
+      }
+    }
+  }
+}

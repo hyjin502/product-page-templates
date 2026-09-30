@@ -1,0 +1,28 @@
+{% from "_partials/ui.njk" import secHead %}
+<section class="problem problem--text-highlight">
+  <div class="problem__body problem__split">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="problem__stack">
+{% for c in cards %}
+      <article class="problem__card">
+        <div class="problem__card-text">
+          <h3 class="problem__card-title">{{ c.title | rt }}</h3>
+{% if c.description %}
+          <p class="problem__text problem__card-desc">{{ c.description | rt }}</p>
+{% endif %}
+        </div>
+{% if c.role or (c.avatar and c.avatar.src) %}
+        <div class="problem__who">
+{% if c.avatar and c.avatar.src %}
+          <img class="problem__avatar" src="{{ c.avatar.src }}" alt="{{ c.avatar.alt or '' }}" width="32" height="32">
+{% endif %}
+{% if c.role %}
+          <span class="problem__role">{{ c.role }}</span>
+{% endif %}
+        </div>
+{% endif %}
+      </article>
+{% endfor %}
+    </div>
+  </div>
+</section>

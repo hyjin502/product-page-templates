@@ -1,0 +1,108 @@
+{
+  "id": "problem-step-split",
+  "section": "problem",
+  "layout": "step-split",
+  "order": 8,
+  "when": "문제 해결 과정을 번호 단계로 풀어 설명할 때 (PC 는 단계 표시가 따라다녀요)",
+  "figma": {
+    "pc": "6187:2853",
+    "mo": "6187:3054",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "note": "MO: heading-mo/Frame 2147238960/title",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "nav": {
+      "type": "list",
+      "figmaLayer": "step1",
+      "aliases": [
+        "step2",
+        "step3",
+        "step4"
+      ],
+      "min": 0,
+      "max": 6,
+      "label": "단계 표시 (PC 순서플로팅) — steps 와 같은 개수",
+      "note": "PC 에만 있어요(MO 프레임에는 없음). 번호는 순서대로 자동",
+      "item": {
+        "label": {
+          "type": "richtext",
+          "figmaLayer": "방식의 유연함",
+          "label": "단계 이름",
+          "note": "4개 모두 레이어 이름이 '방식의 유연함' — label 로 변경 요청"
+        }
+      }
+    },
+    "steps": {
+      "type": "list",
+      "min": 1,
+      "max": 6,
+      "label": "단계",
+      "note": "항목 레이어 이름이 1/2/3/4 (번호 TEXT 레이어도 '1') — item 으로 변경 요청. 번호는 순서대로 자동",
+      "item": {
+        "title": {
+          "type": "richtext",
+          "label": "단계 제목",
+          "note": "레이어 이름이 문구 자체 — title 로 변경 요청",
+          "figmaLayer": "*",
+          "figmaPath": "Frame 2147238947/*",
+          "nth": 0
+        },
+        "image": {
+          "type": "image",
+          "figmaLayer": "Rectangle 4",
+          "optional": true,
+          "label": "이미지 (PC 408×256 / MO 291×180)",
+          "note": "비우면 회색(bg-ghost) 자리만 보여요"
+        },
+        "description": {
+          "type": "richtext",
+          "label": "설명",
+          "note": "레이어 이름이 문구 자체 — description 으로 변경 요청",
+          "figmaLayer": "*",
+          "figmaPath": "text/*",
+          "nth": 0
+        },
+        "note": {
+          "type": "richtext",
+          "optional": true,
+          "label": "추가 설명(두 번째 문단)",
+          "note": "레이어 이름이 문구 자체 — note 로 변경 요청",
+          "figmaLayer": "*",
+          "figmaPath": "text/*",
+          "nth": 1
+        }
+      },
+      "figmaLayer": "1",
+      "aliases": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "figmaPath": "step"
+    }
+  }
+}

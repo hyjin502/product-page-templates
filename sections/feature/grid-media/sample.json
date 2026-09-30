@@ -1,0 +1,36 @@
+{
+  "eyebrow": "시류를 읽다.",
+  "title": {
+    "pc": "매일 업데이트되는 인사이트 콘텐츠",
+    "mo": "매일 업데이트되는\n인사이트 콘텐츠"
+  },
+  "subtitle": "신문보다 깊게 리포트보다 쉽게,\n전문가의 시각을 담은 아티클과 영상",
+  "items": [
+    {
+      "image": {
+        "src": "assets/feature/th-portal.jpg",
+        "alt": ""
+      },
+      "caption": "교육 트렌드의 변화",
+      "title": "학습은 더 이상\n일회성 이벤트가 아닌\n지속적 경험 입니다."
+    },
+    {
+      "image": {
+        "src": "assets/feature/th-office.jpg",
+        "alt": ""
+      },
+      "caption": "교육 트렌드의 변화",
+      "title": "AI의 발전으로\n교육 효과에 대한 기대가\n높아지고 있습니다."
+    },
+    {
+      "image": {
+        "src": "assets/feature/media-presenter.jpg",
+        "alt": ""
+      },
+      "caption": "교육 트렌드의 변화",
+      "title": "학습 경험의 최종목표는\n스킬 향상으로\n귀결되어야 합니다.",
+      "device": "pc"
+    }
+  ],
+  "note": "현재 가장 중요한 경영 이슈와 트렌드를 적시에 얻고,\n비즈니스에 필요한 통찰을 얻으세요!"
+}

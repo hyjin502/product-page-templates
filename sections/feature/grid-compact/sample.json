@@ -1,0 +1,42 @@
+{
+  "eyebrow": "깊이를 더하다.",
+  "title": {
+    "pc": "심층 분석 CEO리포트",
+    "mo": "심층 분석 CEO 리포트"
+  },
+  "subtitle": "신문보다 깊게 리포트보다 쉽게,\n전문가의 시각을 담은 아티클과 영상",
+  "items": [
+    {
+      "image": {
+        "src": "assets/feature/report-1.jpg",
+        "alt": ""
+      }
+    },
+    {
+      "image": {
+        "src": "assets/feature/report-2.jpg",
+        "alt": ""
+      }
+    },
+    {
+      "image": {
+        "src": "assets/feature/report-3.jpg",
+        "alt": ""
+      }
+    },
+    {
+      "image": {
+        "src": "assets/feature/report-4.jpg",
+        "alt": ""
+      }
+    },
+    {
+      "image": {
+        "src": "assets/feature/report-5.jpg",
+        "alt": ""
+      },
+      "device": "pc"
+    }
+  ],
+  "note": "현재 가장 중요한 경영 이슈와 트렌드를 적시에 얻고,\n비즈니스에 필요한 통찰을 얻으세요!"
+}

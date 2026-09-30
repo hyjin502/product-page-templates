@@ -1,0 +1,41 @@
+/* benefit-step — 구분선 있는 제목 + 기능 설명 · 포인트 · 이미지 (PC 458 + 64 + 458) */
+.benefit--step .benefit__head { gap: 0; padding-bottom: 32px; border-bottom: 1px solid var(--line-outline); }
+.benefit--step .sec-head__eyebrow { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.benefit--step .sec-head__title { font-size: 40px; }
+.benefit__feature { display: flex; align-items: flex-start; gap: 64px; }
+.benefit__feature-text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
+.benefit__feature-copy { display: flex; flex-direction: column; gap: 16px; }
+.benefit__headline { font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.benefit__points { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.benefit__point {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight);
+  color: var(--t-80); text-decoration: none;
+}
+.benefit__point svg { flex: none; }
+a.benefit__point:hover span { text-decoration: underline; }
+.benefit--step .benefit__btns { display: flex; gap: 16px; }
+.benefit__feature-media { flex: 1 1 0; min-width: 0; aspect-ratio: 458 / 300; border-radius: 16px; }
+
+/* TB 768–1279 — 1024 이상은 좌우(간격 축소), 그 아래는 세로로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .benefit--step .sec-head__title { font-size: 34px; }
+  .benefit__feature { gap: 48px; }
+  .benefit__headline { font-size: 28px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .benefit__feature { flex-direction: column; align-items: stretch; }
+  .benefit__feature-media { flex: none; width: 100%; aspect-ratio: 980 / 460; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .benefit--step .benefit__body { gap: 48px; }
+  .benefit--step .sec-head__eyebrow { font-size: 20px; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+  .benefit--step .sec-head__title { font-size: 28px; }
+  .benefit__feature { flex-direction: column; align-items: stretch; gap: 40px; }
+  .benefit__headline { font-size: 24px; }
+  .benefit--step .benefit__btns { flex-direction: column; }
+  .benefit--step .benefit__btns .btn { width: 100%; }
+  .benefit__feature-media { flex: none; width: 100%; aspect-ratio: 343 / 200; }
+}

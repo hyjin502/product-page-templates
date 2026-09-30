@@ -1,0 +1,24 @@
+/* benefit-number — 번호형 3단 (PC 가운데 정렬, MO 세로 · 왼쪽 정렬) */
+.benefit__values {
+  margin: 0; padding: 0; list-style: none;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 32px;
+}
+.benefit__value { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.benefit__num { font-size: 40px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+
+/* TB 768–1279 — 1024 이상은 3단(간격 축소), 그 아래는 MO처럼 세로로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .benefit__values { gap: 24px; }
+  .benefit__num { font-size: 36px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .benefit__values { grid-auto-flow: row; grid-auto-columns: auto; gap: 40px; }
+  .benefit__value { align-items: flex-start; text-align: left; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .benefit__values { grid-auto-flow: row; grid-auto-columns: auto; gap: 40px; }
+  .benefit__value { align-items: flex-start; text-align: left; }
+  .benefit__num { font-size: 32px; }
+}

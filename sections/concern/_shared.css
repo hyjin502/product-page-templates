@@ -1,0 +1,25 @@
+/* concern 공통 — persona / card / problem-solution / before-after 가 함께 써요 */
+.concern {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 120px var(--container-pad); background: var(--bg-surface);
+}
+.concern__body {
+  width: var(--body, 980px); max-width: 100%;
+  display: flex; flex-direction: column; gap: 60px;
+}
+/* 숨겨진 cta 인스턴스(피그마 기본값: 숨김)를 켰을 때 */
+.concern__btns { display: flex; justify-content: center; gap: 16px; }
+
+/* TB 768–1279 — 패딩 약 80% */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .concern { padding: 96px var(--container-pad); }
+  .concern__body { gap: 48px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .concern { padding: 72px var(--container-pad); }
+  .concern__body { gap: 48px; }
+  .concern__btns { flex-direction: column; gap: 12px; }
+  .concern__btns .btn { width: 100%; }
+}

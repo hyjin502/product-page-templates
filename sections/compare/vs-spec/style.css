@@ -1,0 +1,46 @@
+/* compare-vs-spec — 항목명 | 비교 대상 | 우리(강조) 3열 표. 우리 열 테두리·그림자는 머리 셀 ::after 하나로 표 높이 전체에 그려요 */
+.compare__table {
+  --label-w: 151px; --head-h: 100px; --head-other-h: 85px; --row-h: 88px; --hl-radius: 22px;
+  position: relative; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0;
+  font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); text-align: center;
+}
+.compare--vs-spec .compare__body { width: var(--body, 860px); }
+:where(.compare__table) :where(th, td) { padding: 0; font-weight: inherit; }
+.compare__corner { width: var(--label-w); }
+.compare__corner, .compare__th--other { height: var(--head-h); vertical-align: bottom; }
+.compare__head-box {
+  display: flex; align-items: center; justify-content: center; height: var(--head-other-h); padding: 10px;
+  border-bottom: 1px solid var(--line-outline);
+}
+.compare__corner .compare__head-box { border-right: 1px solid var(--line-outline); }
+.compare__th--other .compare__head-box { background: var(--bg-page); font-weight: 500; color: var(--t-80); }
+.compare__th--ours {
+  height: var(--head-h); padding: 10px 16px; vertical-align: middle; border-radius: var(--hl-radius) var(--hl-radius) 0 0;
+  background: var(--compare-hl); font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter);
+}
+/* 우리 열 강조 틀 — 표(position: relative) 기준으로 오른쪽 열 전체를 감싸요 */
+.compare__th--ours::after {
+  content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: calc((100% - var(--label-w)) / 2);
+  border: 2px solid var(--compare-hl); border-radius: var(--hl-radius);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.06); pointer-events: none;
+}
+.compare__rowhead, .compare__cell { height: var(--row-h); padding: 10px; border-bottom: 1px solid var(--line-outline); }
+.compare__rowhead { border-right: 1px solid var(--line-outline); font-weight: 500; color: var(--t-80); }
+.compare__cell--other { color: var(--t-45); }
+.compare__cell--ours { background: var(--bg-surface); font-weight: 700; color: var(--t-100); }
+.compare__table tbody tr:last-child > * { border-bottom: 0; }
+.compare__table tbody tr:last-child .compare__cell--ours { border-radius: 0 0 var(--hl-radius) var(--hl-radius); }
+
+/* TB 768–1279 — 항목명 열만 줄여요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .compare__table { --label-w: 120px; }
+}
+
+/* MO ≤767 — Figma 없음(제안): 3열 표 유지, 항목명 열 64px · 글자 14px · 행 높이 자동 */
+@media (max-width: 767px) {
+  .compare__table { --label-w: 64px; --head-h: 72px; --head-other-h: 60px; --row-h: 72px; --hl-radius: 14px; font-size: 14px; letter-spacing: var(--tracking-tight); }
+  .compare__head-box { padding: 6px; }
+  .compare__th--ours { padding: 8px 6px; font-size: 15px; }
+  .compare__rowhead { padding: 8px 4px; font-size: 13px; }
+  .compare__cell { padding: 12px 6px; }
+}

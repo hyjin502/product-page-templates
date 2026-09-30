@@ -1,0 +1,80 @@
+.concern--card .concern__body { width: var(--body, 1200px); gap: 48px; }
+.concern-card { display: flex; flex-direction: column; gap: 24px; }
+/* 3열 카드 벽 — 1·3열은 24px 내려서 엇갈리게, 아래는 흐리게 덮어 계속 이어지는 느낌 */
+.concern-card__wall { position: relative; display: flex; align-items: flex-start; gap: 24px; }
+.concern-card__wall::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 207px; pointer-events: none;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg-surface) 30%, transparent), var(--bg-surface));
+}
+.concern-card__col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+.concern-card__col:nth-child(odd) { padding-top: 24px; }
+.concern-card__item {
+  display: flex; flex-direction: column; gap: 32px;
+  padding: 40px; border: 1px solid var(--line-layout); border-radius: 16px; background: var(--bg-surface);
+}
+.concern-card__top { display: flex; flex-direction: column; gap: 16px; }
+.concern-card__title {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100);
+}
+.concern-card__icon { flex: none; display: block; width: 24px; height: 24px; color: var(--t-100); }
+.concern-card__icon svg { display: block; }
+.concern-card__desc {
+  font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight);
+  color: var(--t-80); text-align: justify;
+  word-break: normal; /* 양쪽 정렬 + keep-all 이면 어절 사이가 크게 벌어져요 — 피그마처럼 글자 단위 줄바꿈 */
+}
+.concern-card__who { display: flex; align-items: center; gap: 12px; }
+.concern-card__avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.concern-card__person {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+  font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100);
+}
+.concern-card__person b { font-weight: 700; }
+.concern-card__pager { display: none; }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .concern-card__item { padding: 32px; }
+}
+/* 1024 미만은 2열 — 열을 풀어 순서대로 2칸씩 채워요 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .concern-card__wall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .concern-card__col { display: contents; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .concern-card { gap: 24px; }
+  .concern-card__wall { flex-direction: column; align-items: stretch; gap: 20px; }
+  .concern-card__col { display: contents; }
+  .concern-card__item { padding: 24px; }
+  .concern-card__wall::after { bottom: -24px; }
+  /* 기본: 앞 4장만 */
+  .concern--card:not(.concern--compact) .concern-card__item:not([data-i="0"]):not([data-i="1"]):not([data-i="2"]):not([data-i="3"]) { display: none; }
+
+  /* compact — 2장씩 보여주고 숫자 페이지네이션 (script.js 가 is-paged / is-current 를 붙여요) */
+  .concern--compact .concern-card__wall { gap: 24px; }
+  .concern--compact .concern-card__wall::after { display: none; }
+  .concern--compact .concern-card__item { display: none; }
+  .concern--compact .concern-card__item[data-i="0"],
+  .concern--compact .concern-card__item[data-i="1"] { display: flex; }
+  .concern--compact.is-paged .concern-card__item { display: none; }
+  .concern--compact.is-paged .concern-card__item.is-current { display: flex; }
+  .concern--compact .concern-card__pager { display: flex; justify-content: center; align-items: center; gap: 8px; }
+  .concern-card__pages { display: flex; }
+  .concern-card__arrow,
+  .concern-card__page {
+    display: grid; place-items: center; height: 40px; border-radius: 8px;
+    font-family: inherit; cursor: pointer; background: var(--bg-surface);
+  }
+  .concern-card__arrow { width: 40px; padding: 0; border: 1px solid var(--line-outline); color: var(--t-100); }
+  .concern-card__arrow:disabled { color: var(--t-disabled); cursor: default; }
+  .concern-card__arrow svg { display: block; width: 20px; height: 20px; }
+  .concern-card__arrow--prev svg { transform: scaleX(-1); }
+  .concern-card__page {
+    min-width: 28px; padding: 0 16px; border: 0;
+    font-size: 14px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60);
+  }
+  .concern-card__page.is-active { background: var(--selected-fill); color: #fff; }
+}

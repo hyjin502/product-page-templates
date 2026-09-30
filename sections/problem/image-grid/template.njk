@@ -1,0 +1,22 @@
+{% from "_partials/ui.njk" import secHead, pagerDots %}
+<section class="problem problem--image-grid">
+  <div class="problem__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="problem__content">
+      <div data-pager-track class="problem__track">
+{% for c in cards %}
+        <article class="problem__card">
+          <div class="problem__card-head">
+{% if c.avatar and c.avatar.src %}
+            <img class="problem__avatar" src="{{ c.avatar.src }}" alt="{{ c.avatar.alt or '' }}" width="48" height="48">
+{% endif %}
+            <h3 class="problem__card-title">{{ c.title | rt }}</h3>
+          </div>
+          <p class="problem__text problem__role">{{ c.role }}</p>
+        </article>
+{% endfor %}
+      </div>
+      {{ pagerDots() }}
+    </div>
+  </div>
+</section>

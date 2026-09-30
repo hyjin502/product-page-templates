@@ -1,0 +1,26 @@
+{# 카운트다운 기본형 — 숫자와 단위 라벨, 사이에 콜론. 숫자는 script.js 가 deadline 기준으로 갱신해요 #}
+<section class="countdown countdown--default"{% if deadline %} data-deadline="{{ deadline }}"{% endif %}>
+  <div class="countdown__inner">
+    <div class="countdown__timer" role="timer">
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="days">{{ days }}</span>
+        <span class="countdown__label">{{ labelDays }}</span>
+      </div>
+      <span class="countdown__sep" aria-hidden="true">:</span>
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="hours">{{ hours }}</span>
+        <span class="countdown__label">{{ labelHours }}</span>
+      </div>
+      <span class="countdown__sep" aria-hidden="true">:</span>
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="minutes">{{ minutes }}</span>
+        <span class="countdown__label">{{ labelMinutes }}</span>
+      </div>
+      <span class="countdown__sep" aria-hidden="true">:</span>
+      <div class="countdown__unit">
+        <span class="countdown__num" data-unit="seconds">{{ seconds }}</span>
+        <span class="countdown__label">{{ labelSeconds }}</span>
+      </div>
+    </div>
+  </div>
+</section>

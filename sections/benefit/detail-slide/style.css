@@ -1,0 +1,61 @@
+/* benefit-detail-slide — 번호 · 2단 타이틀 · 설명 · 이미지 슬라이드 (가로 scroll-snap + script.js) */
+.benefit__slider { display: flex; flex-direction: column; gap: 24px; }
+.benefit__slides {
+  display: flex; align-items: flex-start; margin: 0; padding: 0; list-style: none;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.benefit__slides::-webkit-scrollbar { display: none; }
+.benefit__slides:focus-visible { outline: 2px solid var(--t-100); outline-offset: 4px; }
+.benefit__slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; display: flex; flex-direction: column; gap: 24px; }
+.benefit__slide-text { display: flex; flex-direction: column; gap: 80px; }
+.benefit__slide-title { display: flex; align-items: flex-start; gap: 8px; font-weight: 700; }
+.benefit__slide-num,
+.benefit__slide-kr { font-size: 32px; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.benefit__slide-num { flex: none; }
+.benefit__slide-heading { display: flex; flex-direction: column; min-width: 0; }
+.benefit__slide-en { font-size: 48px; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.benefit__slide-copy { display: flex; flex-direction: column; gap: 12px; }
+.benefit__slide-lead { font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.benefit__slide-desc { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
+.benefit__slide-media { width: 100%; aspect-ratio: 980 / 460; border-radius: 20px; }
+
+/* pagination (size=sm) — 점 8 · 간격 8, 누르는 영역은 16 */
+.benefit__pager { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.benefit__dots { display: flex; }
+.benefit__dot-btn {
+  display: grid; place-items: center; width: 16px; height: 16px; padding: 0; border: 0; background: none; cursor: pointer;
+}
+.benefit__dot-btn::before { content: ""; width: 8px; height: 8px; border-radius: 900px; background: var(--t-disabled); }
+.benefit__dot-btn[aria-current="true"]::before { background: var(--selected-fill); }
+.benefit__arrow {
+  display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%;
+  background: none; color: var(--t-60); cursor: pointer;
+}
+.benefit__arrow--prev svg { transform: scaleX(-1); }
+.benefit__arrow:disabled { color: var(--t-disabled); cursor: default; }
+.benefit__dot-btn:focus-visible,
+.benefit__arrow:focus-visible { outline: 2px solid var(--t-100); outline-offset: 1px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .benefit__slides { scroll-behavior: auto; }
+}
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .benefit__slide-text { gap: 64px; }
+  .benefit__slide-num,
+  .benefit__slide-kr { font-size: 28px; }
+  .benefit__slide-en { font-size: 40px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .benefit__slide { gap: 64px; }
+  .benefit__slide-text { gap: 48px; }
+  .benefit__slide-num,
+  .benefit__slide-kr { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .benefit__slide-en { font-size: 28px; }
+  .benefit__slide-lead { font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .benefit__slide-desc { font-size: 16px; }
+  .benefit__slide-media { aspect-ratio: 343 / 200; }
+}

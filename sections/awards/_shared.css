@@ -1,0 +1,33 @@
+/* awards 공통 — stats / certification 이 함께 써요 */
+.awards {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 120px var(--container-pad);
+  background: var(--bg-page);
+}
+.awards__body { width: var(--body, 980px); max-width: 100%; display: flex; flex-direction: column; gap: 64px; }
+.awards__list { list-style: none; margin: 0; padding: 0; }
+.awards__card { display: flex; overflow: hidden; border-radius: 8px; background: var(--bg-surface); }
+/* 수상내역/엠블럼 — 70×70 (MO 48×48) */
+.awards__emblem { flex: none; width: 70px; height: 70px; object-fit: contain; }
+.awards__text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; letter-spacing: var(--tracking-tight); }
+.awards__title { font-size: 16px; font-weight: 700; line-height: 1.6; color: var(--t-100); }
+.awards__desc { font-size: 14px; font-weight: 400; line-height: 1.6; color: var(--t-60); }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .awards { padding-top: 96px; padding-bottom: 96px; }
+  .awards__body { gap: 52px; }
+}
+
+/* MO ≤767 — 두 variant 모두 가로 카드 1열 (Figma Promotion/수상내역 Device=Mobile)
+   variant PC 규칙보다 우선하도록 .awards__body 를 한 단계 더 붙여요 */
+@media (max-width: 767px) {
+  .awards { padding: 64px var(--container-pad) 80px; }
+  .awards__body { gap: 48px; }
+  .awards .sec-head__title { font-size: 24px; }
+  .awards .awards__body .awards__list { display: flex; flex-direction: column; gap: 8px; }
+  .awards .awards__body .awards__card { flex: none; flex-direction: row; align-items: flex-start; gap: 12px; padding: 16px 20px; text-align: left; }
+  .awards .awards__body .awards__emblem { width: 48px; height: 48px; }
+  .awards .awards__body .awards__text { align-items: stretch; }
+  .awards .awards__body .awards__desc { font-size: 12px; color: var(--t-60); }
+}

@@ -1,0 +1,353 @@
+{
+  "id": "inquiry-simple",
+  "section": "inquiry",
+  "layout": "simple",
+  "order": 1,
+  "when": "기업 상담·견적 문의를 한 화면의 입력 폼으로 받을 때",
+  "figma": {
+    "pc": "6187:3557",
+    "mo": "6187:3674",
+    "tb": null
+  },
+  "body": 740,
+  "note": "실제 <form> 마크업만 제공해요. 제출·검증·검색(기업명) 로직은 프론트엔드에서 연결합니다. script.js 는 마케팅 동의 전체/개별 체크 동기화와 기기별 숨김 필드 비활성화만 해요.",
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "aliases": [
+        "이렇게 완벽한 휴넷 산업안전보건교육"
+      ],
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "aliases": [
+        "늦기 전에 지금 컨설턴트와 상담해보세요"
+      ],
+      "label": "메인 타이틀"
+    },
+    "action": {
+      "type": "url",
+      "optional": true,
+      "label": "form action (제출 주소, 기본 #)"
+    },
+    "formId": {
+      "type": "text",
+      "optional": true,
+      "label": "폼 id 접두어 — 한 페이지에 폼이 여러 개면 서로 다르게 (기본 inquiry)"
+    },
+    "quickLinkLabel": {
+      "type": "text",
+      "figmaLayer": "50인 이하 기업, 빠른 견적 확인하기",
+      "aliases": [
+        "quick-link"
+      ],
+      "optional": true,
+      "label": "폼 위 빨간 링크 문구 (PC 시안에만 있음)"
+    },
+    "quickLinkHref": {
+      "type": "url",
+      "optional": true,
+      "label": "빨간 링크 주소"
+    },
+    "lead": {
+      "type": "list",
+      "figmaLayer": "1인 수강 문의는 우측 상단 1:1 상담을 확인해주세요.",
+      "aliases": [
+        "lead"
+      ],
+      "optional": true,
+      "min": 0,
+      "max": 6,
+      "label": "폼 위 안내 문구 (글자 조각 — 일반 / 굵게 / 링크)",
+      "note": "TEXT 하나의 스타일 구간(styled segments)을 순서대로 한 조각씩 읽어요",
+      "item": {
+        "text": {
+          "type": "text"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "normal",
+            "bold",
+            "link"
+          ]
+        },
+        "href": {
+          "type": "url"
+        }
+      },
+      "extract": false
+    },
+    "groups": {
+      "type": "list",
+      "figmaLayer": "개인정보",
+      "aliases": [
+        "group"
+      ],
+      "min": 1,
+      "max": 6,
+      "label": "입력 그룹 (카드)",
+      "note": "그룹 카드 3개의 레이어 이름이 모두 '개인정보' — group 으로 변경 요청. 그룹 제목 TEXT 는 이름이 내용과 같아요(→ group-title)",
+      "item": {
+        "title": {
+          "type": "text",
+          "figmaLayer": "group-title",
+          "figmaPath": "Frame 4278/group-title",
+          "label": "그룹 제목"
+        },
+        "fields": {
+          "type": "list",
+          "figmaLayer": "field",
+          "figmaPath": "row/field",
+          "aliases": [
+            "이름",
+            "연락처",
+            "이메일"
+          ],
+          "label": "입력 항목 (행)",
+          "note": "행 프레임 이름이 이름/연락처/이메일로 섞여 있어요 — field 로 변경 요청",
+          "item": {
+            "label": {
+              "type": "richtext",
+              "figmaLayer": "text",
+              "figmaPath": "text/text",
+              "optional": true,
+              "note": "Figma 글자 끝의 빨간 '*' 는 required 로 옮기고 label 에서는 빼요"
+            },
+            "required": {
+              "type": "enum",
+              "values": [
+                true,
+                false
+              ],
+              "optional": true,
+              "label": "필수 (라벨 뒤 빨간 * + required 속성)"
+            },
+            "only": {
+              "type": "enum",
+              "values": [
+                "pc",
+                "mo"
+              ],
+              "optional": true,
+              "label": "한 기기에서만 보이기 (숨긴 쪽 입력은 script.js 가 disabled 처리)"
+            },
+            "controls": {
+              "type": "list",
+              "figmaLayer": "input",
+              "aliases": [
+                "checkbox",
+                "radio",
+                "@"
+              ],
+              "min": 1,
+              "max": 4,
+              "label": "입력 요소 (한 행에 여러 개면 가로로 · 넘치면 다음 줄)",
+              "item": {
+                "kind": {
+                  "type": "enum",
+                  "values": [
+                    "input",
+                    "select",
+                    "search",
+                    "textarea",
+                    "radio",
+                    "checkbox",
+                    "text"
+                  ],
+                  "label": "input 한 줄 · select 드롭다운 · search 검색 아이콘 · textarea 여러 줄 · radio 단일 선택 묶음 · checkbox 단독 체크 · text 가운데 글자(@)"
+                },
+                "name": {
+                  "type": "text",
+                  "label": "form name (Figma 값 없음)"
+                },
+                "inputType": {
+                  "type": "enum",
+                  "values": [
+                    "text",
+                    "tel",
+                    "email",
+                    "number"
+                  ],
+                  "optional": true,
+                  "label": "input type (기본 text)"
+                },
+                "placeholder": {
+                  "type": "text",
+                  "figmaLayer": "_item/input",
+                  "figmaProp": "placeholder",
+                  "optional": true
+                },
+                "help": {
+                  "type": "text",
+                  "figmaLayer": "_item/input",
+                  "figmaProp": "help-text",
+                  "optional": true,
+                  "label": "입력칸 아래 도움말 (view-help-text=true 일 때)"
+                },
+                "label": {
+                  "type": "text",
+                  "figmaProp": "text",
+                  "optional": true,
+                  "label": "checkbox 라벨 / text 글자"
+                },
+                "checked": {
+                  "type": "enum",
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "figmaProp": "checked",
+                  "optional": true
+                },
+                "options": {
+                  "type": "list",
+                  "figmaLayer": "radio",
+                  "optional": true,
+                  "label": "radio · select 선택지",
+                  "note": "select 선택지는 Figma 에 없어요(닫힌 상태만 있음) — 페이지에서 채워요",
+                  "item": {
+                    "label": {
+                      "type": "text",
+                      "figmaProp": "text"
+                    },
+                    "value": {
+                      "type": "text",
+                      "optional": true
+                    },
+                    "checked": {
+                      "type": "enum",
+                      "values": [
+                        true,
+                        false
+                      ],
+                      "figmaProp": "selected",
+                      "optional": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "extract": false
+    },
+    "privacy": {
+      "type": "list",
+      "figmaLayer": "개인정보 보호법 제15조(개인정보의 수집ㆍ이용) 1항 4호에 의해 서비스 이용에 필수적인 개인정보를 수집하고 있습니다. 자세한 내용은 개인정보 처리방침을 통해 확인하실 수 있습니다.",
+      "aliases": [
+        "eyebrow",
+        "privacy"
+      ],
+      "optional": true,
+      "min": 0,
+      "max": 6,
+      "label": "개인정보 수집 안내 (글자 조각 — 일반 / 링크)",
+      "note": "TEXT 하나의 스타일 구간(styled segments)을 순서대로 읽어요. MO 는 heading-mo 인스턴스의 eyebrow 레이어",
+      "item": {
+        "text": {
+          "type": "richtext"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "normal",
+            "bold",
+            "link"
+          ]
+        },
+        "href": {
+          "type": "url"
+        }
+      },
+      "extract": false
+    },
+    "consentLabel": {
+      "type": "text",
+      "figmaLayer": "checkbox",
+      "figmaPath": "Frame 4292/checkbox",
+      "figmaProp": "text",
+      "optional": true,
+      "label": "마케팅 수신동의 체크 라벨"
+    },
+    "consentName": {
+      "type": "text",
+      "optional": true,
+      "label": "마케팅 동의 form name (Figma 값 없음)"
+    },
+    "consentChecked": {
+      "type": "enum",
+      "values": [
+        true,
+        false
+      ],
+      "figmaLayer": "checkbox",
+      "figmaPath": "Frame 4292/checkbox",
+      "figmaProp": "checked",
+      "optional": true,
+      "label": "처음부터 체크"
+    },
+    "consentLinkLabel": {
+      "type": "text",
+      "figmaLayer": "자세히 보기",
+      "optional": true,
+      "label": "동의 자세히 보기 링크 문구"
+    },
+    "consentLinkHref": {
+      "type": "url",
+      "optional": true,
+      "label": "동의 자세히 보기 주소"
+    },
+    "channels": {
+      "type": "list",
+      "figmaLayer": "checkbox",
+      "figmaPath": "Frame 4295/checkbox",
+      "optional": true,
+      "min": 0,
+      "max": 4,
+      "label": "수신 채널 체크 (전체 동의와 연동)",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text"
+        },
+        "name": {
+          "type": "text",
+          "label": "form name (Figma 값 없음)"
+        },
+        "checked": {
+          "type": "enum",
+          "values": [
+            true,
+            false
+          ],
+          "figmaProp": "checked",
+          "optional": true
+        }
+      },
+      "extract": false
+    },
+    "consentNote": {
+      "type": "richtext",
+      "figmaLayer": "*위 선택 동의 항목에 동의하지 않으셔도 기업교육 문의 이용이 가능합니다. 다만 상품 소개 및 이벤트 안내가 제한 될 수 있습니다.",
+      "aliases": [
+        "eyebrow",
+        "consent-note"
+      ],
+      "optional": true,
+      "label": "동의 아래 안내"
+    },
+    "submitLabel": {
+      "type": "text",
+      "figmaLayer": "action button",
+      "figmaProp": "버튼명",
+      "label": "제출 버튼 문구"
+    }
+  },
+  "extractFrom": "pc"
+}

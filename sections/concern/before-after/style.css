@@ -1,0 +1,33 @@
+.concern-ba { display: flex; align-items: stretch; gap: 24px; }
+.concern-ba__card {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 32px;
+  padding: 24px 24px 40px 40px; border: 1px solid var(--line-outline); border-radius: 16px;
+}
+.concern-ba__head { display: flex; flex-direction: column; gap: 16px; }
+.concern-ba__icon, .concern-ba__icon svg { display: block; width: 48px; height: 48px; }
+.concern-ba__title { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }
+.concern-ba__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.concern-ba__list li {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 18px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80);
+}
+.concern-ba__list li > span:last-child { flex: 1; min-width: 0; }
+.concern-ba__mark, .concern-ba__mark svg { flex: none; display: block; width: 20px; height: 20px; }
+
+/* TB 768–1279 — 1024 미만은 세로로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .concern-ba__card { padding: 24px 24px 32px 32px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .concern-ba { flex-direction: column; gap: 16px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .concern-ba { flex-direction: column; gap: 16px; }
+  .concern-ba__card { padding: 24px 24px 40px; }
+  .concern-ba__icon, .concern-ba__icon svg { width: 32px; height: 32px; }
+  .concern-ba__title { font-size: 20px; }
+  .concern-ba__card--before .concern-ba__list { gap: 12px; }
+  .concern-ba__list li { font-size: 16px; }
+}

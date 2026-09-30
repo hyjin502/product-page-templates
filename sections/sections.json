@@ -1,0 +1,26 @@
+{
+  "$comment": "섹션 카탈로그 — order는 기본 조합 순서(통계 기반 추정값, 페이지마다 빼거나 바꿀 수 있어요). figmaSet은 Page 18의 섹션 프레임 노드.",
+  "figma": {
+    "fileKey": "S3cLqJIqHJbX2eREe4iGXr",
+    "fileName": "-UI--커피-정수기",
+    "page": "6187:23"
+  },
+  "sections": [
+    { "key": "hero",       "role": "첫인상 · 핵심 메시지",   "order": 1,  "figmaSet": "6187:2502" },
+    { "key": "concern",    "role": "사용자 공감 · 고민 제시", "order": 2,  "figmaSet": "6187:3908" },
+    { "key": "problem",    "role": "문제 정의 · 니즈 부각",   "order": 3,  "figmaSet": "6187:2645" },
+    { "key": "feature",    "role": "기능 · 특징 소개",        "order": 4,  "figmaSet": "6187:3786" },
+    { "key": "benefit",    "role": "기대효과 · 가치 전달",    "order": 5,  "figmaSet": "6187:3270" },
+    { "key": "compare",    "role": "경쟁사 대비",             "order": 6,  "figmaSet": "6187:3476" },
+    { "key": "metrics",    "role": "신뢰도 · 수치",           "order": 7,  "figmaSet": "6187:4677" },
+    { "key": "awards",     "role": "신뢰도 · 수상/인증",      "order": 8,  "figmaSet": "6187:4790" },
+    { "key": "logo-wall",  "role": "신뢰도 · 고객사",         "order": 9,  "figmaSet": "6187:4247" },
+    { "key": "pricing",    "role": "가격 · 구성",             "order": 10, "figmaSet": "6187:4925" },
+    { "key": "countdown",  "role": "프로모션 마감",           "order": 11, "figmaSet": "6187:4182" },
+    { "key": "faq",        "role": "자주 묻는 질문",          "order": 12, "figmaSet": "6187:4860" },
+    { "key": "notice",     "role": "유의사항",                "order": 13, "figmaSet": "6187:4916" },
+    { "key": "inquiry",    "role": "문의 · 신청",             "order": 14, "figmaSet": "6187:3556" },
+    { "key": "utility",    "role": "링크 · 마무리 배너",      "order": 15, "figmaSet": "6187:4761" },
+    { "key": "sticky-cta", "role": "전환 · 하단 고정 바",     "order": 99, "figmaSet": "6187:5245" }
+  ]
+}

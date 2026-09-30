@@ -1,0 +1,65 @@
+{
+  "id": "utility-closing-banner",
+  "section": "utility",
+  "layout": "closing-banner",
+  "order": 2,
+  "when": "페이지 마지막에 한 줄 메시지와 버튼으로 행동을 유도할 때",
+  "figma": {
+    "pc": "6187:4784",
+    "mo": "6187:4779",
+    "tb": null
+  },
+  "body": 1200,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "optional": true,
+      "label": "제목 위 보조 문구",
+      "note": "MO 는 eyebrow·title 레이어 이름이 둘 다 \"숫자로 보는 휴넷 리더십 교육\" — 디자이너 이름 변경 요청",
+      "figmaLayer": "eyebrow",
+      "aliases": [
+        "text",
+        "숫자로 보는 휴넷 리더십 교육"
+      ],
+      "nth": 0
+    },
+    "title": {
+      "type": "richtext",
+      "label": "메인 문구",
+      "figmaLayer": "title",
+      "aliases": [
+        "숫자로 보는 휴넷 리더십 교육"
+      ],
+      "nth": -1
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "action button",
+      "aliases": [
+        "cta"
+      ],
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "버튼명"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "solid",
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "style",
+          "note": "action button style=solid → 파란 버튼(.btn--solid, utility 섹션 전용). neutral/subtle 은 공통 .btn"
+        }
+      }
+    }
+  }
+}

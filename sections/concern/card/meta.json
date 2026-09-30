@@ -1,0 +1,119 @@
+{
+  "id": "concern-card",
+  "section": "concern",
+  "layout": "card",
+  "order": 2,
+  "when": "실제 담당자들의 고민·후기를 여러 장의 카드 벽으로 쌓아 보여줄 때",
+  "figma": {
+    "pc": "6187:3909",
+    "mo": "6187:3926",
+    "tb": null
+  },
+  "body": 1200,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구",
+      "note": "피그마 heading 에서 숨김"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "타이틀 아래 설명"
+    },
+    "cards": {
+      "type": "list",
+      "figmaLayer": "card",
+      "min": 1,
+      "max": 12,
+      "label": "고민 카드",
+      "note": "PC는 3열로 순서대로 나눠 쌓고(1·3열은 24px 내려요) 아래를 흐리게 덮어요. MO 기본은 앞 4장만 보이고 흐리게, compact 는 2장씩 페이지로 넘겨요. 항목은 card 인스턴스(바깥 열 프레임 이름도 card 예요 — column 으로 변경 요청)",
+      "item": {
+        "title": {
+          "type": "text",
+          "figmaLayer": "title",
+          "figmaPath": "Frame 2147238927/title",
+          "label": "카드 제목",
+          "note": "아이콘(communication/annotation) 옆 제목"
+        },
+        "description": {
+          "type": "richtext",
+          "figmaLayer": "description",
+          "label": "본문",
+          "note": "PC·MO 문구가 다르면 { pc, mo }"
+        },
+        "avatar": {
+          "type": "image",
+          "figmaLayer": "avatar",
+          "optional": true,
+          "label": "프로필 (48×48, 원형)",
+          "note": "avatar 인스턴스(type=default-01 일러스트)는 IMAGE fill 이 아니라서 assets/concern/avatar-01.svg 를 기본값으로 써요"
+        },
+        "name": {
+          "type": "text",
+          "figmaLayer": "title",
+          "figmaPath": "Frame 2147238927/Frame 2147238927/title",
+          "label": "이름",
+          "note": "이름·직함 두 TEXT 레이어가 모두 title 이에요 — 첫 번째가 이름. name 으로 변경 요청",
+          "nth": 0
+        },
+        "role": {
+          "type": "text",
+          "figmaLayer": "title",
+          "figmaPath": "Frame 2147238927/Frame 2147238927/title",
+          "optional": true,
+          "label": "직함",
+          "note": "두 번째 title TEXT — role 로 변경 요청",
+          "nth": 1
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "note": "피그마 컴포넌트에서 기본 숨김",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "type"
+        }
+      }
+    }
+  },
+  "options": {
+    "compact": {
+      "label": "MO compact · 2장씩 페이지 넘기기",
+      "class": "concern--compact",
+      "moOnly": true,
+      "figma": {
+        "mo": "6187:3935"
+      }
+    }
+  }
+}

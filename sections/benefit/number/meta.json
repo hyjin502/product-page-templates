@@ -1,0 +1,61 @@
+{
+  "id": "benefit-number",
+  "section": "benefit",
+  "layout": "number",
+  "order": 2,
+  "when": "핵심 가치 3개를 01·02·03 번호와 함께 가로로 보여줄 때",
+  "figma": {
+    "pc": "6187:3311",
+    "mo": "6187:3400",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "note": "heading-pc / heading-mo 인스턴스 안의 title",
+      "label": "섹션 제목"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "제목 아래 설명"
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "card1",
+      "aliases": [
+        "card2",
+        "card3",
+        "item"
+      ],
+      "min": 1,
+      "max": 4,
+      "label": "가치 항목 (번호 01·02·03 은 순서대로 자동)",
+      "item": {
+        "title": {
+          "type": "text",
+          "note": "항목 안에 title 레이어가 2개 — 1번째는 번호(\"01\", 자동 생성이라 무시), 2번째가 제목",
+          "label": "항목 제목",
+          "figmaLayer": "title",
+          "figmaPath": "heading/title",
+          "nth": 1
+        },
+        "description": {
+          "type": "richtext",
+          "figmaLayer": "description",
+          "optional": true,
+          "label": "항목 설명"
+        }
+      }
+    }
+  }
+}

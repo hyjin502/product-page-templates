@@ -1,0 +1,134 @@
+{% from "_partials/ui.njk" import secHead %}
+{% macro runs(items, cls) %}
+<p class="{{ cls }}">
+{%- for r in items -%}
+{%- if r.text.startsWith and r.text.startsWith(' ') %} {% endif -%}
+{%- if r.style == 'link' -%}<a class="inquiry__run inquiry__run--link" href="{{ r.href or '#' }}">{{ r.text | rt }}</a>
+{%- elif r.style == 'bold' -%}<strong class="inquiry__run inquiry__run--bold">{{ r.text | rt }}</strong>
+{%- else -%}<span class="inquiry__run">{{ r.text | rt }}</span>{%- endif -%}
+{%- if r.text.endsWith and r.text.endsWith(' ') %} {% endif -%}
+{%- endfor -%}
+</p>
+{% endmacro %}
+{% set fid = formId or 'inquiry' %}
+<section class="inquiry inquiry--simple">
+  <div class="inquiry__body">
+    {{ secHead(eyebrow, title, null, "inquiry__head") }}
+    <form class="inquiry__form" action="{{ action or '#' }}" method="post">
+{% if quickLinkLabel or lead.length %}
+      <div class="inquiry__intro">
+{% if quickLinkLabel %}
+        <a class="inquiry__quick" href="{{ quickLinkHref or '#' }}">{{ quickLinkLabel | rt }}{{ 'chev-r' | icon }}</a>
+{% endif %}
+{% if lead.length %}
+        {{ runs(lead, "inquiry__lead") }}
+{% endif %}
+      </div>
+{% endif %}
+{% for g in groups %}
+{% set gid = fid ~ '-group-' ~ loop.index %}
+      <div class="inquiry__group" role="group" aria-labelledby="{{ gid }}">
+        <h3 class="inquiry__group-title" id="{{ gid }}">{{ g.title | rt }}</h3>
+        <div class="inquiry__fields">
+{% for f in g.fields %}
+{% set first = f.controls[0] %}
+{% set lid = fid ~ '-' ~ first.name ~ '-label' %}
+          <div class="inquiry__field{% if f.only %} only-{{ f.only }}{% endif %}"{% if f.only %} data-only="{{ f.only }}"{% endif %}>
+            <div class="inquiry__label{% if not f.label %} inquiry__label--empty{% endif %}" id="{{ lid }}">
+{% if f.label %}
+              <label for="{{ fid }}-{{ first.name }}">{{ f.label | rt }}</label>{% if f.required %}<span class="inquiry__req" aria-hidden="true">*</span>{% endif %}
+{% endif %}
+            </div>
+            <div class="inquiry__controls">
+{% for c in f.controls %}
+{% set cid = fid ~ '-' ~ c.name %}
+{% set req = f.required and c.kind != 'checkbox' and c.kind != 'text' %}
+{% if c.kind == 'text' %}
+              <span class="inquiry__sep" aria-hidden="true">{{ c.label }}</span>
+{% elif c.kind == 'checkbox' %}
+              <label class="inquiry__check inquiry__ctl--checkbox">
+                <input type="checkbox" id="{{ cid }}" name="{{ c.name }}" value="Y"{% if c.checked %} checked{% endif %}>
+                <span class="inquiry__mark">{{ 'inquiry-check' | icon }}</span>
+                <span class="inquiry__check-text">{{ c.label }}</span>
+              </label>
+{% elif c.kind == 'radio' %}
+              <div class="inquiry__radios inquiry__ctl--radio" role="radiogroup" aria-labelledby="{{ lid }}">
+{% for o in c.options %}
+                <label class="inquiry__radio">
+                  <input type="radio"{% if loop.first %} id="{{ cid }}"{% endif %} name="{{ c.name }}" value="{{ o.value or o.label }}"{% if o.checked %} checked{% endif %}{% if req and loop.first %} required{% endif %}>
+                  <span class="inquiry__dot"></span>
+                  <span>{{ o.label }}</span>
+                </label>
+{% endfor %}
+              </div>
+{% else %}
+              <div class="inquiry__ctl inquiry__ctl--{{ c.kind }}">
+                <div class="inquiry__box">
+{% if c.kind == 'select' %}
+                  <select class="inquiry__input" id="{{ cid }}" name="{{ c.name }}" aria-labelledby="{{ lid }}"{% if c.help %} aria-describedby="{{ cid }}-help"{% endif %}{% if req %} required aria-required="true"{% endif %}>
+                    <option value="" disabled{% if not (c.options | selectattr('checked') | length) %} selected{% endif %} hidden>{{ c.placeholder }}</option>
+{% for o in c.options %}
+                    <option value="{{ o.value or o.label }}"{% if o.checked %} selected{% endif %}>{{ o.label }}</option>
+{% endfor %}
+                  </select>
+                  {{ 'inquiry-chevron-down' | icon }}
+{% elif c.kind == 'textarea' %}
+                  <textarea class="inquiry__input" id="{{ cid }}" name="{{ c.name }}" placeholder="{{ c.placeholder }}" aria-labelledby="{{ lid }}"{% if c.help %} aria-describedby="{{ cid }}-help"{% endif %}{% if req %} required aria-required="true"{% endif %}></textarea>
+{% else %}
+                  <input class="inquiry__input" id="{{ cid }}" name="{{ c.name }}" type="{{ 'search' if c.kind == 'search' else (c.inputType or 'text') }}"{% if c.placeholder %} placeholder="{{ c.placeholder }}"{% endif %} aria-labelledby="{{ lid }}"{% if c.help %} aria-describedby="{{ cid }}-help"{% endif %}{% if req %} required aria-required="true"{% endif %}>
+{% if c.kind == 'search' %}
+                  {{ 'inquiry-search' | icon }}
+{% endif %}
+{% endif %}
+                </div>
+{% if c.help %}
+                <p class="inquiry__help" id="{{ cid }}-help">{{ c.help | rt }}</p>
+{% endif %}
+              </div>
+{% endif %}
+{% endfor %}
+            </div>
+          </div>
+{% endfor %}
+        </div>
+      </div>
+{% endfor %}
+      <div class="inquiry__agree">
+{% if privacy.length %}
+        {{ runs(privacy, "inquiry__privacy") }}
+{% endif %}
+{% if consentLabel %}
+        <div class="inquiry__consent">
+          <div class="inquiry__consent-head">
+            <label class="inquiry__check inquiry__check--master">
+              <input type="checkbox" name="{{ consentName or 'marketing' }}" value="Y" data-inquiry-master{% if consentChecked %} checked{% endif %}>
+              <span class="inquiry__mark">{{ 'inquiry-check' | icon }}</span>
+              <span class="inquiry__check-text">{{ consentLabel }}</span>
+            </label>
+{% if consentLinkLabel %}
+            <a class="inquiry__consent-link" href="{{ consentLinkHref or '#' }}">{{ consentLinkLabel }}</a>
+{% endif %}
+          </div>
+{% if channels.length %}
+          <div class="inquiry__channels">
+{% for ch in channels %}
+            <label class="inquiry__check">
+              <input type="checkbox" name="{{ ch.name }}" value="Y" data-inquiry-channel{% if ch.checked %} checked{% endif %}>
+              <span class="inquiry__mark">{{ 'inquiry-check' | icon }}</span>
+              <span class="inquiry__check-text">{{ ch.label }}</span>
+            </label>
+{% endfor %}
+          </div>
+{% endif %}
+        </div>
+{% endif %}
+{% if consentNote %}
+        <p class="inquiry__consent-note">{{ consentNote | rt }}</p>
+{% endif %}
+      </div>
+      <div class="inquiry__submit">
+        <button class="btn inquiry__btn" type="submit">{{ submitLabel }}</button>
+      </div>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,12 @@
+{
+  "startLabel": "학습시작일 MM월 DD일",
+  "deadline": "(수강신청 마감일 MM월 DD일)",
+  "ddayIcon": "🚨",
+  "ddayLabel": "마감까지",
+  "ddayValue": "10일",
+  "ddaySuffix": "남음",
+  "ctas": [
+    { "label": "기업교육문의", "href": "#", "style": "subtle" },
+    { "label": "수강신청", "href": "#", "style": "neutral" }
+  ]
+}

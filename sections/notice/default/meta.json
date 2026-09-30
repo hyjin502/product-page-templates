@@ -1,0 +1,39 @@
+{
+  "id": "notice-default",
+  "section": "notice",
+  "layout": "default",
+  "order": 1,
+  "when": "구매·이용 조건 등 유의사항을 글머리표 목록으로 보여줄 때",
+  "figma": {
+    "pc": "6187:4917",
+    "mo": "6187:4921",
+    "tb": null
+  },
+  "body": 980,
+  "note": "Figma 속성 mode=light 만 있어요.",
+  "slots": {
+    "title": {
+      "type": "text",
+      "figmaLayer": "유의사항",
+      "aliases": [
+        "title"
+      ],
+      "optional": true,
+      "label": "제목"
+    },
+    "items": {
+      "type": "list",
+      "min": 1,
+      "max": 20,
+      "label": "유의사항 항목",
+      "note": "TEXT 하나를 '• ' 로 시작하는 줄마다 한 항목으로 나눠요 (다음 줄이 '• ' 로 시작하지 않으면 앞 항목에 줄바꿈으로 붙여요). 글머리표 • 는 CSS 가 그려요",
+      "item": {
+        "text": {
+          "type": "richtext"
+        }
+      },
+      "figmaLayer": "• 연회비는 면세입니다. • 법정의무",
+      "split": true
+    }
+  }
+}

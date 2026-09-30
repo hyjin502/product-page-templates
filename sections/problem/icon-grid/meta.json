@@ -1,0 +1,113 @@
+{
+  "id": "problem-icon-grid",
+  "section": "problem",
+  "layout": "icon-grid",
+  "order": 4,
+  "when": "콘텐츠·서비스 종류를 짧은 설명과 아이콘으로 2열 그리드에 정리할 때",
+  "figma": {
+    "pc": "6187:2715",
+    "mo": "6187:2991",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "note": "MO: heading-mo/Frame 2147238960/title",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "Frame 6",
+      "aliases": [
+        "Frame 21",
+        "Frame 22",
+        "Frame 23"
+      ],
+      "min": 1,
+      "max": 24,
+      "label": "항목 카드",
+      "note": "레이어 이름이 의미 없음(Frame 6/21/22/23) — 디자이너에게 item 으로 변경 요청",
+      "item": {
+        "title": {
+          "type": "text",
+          "figmaLayer": "비즈니스리뷰",
+          "aliases": [
+            "인사이트클립",
+            "CEO칼럼"
+          ],
+          "label": "항목 이름",
+          "note": "레이어 이름이 문구 자체예요 — Frame 42 안 1번째 TEXT. title 로 변경 요청"
+        },
+        "description": {
+          "type": "richtext",
+          "figmaLayer": "탁월한 의사결정을 위한 데일리 인사이트 아티클",
+          "aliases": [
+            "매일 아침 전문가가 전하는 10분 길이의 인사이트 영상",
+            "매주 새로운 주제로 펼쳐지는 CEO를 위한 비즈니스 칼럼"
+          ],
+          "optional": true,
+          "label": "항목 설명",
+          "note": "Frame 42 안 2번째 TEXT. description 으로 변경 요청"
+        },
+        "tone": {
+          "type": "enum",
+          "values": [
+            "icon1",
+            "icon2",
+            "icon3",
+            "icon4"
+          ],
+          "figmaLayer": "problem_icon",
+          "figmaProp": "problem",
+          "optional": true,
+          "label": "아이콘 배경색",
+          "note": "problem_icon 컴포넌트 problem 속성: icon1 red / icon2 green / icon3 blue / icon4 violet (color/*/200)"
+        },
+        "image": {
+          "type": "image",
+          "figmaLayer": "Rectangle 5",
+          "optional": true,
+          "label": "아이콘 이미지 (100×100)",
+          "note": "비우면 tone 색 사각형만 보여요"
+        }
+      }
+    }
+  },
+  "pager": {
+    "slot": "items",
+    "mode": {
+      "pc": "grid",
+      "tb": "grid",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 2,
+      "tb": 2,
+      "mo": 0
+    },
+    "rows": {
+      "pc": 2,
+      "tb": 2,
+      "mo": 1
+    },
+    "note": "Figma PC 오토레이아웃: GRID 2열 + 채우기 · per = 열 수"
+  }
+}

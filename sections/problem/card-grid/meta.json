@@ -1,0 +1,98 @@
+{
+  "id": "problem-card-grid",
+  "section": "problem",
+  "layout": "card-grid",
+  "order": 1,
+  "when": "조직이 겪는 문제를 같은 무게의 아이콘 카드로 나란히 보여줄 때",
+  "figma": {
+    "pc": "6187:2646",
+    "mo": "6187:2918",
+    "tb": null
+  },
+  "body": 980,
+  "options": {
+    "compact": {
+      "label": "MO compact · 좌우로 넘기기",
+      "class": "problem--compact",
+      "moOnly": true,
+      "figma": {
+        "mo": "6187:3163"
+      }
+    }
+  },
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "note": "MO: heading-mo/Frame 2147238960/title (문서 순서상 첫 title)",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "cards": {
+      "type": "list",
+      "figmaLayer": "card1",
+      "aliases": [
+        "card2",
+        "card3"
+      ],
+      "min": 1,
+      "max": 24,
+      "label": "문제 카드",
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": [
+            "pie",
+            "settings",
+            "building",
+            "alert",
+            "check"
+          ],
+          "optional": true,
+          "label": "아이콘",
+          "note": "Figma 아이콘 인스턴스 이름 → 값: charts/pie-chart-01=pie, general/settings-01=settings, general/building-05=building. PC 48 / MO 32 (assets/icons/<값>-48.svg, -32.svg)"
+        },
+        "title": {
+          "type": "richtext",
+          "figmaLayer": "title",
+          "label": "카드 제목"
+        },
+        "description": {
+          "type": "richtext",
+          "figmaLayer": "description",
+          "optional": true,
+          "label": "카드 설명"
+        }
+      }
+    }
+  },
+  "pager": {
+    "slot": "cards",
+    "mode": {
+      "pc": "fill",
+      "tb": "fill",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 4,
+      "tb": 3,
+      "mo": 0
+    },
+    "note": "Figma PC 오토레이아웃: 가로 한 줄 + 채우기(Fill) · per = 한 줄 최대 카드 수(넘치면 페이지)"
+  }
+}

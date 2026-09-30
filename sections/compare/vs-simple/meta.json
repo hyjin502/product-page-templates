@@ -1,0 +1,110 @@
+{
+  "id": "compare-vs-simple",
+  "section": "compare",
+  "layout": "vs-simple",
+  "order": 1,
+  "when": "타사 vs 우리를 항목 몇 개로 간단히 대비할 때 (우리 쪽 카드 강조)",
+  "figma": {
+    "pc": "6187:3477",
+    "mo": null,
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "섹션 제목"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "제목 아래 설명 (Figma 기본값은 없음)"
+    },
+    "otherLabel": {
+      "type": "text",
+      "figmaLayer": "타사 교육업체",
+      "figmaPath": "01/Frame 2147238981/타사 교육업체",
+      "aliases": [
+        "other-label"
+      ],
+      "label": "타사 열 제목"
+    },
+    "otherItems": {
+      "type": "list",
+      "note": "열 01 안의 행 프레임 — 이름이 제각각이라 이름 정리 필요",
+      "min": 1,
+      "max": 6,
+      "label": "타사 항목",
+      "item": {
+        "text": {
+          "type": "richtext",
+          "note": "행 안의 TEXT 1개 (현재 레이어 이름 = 문구)",
+          "label": "문구",
+          "figmaLayer": "*",
+          "nth": 0
+        }
+      },
+      "figmaLayer": "Frame 2147238982",
+      "aliases": [
+        "Frame 2147238983",
+        "Frame 2147238984",
+        "Frame 2147238985",
+        "item"
+      ],
+      "scope": {
+        "figmaLayer": [
+          "01",
+          "02"
+        ],
+        "nth": 0
+      }
+    },
+    "oursLabel": {
+      "type": "text",
+      "figmaLayer": "휴넷",
+      "figmaPath": "02/Frame 2147238981/휴넷",
+      "aliases": [
+        "ours-label"
+      ],
+      "label": "우리 열 제목 (강조)"
+    },
+    "oursItems": {
+      "type": "list",
+      "note": "열 02 안의 행 프레임",
+      "min": 1,
+      "max": 6,
+      "label": "우리 항목",
+      "item": {
+        "text": {
+          "type": "richtext",
+          "note": "행 안의 TEXT 1개 (현재 레이어 이름 = 문구)",
+          "label": "문구",
+          "figmaLayer": "*",
+          "nth": 0
+        }
+      },
+      "figmaLayer": "Frame 2147238982",
+      "aliases": [
+        "Frame 2147238983",
+        "Frame 2147238984",
+        "Frame 2147238985",
+        "item"
+      ],
+      "scope": {
+        "figmaLayer": [
+          "01",
+          "02"
+        ],
+        "nth": 1
+      }
+    }
+  }
+}

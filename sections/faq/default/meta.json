@@ -1,0 +1,99 @@
+{
+  "id": "faq-default",
+  "section": "faq",
+  "layout": "default",
+  "order": 1,
+  "when": "자주 묻는 질문을 펼침/접힘 목록으로 보여주고, 아래에 유의사항을 붙일 때",
+  "figma": {
+    "pc": "6187:4861",
+    "mo": "6187:4889",
+    "tb": null
+  },
+  "body": 980,
+  "note": "Figma 속성 mode=light 만 있어요. 펼침/접힘은 <details>/<summary> (JS 없음).",
+  "slots": {
+    "title": {
+      "type": "text",
+      "figmaLayer": "자주 묻는 질문",
+      "aliases": [
+        "title"
+      ],
+      "label": "섹션 타이틀"
+    },
+    "items": {
+      "type": "list",
+      "min": 1,
+      "max": 20,
+      "label": "질문 · 답변",
+      "note": "질문리스트 의 자식 프레임이 항목이에요 (이름이 Copy 3~6 으로 달라요 → item 으로 변경 요청)",
+      "item": {
+        "question": {
+          "type": "text",
+          "figmaLayer": "Q. 휴넷 하이브리드 러닝이란 무엇인",
+          "aliases": [
+            "question"
+          ]
+        },
+        "answer": {
+          "type": "richtext",
+          "figmaLayer": "휴넷 하이브리드 러닝’은 기존 ‘하이",
+          "aliases": [
+            "answer"
+          ],
+          "optional": true
+        },
+        "linkLabel": {
+          "type": "text",
+          "figmaLayer": "자세히보기 >",
+          "optional": true,
+          "label": "답변 아래 파란 링크 (컴포넌트 속성 '자세히보기' 로 켜고 꺼요)"
+        },
+        "linkHref": {
+          "type": "url",
+          "optional": true
+        },
+        "state": {
+          "type": "enum",
+          "values": [
+            "up",
+            "down"
+          ],
+          "optional": true,
+          "label": "처음 상태 — up = 펼침, down = 접힘",
+          "figmaLayer": "navi/arrow-up-down",
+          "figmaProp": "type",
+          "literalNames": true
+        }
+      },
+      "figmaLayer": "Promotion/FAQ/FAQ_질문답변(PC) Copy 3",
+      "aliases": [
+        "Promotion/FAQ/FAQ_질문답변(PC) Copy 4",
+        "Promotion/FAQ/FAQ_질문답변(PC) Copy 5",
+        "Promotion/FAQ/FAQ_질문답변(PC) Copy 6",
+        "item"
+      ],
+      "literalNames": true
+    },
+    "noteTitle": {
+      "type": "text",
+      "optional": true,
+      "label": "아래 유의사항 제목",
+      "figmaLayer": "유의사항"
+    },
+    "notes": {
+      "type": "list",
+      "optional": true,
+      "min": 0,
+      "max": 20,
+      "label": "유의사항 항목",
+      "note": "TEXT 하나를 '• ' 로 시작하는 줄마다 한 항목으로 나눠요 (다음 줄이 '• ' 로 시작하지 않으면 앞 항목에 줄바꿈으로 붙여요). 글머리표 • 는 CSS 가 그려요",
+      "item": {
+        "text": {
+          "type": "richtext"
+        }
+      },
+      "figmaLayer": "• 연회비는 면세입니다. • 법정의무",
+      "split": true
+    }
+  }
+}

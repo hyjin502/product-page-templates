@@ -1,0 +1,13 @@
+.awards--certification .awards__list { display: flex; gap: 20px; align-items: stretch; }
+.awards--certification .awards__card {
+  flex: 1 1 0; min-width: 0; flex-direction: column; align-items: center; gap: 20px;
+  padding: 24px; text-align: center;
+}
+.awards--certification .awards__text { align-self: stretch; }
+.awards--certification .awards__desc { color: var(--t-80); }
+
+/* TB 768–1279 — 3열 유지, 카드 안쪽 여백만 줄여요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .awards--certification .awards__list { gap: 16px; }
+  .awards--certification .awards__card { padding: 24px 16px; }
+}

@@ -1,0 +1,43 @@
+{% from "_partials/ui.njk" import secHead, pagerDots %}
+<section class="problem problem--card-list">
+  <div class="problem__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="problem__content">
+      <div data-pager-track class="problem__track">
+{% for c in cards %}
+        <article class="problem__card">
+          <div class="problem__card-head">
+            <h3 class="problem__card-title">{{ c.title }}</h3>
+{% if c.subtitle %}
+            <p class="problem__text problem__card-sub">{{ c.subtitle | rt }}</p>
+{% endif %}
+          </div>
+{% if (c.chips and c.chips.length) or (c.image and c.image.src) %}
+          <div class="problem__card-body">
+{% if c.chips and c.chips.length %}
+            <ul class="problem__chips">
+{% for p in c.chips %}
+              <li>{{ p.label }}</li>
+{% endfor %}
+            </ul>
+{% endif %}
+{% if c.image and c.image.src %}
+            <img class="problem__card-img" src="{{ c.image.src }}" alt="{{ c.image.alt or '' }}" loading="lazy">
+{% endif %}
+          </div>
+{% endif %}
+{% if c.meta and c.meta.length %}
+          <dl class="problem__meta">
+{% for m in c.meta %}
+            <div><dt>{{ m.label }}</dt><dd>{{ m.value }}</dd></div>
+{% endfor %}
+          </dl>
+{% endif %}
+        </article>
+{% endfor %}
+      </div>
+      {{ pagerDots() }}
+      <div class="problem__bar" aria-hidden="true"><span class="problem__thumb"></span></div>
+    </div>
+  </div>
+</section>

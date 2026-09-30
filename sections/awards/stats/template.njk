@@ -1,0 +1,24 @@
+{% from "_partials/ui.njk" import secHead %}
+{# 수상·인증 stats — 제목 + 가로 카드 2열(PC) #}
+<section class="awards awards--stats">
+  <div class="awards__body">
+    {{ secHead(eyebrow, title, subtitle, "sec-head--center") }}
+{% if items.length %}
+    <ul class="awards__list">
+{% for it in items %}
+      <li class="awards__card">
+{% if it.emblem and it.emblem.src %}
+        <img class="awards__emblem" src="{{ it.emblem.src }}" alt="{{ it.emblem.alt or '' }}" width="70" height="70">
+{% endif %}
+        <div class="awards__text">
+          <p class="awards__title">{{ it.title | rt }}</p>
+{% if it.description %}
+          <p class="awards__desc">{{ it.description | rt }}</p>
+{% endif %}
+        </div>
+      </li>
+{% endfor %}
+    </ul>
+{% endif %}
+  </div>
+</section>

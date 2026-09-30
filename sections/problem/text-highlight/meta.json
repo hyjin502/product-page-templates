@@ -1,0 +1,78 @@
+{
+  "id": "problem-text-highlight",
+  "section": "problem",
+  "layout": "text-highlight",
+  "order": 7,
+  "when": "제목을 왼쪽에 두고, 오른쪽에 담당자 고민 카드를 세로로 쌓아 강조할 때",
+  "figma": {
+    "pc": "6187:2827",
+    "mo": "6187:3033",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "note": "MO: heading-mo/Frame 2147238960/title",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "cards": {
+      "type": "list",
+      "min": 1,
+      "max": 4,
+      "label": "고민 카드",
+      "note": "PC 는 card/card1·card2, MO 는 content/card1·card2. 카드 안 제목 래퍼도 이름이 card1 이라 item 으로 변경 요청",
+      "item": {
+        "title": {
+          "type": "richtext",
+          "label": "고민 제목",
+          "figmaLayer": "title"
+        },
+        "description": {
+          "type": "richtext",
+          "optional": true,
+          "label": "설명",
+          "figmaLayer": "description",
+          "figmaPath": "heading/description"
+        },
+        "avatar": {
+          "type": "image",
+          "figmaLayer": "avatar",
+          "optional": true,
+          "label": "아바타 (32×32 원형)",
+          "note": "avatar type=default-01/08 일러스트는 assets/problem/avatar-default-01.svg / -08.svg"
+        },
+        "role": {
+          "type": "text",
+          "optional": true,
+          "label": "작성자 (직무)",
+          "figmaLayer": "description",
+          "figmaPath": "Frame 2147238925/description"
+        }
+      },
+      "figmaLayer": "card1",
+      "aliases": [
+        "card2",
+        "card3",
+        "card4"
+      ]
+    }
+  }
+}

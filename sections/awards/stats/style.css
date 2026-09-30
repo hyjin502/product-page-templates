@@ -1,0 +1,10 @@
+.awards--stats .awards__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.awards--stats .awards__card { align-items: flex-start; gap: 20px; padding: 24px 32px; }
+
+/* TB 768–1279 — 1024 이상 2열, 그 아래 1열 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .awards--stats .awards__card { padding: 24px 28px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .awards--stats .awards__list { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}

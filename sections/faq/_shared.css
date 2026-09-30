@@ -1,0 +1,23 @@
+/* faq 공통 — Figma background/bg-page 배경 */
+.faq { display: flex; flex-direction: column; align-items: center; padding: 120px var(--container-pad); background: var(--bg-page); color: var(--t-100); }
+.faq__body { width: var(--body, 980px); max-width: 100%; display: flex; flex-direction: column; gap: 48px; }
+
+/* 유의사항 (Promotion/유의사항 — notice 섹션과 같은 모양) */
+.faq__notes { display: flex; flex-direction: column; gap: 16px; letter-spacing: var(--tracking-tight); }
+.faq__notes-title { font-size: 18px; font-weight: 700; line-height: 1.6; color: var(--t-80); }
+.faq__notes-list { margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.6; color: var(--t-60); }
+.faq__notes-list li { position: relative; padding-left: 0.72em; }
+.faq__notes-list li::before { content: "•"; position: absolute; left: 0; }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .faq { padding: 96px var(--container-pad); }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .faq { padding: 64px var(--container-pad) 80px; }
+  .faq__body { gap: 32px; }
+  .faq__notes-title { font-size: 16px; }
+  .faq__notes-list { font-size: 14px; }
+}

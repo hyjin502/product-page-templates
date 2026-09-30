@@ -1,0 +1,23 @@
+{% from "_partials/ui.njk" import secHead %}
+<section class="problem problem--image-list">
+  <div class="problem__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <div class="problem__rows">
+{% for r in rows %}
+      <article class="problem__row">
+        <div class="problem__row-text">
+          <h3 class="problem__card-title">{{ r.title | rt }}</h3>
+{% if r.description %}
+          <p class="problem__text problem__row-desc">{{ r.description | rt }}</p>
+{% endif %}
+        </div>
+        <div class="problem__row-media">
+{% if r.image and r.image.src %}
+          <img src="{{ r.image.src }}" alt="{{ r.image.alt or '' }}" loading="lazy">
+{% endif %}
+        </div>
+      </article>
+{% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+{% from "_partials/ui.njk" import ctas as ctaList, secHead %}
+<section class="benefit benefit--list">
+  <div class="benefit__body">
+    <div class="benefit__heading">
+      {{ secHead(eyebrow, title, subtitle) }}
+      {{ ctaList(ctas, "benefit__btns") }}
+    </div>
+    <ul class="benefit__list">
+{% for it in items %}
+      <li class="benefit__card">
+{% if it.icon %}
+        <span class="benefit__icon">{{ it.icon | icon }}</span>
+{% endif %}
+        <div class="benefit__card-text">
+          <h3 class="benefit__item-title">{{ it.title | rt }}</h3>
+{% if it.description %}
+          <p class="benefit__item-desc">{{ it.description | rt }}</p>
+{% endif %}
+        </div>
+      </li>
+{% endfor %}
+    </ul>
+  </div>
+</section>

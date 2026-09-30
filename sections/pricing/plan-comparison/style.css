@@ -1,0 +1,108 @@
+.pricing--plan-comparison .pricing__body { width: var(--body, 980px); gap: 60px; align-items: center; }
+.pricing--plan-comparison .sec-head { width: 100%; }
+.pricing--plan-comparison .sec-head__lead { font-weight: 400; color: var(--t-80); }
+
+/* 비교표 — 왼쪽 항목 열(186) + 플랜 열 균등 */
+.pricing__table-wrap { width: 100%; }
+.pricing__table {
+  width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0;
+  background: var(--bg-surface);
+  font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.pricing__table th, .pricing__table td { padding: 10px; font-weight: 400; vertical-align: middle; }
+.pricing__table thead th { height: 120px; border-bottom: 1px solid var(--line-heavy, #70737c); }
+.pricing__table tbody th, .pricing__table tbody td { height: 64px; border-bottom: 1px solid var(--line-outline); }
+
+.pricing__table .pricing__spec {
+  width: 186px; padding: 10px 16px 10px 24px; text-align: left;
+  background: var(--bg-page); border-right: 1px solid var(--line-heavy, #70737c);
+  font-weight: 500; color: var(--t-100);
+}
+.pricing__table .pricing__spec--head { font-size: 18px; font-weight: 700; border-top-left-radius: 16px; }
+.pricing__table tbody tr:last-child .pricing__spec { border-bottom: 0; border-bottom-left-radius: 16px; }
+
+/* 플랜 머리 칸 */
+.pricing__table .pricing__plan {
+  padding: 24px; text-align: left; vertical-align: top;
+  background: var(--bg-page); color: var(--t-100);
+}
+.pricing__plan:last-child { border-top-right-radius: 16px; }
+.pricing__plan > span { display: flex; align-items: center; gap: 8px; }
+.pricing__plan-top { min-height: 29px; }
+.pricing__plan-name { font-size: 16px; font-weight: 500; }
+.pricing__plan-badge {
+  display: inline-flex; align-items: center; padding: 6px 14px; border-radius: 900px; border: 1px solid currentColor;
+  font-size: 14px; font-weight: 700; line-height: normal; letter-spacing: -0.2px;
+}
+.pricing__table .pricing__plan-price { margin-top: 9px; align-items: flex-end; gap: 4px; }
+.pricing__plan-num { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); white-space: nowrap; }
+.pricing__plan-unit { font-size: 14px; color: var(--t-60); white-space: nowrap; }
+
+/* 값 칸 */
+.pricing__cell { text-align: center; color: var(--t-80); }
+.pricing__cell-value { display: block; }
+.pricing__table td.pricing__cell--tagged { height: 100px; }
+.pricing__cell--tagged .pricing__cell-value { color: var(--t-45); }
+.pricing__cell-tag {
+  display: inline-flex; margin-top: 4px; padding: 2px 10px; border-radius: 900px;
+  background: var(--static-black, #000); color: var(--static-white, #fff);
+  font-size: 14px; font-weight: 700; line-height: 1.6;
+}
+
+/* 강조 열 — 진한 머리 칸 + 2px 테두리 (레이아웃에 영향 없게 inset 그림자로) */
+.pricing__table .is-featured { box-shadow: inset 2px 0 0 var(--line-heavy, #70737c), inset -2px 0 0 var(--line-heavy, #70737c); }
+.pricing__plan.is-featured {
+  background: var(--btn-neutral, #292a2d); color: var(--static-white, #fff);
+  box-shadow: inset 2px 0 0 var(--line-heavy, #70737c), inset -2px 0 0 var(--line-heavy, #70737c), inset 0 2px 0 var(--line-heavy, #70737c);
+}
+.pricing__plan.is-featured .pricing__plan-unit { color: var(--static-white, #fff); }
+.pricing__table tbody tr:last-child .is-featured {
+  border-bottom: 0;
+  box-shadow: inset 2px 0 0 var(--line-heavy, #70737c), inset -2px 0 0 var(--line-heavy, #70737c), inset 0 -2px 0 var(--line-heavy, #70737c);
+}
+
+.pricing--plan-comparison .pricing__btns { display: flex; justify-content: center; }
+
+/* TB 768–1279 (Figma 없음 · 제안) — 표 유지, 글자·여백 축소. 1024 미만은 좌우 스크롤 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .pricing--plan-comparison .pricing__body { gap: 48px; }
+  .pricing--plan-comparison .sec-head__title { font-size: 30px; }
+  .pricing__table .pricing__spec { width: 160px; }
+  .pricing__table .pricing__plan { padding: 20px; }
+  .pricing__plan-num { font-size: 22px; }
+  .pricing__table { font-size: 15px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pricing__table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pricing__table { min-width: 680px; }
+}
+
+/* MO ≤767 (Figma 없음 · 제안) — 표를 좌우로 스크롤, 항목 열은 왼쪽에 고정 */
+@media (max-width: 767px) {
+  .pricing--plan-comparison .pricing__body { gap: 40px; align-items: stretch; }
+  .pricing--plan-comparison .sec-head__lead { font-size: 16px; }
+  /* MO 시안이 없어 PC 줄바꿈은 MO 에서 풀어요 (좁은 폭에서 어색한 줄바꿈 방지) */
+  .pricing--plan-comparison .sec-head__lead br { display: none; }
+  .pricing__table-wrap {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    margin: 0 calc(var(--container-pad) * -1); padding: 0 var(--container-pad);
+    width: auto;
+  }
+  .pricing__table { min-width: 560px; font-size: 14px; }
+  .pricing__table thead th { height: 104px; }
+  .pricing__table tbody th, .pricing__table tbody td { height: 56px; }
+  .pricing__table td.pricing__cell--tagged { height: 88px; }
+  .pricing__table .pricing__spec {
+    width: 112px; padding: 8px 8px 8px 16px;
+    position: sticky; left: 0; z-index: 1;
+  }
+  .pricing__table .pricing__spec--head { font-size: 15px; }
+  .pricing__table .pricing__plan { padding: 16px 12px; }
+  .pricing__plan-name { font-size: 14px; }
+  .pricing__plan-badge { padding: 4px 10px; font-size: 12px; }
+  .pricing__table .pricing__plan-price { flex-wrap: wrap; gap: 0 4px; }
+  .pricing__plan-num { font-size: 20px; }
+  .pricing__plan-unit { font-size: 12px; }
+  .pricing__cell-tag { font-size: 12px; padding: 2px 8px; }
+  .pricing--plan-comparison .pricing__btns { width: 100%; }
+}

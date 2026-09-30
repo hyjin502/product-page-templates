@@ -1,0 +1,20 @@
+{% from "_partials/ui.njk" import secHead %}
+<section class="benefit benefit--timeline">
+  <div class="benefit__body">
+    {{ secHead(eyebrow, title, subtitle) }}
+    <ol class="benefit__timeline">
+{% for it in items %}
+      <li class="benefit__step">
+        <div class="benefit__step-head">
+          <span class="benefit__step-num" aria-hidden="true">{{ loop.index }}</span>
+          <h3 class="benefit__step-title">{{ it.title | rt }}</h3>
+        </div>
+        <span class="benefit__dot" aria-hidden="true"></span>
+{% if it.description %}
+        <p class="benefit__step-desc">{{ it.description | rt }}</p>
+{% endif %}
+      </li>
+{% endfor %}
+    </ol>
+  </div>
+</section>

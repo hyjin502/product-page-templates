@@ -1,0 +1,139 @@
+.inquiry--simple { padding: 120px var(--container-pad); }
+.inquiry--simple .inquiry__body {
+  width: var(--body, 740px); max-width: 100%;
+  display: flex; flex-direction: column; gap: 60px;
+}
+
+/* 제목 — heading 블록(eyebrow 20 medium / title 40 bold, 간격 4) */
+.inquiry__head { gap: 0; }
+.inquiry__head .sec-head__titles { gap: 4px; }
+.inquiry__head .sec-head__eyebrow { font-weight: 500; }
+.inquiry__head .sec-head__title { font-size: 40px; }
+
+.inquiry__form { display: flex; flex-direction: column; gap: 24px; }
+
+/* 폼 위 안내 */
+.inquiry__intro { display: flex; flex-direction: column; gap: 4px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.inquiry__quick { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; color: var(--error); font-weight: 600; text-decoration: none; }
+.inquiry__quick svg { width: 20px; height: 20px; flex: none; }
+.inquiry__lead { color: var(--t-60); }
+.inquiry__run--bold { font-weight: 700; }
+.inquiry__run--link { color: var(--brand); text-decoration: underline; text-underline-position: from-font; }
+
+/* 그룹 카드 — PC 는 제목이 카드 안 */
+.inquiry__group { background: var(--bg-surface); border-radius: 16px; padding-bottom: 16px; }
+.inquiry__group-title {
+  padding: 24px 32px 16px;
+  font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter);
+}
+
+/* 입력 행 — 라벨(160) + 입력 영역 */
+.inquiry__field { display: flex; align-items: center; padding: 0 32px; }
+.inquiry__label {
+  flex: 0 0 160px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100);
+}
+.inquiry__req { color: var(--error); }
+.inquiry__controls {
+  flex: 1 1 0; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 8px; padding: 16px 0;
+}
+.inquiry__ctl { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.inquiry__ctl--textarea, .inquiry__ctl--radio { flex-basis: 100%; }
+.inquiry__controls > .inquiry__ctl--radio + .inquiry__ctl { flex-basis: 100%; }
+.inquiry__sep { flex: none; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+
+.inquiry__box { position: relative; display: flex; align-items: center; }
+.inquiry__input {
+  width: 100%; height: 40px; padding: 0 12px; margin: 0;
+  border: 1px solid var(--line-outline); border-radius: 8px; background: var(--bg-surface);
+  font: inherit; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100);
+  appearance: none; -webkit-appearance: none; outline: none;
+}
+.inquiry__input::placeholder { color: var(--t-45); opacity: 1; }
+.inquiry__input:focus { border-color: var(--selected-fill); }
+.inquiry__box svg { position: absolute; right: 12px; width: 20px; height: 20px; color: var(--t-80); pointer-events: none; }
+.inquiry__ctl--select .inquiry__input, .inquiry__ctl--search .inquiry__input { padding-right: 40px; }
+.inquiry__input::-webkit-search-cancel-button { -webkit-appearance: none; }
+textarea.inquiry__input { height: 104px; padding: 12px; resize: vertical; }
+.inquiry__help { font-size: 12px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-45); }
+.inquiry__ctl--textarea .inquiry__help { font-size: 14px; line-height: 22px; letter-spacing: -0.2px; }
+
+/* 체크박스 · 라디오 — 네이티브 입력은 투명하게 두고 옆 표시로 그려요 */
+.inquiry__check, .inquiry__radio {
+  position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.inquiry__check input, .inquiry__radio input {
+  position: absolute; left: 0; top: 50%; width: 16px; height: 16px; margin: -8px 0 0; opacity: 0; cursor: pointer;
+}
+.inquiry__mark, .inquiry__dot {
+  flex: none; width: 16px; height: 16px; display: grid; place-items: center;
+  border: 1px solid var(--line-strong, #aeb0b6); background: var(--bg-surface);
+}
+.inquiry__mark { border-radius: 4px; }
+.inquiry__mark svg { width: 12px; height: 12px; color: var(--static-white, #fff); opacity: 0; }
+.inquiry__dot { border-radius: 900px; }
+.inquiry__check input:checked + .inquiry__mark { background: var(--selected-fill); border-color: var(--selected-fill); }
+.inquiry__check input:checked + .inquiry__mark svg { opacity: 1; }
+.inquiry__radio input:checked + .inquiry__dot { background: var(--selected-fill); border-color: var(--selected-fill); }
+.inquiry__radio input:checked + .inquiry__dot::after { content: ""; width: 6px; height: 6px; border-radius: 900px; background: var(--static-white, #fff); }
+.inquiry__check input:focus-visible + .inquiry__mark,
+.inquiry__radio input:focus-visible + .inquiry__dot { outline: 2px solid var(--brand); outline-offset: 2px; }
+.inquiry__check input:checked ~ .inquiry__check-text { font-weight: 600; }
+.inquiry__ctl--checkbox { flex: none; }
+.inquiry__ctl--checkbox .inquiry__check-text { color: var(--t-60); }
+.inquiry__radios { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+.inquiry__radio { width: 100px; white-space: nowrap; }
+
+/* 동의 영역 */
+.inquiry__agree { display: flex; flex-direction: column; gap: 20px; }
+.inquiry__privacy { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+.inquiry__consent {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px;
+  border: 1px solid var(--line-outline); border-radius: 8px; background: var(--bg-page);
+}
+.inquiry__consent-head { display: flex; align-items: center; gap: 8px; }
+.inquiry__consent-link { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); text-decoration: underline; text-underline-position: from-font; }
+.inquiry__channels { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+.inquiry__channels .inquiry__check-text { color: var(--t-80); }
+.inquiry__consent-note { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); text-align: center; }
+
+/* 제출 — Figma action button (style=solid, 진한 회색 interaction/button-neutral) */
+.inquiry__submit { display: flex; justify-content: center; margin-top: 36px; }
+.inquiry .inquiry__btn {
+  width: 300px; max-width: 100%; height: 64px; padding: 0 24px; border-radius: 4px;
+  background: var(--btn-neutral, #292a2d); color: var(--static-white, #fff);
+  font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .inquiry--simple { padding: 96px var(--container-pad); }
+  .inquiry--simple .inquiry__body { gap: 48px; }
+  .inquiry__head .sec-head__title { font-size: 34px; }
+}
+
+/* MO ≤767 — 그룹 제목은 카드 밖, 라벨은 입력 위 */
+@media (max-width: 767px) {
+  .inquiry--simple { padding: 72px var(--container-pad); }
+  .inquiry--simple .inquiry__body { gap: 28px; }
+  .inquiry__head .sec-head__titles { gap: 8px; }
+  .inquiry__head .sec-head__eyebrow { font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .inquiry__head .sec-head__title { font-size: 28px; }
+  .inquiry__form { gap: 28px; }
+  .inquiry__group { display: flex; flex-direction: column; gap: 16px; padding: 0; background: none; border-radius: 0; }
+  .inquiry__group-title { padding: 0; font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .inquiry__fields { display: flex; flex-direction: column; gap: 20px; padding: 24px; border-radius: 16px; background: var(--bg-surface); }
+  .inquiry__field { flex-direction: column; align-items: stretch; gap: 8px; padding: 0; }
+  .inquiry__label { flex: none; }
+  .inquiry__label--empty { display: none; }
+  .inquiry__controls { gap: 8px; padding: 0; }
+  .inquiry__ctl--checkbox { flex-basis: 100%; }
+  .inquiry__help, .inquiry__ctl--textarea .inquiry__help { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  textarea.inquiry__input { height: 112px; font-size: 14px; }
+  .inquiry__radios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 0; }
+  .inquiry__radio { width: auto; font-size: 14px; }
+  .inquiry__agree { gap: 28px; }
+  .inquiry__consent-note { text-align: left; }
+  .inquiry__submit { margin-top: 0; }
+  .inquiry .inquiry__btn { width: 100%; }
+}

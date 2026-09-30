@@ -1,0 +1,42 @@
+/* .problem, __body, __content, __track, __card, __dots, __bar 는 _shared.css */
+.problem--card-list .problem__content { gap: 60px; }
+.problem--card-list .problem__track { align-items: flex-start; }
+.problem--card-list .problem__card { gap: 32px; padding: 40px; }
+.problem--card-list .problem__card-head { display: flex; flex-direction: column; gap: 4px; }
+.problem--card-list .problem__card-title { font-size: 28px; }
+.problem--card-list .problem__card-sub { font-weight: 500; }
+.problem--card-list .problem__card-body { display: flex; flex-direction: column; gap: 20px; }
+.problem__chips { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.problem__chips li {
+  padding: 12px; border: 1px solid var(--line-outline); border-radius: 8px; background: var(--bg-page);
+  font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); text-align: center;
+}
+.problem--card-list .problem__card-img { width: 100%; height: 210px; border-radius: 8px; object-fit: cover; }
+.problem__meta { display: flex; margin: 0; }
+.problem__meta div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.problem__meta dt { font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100); }
+.problem__meta dd { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+
+/* TB 768–1279 — 1024 미만은 1열로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .problem--card-list .problem__content { gap: 48px; }
+  .problem--card-list .problem__card { padding: 32px; }
+  .problem--card-list .problem__card-title { font-size: 26px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .problem--card-list .problem__track { flex-direction: column; align-items: stretch; }
+  .problem--card-list .problem__card { flex: none; }
+  .problem--card-list .problem__card-img { height: 280px; }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .problem--card-list .problem__content { gap: 20px; }
+  .problem--card-list .problem__track { align-items: stretch; }
+  .problem--card-list .problem__card { padding: 32px 24px; }
+  .problem--card-list .problem__card-title { font-size: 24px; }
+  .problem--card-list .problem__chips li { font-size: 14px; font-weight: 500; }
+  .problem--card-list .problem__card-img { height: 180px; }
+  .problem--card-list.problem--compact .problem__track { align-items: flex-start; }
+  .problem--card-list.problem--compact .problem__card { flex: 0 0 343px; max-width: calc(100vw - var(--container-pad) * 2); }
+}

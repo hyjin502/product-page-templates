@@ -1,0 +1,80 @@
+{
+  "id": "problem-image-grid",
+  "section": "problem",
+  "layout": "image-grid",
+  "order": 3,
+  "when": "역할별 고민을 아바타와 한 줄 문장으로 가볍게 나열할 때",
+  "figma": {
+    "pc": "6187:2691",
+    "mo": "6187:2970",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "note": "MO: heading-mo/Frame 2147238960/title (문서 순서상 첫 title)",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "cards": {
+      "type": "list",
+      "figmaLayer": "card1",
+      "aliases": [
+        "card2"
+      ],
+      "min": 1,
+      "max": 24,
+      "label": "고민 카드",
+      "item": {
+        "avatar": {
+          "type": "image",
+          "figmaLayer": "avatar",
+          "optional": true,
+          "label": "아바타 (48×48 원형)",
+          "note": "avatar type=default-01/08 일러스트는 assets/problem/avatar-default-01.svg / -08.svg"
+        },
+        "title": {
+          "type": "richtext",
+          "figmaLayer": "title",
+          "label": "고민 문장"
+        },
+        "role": {
+          "type": "text",
+          "figmaLayer": "description",
+          "label": "작성자 (직무·회사)"
+        }
+      }
+    }
+  },
+  "pager": {
+    "slot": "cards",
+    "mode": {
+      "pc": "fill",
+      "tb": "fill",
+      "mo": "none"
+    },
+    "per": {
+      "pc": 4,
+      "tb": 3,
+      "mo": 0
+    },
+    "note": "Figma PC 오토레이아웃: 가로 한 줄 + 채우기(Fill) · per = 한 줄 최대 카드 수(넘치면 페이지)"
+  }
+}

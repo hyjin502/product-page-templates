@@ -1,0 +1,21 @@
+.notice__body {
+  width: var(--body, 980px); max-width: 100%;
+  display: flex; flex-direction: column; gap: 16px; letter-spacing: var(--tracking-tight);
+}
+.notice__title { font-size: 18px; font-weight: 700; line-height: 1.6; color: var(--t-80); }
+.notice__list { margin: 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.6; color: var(--t-60); }
+/* 글머리표 • 는 CSS 로 — 둘째 줄은 글자 시작에 맞춰 들여써요 (Figma 의 공백 3칸 들여쓰기) */
+.notice__list li { position: relative; padding-left: 0.72em; }
+.notice__list li::before { content: "•"; position: absolute; left: 0; }
+
+/* TB 768–1279 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .notice { padding: 96px var(--container-pad); }
+}
+
+/* MO ≤767 */
+@media (max-width: 767px) {
+  .notice { padding: 64px var(--container-pad) 80px; }
+  .notice__title { font-size: 16px; }
+  .notice__list { font-size: 14px; }
+}

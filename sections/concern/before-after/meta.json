@@ -1,0 +1,113 @@
+{
+  "id": "concern-before-after",
+  "section": "concern",
+  "layout": "before-after",
+  "order": 4,
+  "when": "기존 방식의 한계와 개선된 방식을 두 카드로 나란히 비교할 때",
+  "figma": {
+    "pc": "6187:4022",
+    "mo": "6187:4116",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "figmaPath": [
+        "heading-pc/eyebrow",
+        "heading-mo/eyebrow"
+      ],
+      "optional": true,
+      "label": "상단 보조 문구",
+      "note": "피그마 heading 에서 숨김"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "figmaPath": [
+        "heading-pc/title",
+        "heading-mo/title"
+      ],
+      "label": "섹션 타이틀",
+      "note": "PC 한 줄 / MO 두 줄 → { pc, mo }"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "타이틀 아래 설명",
+      "note": "PC·MO 문구가 달라요 → { pc, mo }"
+    },
+    "beforeTitle": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "figmaPath": "before/Icon Container/eyebrow",
+      "label": "왼쪽 카드 제목 (기존 방식)",
+      "note": "카드 제목 TEXT 이름이 eyebrow 예요 — title 로 변경 요청"
+    },
+    "beforeItems": {
+      "type": "list",
+      "figmaLayer": "compare-item",
+      "figmaPath": "before/List Container/compare-item",
+      "min": 1,
+      "max": 8,
+      "label": "기존 방식 목록 (빨간 X)",
+      "item": {
+        "text": {
+          "type": "richtext",
+          "figmaLayer": "text",
+          "label": "항목",
+          "note": "PC·MO 문구가 달라요 → { pc, mo }"
+        }
+      }
+    },
+    "afterTitle": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "figmaPath": "after/Icon Container/eyebrow",
+      "label": "오른쪽 카드 제목 (개선 방식)"
+    },
+    "afterItems": {
+      "type": "list",
+      "figmaLayer": "compare-item",
+      "figmaPath": "after/List Container/compare-item",
+      "min": 1,
+      "max": 8,
+      "label": "개선 방식 목록 (초록 체크)",
+      "item": {
+        "text": {
+          "type": "richtext",
+          "figmaLayer": "text",
+          "label": "항목",
+          "note": "PC·MO 문구가 달라요 → { pc, mo }"
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "note": "피그마 컴포넌트에서 기본 숨김",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "type"
+        }
+      }
+    }
+  }
+}

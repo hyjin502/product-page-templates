@@ -1,0 +1,59 @@
+{
+  "id": "utility-link-grid",
+  "section": "utility",
+  "layout": "link-grid",
+  "order": 1,
+  "when": "페이지 끝에서 자료 다운로드·일정·신청 같은 바로가기 링크를 모아 보여줄 때",
+  "figma": {
+    "pc": "6187:4762",
+    "mo": "6187:4770",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "제목 위 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "aliases": ["숫자로 보는 휴넷 리더십 교육"],
+      "label": "섹션 제목"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "제목 아래 설명"
+    },
+    "links": {
+      "type": "list",
+      "figmaLayer": "btn",
+      "figmaPath": "btn/btn",
+      "min": 1,
+      "max": 6,
+      "label": "바로가기 링크 (PC 2열 · MO 1열)",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaLayer": "성희롱 예방교육",
+          "aliases": ["label"],
+          "label": "링크 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크 주소"
+        },
+        "icon": {
+          "type": "enum",
+          "values": ["download", "calendar", "arrow"],
+          "label": "오른쪽 아이콘",
+          "note": "Figma 아이콘 인스턴스 이름으로 구분: general/download-02 → download, time/alendar → calendar, arrows/chevron-right → arrow (btn 에 아이콘 속성이 없어 추출기는 sample 값을 써요)"
+        }
+      }
+    }
+  }
+}

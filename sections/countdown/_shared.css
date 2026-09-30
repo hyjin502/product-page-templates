@@ -1,0 +1,9 @@
+/* countdown 공통 — default / boxed 가 함께 써요 */
+.countdown {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 var(--container-pad);
+  background: var(--bg-surface);
+}
+.countdown__timer { display: flex; justify-content: center; text-align: center; }
+.countdown__unit { display: flex; flex-direction: column; align-items: center; }
+.countdown__num { white-space: nowrap; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: var(--tracking-tighter); }

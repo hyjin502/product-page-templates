@@ -1,0 +1,15 @@
+/* feature grid · default — 썸네일 카드 3열 (PC 980). 열 수는 _shared.css 기본값(3열 / MO 2열) */
+
+/* TB 768–1279 — 3열 유지 */
+
+/* MO ≤767 — 2열(간격 32/12), 목록 ↔ 강조 박스 32 */
+@media (max-width: 767px) {
+  .feature--grid-default .feature__content { gap: 32px; }
+
+  /* compact 옵션(style=default-compact) — 290px 카드를 좌우로 넘겨요. 카드 글자·모서리는 PC 크기 그대로 */
+  .feature--grid-default.feature--compact .feature__content { gap: 48px; }
+  .feature--compact .feature-thumb { gap: 20px; }
+  .feature--compact .feature-thumb__media { border-radius: 16px; }
+  .feature--compact .feature-thumb__title { font-size: 20px; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+  .feature--compact .feature-thumb__desc { font-size: 16px; }
+}

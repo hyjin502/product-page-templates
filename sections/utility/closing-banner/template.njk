@@ -1,0 +1,14 @@
+{% from "_partials/ui.njk" import secHead %}
+{# 마무리 배너 — 가운데 정렬 문구 + 버튼. 버튼은 Figma "action button"(style=solid, 오른쪽 화살표) #}
+<section class="utility utility--closing-banner">
+  <div class="utility__body">
+    {{ secHead(eyebrow, title, null, "sec-head--center utility__head") }}
+  </div>
+{% if ctas.length %}
+  <div class="utility__btns">
+{% for c in ctas %}
+    <a class="btn btn--{{ c.style or 'solid' }}" href="{{ c.href or '#' }}">{{ c.label }} {{ 'utility-arrow-right' | icon }}</a>
+{% endfor %}
+  </div>
+{% endif %}
+</section>

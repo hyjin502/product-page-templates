@@ -1,0 +1,19 @@
+{
+  "eyebrow": "우리 조직의 고민",
+  "title": "실제 교육 담당자들은\n이런 고민을 하고 있습니다.",
+  "subtitle": "변화하는 업무 환경 속에서\n실제 담당자들의 고민을 확인해 보세요.",
+  "cards": [
+    {
+      "title": "교육은 많이 하는데\n성과를 확인하기 어려워요",
+      "description": "학습의 시작부터 끝까지 모든 활동을 데이터화",
+      "avatar": { "src": "assets/problem/avatar-default-01.svg", "alt": "" },
+      "role": "HR 담당자"
+    },
+    {
+      "title": "구성원마다 필요한 교육이 다르고,\n조직 상황도 달라서 고민해야 해요",
+      "description": "이해도, 실행력, 참여도 등 학습 결과를 분석해 학습 성과 개선",
+      "avatar": { "src": "assets/problem/avatar-default-08.svg", "alt": "" },
+      "role": "HR 담당자"
+    }
+  ]
+}

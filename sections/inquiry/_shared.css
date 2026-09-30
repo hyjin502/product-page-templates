@@ -1,0 +1,2 @@
+/* inquiry 공통 — Figma background/bg-ghost 배경 */
+.inquiry { display: flex; flex-direction: column; align-items: center; background: var(--bg-ghost); color: var(--t-100); }

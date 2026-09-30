@@ -1,0 +1,13 @@
+/* feature grid · card — 썸네일 카드 4열 (PC 980) */
+.feature--grid-card .feature__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* TB 768–1279 — 1024 미만은 2열 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .feature--grid-card .feature__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 24px; }
+}
+
+/* MO ≤767 — 2열(간격 32/12), 목록 ↔ 강조 박스 32 */
+@media (max-width: 767px) {
+  .feature--grid-card .feature__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feature--grid-card .feature__content { gap: 32px; }
+}

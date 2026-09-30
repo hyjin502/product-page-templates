@@ -1,0 +1,65 @@
+{
+  "id": "countdown-default",
+  "section": "countdown",
+  "layout": "default",
+  "order": 1,
+  "when": "프로모션 마감까지 남은 시간을 숫자로 가볍게 보여줄 때",
+  "figma": {
+    "pc": "6187:4183",
+    "mo": "6187:4215",
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "deadline": {
+      "type": "text",
+      "label": "마감 일시 (ISO 8601)",
+      "note": "예: 2026-10-31T23:59:59+09:00 — Figma에 없는 값. script.js 가 이 시각까지 남은 일·시·분·초를 1초마다 갱신해요"
+    },
+    "days": {
+      "type": "text",
+      "figmaPath": "countdown-days/12",
+      "optional": true,
+      "label": "초기 숫자 · 일",
+      "note": "JS 실행 전(또는 JS 없이) 보이는 값"
+    },
+    "hours": {
+      "type": "text",
+      "figmaPath": "countdown-hours/12",
+      "optional": true,
+      "label": "초기 숫자 · 시"
+    },
+    "minutes": {
+      "type": "text",
+      "figmaPath": "countdown-minutes/12",
+      "optional": true,
+      "label": "초기 숫자 · 분"
+    },
+    "seconds": {
+      "type": "text",
+      "figmaPath": "countdown-seconds/12",
+      "optional": true,
+      "label": "초기 숫자 · 초"
+    },
+    "labelDays": {
+      "type": "text",
+      "figmaPath": "countdown-days/DAY",
+      "label": "단위 라벨 · 일"
+    },
+    "labelHours": {
+      "type": "text",
+      "figmaPath": "countdown-hours/DAY",
+      "label": "단위 라벨 · 시"
+    },
+    "labelMinutes": {
+      "type": "text",
+      "figmaPath": "countdown-minutes/DAY",
+      "label": "단위 라벨 · 분"
+    },
+    "labelSeconds": {
+      "type": "text",
+      "figmaPath": "countdown-seconds/DAY",
+      "label": "단위 라벨 · 초"
+    }
+  }
+}

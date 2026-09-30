@@ -1,0 +1,2 @@
+/* notice 공통 — Figma background/bg-page 배경 */
+.notice { display: flex; flex-direction: column; align-items: center; padding: 120px var(--container-pad); background: var(--bg-page); color: var(--t-100); }
