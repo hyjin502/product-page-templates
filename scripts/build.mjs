@@ -56,6 +56,8 @@ function buildLibrary(reg, env, baseCss) {
     .replace('/*APP_DATA*/', () => `window.REG = ${JSON.stringify(data).replace(/</g, '\\u003c')};`)
     .replace('/*APP_JS*/', () => fs.readFileSync(path.join(ROOT, 'site/app.js'), 'utf8'));
   fs.writeFileSync(path.join(DIST, 'index.html'), out);
+  // 지난 빌드의 남은 파일(이름이 바뀐 이미지 등)이 섞이지 않게 비우고 다시 복사해요
+  fs.rmSync(path.join(DIST, 'assets'), { recursive: true, force: true });
   copyDir(path.join(ROOT, 'assets'), path.join(DIST, 'assets'));
 }
 
@@ -105,6 +107,7 @@ ${js ? `<script>\n${js}\n</script>\n` : ''}</body>
 
 function buildPages(reg, env, baseCss) {
   if (!fs.existsSync(PAGES_DIR)) return [];
+  fs.rmSync(path.join(DIST, 'pages'), { recursive: true, force: true }); // 지운 page.json 의 결과물도 남지 않게
   const built = [];
   for (const f of fs.readdirSync(PAGES_DIR).filter((n) => n.endsWith('.page.json')).sort()) {
     const file = path.join(PAGES_DIR, f);

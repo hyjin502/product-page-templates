@@ -9,7 +9,8 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { ROOT } from './lib.mjs';
 
 const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
-const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+const now = new Date();
+const date = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`; // 로컬 날짜
 const rel = path.join(ROOT, 'release');
 fs.mkdirSync(rel, { recursive: true });
 
