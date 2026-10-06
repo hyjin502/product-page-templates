@@ -1,0 +1,18 @@
+{% from "hero/_macros.njk" import bgMedia, lineSpans, btns %}
+<section class="hero hero--media-badge">
+  {{ bgMedia(background) }}
+  <div class="hero__body">
+    <div class="hero__heading">
+      <div class="hero__titles">
+{% if eyebrow %}
+        <p class="hero__badge">{{ eyebrow | rt }}</p>
+{% endif %}
+        <h1 class="hero__title">{{ lineSpans(title) }}</h1>
+      </div>
+{% if description %}
+      <p class="hero__desc">{{ lineSpans(description) }}</p>
+{% endif %}
+    </div>
+    {{ btns(ctas) }}
+  </div>
+</section>

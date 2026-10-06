@@ -1,0 +1,19 @@
+{
+  "eyebrow": "더 나은 성과를 만드는 새로운 방법",
+  "title": "비즈니스의 성장을\n만드는 새로운 경험",
+  "description": "우리 조직에 필요한 솔루션을\n쉽고 효과적으로 경험해 보세요.",
+  "ctas": [
+    {
+      "label": "지금 무료 경험하기",
+      "href": "#",
+      "color": "white",
+      "radius": "md"
+    }
+  ],
+  "background": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/media-badge-bg.jpg"
+    }
+  }
+}

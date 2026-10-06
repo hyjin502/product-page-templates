@@ -44,10 +44,23 @@ sections/<section>/<layout>/
      | 항목 필드 `device` (enum pc/mo) | PC·MO 카드 구성이 다를 때 — 추출기가 합집합을 만들고 한쪽에만 있는 카드에 device 표시 |
      | meta `pager` | 카드형이면 필수. **Figma 오토레이아웃을 읽어서** 정한다: 카드 트랙이 가로(HORIZONTAL) + 카드 채우기(FILL) → `mode: fill` (per = 한 줄 최대 카드 수, 적으면 균등 확장·넘치면 페이지), GRID + 채우기 → `mode: grid` (per = 열 수, rows = 한 페이지 줄 수), 세로 쌓기·고정 폭 스크롤 → `none`/per 0. 형식 `{ "slot": "cards", "mode": {"pc":"fill","tb":"fill","mo":"none"}, "per": {"pc":4,"tb":3,"mo":0}, "rows"?: {...} }`. 템플릿은 카드 트랙에 `data-pager-track`, 바로 뒤에 `{{ pagerDots() }}` (Figma 장식 점은 그리지 않음). list 슬롯 `max` 는 24 |
      figmaLayer/figmaProp 가 없는 슬롯(href, alt, action, deadline 등)은 Figma 에 없는 값으로 보고 sample 값을 기본값으로 쓴다.
+   - **편집기 variant**(기획자가 히어로 편집기에서 직접 바꾸는 것, 지금은 hero): meta 에 `"editor": true`. 폼은 슬롯에서 자동으로 만들어진다.
+     | 키 / 타입 | 뜻 |
+     |---|---|
+     | `maxLines` · `minLines` · `maxChars` | text/richtext 제약. **줄마다, 띄어쓰기 포함**으로 센다. richtext + maxLines → 줄마다 입력칸. 템플릿은 `lineSpans(slot)` 로 줄마다 `<span class="hero__line">` |
+     | `color` | `tokens/hds.json` 색 키(`"white"`, `"blue/700"` …). `default` 로 기본값. 템플릿 `{{ c.color \| hdsColor }}` · `hdsOn`(글자색) · `hdsToken` |
+     | `radius` | `xs` · `sm` · `md` · `lg` · `xl` · `full`. 템플릿 `{{ c.radius \| hdsRadius }}` · `hdsToken('radius')` |
+     | `media` | 배경 `{ pc: { kind, src, alt?, poster? }, mo? }` (kind 는 image 또는 video). 템플릿 `bgMedia(slot)`(섹션 배경) · `visualMedia(slot)`(섹션 안 비주얼) — `sections/hero/_macros.njk`. `hint` = 편집기 안내 |
+     | `enum` + `labels` | 편집기에서 칩으로 고름. 예) 버튼 `style` fill/outline(채움/테두리), 배경 `dim` 0·20·40·60 |
+     | `toggle` | true/false 체크박스. 예) 버튼 `arrow`(화살표) |
+     | 항목 필드 `hideWhen` | `{ "style": "outline" }` — 같은 항목 값이 맞으면 입력칸을 숨김 (테두리형이면 배경색 숨김) |
+     | meta `thumb` | 편집기 스타일 썸네일 — Figma 렌더를 가로 480 jpg 로 `assets/<section>/thumbs/` |
+     Figma 에서 읽을 수 없는 값(color · radius · media)은 `extract: false`. hero 의 MO 처럼 Figma 에 없는 기기 값은 CSS 주석에 "제안값"이라고 쓰고 CLAUDE.md 결정 사항을 따른다.
    - `figmaLayer` 는 Figma 레이어 이름 그대로 쓴다. 같은 이름이 여러 번 나오면 `figmaPath`(인스턴스 기준 부모/…/레이어)로 구분한다. 의미 없는 이름(`Group 51`, `Frame 2147…`)은 `aliases` 에 넣고, 표준 이름(`eyebrow`, `title`, `description`, `note`, `cta`, `image`, `item`)으로 바꿔 달라고 디자이너에게 보고한다.
 4. **template.njk**
    - 루트는 `<section class="<section> <section>--<layout>">` 하나. 섹션 클래스는 BEM(`.hero__title`)으로 쓴다.
    - 텍스트는 `{{ slot | rt }}`, 버튼은 `ctas()` 매크로, 이미지는 `media()` 매크로. 선택 슬롯은 `{% if %}` 로 감싼다.
+   - hero 는 `sections/hero/_macros.njk` 의 `bgMedia` · `visualMedia` · `lineSpans` · `btns`(HDS 버튼) 를 쓰고, 편집기가 줄 넘김을 재는 클래스(`.hero__badge` · `.hero__title` · `.hero__desc` · `.hero__btns`)를 그대로 쓴다. 레이아웃은 `_shared.css` 가 맡고 variant CSS 는 기기마다 변수(`--hero-pad-y` `--hero-title` `--hero-desc` `--hero-btn-py` …)와 색만 정한다.
    - 하드코딩 텍스트는 0개여야 한다 (접근성용 고정 라벨 제외).
 5. **style.css**
    - `tokens/base.css` 는 수정하지 않는다. 필요한 토큰이 없으면 `var(--새이름, #값)` 처럼 기본값을 함께 쓰고 보고에 적는다.
@@ -62,7 +75,7 @@ sections/<section>/<layout>/
    ```bash
    npm run build          # sample.json 이 슬롯 스키마와 맞지 않으면 실패
    ```
-   `dist/index.html` 에서 PC 1920 / TB 1024 / MO 375, 라이트/다크를 확인한다.
+   `dist/index.html` 에서 PC 1920 / TB 1024 / MO 375, 라이트/다크를 확인한다. 편집기 variant 는 `index.html#hero-editor` 에서 글자 수 최대치·버튼 2개·배경 교체까지 넣어 보고 줄 넘김 경고를 확인한다.
    **추출 검증(필수)**: 새 variant 의 매핑이 Page 18 원문을 그대로 뽑는지 확인한다.
    ```bash
    node scripts/figma-extract.mjs scan-components pc=<PC노드> mo=<MO노드> --write pages/_verify/<id>.scan.json

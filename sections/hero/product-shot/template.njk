@@ -1,0 +1,20 @@
+{% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans, btns %}
+<section class="hero hero--product-shot">
+  <div class="hero__top">
+    {{ bgMedia(background) }}
+    <div class="hero__body">
+      <div class="hero__heading">
+        <h1 class="hero__title">{{ lineSpans(title) }}</h1>
+{% if description %}
+        <p class="hero__desc">{{ lineSpans(description) }}</p>
+{% endif %}
+      </div>
+      {{ btns(ctas) }}
+    </div>
+  </div>
+{% if visual %}
+  <div class="hero__visual">
+    {{ visualMedia(visual) }}
+  </div>
+{% endif %}
+</section>

@@ -1,0 +1,78 @@
+{
+  "id": "hero-product-shot",
+  "section": "hero",
+  "layout": "product-shot",
+  "order": 7,
+  "when": "어두운 바탕에 메시지와 버튼, 아래 제품 화면 — SaaS·앱 화면을 보여줄 때",
+  "figma": {
+    "pc": "6233:29802",
+    "mo": null,
+    "tb": null
+  },
+  "body": 1200,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/product-shot.jpg",
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 14
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "서브타이틀",
+      "maxLines": 2,
+      "maxChars": 40
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name",
+          "label": "버튼 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "color": {
+          "type": "color",
+          "default": "blue/700",
+          "extract": false,
+          "label": "배경색"
+        },
+        "radius": {
+          "type": "radius",
+          "default": "full",
+          "extract": false,
+          "label": "모서리"
+        }
+      }
+    },
+    "background": {
+      "type": "media",
+      "figmaLayer": "bg",
+      "extract": false,
+      "optional": true,
+      "label": "배경"
+    },
+    "visual": {
+      "type": "media",
+      "figmaLayer": "image 28",
+      "extract": false,
+      "optional": true,
+      "label": "제품 화면",
+      "hint": "이미지 또는 mp4 · 가로 최대 1280, 잘리지 않아요"
+    }
+  }
+}

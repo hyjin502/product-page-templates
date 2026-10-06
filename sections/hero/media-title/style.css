@@ -1,0 +1,20 @@
+/* PC — Figma 6233:29747 (높이 768, 가운데 정렬, 배경 + 어둡게 20%) */
+.hero--media-title {
+  --hero-title: 100px; --hero-desc: 28px; --hero-desc-w: 300;
+  min-height: 768px; justify-content: center;
+  background: var(--hero-ink); color: var(--hero-white);
+}
+/* 배경 어둡게 — page.json 의 dim(0·20·40·60)이 --dim 으로 와요 */
+.hero--media-title .hero__dim { position: absolute; inset: 0; z-index: -1; background: rgba(0, 0, 0, var(--dim, 0.2)); }
+.hero--media-title .hero__title,
+.hero--media-title .hero__desc { text-shadow: 0 1px 4px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.1); } /* drop shadow/sm */
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--media-title { --hero-pad-y: 120px; --hero-title: 72px; --hero-desc: 22px; min-height: 600px; }
+}
+
+/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+@media (max-width: 767px) {
+  .hero--media-title { --hero-pad-y: 72px; --hero-gap-heading: 16px; --hero-title: 44px; --hero-desc: 18px; --hero-desc-lh: 1.6; min-height: 480px; }
+}

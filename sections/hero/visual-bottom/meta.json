@@ -1,0 +1,77 @@
+{
+  "id": "hero-visual-bottom",
+  "section": "hero",
+  "layout": "visual-bottom",
+  "order": 6,
+  "when": "큰 브랜드명 아래 넓은 비주얼(이미지·영상) — 제품 UI·영상·큰 비주얼을 강조할 때",
+  "figma": {
+    "pc": "6233:29629",
+    "mo": null,
+    "tb": null
+  },
+  "body": 980,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/visual-bottom.jpg",
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 11
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "서브타이틀",
+      "maxLines": 2,
+      "maxChars": 35
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name",
+          "label": "버튼 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "color": {
+          "type": "color",
+          "default": "gray/1400",
+          "extract": false,
+          "label": "배경색"
+        },
+        "radius": {
+          "type": "radius",
+          "default": "full",
+          "extract": false,
+          "label": "모서리"
+        },
+        "arrow": {
+          "type": "toggle",
+          "default": true,
+          "extract": false,
+          "label": "화살표 넣기"
+        }
+      }
+    },
+    "visual": {
+      "type": "media",
+      "figmaLayer": "image",
+      "extract": false,
+      "optional": true,
+      "label": "하단 비주얼",
+      "hint": "이미지 또는 mp4 · 가로로 꽉 차고 아래쪽 기준으로 잘려요"
+    }
+  }
+}

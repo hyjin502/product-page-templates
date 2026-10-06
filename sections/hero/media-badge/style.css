@@ -1,0 +1,25 @@
+/* PC — Figma 6233:29729 (Body 1200, 세로 패딩 160) */
+.hero--media-badge {
+  --hero-gap-heading: 32px; --hero-desc: 24px;
+  --hero-btn-py: 24px; --hero-btn-px: 64px;
+  background: var(--hero-ink); color: var(--hero-white);
+}
+.hero--media-badge .hero__badge { padding: 8px 24px; background: var(--hero-white); color: var(--hero-ink); font-size: 16px; font-weight: 700; }
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--media-badge {
+    --hero-pad-y: 120px; --hero-gap: 48px; --hero-gap-heading: 24px; --hero-gap-titles: 32px;
+    --hero-title: 64px; --hero-desc: 20px;
+    --hero-btn-py: 20px; --hero-btn-px: 48px; --hero-btn-fs: 20px;
+  }
+}
+
+/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+@media (max-width: 767px) {
+  .hero--media-badge {
+    --hero-pad-y: 72px; --hero-gap: 48px; --hero-gap-heading: 24px; --hero-gap-titles: 24px;
+    --hero-title: 40px; --hero-desc: 16px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+  }
+  .hero--media-badge .hero__badge { padding: 6px 16px; font-size: 14px; }
+}

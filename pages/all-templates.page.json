@@ -7,74 +7,183 @@
   },
   "sections": [
     {
-      "variant": "hero-center-inline",
+      "variant": "hero-media-badge",
       "content": {
         "eyebrow": "더 나은 성과를 만드는 새로운 방법",
         "title": "비즈니스의 성장을\n만드는 새로운 경험",
-        "description": {
-          "pc": "우리 조직에 필요한 솔루션을 쉽고 효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다.",
-          "mo": "우리 조직에 필요한 솔루션을 쉽고\n효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다."
-        },
-        "image": null,
-        "note": {
-          "pc": "우리 조직에 필요한 솔루션을 쉽고 효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다.",
-          "mo": "우리 조직에 필요한 솔루션을 쉽고\n효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다."
-        },
+        "description": "우리 조직에 필요한 솔루션을\n쉽고 효과적으로 경험해 보세요.",
         "ctas": [
           {
-            "label": "자세히 보기",
+            "label": "지금 무료 경험하기",
             "href": "#",
-            "style": "neutral"
+            "color": "white",
+            "radius": "md"
+          }
+        ],
+        "background": {
+          "pc": {
+            "kind": "image",
+            "src": "assets/hero/media-badge-bg.jpg"
+          }
+        }
+      }
+    },
+    {
+      "variant": "hero-media-title",
+      "content": {
+        "title": "성장을 위한 새로운 경험",
+        "description": "미래를 혁신하는 지능형 솔루션, 휴넷 LABS와 함께 새로운 가능성을 탐험하세요.",
+        "background": {
+          "pc": {
+            "kind": "image",
+            "src": "assets/hero/media-title-bg.jpg"
+          }
+        },
+        "dim": "20"
+      }
+    },
+    {
+      "variant": "hero-light-badge",
+      "content": {
+        "eyebrow": "더 나은 성과를 만드는 새로운 방법",
+        "title": "데이터의 잠재력을\n비즈니스 성과로 바꾸다",
+        "description": "AI 기반 분석 플랫폼으로 흩어진 데이터를 통합하고,\n실시간 인사이트를 발견하여 더 빠르고 정확한 의사결정을 내리세요.",
+        "ctas": [
+          {
+            "label": "14일 무료 체험하기",
+            "href": "#",
+            "style": "fill",
+            "color": "blue/700",
+            "radius": "full",
+            "arrow": true
           },
           {
-            "label": "자세히 보기",
+            "label": "데모 영상보기",
             "href": "#",
-            "style": "subtle"
+            "style": "outline",
+            "color": "white",
+            "radius": "full",
+            "arrow": true
           }
         ]
       }
     },
     {
-      "variant": "hero-center-bottom",
+      "variant": "hero-dark-gradient",
       "content": {
-        "eyebrow": "더 나은 성과를 만드는 새로운 방법",
-        "title": "비즈니스의 성장을\n만드는 새로운 경험",
-        "description": {
-          "pc": "우리 조직에 필요한 솔루션을 쉽고 효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다.",
-          "mo": "우리 조직에 필요한 솔루션을 쉽고\n효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다."
-        },
+        "title": "데이터의 잠재력을\n비즈니스 성과로 바꾸다",
+        "description": "AI 기반 분석 플랫폼으로 흩어진 데이터를 통합하고,\n실시간 인사이트를 발견하여 더 빠르고 정확한 의사결정을 내리세요.",
         "ctas": [
           {
-            "label": "자세히 보기",
+            "label": "14일 무료 체험하기",
             "href": "#",
-            "style": "neutral"
+            "style": "fill",
+            "color": "violet/700",
+            "radius": "full",
+            "arrow": true
           },
           {
-            "label": "자세히 보기",
+            "label": "데모 영상보기",
             "href": "#",
-            "style": "subtle"
+            "style": "outline",
+            "color": "white",
+            "radius": "full",
+            "arrow": true
           }
         ],
-        "image": null
+        "background": {
+          "pc": {
+            "kind": "image",
+            "src": "assets/hero/dark-gradient-bg.svg"
+          }
+        }
       }
     },
     {
-      "variant": "hero-split",
+      "variant": "hero-gradient-text",
       "content": {
         "eyebrow": "더 나은 성과를 만드는 새로운 방법",
-        "title": "비즈니스의 성장을\n만드는 새로운 경험",
-        "description": {
-          "pc": "우리 조직에 필요한 솔루션을 쉽고 효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다.",
-          "mo": "우리 조직에 필요한 솔루션을\n쉽고 효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다."
-        },
+        "title": "데이터의 잠재력을\n비즈니스 성과로 바꾸다",
+        "description": "AI 기반 분석 플랫폼으로 흩어진 데이터를 통합하고,\n실시간 인사이트를 발견하여 더 빠르고 정확한 의사결정을 내리세요.",
         "ctas": [
           {
-            "label": "자세히 보기",
+            "label": "14일 무료 체험하기",
             "href": "#",
-            "style": "neutral"
+            "style": "fill",
+            "color": "red/700",
+            "radius": "full",
+            "arrow": true
+          },
+          {
+            "label": "데모 영상보기",
+            "href": "#",
+            "style": "outline",
+            "color": "white",
+            "radius": "full",
+            "arrow": true
           }
         ],
-        "image": null
+        "background": {
+          "pc": {
+            "kind": "image",
+            "src": "assets/hero/gradient-text-bg.svg"
+          }
+        }
+      }
+    },
+    {
+      "variant": "hero-visual-bottom",
+      "content": {
+        "title": "휴넷 FLEX",
+        "description": "우리 조직에 필요한 솔루션을 쉽고 효과적으로 경험해 보세요.\n 더 나은 성과를 위한 새로운 방법을 제안합니다.",
+        "ctas": [
+          {
+            "label": "지금 무료 경험하기",
+            "href": "#",
+            "color": "gray/1400",
+            "radius": "full",
+            "arrow": true
+          }
+        ],
+        "visual": {
+          "pc": {
+            "kind": "image",
+            "src": "assets/hero/visual-bottom.jpg"
+          }
+        }
+      }
+    },
+    {
+      "variant": "hero-product-shot",
+      "content": {
+        "title": "쉬지 않는\nAI 업무 파트너.",
+        "description": "AI 기반 분석 플랫폼으로 흩어진 데이터를 통합하고,\n실시간 인사이트를 발견하여 더 빠르고 정확한 의사결정을 내리세요.",
+        "ctas": [
+          {
+            "label": "14일 무료 체험하기",
+            "href": "#",
+            "color": "blue/700",
+            "radius": "full"
+          },
+          {
+            "label": "데모 영상보기",
+            "href": "#",
+            "color": "gray/1400",
+            "radius": "full"
+          }
+        ],
+        "background": {
+          "pc": {
+            "kind": "image",
+            "src": "assets/hero/product-shot-bg.svg"
+          }
+        },
+        "visual": {
+          "pc": {
+            "kind": "image",
+            "src": "assets/hero/product-shot.png"
+          }
+        }
       }
     },
     {

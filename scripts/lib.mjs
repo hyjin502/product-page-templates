@@ -2,12 +2,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import nunjucks from 'nunjucks';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const SECTIONS_DIR = path.join(ROOT, 'sections');
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
+
+/** 렌더 공통 코드 — 히어로 편집기(브라우저)도 같은 파일을 써요 */
+export const RENDER_CORE_PATH = path.join(ROOT, 'site/render-core.cjs');
+const core = createRequire(import.meta.url)(RENDER_CORE_PATH);
+
+/** HDS 토큰 (버튼 색 · radius) — tokens/hds.json */
+export const HDS_PATH = path.join(ROOT, 'tokens/hds.json');
+export const HDS = readJson(HDS_PATH);
+const HDS_IDX = core.hdsIndex(HDS);
 const readIf = (p) => (fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '');
 
 /* ---------------------------------------------------------------- registry */
@@ -58,55 +68,37 @@ export function figmaUrl(catalog, nodeId, dev = false) {
 }
 
 /* ---------------------------------------------------------------- richtext
-   값은 문자열("줄1\n줄2") 또는 { pc, mo }.
-   pc·mo 글자가 같고 줄바꿈 위치만 다르면 <br class="only-pc|only-mo"> 로 합쳐요.
-   글자가 다르면 <span class="only-pc"> / <span class="only-mo"> 두 벌로 내보내요. */
+   값은 문자열("줄1\n줄2") 또는 { pc, mo } — 구현은 site/render-core.cjs */
 
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-function lines(s) {
-  return String(s).replace(/\r\n?|\u2028/g, '\n').split('\n').map((l) => l.trim()).filter(Boolean);
-}
-function flatten(s) {
-  const ls = lines(s);
-  const breaks = new Set();
-  let pos = 0;
-  ls.forEach((l, i) => { pos += l.length; if (i < ls.length - 1) { breaks.add(pos); pos += 1; } });
-  return { flat: ls.join(' '), breaks };
-}
-
-export function richtext(value) {
-  if (value == null || value === '') return '';
-  if (typeof value === 'string') return lines(value).map(esc).join('<br> ');
-  const pc = value.pc ?? value.mo ?? '';
-  const mo = value.mo ?? value.pc ?? '';
-  const a = flatten(pc);
-  const b = flatten(mo);
-  if (a.flat !== b.flat) {
-    return `<span class="only-pc">${richtext(pc)}</span><span class="only-mo">${richtext(mo)}</span>`;
-  }
-  const cuts = [...new Set([...a.breaks, ...b.breaks])].sort((x, y) => x - y);
-  let out = '';
-  let from = 0;
-  for (const p of cuts) {
-    out += esc(a.flat.slice(from, p));
-    const both = a.breaks.has(p) && b.breaks.has(p);
-    out += both ? '<br> ' : a.breaks.has(p) ? '<br class="only-pc"> ' : '<br class="only-mo"> ';
-    from = p + 1; // 줄 사이 공백 1칸
-  }
-  return out + esc(a.flat.slice(from));
-}
+export const { richtext, specOf } = core;
 
 /* ---------------------------------------------------------------- validate */
 
 const isText = (v) => typeof v === 'string' || (v && typeof v === 'object' && (typeof v.pc === 'string' || typeof v.mo === 'string'));
 const empty = (v) => v == null || v === '' || (Array.isArray(v) && v.length === 0);
+const isMediaEmpty = (v) => v && typeof v === 'object' && !Array.isArray(v) && !v.pc && !v.mo;
 
-/** 슬롯 스펙 정규화 — 예전 축약형("text", ["a","b"])도 받아요 */
-export function specOf(t) {
-  if (Array.isArray(t)) return { type: 'enum', values: t, optional: true };
-  if (typeof t === 'string') return { type: t, optional: t !== 'text' };
-  return t || {};
+/** 줄 수 · 줄마다 글자 수(띄어쓰기 포함) — maxLines · minLines · maxChars */
+function checkLines(s, v, where, errors) {
+  if (s.maxLines == null && s.minLines == null && s.maxChars == null) return;
+  const devices = typeof v === 'string' ? [['', v]] : Object.entries(v).filter(([d]) => d === 'pc' || d === 'mo').map(([d, t]) => [` (${d.toUpperCase()})`, t]);
+  for (const [dev, text] of devices) {
+    const ls = core.lines(text);
+    if (s.maxLines != null && ls.length > s.maxLines) errors.push(`${where}${dev}: 최대 ${s.maxLines}줄이에요 (현재 ${ls.length}줄)`);
+    if (s.minLines != null && ls.length < s.minLines) errors.push(`${where}${dev}: 최소 ${s.minLines}줄이에요 (현재 ${ls.length}줄)`);
+    if (s.maxChars != null) {
+      ls.forEach((l, i) => {
+        const n = core.charCount(l);
+        if (n > s.maxChars) errors.push(`${where}${dev}${ls.length > 1 ? ` ${i + 1}번째 줄` : ''}: 최대 ${s.maxChars}자예요 (현재 ${n}자, 띄어쓰기 포함) — "${l}"`);
+      });
+    }
+  }
+}
+
+function checkMediaItem(m, where, errors) {
+  if (m == null) return;
+  if (typeof m !== 'object' || typeof m.src !== 'string' || !m.src) { errors.push(`${where}: { kind, src } 여야 해요`); return; }
+  if (!['image', 'video'].includes(m.kind)) errors.push(`${where}.kind: image | video 중 하나예요 (현재 "${m.kind}")`);
 }
 
 function validateFields(fields, obj, where, errors) {
@@ -117,14 +109,31 @@ function validateFields(fields, obj, where, errors) {
 }
 
 function validateValue(s, v, where, errors) {
-  if (empty(v)) {
+  if (empty(v) || (s.type === 'media' && isMediaEmpty(v))) {
     const required = !s.optional && (s.type === 'list' ? (s.min ?? 0) > 0 : ['text', 'richtext'].includes(s.type));
     if (required) errors.push(`${where}: 필수 슬롯이 비어 있어요`);
     return;
   }
   switch (s.type) {
     case 'text': case 'richtext':
-      if (!isText(v)) errors.push(`${where}: 문자열 또는 { pc, mo } 여야 해요`);
+      if (!isText(v)) { errors.push(`${where}: 문자열 또는 { pc, mo } 여야 해요`); break; }
+      checkLines(s, v, where, errors);
+      break;
+    case 'toggle':
+      if (typeof v !== 'boolean') errors.push(`${where}: true 또는 false 예요 (현재 ${JSON.stringify(v)})`);
+      break;
+    case 'color':
+      if (!HDS_IDX.colors[v]) errors.push(`${where}: HDS 색 키예요 (가능: ${Object.keys(HDS_IDX.colors).join(', ')} / 현재 "${v}")`);
+      break;
+    case 'radius':
+      if (!HDS_IDX.radius[v]) errors.push(`${where}: HDS radius 키예요 (가능: ${Object.keys(HDS_IDX.radius).join(', ')} / 현재 "${v}")`);
+      break;
+    case 'media':
+      // 배경 — { pc: { kind, src, alt?, poster? }, mo?: 같은 모양 } · mo 가 없으면 PC 것을 써요
+      if (typeof v !== 'object' || Array.isArray(v)) { errors.push(`${where}: { pc, mo } 여야 해요`); break; }
+      for (const k of Object.keys(v)) if (!['pc', 'mo'].includes(k)) errors.push(`${where}: 알 수 없는 키 "${k}" (pc, mo)`);
+      checkMediaItem(v.pc, `${where}.pc`, errors);
+      checkMediaItem(v.mo, `${where}.mo`, errors);
       break;
     case 'url':
       if (typeof v !== 'string') errors.push(`${where}: 문자열(URL) 이어야 해요`);
@@ -182,12 +191,11 @@ export function createEnv() {
   const env = new nunjucks.Environment(new nunjucks.FileSystemLoader(SECTIONS_DIR, { noCache: true }), {
     autoescape: true, trimBlocks: true, lstripBlocks: true,
   });
-  env.addFilter('rt', (v) => new nunjucks.runtime.SafeString(richtext(v)));
-  env.addFilter('icon', (name) => {
-    const svg = fs.readFileSync(path.join(ROOT, 'assets/icons', `${name}.svg`), 'utf8').trim();
-    return new nunjucks.runtime.SafeString(svg);
+  return core.addFilters(env, {
+    safe: (v) => new nunjucks.runtime.SafeString(v),
+    hds: HDS,
+    icon: (name) => fs.readFileSync(path.join(ROOT, 'assets/icons', `${name}.svg`), 'utf8').trim(),
   });
-  return env;
 }
 
 /** 루트 요소(템플릿의 첫 태그)에 클래스·속성을 붙여요 */
@@ -202,9 +210,7 @@ function decorateRoot(html, classes, attrs) {
 /** opts.body: PC 콘텐츠 폭 덮어쓰기(740/860/980/1200), opts.theme: 섹션만 다크로,
     opts.options: meta.options 키 목록 — 각 옵션의 class 를 루트에 붙여요 (예: MO compact, mode=dark) */
 export function renderVariant(env, variant, content, opts = {}) {
-  const ctx = {};
-  for (const k of Object.keys(variant.slots || {})) ctx[k] = content?.[k] ?? (variant.slots[k].type === 'list' ? [] : null);
-  let html = env.render(variant.templatePath, ctx).replace(/\n{2,}/g, '\n').trim();
+  let html = core.finalize(env.render(variant.templatePath, core.contextFor(variant.slots, content)));
   const classes = (opts.options || []).map((o) => variant.options?.[o]?.class).filter(Boolean);
   const attrs = [];
   const style = [];

@@ -4,8 +4,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
+import nunjucks from 'nunjucks';
 import {
-  ROOT, BASE_CSS_PATH, PAGER_JS_PATH, FONT_LINK, pagerOf, loadRegistry, createEnv, renderVariant, cssFor, figmaUrl,
+  ROOT, SECTIONS_DIR, BASE_CSS_PATH, PAGER_JS_PATH, RENDER_CORE_PATH, FONT_LINK, HDS, pagerOf, loadRegistry, createEnv, renderVariant, cssFor, figmaUrl,
   validateContent, validatePage,
 } from './lib.mjs';
 
@@ -20,13 +22,48 @@ function copyDir(from, to) {
   }
 }
 
+/* ---------------------------------------------------------------- editor (브라우저 렌더)
+   편집기(meta.editor = true)는 입력할 때마다 미리보기를 다시 그려요. HTML 을 JS 로 따로 쓰지 않고
+   같은 Nunjucks 템플릿을 미리 컴파일해 브라우저에서 렌더해요 → 편집기 미리보기 = 빌드 결과. */
+
+const posix = (p) => p.split(path.sep).join('/');
+
+function editorBundle(reg, env) {
+  const editors = reg.variants.filter((v) => v.editor);
+  if (!editors.length) return { js: '', icons: {} };
+  // 공통 매크로(_partials) + 편집기 섹션 폴더의 .njk 전부 (섹션 매크로 _macros.njk 포함)
+  const files = [];
+  const walk = (dir) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const f = path.join(dir, e.name);
+      if (e.isDirectory()) walk(f);
+      else if (e.name.endsWith('.njk')) files.push(path.relative(SECTIONS_DIR, f));
+    }
+  };
+  walk(path.join(SECTIONS_DIR, '_partials'));
+  for (const sec of new Set(editors.map((v) => v.section))) walk(path.join(SECTIONS_DIR, sec));
+  const sources = files.sort().map((rel) => [posix(rel), fs.readFileSync(path.join(SECTIONS_DIR, rel), 'utf8')]);
+  const tpl = sources.map(([name, src]) => nunjucks.precompileString(src, { name, env })).join('\n');
+  // 템플릿이 쓰는 아이콘만 넣어요 ('chevron-right' | icon)
+  const icons = {};
+  for (const [, src] of sources) {
+    for (const m of src.matchAll(/['"]([\w-]+)['"]\s*\|\s*icon/g)) icons[m[1]] = fs.readFileSync(path.join(ROOT, 'assets/icons', `${m[1]}.svg`), 'utf8').trim();
+  }
+  const slim = fs.readFileSync(createRequire(import.meta.url).resolve('nunjucks/browser/nunjucks-slim.min.js'), 'utf8').replace(/\/\/# sourceMappingURL=.*$/m, '');
+  const js = [slim, fs.readFileSync(RENDER_CORE_PATH, 'utf8'), tpl].join('\n;\n').replace(/<\/script/gi, '<\\/script');
+  return { js, icons };
+}
+
 /* ---------------------------------------------------------------- library */
 
 function buildLibrary(reg, env, baseCss) {
   const { catalog } = reg;
+  const editor = editorBundle(reg, env);
   const data = {
     figmaFile: figmaUrl(catalog, null),
     baseCss,
+    hds: HDS,
+    icons: editor.icons,
     pagerJs: fs.readFileSync(PAGER_JS_PATH, 'utf8'),
     fontLink: FONT_LINK,
     sections: catalog.sections.map((s) => ({
@@ -42,6 +79,9 @@ function buildLibrary(reg, env, baseCss) {
         figma: Object.fromEntries(['pc', 'tb', 'mo'].map((d) => [d, o.figma?.[d] ? { url: figmaUrl(catalog, o.figma[d]), dev: figmaUrl(catalog, o.figma[d], true), node: o.figma[d] } : null])),
       }])),
       stage: v.stage || null,
+      editor: !!v.editor,
+      thumb: v.thumb || null,
+      tpl: posix(v.templatePath),
       pager: pagerOf(v),
       html: renderVariant(env, v, v.sample),
       css: cssFor(reg, [v.id]),
@@ -54,6 +94,7 @@ function buildLibrary(reg, env, baseCss) {
   const out = shell
     .replace('/*APP_CSS*/', () => fs.readFileSync(path.join(ROOT, 'site/app.css'), 'utf8'))
     .replace('/*APP_DATA*/', () => `window.REG = ${JSON.stringify(data).replace(/</g, '\\u003c')};`)
+    .replace('/*EDITOR_JS*/', () => editor.js)
     .replace('/*APP_JS*/', () => fs.readFileSync(path.join(ROOT, 'site/app.js'), 'utf8'));
   fs.writeFileSync(path.join(DIST, 'index.html'), out);
   // 지난 빌드의 남은 파일(이름이 바뀐 이미지 등)이 섞이지 않게 비우고 다시 복사해요

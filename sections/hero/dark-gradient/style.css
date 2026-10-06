@@ -1,0 +1,20 @@
+/* PC — Figma 6233:29785 (높이 820, 그라디언트 배경, 위아래 196) */
+.hero--dark-gradient { --hero-pad-y: 196px; background: var(--hero-ink); color: var(--hero-white); --hero-desc-color: var(--hero-white-80); }
+.hero--dark-gradient .hero-btn:first-child:not(.hero-btn--outline) { box-shadow: var(--hero-btn-shadow); }
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--dark-gradient {
+    --hero-pad-y: 140px; --hero-gap: 48px;
+    --hero-title: 64px; --hero-desc: 18px;
+    --hero-btn-py: 14px; --hero-btn-px: 40px; --hero-btn-fs: 20px;
+  }
+}
+
+/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+@media (max-width: 767px) {
+  .hero--dark-gradient {
+    --hero-pad-y: 80px; --hero-gap: 48px;
+    --hero-title: 40px; --hero-desc: 16px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+  }
+}

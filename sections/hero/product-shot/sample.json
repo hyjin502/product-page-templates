@@ -1,0 +1,30 @@
+{
+  "title": "쉬지 않는\nAI 업무 파트너.",
+  "description": "AI 기반 분석 플랫폼으로 흩어진 데이터를 통합하고,\n실시간 인사이트를 발견하여 더 빠르고 정확한 의사결정을 내리세요.",
+  "ctas": [
+    {
+      "label": "14일 무료 체험하기",
+      "href": "#",
+      "color": "blue/700",
+      "radius": "full"
+    },
+    {
+      "label": "데모 영상보기",
+      "href": "#",
+      "color": "gray/1400",
+      "radius": "full"
+    }
+  ],
+  "background": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/product-shot-bg.svg"
+    }
+  },
+  "visual": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/product-shot.png"
+    }
+  }
+}

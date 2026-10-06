@@ -1,7 +1,7 @@
 // 결과물 캡처 — 로컬 Chrome/Edge 헤드리스로 PC 1920 · TB 1024 · MO 375 를 찍어 dist/shots/ 에 저장해요
 //   npm run shot                         라이브러리 (dist/index.html)
 //   npm run shot -- all-templates        조립 페이지 (dist/pages/all-templates/)
-//   npm run shot -- preview/hero-split   variant 단독 미리보기 (먼저 npm run preview -- hero-split)
+//   npm run shot -- preview/hero-media-badge   variant 단독 미리보기 (먼저 npm run preview -- hero-media-badge)
 //   npm run shot -- <대상> --height 6000   캡처 높이 (기본 3000)
 //   npm run shot -- <대상> --url http://localhost:4173/templates/   서빙 중인 주소를 찍기
 // Chrome 경로는 자동으로 찾고, 못 찾으면 CHROME_PATH 환경변수로 지정하세요.

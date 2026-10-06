@@ -1,0 +1,31 @@
+/* PC — Figma 6233:29629 (Body 980, 위 160, 문구↔비주얼 80, 하단 비주얼 1920×553 가로 꽉 차게) */
+.hero--visual-bottom {
+  --hero-title: 120px; --hero-desc: 18px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight); --hero-gap-titles: 24px;
+  --hero-btn-py: 20px; --hero-btn-px: 64px; --hero-visual-h: 553px;
+  padding-bottom: 0; gap: 80px;
+  background: var(--hero-ghost); color: var(--hero-ink); --hero-desc-color: var(--hero-ink-80);
+}
+.hero--visual-bottom .hero__visual { align-self: stretch; margin-inline: calc(-1 * var(--container-pad)); }
+/* 비주얼 — 높이 고정, 가로 꽉 채우고 아래쪽 기준으로 잘라요 (Figma object-bottom) */
+.hero--visual-bottom .hero__visual-media,
+.hero--visual-bottom .hero__visual-media img {
+  display: block; width: 100%; height: var(--hero-visual-h); max-width: none; object-fit: cover; object-position: bottom;
+}
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--visual-bottom {
+    --hero-pad-y: 120px; --hero-gap: 48px; --hero-title: 88px; --hero-visual-h: 400px;
+    --hero-btn-py: 16px; --hero-btn-px: 48px; --hero-btn-fs: 20px;
+    gap: 64px;
+  }
+}
+
+/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+@media (max-width: 767px) {
+  .hero--visual-bottom {
+    --hero-pad-y: 72px; --hero-gap: 48px; --hero-gap-titles: 16px;
+    --hero-title: 52px; --hero-desc: 16px; --hero-visual-h: 240px;
+    gap: 48px;
+  }
+}

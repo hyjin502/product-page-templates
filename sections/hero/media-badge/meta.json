@@ -1,0 +1,78 @@
+{
+  "id": "hero-media-badge",
+  "section": "hero",
+  "layout": "media-badge",
+  "order": 1,
+  "when": "배경 이미지·영상 위에 뱃지와 큰 메시지 — 브랜드/프로모션 첫 화면",
+  "figma": {
+    "pc": "6233:29729",
+    "mo": null,
+    "tb": null
+  },
+  "body": 1200,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/media-badge.jpg",
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 뱃지",
+      "note": "문구 길이만큼 뱃지가 늘어나요"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 17
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "서브타이틀",
+      "maxLines": 2,
+      "maxChars": 20
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name",
+          "label": "버튼 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "color": {
+          "type": "color",
+          "default": "white",
+          "extract": false,
+          "label": "배경색"
+        },
+        "radius": {
+          "type": "radius",
+          "default": "md",
+          "extract": false,
+          "label": "모서리"
+        }
+      }
+    },
+    "background": {
+      "type": "media",
+      "figmaLayer": "bg-media",
+      "extract": false,
+      "optional": true,
+      "label": "배경",
+      "note": "PC·MO 따로 이미지 또는 mp4. MO 를 비우면 PC 것을 써요"
+    }
+  }
+}

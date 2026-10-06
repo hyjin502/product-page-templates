@@ -1,0 +1,11 @@
+{
+  "title": "성장을 위한 새로운 경험",
+  "description": "미래를 혁신하는 지능형 솔루션, 휴넷 LABS와 함께 새로운 가능성을 탐험하세요.",
+  "background": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/media-title-bg.jpg"
+    }
+  },
+  "dim": "20"
+}

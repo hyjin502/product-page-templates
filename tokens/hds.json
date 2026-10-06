@@ -1,0 +1,25 @@
+{
+  "_note": "HDS(휴넷 디자인 시스템) 토큰 중 편집기에서 고르는 값 — Figma 라이브러리 Atomic/Semantic 컬렉션에서 읽은 값이에요. on 은 그 색을 버튼 배경으로 쓸 때의 글자색이에요. 템플릿 필터(hdsColor · hdsOn · hdsRadius)와 히어로 편집기가 이 파일 하나만 봐요.",
+  "colors": [
+    { "key": "white",          "token": "color/white",          "hex": "#ffffff", "label": "화이트", "on": "#171719" },
+    { "key": "gray/300",       "token": "color/gray/300",       "hex": "#eaebec", "label": "연한 회색 (bg-faint)", "on": "#171719" },
+    { "key": "gray/1000",      "token": "color/gray/1000",      "hex": "#70737c", "label": "회색 (button-subtle)", "on": "#ffffff" },
+    { "key": "gray/1400",      "token": "color/gray/1400",      "hex": "#292a2d", "label": "진한 회색 (button-neutral)", "on": "#ffffff" },
+    { "key": "gray/1700",      "token": "color/gray/1700",      "hex": "#171719", "label": "블랙 (black-100)", "on": "#ffffff" },
+    { "key": "blue/700",       "token": "color/blue/700",       "hex": "#0066ff", "label": "블루 (primary)", "on": "#ffffff" },
+    { "key": "blue/600",       "token": "color/blue/600",       "hex": "#3385ff", "label": "밝은 블루", "on": "#ffffff" },
+    { "key": "violet/700",     "token": "color/violet/700",     "hex": "#6541f2", "label": "바이올렛", "on": "#ffffff" },
+    { "key": "red/700",        "token": "color/red/700",        "hex": "#fa2e43", "label": "휴넷 레드 (hunet-red)", "on": "#ffffff" },
+    { "key": "green/700",      "token": "color/green/700",      "hex": "#00bf40", "label": "그린", "on": "#ffffff" },
+    { "key": "orange/600",     "token": "color/orange/600",     "hex": "#ffa833", "label": "오렌지", "on": "#171719" },
+    { "key": "red-orange/600", "token": "color/red-orange/600", "hex": "#ff7e33", "label": "레드 오렌지", "on": "#171719" }
+  ],
+  "radius": [
+    { "key": "xs",   "token": "radius/xs",   "px": 4 },
+    { "key": "sm",   "token": "radius/sm",   "px": 8 },
+    { "key": "md",   "token": "radius/md",   "px": 12 },
+    { "key": "lg",   "token": "radius/lg",   "px": 16 },
+    { "key": "xl",   "token": "radius/xl",   "px": 20 },
+    { "key": "full", "token": "radius/full", "px": 900 }
+  ]
+}

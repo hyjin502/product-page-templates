@@ -1,0 +1,100 @@
+{
+  "id": "hero-gradient-text",
+  "section": "hero",
+  "layout": "gradient-text",
+  "order": 5,
+  "when": "어두운 바탕에 빨간 테두리 뱃지, 줄마다 그라디언트 타이틀 — 강한 프로모션",
+  "figma": {
+    "pc": "6233:29822",
+    "mo": null,
+    "tb": null
+  },
+  "body": 1200,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/gradient-text.jpg",
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 뱃지",
+      "note": "문구 길이만큼 뱃지가 늘어나요"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 17
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "서브타이틀",
+      "maxLines": 2,
+      "maxChars": 40
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name",
+          "label": "버튼 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "fill",
+            "outline"
+          ],
+          "labels": {
+            "fill": "채움",
+            "outline": "테두리"
+          },
+          "default": "fill",
+          "extract": false,
+          "label": "모양"
+        },
+        "color": {
+          "type": "color",
+          "default": "red/700",
+          "extract": false,
+          "label": "배경색",
+          "hideWhen": {
+            "style": "outline"
+          }
+        },
+        "radius": {
+          "type": "radius",
+          "default": "full",
+          "extract": false,
+          "label": "모서리"
+        },
+        "arrow": {
+          "type": "toggle",
+          "default": true,
+          "extract": false,
+          "label": "화살표 넣기"
+        }
+      }
+    },
+    "background": {
+      "type": "media",
+      "figmaLayer": "bg",
+      "extract": false,
+      "optional": true,
+      "label": "배경"
+    }
+  }
+}

@@ -1,5 +1,6 @@
-/* 상품페이지 템플릿 — 라이브러리 + 조합기
-   데이터는 build.mjs 가 넣어 주는 window.REG (sections/ 레지스트리에서 생성) 하나뿐이에요. */
+/* 상품페이지 템플릿 — 라이브러리 + 조합기 + 히어로 편집기
+   데이터는 build.mjs 가 넣어 주는 window.REG (sections/ 레지스트리에서 생성) 하나뿐이에요.
+   히어로 편집기는 build.mjs 가 미리 컴파일한 템플릿(window.nunjucksPrecompiled)과 site/render-core.cjs 로 브라우저에서 렌더해요. */
 (function () {
 const REG = window.REG;
 const byId = Object.fromEntries(REG.variants.map((v) => [v.id, v]));
@@ -12,15 +13,16 @@ const vname = (v) => v.id.slice(v.section.length + 1) || v.layout; // grid-defau
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* ---------------------------------------------------------------- state */
-const state = { mode: 'library', view: 'designer', device: 'pc', cat: 'hero', open: null, compose: null };
+const state = { mode: 'library', view: 'designer', device: 'pc', cat: 'hero', open: null, compose: null, hero: null };
 try {
   const s = JSON.parse(localStorage.getItem('tpl-site') || '{}');
-  if (['library', 'compose'].includes(s.mode)) state.mode = s.mode;
+  if (['library', 'compose', 'hero'].includes(s.mode)) state.mode = s.mode;
   if (['designer', 'dev'].includes(s.view)) state.view = s.view;
   if (DEVICE_W[s.device]) state.device = s.device;
   if (secByKey[s.cat]) state.cat = s.cat;
   if (Array.isArray(s.open)) state.open = s.open.filter((k) => secByKey[k]);
   if (s.compose && Array.isArray(s.compose.rows)) state.compose = s.compose;
+  if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
 } catch (e) {}
 if (!state.compose) state.compose = { title: '새 상품페이지', rows: defaultRows() };
 state.compose.rows = state.compose.rows.filter((r) => byId[r.variant]);
@@ -46,7 +48,7 @@ function srcdoc(html, css, js, stage) {
 ${REG.fontLink}
 <style>${REG.baseCss}\n${css}\n${GUIDE_CSS}\n${STAGE_CSS[stage] || ''}</style></head>
 <body>${html}<div class="__guide" aria-hidden="true"><span></span></div>
-<script>document.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(a)e.preventDefault();});${html.includes('data-pager') ? REG.pagerJs : ''}\n${js || ''}<\/script></body></html>`;
+<script>document.addEventListener('click',function(e){var a=e.target.closest('a[href]');if(a)e.preventDefault();});${html.includes('data-pager') ? REG.pagerJs : ''}\n${js || ''}<\/script></body></html>`;
 }
 
 /** iframe 을 실제 기기 폭으로 렌더하고 무대 폭에 맞춰 축소해요 (@media 가 진짜 폭에서 동작) */
@@ -83,9 +85,9 @@ const FIGMA_ICON = '<svg class="fig-ico" viewBox="0 0 38 57" aria-hidden="true">
 /** 피그마 메뉴 항목 — 기기별 컴포넌트 열기 / 섹션 전체 / 링크 복사 */
 function figmaMenuItems(items, setUrl, dev) {
   const mode = dev ? ' <span class="figmenu__tag">Dev Mode</span>' : '';
-  return items.map(({ label, f }) => (f
+  return items.map(({ label, f, note }) => (f
     ? `<a class="figmenu__item" role="menuitem" href="${dev ? f.dev : f.url}" target="_blank" rel="noopener">${FIGMA_ICON}<span class="figmenu__label">${label} 컴포넌트 열기${mode}</span><span class="figmenu__id">${f.node}</span></a>`
-    : `<span class="figmenu__item is-none" role="menuitem" aria-disabled="true">${FIGMA_ICON}<span class="figmenu__label">${label} — 피그마에 없음</span></span>`)).join('')
+    : `<span class="figmenu__item is-none" role="menuitem" aria-disabled="true">${FIGMA_ICON}<span class="figmenu__label">${label} — 피그마에 없음${note ? ` <span class="figmenu__tag">${note}</span>` : ''}</span></span>`)).join('')
     + `<a class="figmenu__item" role="menuitem" href="${setUrl}" target="_blank" rel="noopener">${FIGMA_ICON}<span class="figmenu__label">섹션 전체 열기${mode}</span></a>`
     + `<hr class="figmenu__sep"><button type="button" class="figmenu__item" role="menuitem" data-copy-links><span class="figmenu__label">링크 복사</span></button>`;
 }
@@ -229,6 +231,7 @@ function card(v) {
   <span class="v__opts-hint" data-mo-hint hidden>MO에서만 달라져요</span>` : ''}
   ${v.pager ? `<span class="v__opts-sep" aria-hidden="true"></span><span data-pg-row>${pagerControls(v, pagerDefault(v))}</span>` : ''}
   </div>
+  ${v.editor ? `<button type="button" class="v__edit" data-open-editor="${v.id}" title="문구·배경·버튼을 바꿔 보는 히어로 편집기로 열어요">편집기에서 열기</button>` : ''}
   <div class="figmenu" data-figmenu>
     <button type="button" class="figmenu__btn" data-figmenu-btn aria-haspopup="menu" aria-expanded="false" title="피그마에서 열기">${FIGMA_ICON}<span>Figma</span><span class="figmenu__caret" aria-hidden="true"></span></button>
     <div class="figmenu__list" role="menu" data-figmenu-list hidden></div>
@@ -274,7 +277,8 @@ function card(v) {
   }
   function links() {
     const dev = state.view === 'dev';
-    el.querySelector('[data-figmenu-list]').innerHTML = figmaMenuItems(['pc', 'tb', 'mo'].map((d) => ({ label: DEVICE_LABEL[d], f: figmaFor(d) })), dev ? secByKey[v.section].figmaSetDev : secByKey[v.section].figmaSet, dev);
+    // MO 시안이 없는 편집기 variant 는 MO 를 코드에서 제안한 값으로 그려요
+    el.querySelector('[data-figmenu-list]').innerHTML = figmaMenuItems(['pc', 'tb', 'mo'].map((d) => ({ label: DEVICE_LABEL[d], f: figmaFor(d), note: d === 'mo' && v.editor ? '코드 제안값' : '' })), dev ? secByKey[v.section].figmaSetDev : secByKey[v.section].figmaSet, dev);
   }
   const fit = mountPreview(el.querySelector('.v__stage'), el.querySelector('.v__frame'), iframe, el.querySelector('.v__scale'), apply);
   renderFrame();
@@ -434,6 +438,466 @@ composeEl.addEventListener('input', (e) => {
 });
 function commitCompose() { save(); renderCompose(); }
 
+/* ---------------------------------------------------------------- hero editor
+   기획자·마케터용 — meta.editor 가 켜진 variant 의 슬롯(meta.slots)으로 입력 폼을 만들어요.
+   미리보기는 빌드와 같은 템플릿을 브라우저에서 렌더해요 (편집기 미리보기 = npm run build 결과).
+   편집 값: 문구·선택값은 localStorage(state.hero), 올린 파일은 IndexedDB 에 둬요. */
+const heroEl = document.getElementById('hero-editor');
+const EDITORS = REG.variants.filter((v) => v.editor);
+const RC = window.RenderCore;
+const HDS_COLOR = Object.fromEntries(REG.hds.colors.map((c) => [c.key, c]));
+const HDS_RADIUS = Object.fromEntries(REG.hds.radius.map((r) => [r.key, r]));
+// 줄 넘김을 재는 요소 — hero variant 들이 함께 쓰는 클래스
+const MEASURE = [['eyebrow', '.hero__badge'], ['title', '.hero__title'], ['description', '.hero__desc']];
+
+let heroRender = null;
+function renderHeroHtml(v, content) {
+  if (!heroRender) {
+    const env = new nunjucks.Environment(new nunjucks.PrecompiledLoader(window.nunjucksPrecompiled || {}), { autoescape: true, trimBlocks: true, lstripBlocks: true });
+    RC.addFilters(env, { safe: (s) => new nunjucks.runtime.SafeString(s), hds: REG.hds, icon: (n) => REG.icons[n] || '' });
+    heroRender = (vv, c) => RC.finalize(env.render(vv.tpl, RC.contextFor(vv.slots, c)));
+  }
+  return heroRender(v, content);
+}
+
+/* ---------- 편집 값 ⇄ content */
+function heroState() {
+  if (!state.hero || !state.hero.edits) state.hero = { variant: EDITORS[0] && EDITORS[0].id, edits: {} };
+  if (!byId[state.hero.variant] || !byId[state.hero.variant].editor) state.hero.variant = EDITORS[0] && EDITORS[0].id;
+  return state.hero;
+}
+const blank = (x) => (x == null ? '' : x);
+function editFrom(v, content) {
+  const e = {};
+  const ctx = RC.contextFor(v.slots, content); // 빈 슬롯은 meta 의 default 로
+  for (const [k, raw] of Object.entries(v.slots)) {
+    const s = RC.specOf(raw);
+    const val = ctx[k];
+    if (s.type === 'richtext') e[k] = RC.textLines(val);
+    else if (s.type === 'list') e[k] = (val || []).map((it) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(vv)])));
+    else if (s.type === 'media') e[k] = { pc: (val && val.pc) || null, mo: (val && val.mo) || null, moSame: !(val && val.mo) };
+    else if (s.type === 'toggle') e[k] = !!val;
+    else e[k] = val && typeof val === 'object' ? blank(val.pc) : blank(val);
+  }
+  return e;
+}
+function heroEdit(v) {
+  const hs = heroState();
+  if (!hs.edits[v.id]) hs.edits[v.id] = editFrom(v, v.sample);
+  return hs.edits[v.id];
+}
+const extOf = (ref) => { const m = /\.([a-z0-9]+)$/i.exec(ref.name || ''); return (m ? m[1] : ref.kind === 'video' ? 'mp4' : 'jpg').toLowerCase(); };
+const exportName = (slot, dev, ref) => `hero-${slot === 'background' ? 'bg' : slot}-${dev}.${extOf(ref)}`;
+const blobUrls = {};
+/** 미디어 참조 → content 값. 미리보기는 blob: 주소, 내보내기는 page.json 옆에 둘 파일 이름 */
+function mediaOut(ref, slot, dev, forExport) {
+  if (!ref) return null;
+  if (ref.file) {
+    if (forExport) return { kind: ref.kind, src: exportName(slot, dev, ref) };
+    return blobUrls[ref.file] ? { kind: ref.kind, src: blobUrls[ref.file] } : null;
+  }
+  return ref.src ? { kind: ref.kind, src: ref.src } : null;
+}
+function contentFrom(v, e, forExport) {
+  const c = {};
+  for (const [k, raw] of Object.entries(v.slots)) {
+    const s = RC.specOf(raw);
+    const val = e[k];
+    if (s.type === 'richtext') {
+      const t = (val || []).map((l) => String(l).trim()).filter(Boolean).join('\n');
+      if (t) c[k] = t;
+    } else if (s.type === 'list') {
+      // 문구가 빈 버튼은 빼요
+      const items = (val || []).filter((it) => !(s.item && s.item.label) || String(it.label || '').trim())
+        .map((it) => Object.fromEntries(Object.entries(it).filter(([, vv]) => vv !== '' && vv != null).map(([kk, vv]) => [kk, typeof vv === 'string' ? vv.trim() : vv])));
+      if (items.length) c[k] = items;
+    } else if (s.type === 'media') {
+      const pc = mediaOut(val.pc, k, 'pc', forExport);
+      const mo = val.moSame ? null : mediaOut(val.mo, k, 'mo', forExport);
+      if (pc || mo) c[k] = Object.assign({}, pc ? { pc } : {}, mo ? { mo } : {});
+    } else if (s.type === 'toggle') c[k] = !!val;
+    else if (String(blank(val)).trim()) c[k] = String(val).trim();
+  }
+  return c;
+}
+
+/* ---------- 올린 파일 (IndexedDB, 실패하면 이번 화면에서만) */
+const idb = (() => {
+  let dbp = null;
+  const open = () => dbp || (dbp = new Promise((res, rej) => {
+    const r = indexedDB.open('tpl-hero-editor', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('files');
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  }));
+  const run = (mode, fn) => open().then((db) => new Promise((res, rej) => {
+    const t = db.transaction('files', mode);
+    const req = fn(t.objectStore('files'));
+    t.oncomplete = () => res(req && req.result);
+    t.onerror = () => rej(t.error);
+  }));
+  return {
+    put: (k, v) => run('readwrite', (st) => st.put(v, k)).catch(() => {}),
+    get: (k) => run('readonly', (st) => st.get(k)).catch(() => null),
+  };
+})();
+const files = {}; // 이번 화면에서 올린 파일 — key → File
+async function loadBlob(key) {
+  if (blobUrls[key] || !key) return !!blobUrls[key];
+  const f = files[key] || await idb.get(key);
+  if (!f) return false;
+  files[key] = f;
+  blobUrls[key] = URL.createObjectURL(f);
+  return true;
+}
+
+/* ---------- 폼 */
+const cnt = (text, max) => {
+  const n = RC.charCount(text || '');
+  return max ? `<span class="hed-cnt${n > max ? ' is-over' : n === max ? ' is-full' : ''}" data-cnt="${max}">${n}/${max}</span>` : `<span class="hed-cnt" data-cnt="">${n}자</span>`;
+};
+const attrs = (o) => Object.entries(o).filter(([, v]) => v != null && v !== false).map(([k, v]) => (v === true ? k : `${k}="${esc(v)}"`)).join(' ');
+
+function fieldHead(s, note) {
+  return `<div class="hed-f__head"><span class="hed-f__label">${esc(s.label || '')}${s.optional ? ' <span class="hed-f__opt">선택</span>' : ''}</span><span class="hed-f__note">${esc(note || '')}</span></div>`;
+}
+function textInput(path, value, max, label) {
+  return `<div class="hed-in"><input type="text" ${attrs({ ...path, value, maxlength: max || null, 'aria-label': label })}>${cnt(value, max)}</div>`;
+}
+function linesField(k, s, ls) {
+  const max = s.maxLines || 1;
+  const rows = ls.length ? ls : [''];
+  const note = [max > 1 ? `최대 ${max}줄` : '', s.maxChars ? `줄마다 ${s.maxChars}자 (띄어쓰기 포함)` : ''].filter(Boolean).join(' · ');
+  return `<div class="hed-f">${fieldHead(s, note)}
+  ${rows.map((l, i) => `<div class="hed-in"><span class="hed-in__n">${i + 1}</span><input type="text" ${attrs({ 'data-f': k, 'data-line': i, value: l, maxlength: s.maxChars || null, 'aria-label': `${s.label} ${i + 1}번째 줄` })}>${cnt(l, s.maxChars)}${i > 0 || (rows.length > 1) ? `<button type="button" class="icon-btn" data-act="del-line" data-f="${k}" data-line="${i}" aria-label="${esc(s.label)} ${i + 1}번째 줄 빼기">✕</button>` : '<span class="hed-in__sp"></span>'}</div>`).join('')}
+  ${rows.length < max ? `<button type="button" class="hed-add" data-act="add-line" data-f="${k}">+ 줄 추가</button>` : ''}
+</div>`;
+}
+function swatches(path, cur, label) {
+  return `<div class="hed-sw" role="group" aria-label="${esc(label)}">${REG.hds.colors.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
+}
+function radiusChips(path, cur, label) {
+  return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${REG.hds.radius.map((r) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': r.key, title: r.token, 'aria-pressed': String(r.key === cur) })}><span class="hed-rad__ico" style="border-top-left-radius:${Math.min(r.px, 10)}px"></span>${r.key} <span class="hed-rad__px">${r.px === 900 ? '' : r.px}</span></button>`).join('')}</div>`;
+}
+/** enum — 칩 하나를 고르는 그룹. 표시 이름은 spec.labels */
+function enumChips(path, s, cur, label) {
+  return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${(s.values || []).map((o) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': o, 'aria-pressed': String(String(o) === String(cur)) })}>${esc((s.labels && s.labels[o]) || o)}</button>`).join('')}</div>`;
+}
+function toggleBox(path, s, cur) {
+  return `<label class="hed-check"><input type="checkbox" ${attrs({ ...path, 'data-toggle': '', checked: !!cur })}> ${esc(s.label || '')}</label>`;
+}
+/** hideWhen: { style: "outline" } — 같은 항목의 다른 값이 맞으면 숨겨요 (테두리형이면 배경색 숨김) */
+const hiddenBy = (s, item) => !!(s.hideWhen && item && Object.entries(s.hideWhen).every(([hk, hv]) => item[hk] === hv));
+function itemField(k, i, kk, s, val, n, item) {
+  const path = { 'data-f': k, 'data-i': i, 'data-k': kk };
+  const label = `${n} ${s.label || kk}`;
+  if (hiddenBy(s, item)) return '';
+  if (s.type === 'toggle') return `<div class="hed-sub">${toggleBox(path, s, val)}</div>`;
+  if (s.type === 'color') {
+    const c = HDS_COLOR[val];
+    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <code>${c ? esc(c.token) : ''}</code></span>${swatches(path, val, label)}</div>`;
+  }
+  if (s.type === 'radius') {
+    const r = HDS_RADIUS[val];
+    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <code>${r ? esc(r.token) : ''}</code></span>${radiusChips(path, val, label)}</div>`;
+  }
+  if (s.type === 'enum') return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)}</span>${enumChips(path, s, val, label)}</div>`;
+  const ph = s.type === 'url' ? 'https://… (비우면 #)' : '';
+  return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)}</span><div class="hed-in"><input type="${s.type === 'url' ? 'url' : 'text'}" ${attrs({ ...path, value: val, maxlength: s.maxChars || null, placeholder: ph || null, 'aria-label': label })}>${s.type === 'url' ? '' : cnt(val, s.maxChars)}</div></div>`;
+}
+function listField(k, s, items) {
+  const max = s.max ?? 99;
+  const one = s.label || '항목';
+  return `<div class="hed-f">${fieldHead(s, `최대 ${max}개`)}
+  ${items.map((it, i) => `<div class="hed-item"><div class="hed-item__head"><b>${esc(one)} ${i + 1}</b>${items.length > (s.min ?? 0) ? `<button type="button" class="icon-btn" data-act="del-item" data-f="${k}" data-i="${i}" aria-label="${esc(one)} ${i + 1} 빼기">✕</button>` : ''}</div>
+    ${Object.entries(s.item || {}).map(([kk, raw]) => itemField(k, i, kk, RC.specOf(raw), it[kk], `${one} ${i + 1}`, it)).join('')}
+    ${s.item && s.item.label && !String(it.label || '').trim() ? '<p class="hed-hint">문구를 넣으면 버튼이 보여요</p>' : ''}
+  </div>`).join('')}
+  ${items.length < max ? `<button type="button" class="hed-add" data-act="add-item" data-f="${k}">+ ${esc(one)} 추가</button>` : ''}
+</div>`;
+}
+function mediaThumb(ref) {
+  if (!ref) return '<span class="hed-media__none">없음</span>';
+  const src = ref.file ? blobUrls[ref.file] : ref.src;
+  if (!src) return '<span class="hed-media__none">파일을 다시<br>골라 주세요</span>';
+  return ref.kind === 'video' ? `<video src="${esc(src)}" muted loop autoplay playsinline></video>` : `<img src="${esc(src)}" alt="">`;
+}
+function mediaName(ref) {
+  if (!ref) return '없음';
+  if (ref.file) return `${ref.name || '올린 파일'}${blobUrls[ref.file] ? '' : ' (다시 골라 주세요)'}`;
+  return ref.src;
+}
+function mediaBox(k, dev, ref, title) {
+  return `<div class="hed-media">
+  <div class="hed-media__thumb">${mediaThumb(ref)}</div>
+  <div class="hed-media__info">
+    <b>${title}${ref ? ` <span class="hed-media__kind">${ref.kind === 'video' ? '영상' : '이미지'}</span>` : ''}</b>
+    <span class="hed-media__name" title="${esc(mediaName(ref))}">${esc(mediaName(ref))}</span>
+    <div class="hed-media__btns"><button type="button" class="btn-ui" data-act="pick" data-f="${k}" data-dev="${dev}">파일 선택</button>${ref ? `<button type="button" class="btn-ui" data-act="clear" data-f="${k}" data-dev="${dev}">지우기</button>` : ''}</div>
+    <input type="url" class="hed-media__url" ${attrs({ 'data-f': k, 'data-dev': dev, 'data-k': 'url', placeholder: '또는 이미지·mp4 주소 붙여넣기', 'aria-label': `${title} 주소` })}>
+  </div>
+</div>`;
+}
+function mediaField(k, s, m) {
+  return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 또는 mp4 · PC 것은 TB 에도 쓰여요')}
+  ${mediaBox(k, 'pc', m.pc, 'PC · TB')}
+  <label class="hed-check"><input type="checkbox" data-f="${k}" data-k="moSame"${m.moSame ? ' checked' : ''}> MO 도 PC ${esc(s.label || '')} 그대로 쓰기</label>
+  ${m.moSame ? '' : mediaBox(k, 'mo', m.mo, 'MO')}
+</div>`;
+}
+function heroForm(v, e) {
+  return Object.entries(v.slots).map(([k, raw]) => {
+    const s = RC.specOf(raw);
+    if (s.type === 'richtext') return linesField(k, s, e[k]);
+    if (s.type === 'list') return listField(k, s, e[k]);
+    if (s.type === 'media') return mediaField(k, s, e[k]);
+    if (s.type === 'enum') return `<div class="hed-f">${fieldHead(s, s.note)}${enumChips({ 'data-f': k }, s, e[k], s.label)}</div>`;
+    if (s.type === 'toggle') return `<div class="hed-f">${toggleBox({ 'data-f': k }, s, e[k])}</div>`;
+    const note = [s.note, s.maxChars ? `최대 ${s.maxChars}자` : ''].filter(Boolean).join(' · ');
+    return `<div class="hed-f">${fieldHead(s, note)}${textInput({ 'data-f': k }, e[k], s.maxChars, s.label)}</div>`;
+  }).join('');
+}
+
+/* ---------- 화면 */
+let heroFit = null;
+let heroLoaded = false;
+function renderHero() {
+  const hs = heroState();
+  if (!EDITORS.length) { heroEl.innerHTML = '<p class="compose__empty">편집기용 히어로가 아직 없어요 (meta.editor)</p>'; return; }
+  const v = byId[hs.variant];
+  const e = heroEdit(v);
+  const keep = heroEl.querySelector('.compose__scroll')?.scrollTop || 0;
+  heroEl.innerHTML = `<aside class="compose__side">
+  <div class="compose__scroll">
+  <div class="hed-intro"><h2>히어로 편집기</h2><p>스타일을 고르고 문구·배경·버튼을 바꿔 보세요. 오른쪽이 실제 결과예요 (기기는 위쪽 PC·TB·MO).</p></div>
+  <div class="hed-styles" role="group" aria-label="히어로 스타일">${EDITORS.map((x) => {
+    const bg = x.sample.background && x.sample.background.pc;
+    const src = x.thumb || (bg && bg.kind === 'image' ? bg.src : '');
+    const thumb = src ? ` style="background-image:url('${esc(new URL(src, assetBase).href)}')"` : '';
+    return `<button type="button" class="hed-style" data-hed-variant="${x.id}" aria-pressed="${x.id === v.id}" title="${esc(x.when)}"><span class="hed-style__thumb"${thumb}></span><span class="hed-style__name">${esc(vname(x))}</span></button>`;
+  }).join('')}</div>
+  <p class="hed-style__when"><b>${esc(vname(v))}</b> ${esc(v.when)}</p>
+  <div class="hed-form" data-hed-form>${heroForm(v, e)}</div>
+  </div>
+  <div class="compose__foot">
+  <div class="compose__actions">
+    <button type="button" class="btn-ui btn-ui--primary" data-hed-act="download">page.json 받기</button>
+    <button type="button" class="btn-ui" data-hed-act="copy">page.json 복사</button>
+    <button type="button" class="btn-ui" data-hed-act="reset">샘플로 되돌리기</button>
+  </div>
+  <p class="compose__hint">받은 page.json 과 배경 파일을 <code>pages/</code> 에 같이 넣고 <code>npm run build</code> → <code>dist/pages/이름/</code></p>
+  </div>
+  <input type="file" accept="image/*,video/mp4" hidden data-hed-file>
+</aside>
+<div class="compose__stage">
+  <div class="hed-warn" data-hed-warn role="status" aria-live="polite"></div>
+  <div class="v__frame"><iframe title="히어로 미리보기"></iframe><span class="v__scale"></span></div>
+</div>`;
+  heroEl.querySelector('.compose__scroll').scrollTop = keep;
+  const iframe = heroEl.querySelector('iframe');
+  heroLoaded = false;
+  heroFit = mountPreview(heroEl.querySelector('.compose__stage'), heroEl.querySelector('.v__frame'), iframe, heroEl.querySelector('.v__scale'), () => {
+    heroLoaded = true;
+    try { const d = iframe.contentDocument; (d.fonts ? d.fonts.ready : Promise.resolve()).then(measureSoon); } catch (err) {}
+    measureSoon();
+  });
+  // 저장해 둔 파일을 불러온 뒤 그려요
+  const keys = [];
+  for (const m of Object.values(e)) if (m && typeof m === 'object' && 'moSame' in m) for (const r of [m.pc, m.mo]) if (r && r.file) keys.push(r.file);
+  Promise.all(keys.map(loadBlob)).then((ok) => {
+    if (ok.some(Boolean)) heroEl.querySelector('[data-hed-form]').innerHTML = heroForm(v, e);
+    const html = heroHtmlOrError(v, e);
+    iframe.srcdoc = srcdoc(html, v.css, v.js, v.stage);
+  });
+}
+function heroHtmlOrError(v, e) {
+  try { return renderHeroHtml(v, contentFrom(v, e, false)); } catch (err) { return `<p style="padding:24px;font:14px/1.6 system-ui;color:#c00">렌더 오류: ${esc(err.message)}</p>`; }
+}
+function redrawForm() {
+  const v = byId[heroState().variant];
+  const form = heroEl.querySelector('[data-hed-form]');
+  if (form) form.innerHTML = heroForm(v, heroEdit(v));
+}
+
+/** 미리보기 갱신 — iframe 을 다시 읽지 않고 바뀐 부분만 바꿔요 (배경 영상이 계속 재생돼요) */
+let heroTimer = null;
+function heroUpdate() {
+  clearTimeout(heroTimer);
+  heroTimer = setTimeout(() => {
+    save();
+    const v = byId[heroState().variant];
+    const html = heroHtmlOrError(v, heroEdit(v));
+    const iframe = heroEl.querySelector('iframe');
+    let doc = null;
+    try { doc = iframe.contentDocument; } catch (err) {}
+    if (!heroLoaded || !doc || !doc.body) { iframe.srcdoc = srcdoc(html, v.css, v.js, v.stage); return; }
+    patchRoot(doc, html);
+    measureSoon();
+  }, 100);
+}
+function patchRoot(doc, html) {
+  const cur = doc.body.firstElementChild;
+  const tpl = doc.createElement('template');
+  tpl.innerHTML = html;
+  const next = tpl.content.firstElementChild;
+  if (!next) return;
+  const shell = (el) => el.cloneNode(false).outerHTML;
+  if (!cur || cur.classList.contains('__guide') || shell(cur) !== shell(next) || cur.children.length !== next.children.length) {
+    if (cur && !cur.classList.contains('__guide')) cur.replaceWith(next); else doc.body.prepend(next);
+    return;
+  }
+  [...next.children].forEach((n, i) => { const c = cur.children[i]; if (c.outerHTML !== n.outerHTML) c.replaceWith(n); });
+}
+
+/* ---------- 줄 넘김 경고 — 지금 기기 폭에서 실제로 잰 값 */
+let measureTimer = null;
+function measureSoon() { clearTimeout(measureTimer); measureTimer = setTimeout(measureHero, 60); }
+function measureHero() {
+  const box = heroEl.querySelector('[data-hed-warn]');
+  const iframe = heroEl.querySelector('iframe');
+  if (!box || !iframe) return;
+  let doc = null;
+  try { doc = iframe.contentDocument; } catch (err) {}
+  if (!doc || !doc.body) return;
+  const v = byId[heroState().variant];
+  const dev = `${DEVICE_LABEL[state.device]} ${DEVICE_W[state.device]}`;
+  const lineCount = (el) => {
+    const r = doc.createRange();
+    r.selectNodeContents(el);
+    const tops = new Set();
+    for (const b of r.getClientRects()) if (b.width > 1) tops.add(Math.round(b.top));
+    return tops.size;
+  };
+  const msgs = [];
+  for (const [slot, sel] of MEASURE) {
+    const el = doc.querySelector(sel);
+    if (!el || !v.slots[slot]) continue;
+    const label = v.slots[slot].label || slot;
+    const parts = el.querySelectorAll('.hero__line');
+    const lines = parts.length ? [...parts] : [el];
+    lines.forEach((ln, i) => {
+      const n = lineCount(ln);
+      const which = parts.length > 1 ? ` ${i + 1}번째 줄` : '';
+      if (n > 1) msgs.push(`${label}${which}: ${n}줄로 넘어가요`);
+      else if (ln.scrollWidth > ln.clientWidth + 1) msgs.push(`${label}${which}: 화면 폭을 넘어요`);
+    });
+  }
+  const btns = doc.querySelector('.hero__btns');
+  if (btns && btns.scrollWidth > btns.clientWidth + 1) msgs.push('버튼: 화면 폭을 넘어요');
+  box.className = 'hed-warn' + (msgs.length ? ' is-warn' : ' is-ok');
+  box.innerHTML = msgs.length
+    ? `<b>${dev}</b> · ${msgs.map(esc).join(' · ')} <span class="hed-warn__tip">문구를 줄이거나 줄을 나눠 보세요</span>`
+    : `<b>${dev}</b> · 줄 넘김 없음 <span class="hed-warn__tip">다른 기기는 위쪽 PC·TB·MO 로 확인</span>`;
+}
+
+/* ---------- page.json */
+function heroPage() {
+  const v = byId[heroState().variant];
+  return { title: `${vname(v)} 히어로 시안`, theme: 'light', sections: [{ variant: v.id, content: contentFrom(v, heroEdit(v), true) }] };
+}
+function download(name, blob) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+/* ---------- 이벤트 */
+let pickTarget = null;
+const at = (el) => ({ f: el.dataset.f, i: el.dataset.i != null ? +el.dataset.i : null, k: el.dataset.k, line: el.dataset.line != null ? +el.dataset.line : null, dev: el.dataset.dev });
+heroEl.addEventListener('input', (ev) => {
+  const t = ev.target;
+  if (!t.matches('input[type="text"][data-f], input[type="url"][data-f][data-i]')) return;
+  const v = byId[heroState().variant];
+  const e = heroEdit(v);
+  const p = at(t);
+  if (p.line != null) e[p.f][p.line] = t.value;
+  else if (p.i != null) e[p.f][p.i][p.k] = t.value;
+  else e[p.f] = t.value;
+  const c = t.parentElement.querySelector('[data-cnt]');
+  if (c) {
+    const max = +c.dataset.cnt || 0;
+    const n = RC.charCount(t.value);
+    c.textContent = max ? `${n}/${max}` : `${n}자`;
+    c.className = 'hed-cnt' + (max && n > max ? ' is-over' : max && n === max ? ' is-full' : '');
+  }
+  heroUpdate();
+});
+heroEl.addEventListener('change', (ev) => {
+  const t = ev.target;
+  const v = byId[heroState().variant];
+  const e = heroEdit(v);
+  if (t.matches('[data-k="moSame"]')) { e[t.dataset.f].moSame = t.checked; redrawForm(); heroUpdate(); return; }
+  if (t.matches('[data-toggle]')) { const p = at(t); if (p.i != null) e[p.f][p.i][p.k] = t.checked; else e[p.f] = t.checked; heroUpdate(); return; }
+  if (t.matches('select[data-f][data-i]')) { const p = at(t); e[p.f][p.i][p.k] = t.value; heroUpdate(); return; }
+  if (t.matches('.hed-media__url')) {
+    const url = t.value.trim();
+    if (!url) return;
+    const p = at(t);
+    e[p.f][p.dev] = { kind: /\.(mp4|webm|mov)(\?|#|$)/i.test(url) ? 'video' : 'image', src: url };
+    redrawForm(); heroUpdate(); return;
+  }
+  if (t.matches('[data-hed-file]') && t.files && t.files[0] && pickTarget) {
+    const file = t.files[0];
+    const { f, dev } = pickTarget;
+    const key = `${v.id}:${f}:${dev}`;
+    if (blobUrls[key]) URL.revokeObjectURL(blobUrls[key]);
+    files[key] = file;
+    blobUrls[key] = URL.createObjectURL(file);
+    idb.put(key, file);
+    e[f][dev] = { kind: file.type.startsWith('video/') ? 'video' : 'image', file: key, name: file.name };
+    t.value = '';
+    redrawForm(); heroUpdate();
+  }
+});
+heroEl.addEventListener('click', (ev) => {
+  const v = byId[heroState().variant];
+  const e = heroEdit(v);
+  const sv = ev.target.closest('[data-hed-variant]');
+  if (sv) { heroState().variant = sv.dataset.hedVariant; save(); renderHero(); return; }
+  const val = ev.target.closest('[data-val]');
+  if (val) { const p = at(val); if (p.i != null) e[p.f][p.i][p.k] = val.dataset.val; else e[p.f] = val.dataset.val; redrawForm(); heroUpdate(); return; }
+  const act = ev.target.closest('[data-act]');
+  if (act) {
+    const p = at(act);
+    const s = RC.specOf(v.slots[p.f]);
+    switch (act.dataset.act) {
+      case 'add-line': if (e[p.f].length === 0) e[p.f].push(''); e[p.f].push(''); break;
+      case 'del-line': e[p.f].splice(p.line, 1); break;
+      case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, blank(vv)]))); break;
+      case 'del-item': e[p.f].splice(p.i, 1); break;
+      case 'clear': e[p.f][p.dev] = null; break;
+      case 'pick': pickTarget = p; heroEl.querySelector('[data-hed-file]').click(); return;
+      default: return;
+    }
+    redrawForm(); heroUpdate(); return;
+  }
+  const ha = ev.target.closest('[data-hed-act]');
+  if (!ha) return;
+  const json = JSON.stringify(heroPage(), null, 2) + '\n';
+  if (ha.dataset.hedAct === 'copy') return copyText(json, ha);
+  if (ha.dataset.hedAct === 'download') {
+    download(`hero-${vname(v)}.page.json`, new Blob([json], { type: 'application/json' }));
+    // 올린 배경 파일도 page.json 이 가리키는 이름으로 함께 받아요
+    for (const [k, raw] of Object.entries(v.slots)) {
+      if (RC.specOf(raw).type !== 'media') continue;
+      for (const dev of ['pc', 'mo']) {
+        const ref = e[k][dev];
+        if (dev === 'mo' && e[k].moSame) continue;
+        if (ref && ref.file && files[ref.file]) download(exportName(k, dev, ref), files[ref.file]);
+      }
+    }
+    return;
+  }
+  if (ha.dataset.hedAct === 'reset' && confirm('입력한 내용을 지우고 Figma 샘플로 되돌릴까요?')) {
+    heroState().edits[v.id] = editFrom(v, v.sample);
+    save(); renderHero();
+  }
+});
+
 /* ---------------------------------------------------------------- shared */
 function copyText(text, btn) {
   const done = () => { const t = btn.textContent; btn.textContent = '복사됨'; btn.classList.add('is-done'); setTimeout(() => { btn.textContent = t; btn.classList.remove('is-done'); }, 1400); };
@@ -465,10 +929,12 @@ document.addEventListener('click', (e) => {
   }
   const m = e.target.closest('[data-mode]');
   if (m) { state.mode = m.dataset.mode; applyAll(); return; }
+  const oe = e.target.closest('[data-open-editor]');
+  if (oe) { heroState().variant = oe.dataset.openEditor; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
   const vw = e.target.closest('[data-view]');
   if (vw) { state.view = vw.dataset.view; applyGlobal(); cards.forEach((c) => c.links()); save(); if (state.mode === 'library') renderCat(); return; }
   const dv = e.target.closest('[data-device]');
-  if (dv) { state.device = dv.dataset.device; applyGlobal(); cards.forEach((c) => { c.apply(); c.fit(); }); composeFit && composeFit(); save(); }
+  if (dv) { state.device = dv.dataset.device; applyGlobal(); cards.forEach((c) => { c.apply(); c.fit(); }); composeFit && composeFit(); heroFit && heroFit(); if (state.mode === 'hero') measureSoon(); save(); }
 });
 
 function applyGlobal() {
@@ -480,20 +946,25 @@ function applyGlobal() {
   // 디자이너/개발자 보기는 라이브러리에서만 의미가 있어요 (조합기는 숨김)
   document.querySelector('[data-view-seg]').hidden = state.mode !== 'library';
   composeEl.hidden = state.mode !== 'compose';
+  heroEl.hidden = state.mode !== 'hero';
   const top = document.getElementById('top');
   document.documentElement.style.setProperty('--top-h', top.offsetHeight + 'px');
 }
 
 function applyAll() {
   applyGlobal();
-  if (state.mode === 'library') { renderSide(); renderCat(); } else { renderCompose(); }
+  if (state.mode === 'library') { renderSide(); renderCat(); } else if (state.mode === 'compose') { renderCompose(); } else { renderHero(); }
+  // 히어로 편집기는 #hero-editor 주소로 바로 열려요 (기획자에게 링크 전달용)
+  if (state.mode === 'hero') history.replaceState(null, '', '#hero-editor');
+  else if (location.hash === '#hero-editor') history.replaceState(null, '', '#' + state.cat);
   save();
 }
 
-// #hero 또는 #hero-split 로 바로 열기
+// #hero 또는 #hero-media-badge 로 바로 열기, #hero-editor 는 히어로 편집기
 const h = decodeURIComponent(location.hash.slice(1));
 let jumpTo = null;
-if (secByKey[h]) state.cat = h;
+if (h === 'hero-editor') state.mode = 'hero';
+else if (secByKey[h]) state.cat = h;
 else if (byId[h]) { state.cat = byId[h].section; state.mode = 'library'; jumpTo = h; }
 if (!isOpen(state.cat)) state.open.push(state.cat);
 applyAll();

@@ -1,0 +1,37 @@
+/* PC — Figma 6233:29802 (위: 그라디언트 배경 730 · 위 160 / 아래 110, 아래: 제품 화면 1280 · 아래 여백 80) */
+.hero--product-shot {
+  --hero-title: 100px; --hero-title-lh: 1.2; --hero-btn-py: 24px; --hero-btn-px: 48px;
+  --hero-top-pt: 160px; --hero-top-pb: 110px; --hero-bg-over: 90px;
+  padding: 0; background: #0a091b; color: var(--hero-white); --hero-desc-color: var(--hero-white-80);
+}
+.hero--product-shot .hero__top {
+  position: relative; width: 100%; display: flex; justify-content: center;
+  padding: var(--hero-top-pt) var(--container-pad) var(--hero-top-pb);
+}
+/* 배경은 위쪽 영역보다 조금 더 내려와 제품 화면 뒤로 이어져요 (Figma 배경 820 / 영역 730) */
+.hero--product-shot .hero__bg { bottom: calc(-1 * var(--hero-bg-over)); }
+.hero--product-shot .hero-btn:first-child:not(.hero-btn--outline) { box-shadow: var(--hero-btn-shadow); }
+.hero--product-shot .hero__visual {
+  position: relative; width: 100%; display: flex; justify-content: center;
+  padding: 0 var(--container-pad) var(--hero-visual-pb, 80px);
+}
+/* 제품 화면 — 가로 최대 1280, 비율 유지(잘리지 않아요) · drop shadow/md */
+.hero--product-shot .hero__visual-media { display: block; width: 1280px; max-width: 100%; height: auto; box-shadow: 0 4px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 4px -1px rgba(0, 0, 0, 0.05); }
+.hero--product-shot .hero__visual-media img { display: block; width: 100%; height: auto; }
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--product-shot {
+    --hero-top-pt: 120px; --hero-top-pb: 88px; --hero-bg-over: 72px; --hero-gap: 48px;
+    --hero-title: 72px; --hero-desc: 18px;
+    --hero-btn-py: 18px; --hero-btn-px: 40px; --hero-btn-fs: 20px; --hero-visual-pb: 64px;
+  }
+}
+
+/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+@media (max-width: 767px) {
+  .hero--product-shot {
+    --hero-top-pt: 72px; --hero-top-pb: 48px; --hero-bg-over: 40px; --hero-gap: 48px;
+    --hero-title: 44px; --hero-desc: 16px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight); --hero-visual-pb: 48px;
+  }
+}

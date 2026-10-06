@@ -1,0 +1,59 @@
+{
+  "id": "hero-media-title",
+  "section": "hero",
+  "layout": "media-title",
+  "order": 2,
+  "when": "배경 사진·영상 위에 큰 메시지 한 줄 — 버튼 없이 분위기로 보여줄 때",
+  "figma": {
+    "pc": "6233:29747",
+    "mo": null,
+    "tb": null
+  },
+  "body": 1200,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/media-title.jpg",
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 14
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "서브타이틀",
+      "maxLines": 2,
+      "maxChars": 45
+    },
+    "background": {
+      "type": "media",
+      "figmaLayer": "bg-media",
+      "extract": false,
+      "optional": true,
+      "label": "배경"
+    },
+    "dim": {
+      "type": "enum",
+      "values": [
+        "0",
+        "20",
+        "40",
+        "60"
+      ],
+      "labels": {
+        "0": "없음",
+        "20": "20%",
+        "40": "40%",
+        "60": "60%"
+      },
+      "default": "20",
+      "extract": false,
+      "label": "배경 어둡게",
+      "note": "글자가 잘 보이게 배경을 덮어요 (시안 20%)"
+    }
+  }
+}

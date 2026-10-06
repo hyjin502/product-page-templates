@@ -1,6 +1,6 @@
 // variant 하나(또는 섹션 전체)를 sample.json 으로 렌더해 단독 미리보기 파일을 만들어요 — 스크린샷 비교용
 //   node scripts/preview.mjs --section concern          concern 의 모든 variant
-//   node scripts/preview.mjs hero-split problem-quote   지정한 variant
+//   node scripts/preview.mjs hero-media-badge problem-quote   지정한 variant
 // 결과: dist/preview/<id>.html, 옵션마다 <id>--<option>.html, MO 375 확인용 <id>.mo.html(375px iframe)
 import fs from 'node:fs';
 import path from 'node:path';

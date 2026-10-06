@@ -1,0 +1,15 @@
+{% from "hero/_macros.njk" import bgMedia, lineSpans %}
+<section class="hero hero--media-title">
+  {{ bgMedia(background) }}
+{% if background and dim and dim != "0" %}
+  <div class="hero__dim" style="--dim: {{ (dim | int) / 100 }}" aria-hidden="true"></div>
+{% endif %}
+  <div class="hero__body">
+    <div class="hero__heading">
+      <h1 class="hero__title">{{ lineSpans(title) }}</h1>
+{% if description %}
+      <p class="hero__desc">{{ lineSpans(description) }}</p>
+{% endif %}
+    </div>
+  </div>
+</section>
