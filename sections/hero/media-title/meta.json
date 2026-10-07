@@ -5,8 +5,8 @@
   "order": 2,
   "when": "배경 사진·영상 위에 큰 메시지 한 줄 — 버튼 없이 분위기로 보여줄 때",
   "figma": {
-    "pc": "6233:29747",
-    "mo": null,
+    "pc": "6249:35205",
+    "mo": "6249:35395",
     "tb": null
   },
   "body": 1200,
@@ -19,7 +19,11 @@
       "label": "메인 타이틀",
       "minLines": 1,
       "maxLines": 2,
-      "maxChars": 14
+      "maxChars": 14,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 6
+      }
     },
     "description": {
       "type": "richtext",
@@ -27,7 +31,11 @@
       "optional": true,
       "label": "서브타이틀",
       "maxLines": 2,
-      "maxChars": 45
+      "maxChars": 45,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 20
+      }
     },
     "background": {
       "type": "media",

@@ -5,8 +5,8 @@
   "order": 5,
   "when": "어두운 바탕에 빨간 테두리 뱃지, 줄마다 그라디언트 타이틀 — 강한 프로모션",
   "figma": {
-    "pc": "6233:29822",
-    "mo": null,
+    "pc": "6249:35326",
+    "mo": "6249:35289",
     "tb": null
   },
   "body": 1200,
@@ -26,7 +26,11 @@
       "label": "메인 타이틀",
       "minLines": 1,
       "maxLines": 2,
-      "maxChars": 17
+      "maxChars": 17,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 9
+      }
     },
     "description": {
       "type": "richtext",
@@ -34,7 +38,11 @@
       "optional": true,
       "label": "서브타이틀",
       "maxLines": 2,
-      "maxChars": 40
+      "maxChars": 40,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 27
+      }
     },
     "ctas": {
       "type": "list",

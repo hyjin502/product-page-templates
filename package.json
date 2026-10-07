@@ -1,6 +1,6 @@
 {
   "name": "product-page-templates",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Figma 섹션 템플릿 ↔ HTML 템플릿 레지스트리 · 라이브러리/조합기 사이트 · Figma→page.json 추출기",
   "type": "module",

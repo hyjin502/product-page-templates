@@ -1,5 +1,7 @@
 # 상품페이지 템플릿
 
+[![ci](https://github.com/hyjin502/product-page-templates/actions/workflows/ci.yml/badge.svg)](https://github.com/hyjin502/product-page-templates/actions/workflows/ci.yml)
+
 Figma 섹션 템플릿(`[UI] 커피 정수기` Page 18)과 같은 규칙의 HTML 템플릿을 한곳에서 관리해요.
 **AI는 Figma에서 내용만 뽑고(page.json), HTML은 템플릿으로 정해진 대로 조립해요.**
 
@@ -17,19 +19,26 @@ sections/<section>/<layout>/  (meta.json · template.njk · style.css · sample.
 
 ## 처음 받았을 때
 1. **Node.js 18 이상**을 설치해요 (`node -v` 로 확인)
-2. 소스 zip 을 풀고 그 폴더에서:
+2. 저장소를 받고 그 폴더에서 설치·빌드해요:
    ```bash
+   git clone https://github.com/hyjin502/product-page-templates.git
+   cd product-page-templates
    npm install
    npm run build
    ```
+   (git 이 없으면 GitHub 의 **Code → Download ZIP** 으로 받아도 돼요)
 3. `dist/index.html` 을 브라우저로 열면 라이브러리예요. 조립된 페이지는 `dist/pages/<이름>/index.html` 이에요.
 4. Claude Code 로 이어서 작업하면 `CLAUDE.md`(규칙·결정 사항·다음 할 일)를 먼저 읽고 시작해요. Figma 작업에는 Figma MCP 연결이 필요해요 (claude.ai Figma 커넥터 또는 figma MCP).
 
-zip 안에 git 이력(`.git`)도 들어 있어요. 회사 GitHub/GitLab 에 올릴 때는 원격만 연결하면 돼요:
-```bash
-git remote add origin <회사 저장소 주소>
-git push -u origin main
-```
+## GitHub 로 관리하기
+- 저장소: https://github.com/hyjin502/product-page-templates (공개) — 비밀번호·토큰·개인 정보·비공개 사내 문서는 넣지 않아요.
+- 커밋 작성자는 **hyjin502** 예요. 새로 클론한 PC 에서는 처음 한 번 저장소 폴더에서:
+  ```bash
+  git config user.name "hyjin502"
+  git config user.email "270540887+hyjin502@users.noreply.github.com"
+  ```
+- `main` 에 푸시하면 GitHub Actions(`.github/workflows/ci.yml`)가 `npm run validate` · `npm run build` 를 돌려요. 실패하면 README 위 배지가 빨간색이 돼요.
+- 빌드된 사이트는 Actions 실행 화면 아래 **site** 아티팩트(zip)로 받을 수 있어요.
 
 ## 명령
 | | |
@@ -43,6 +52,7 @@ git push -u origin main
 | `npm run serve` | `dist/` 를 http://localhost:4173 으로 서빙 (`-- --base /templates/` 로 하위 경로 흉내) |
 | `npm run pack` | 전달용 zip 2개 → `release/` (소스 / 사이트) |
 | `node scripts/figma-extract.mjs …` | Figma → page.json 추출 (scan → extract → finalize, 검증은 `--verify` + `report`) |
+| `node scripts/figma-relink.mjs pages/_verify/figma-page.json` | Figma 페이지를 다시 복사해 노드 ID 가 바뀌었을 때 링크 다시 맞추기 (`--dry` 로 먼저 확인) |
 
 `npm run shot` 은 로컬 Chrome(없으면 Edge)을 자동으로 찾아요. 못 찾으면 `CHROME_PATH` 환경변수에 실행 파일 경로를 넣어요.
 
@@ -60,7 +70,7 @@ git push -u origin main
 3. 올리기 전 점검: `npm run serve -- --base /templates/` → http://localhost:4173/templates/
 4. 갱신: 수정 → `npm run pack` → 같은 경로에 덮어쓰기
 
-회사 저장소에 CI 로 자동 배포하려면 (예시 — 파일은 저장소에 없어요):
+자동 배포를 붙이려면 (예시 — 파일은 저장소에 없어요. GitHub Pages 는 저장소 **Settings → Pages → Source: GitHub Actions** 를 먼저 켜야 해요):
 
 <details><summary>GitLab Pages (.gitlab-ci.yml)</summary>
 
@@ -120,7 +130,7 @@ jobs:
 - `richtext`: 줄바꿈은 `\n`. PC와 MO 줄바꿈이 다르면 `{ "pc": "…", "mo": "…" }` — 글자가 같으면 `<br class="only-mo">` 로 합쳐져요.
 - 버튼 `style` 은 Figma button `type` 값 그대로: `neutral`(진한 회색) / `subtle`(연한 회색).
 - hero 버튼은 `{ label, href, color, radius }` — `color` 는 `tokens/hds.json` 색 키(`white`, `blue/700` …), `radius` 는 `xs`·`sm`·`md`·`lg`·`xl`·`full`.
-- hero 타이틀·서브타이틀은 줄마다 글자 수 제한이 있어요 (띄어쓰기 포함, 예: 타이틀 2줄 · 줄마다 17자). 넘으면 `npm run validate` 가 알려줘요.
+- hero 타이틀·서브타이틀은 줄마다 글자 수 제한이 있어요 (띄어쓰기 포함, 예: 타이틀 2줄 · 줄마다 17자). 넘으면 `npm run validate` 가 알려줘요. MO 문구가 다르면 `{ "pc": "…", "mo": "…" }` 로 넣어요 (MO 한도는 따로).
 - hero 배경 `{ "pc": { "kind": "image" | "video", "src": "…" }, "mo": {…} }` — `mo` 를 빼면 PC 것을 써요.
 - 이미지 `{ "src": "<page.json 기준 경로>", "alt": "" }` — 비우면 Figma 플레이스홀더.
 - 카드형 섹션(persona, problem 5종, feature 4종)은 Figma 오토레이아웃처럼 동작해요 — PC·TB는 가로 한 줄 채우기(fill): 카드가 적으면 넓어지고(2장이면 반씩), 한 줄 최대 개수를 넘으면 좌우로 넘기고 하단 점이 생겨요. icon-grid 는 2열 그리드(grid). MO 는 Figma대로 세로 쌓기·고정 폭 스크롤(none). 섹션에 `"pager": { "pc": 4, "tb": 3, "mo": 0 }` 로 한 줄 최대(grid 는 열 수)를 바꿀 수 있고, 조합기에서 카드 수와 함께 미리 볼 수 있어요.

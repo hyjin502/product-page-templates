@@ -47,10 +47,10 @@
     return out + esc(a.flat.slice(from));
   }
 
-  /** 줄 목록 — { pc, mo } 면 PC 줄을 써요 (편집기·줄 단위 템플릿용) */
-  function textLines(value) {
+  /** 줄 목록 — { pc, mo } 면 기기(dev)에 맞는 쪽, 한쪽만 있으면 그쪽 (편집기·줄 단위 템플릿용) */
+  function textLines(value, dev) {
     if (value == null || value === '') return [];
-    if (typeof value === 'object') return lines(value.pc ?? value.mo ?? '');
+    if (typeof value === 'object') return lines((dev === 'mo' ? (value.mo ?? value.pc) : (value.pc ?? value.mo)) ?? '');
     return lines(value);
   }
 
@@ -66,7 +66,7 @@
   function addFilters(env, { safe, hds, icon }) {
     const idx = hdsIndex(hds);
     env.addFilter('rt', (v) => safe(richtext(v)));
-    env.addFilter('lines', (v) => textLines(v));
+    env.addFilter('lines', (v, dev) => textLines(v, dev));
     env.addFilter('icon', (name) => safe(icon(name)));
     env.addFilter('hdsColor', (k) => (idx.colors[k] ? idx.colors[k].hex : ''));
     env.addFilter('hdsOn', (k) => (idx.colors[k] ? idx.colors[k].on : ''));

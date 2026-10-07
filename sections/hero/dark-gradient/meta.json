@@ -5,8 +5,8 @@
   "order": 4,
   "when": "어두운 그라디언트 바탕에 메시지와 버튼 두 개 — 뱃지 없이 깔끔하게",
   "figma": {
-    "pc": "6233:29785",
-    "mo": null,
+    "pc": "6249:35243",
+    "mo": "6249:35260",
     "tb": null
   },
   "body": 1200,
@@ -19,7 +19,11 @@
       "label": "메인 타이틀",
       "minLines": 1,
       "maxLines": 2,
-      "maxChars": 17
+      "maxChars": 17,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 10
+      }
     },
     "description": {
       "type": "richtext",
@@ -27,7 +31,11 @@
       "optional": true,
       "label": "서브타이틀",
       "maxLines": 2,
-      "maxChars": 40
+      "maxChars": 40,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 27
+      }
     },
     "ctas": {
       "type": "list",

@@ -1,5 +1,21 @@
 # 변경 내역
 
+## 0.3.0 — 2026-10-07
+Figma 최신화(Page 19) 반영 — hero 7종 MO 를 시안대로 구현.
+
+- **hero MO**
+  - Page 19 MO 시안대로 바꿨어요(임시 제안값은 지웠어요).
+    - 한 화면 812: 문구 위·버튼 아래(media-badge · light-badge · dark-gradient), 가운데(media-title · gradient-text)
+    - 위아래로 쌓기: visual-bottom · product-shot
+  - MO 버튼은 전체 폭이고 화살표가 없어요.
+- **MO 문구 따로 쓰기**
+  - 타이틀·서브타이틀에 MO 문구를 따로 넣을 수 있어요(`{ pc, mo }`, MO 글자 수 한도 따로).
+  - 샘플은 Figma PC·MO 원문 그대로예요.
+- **배경 교체**
+  - media-badge 는 보라, media-title 은 그라디언트로 바뀌었어요.
+  - dark-gradient · gradient-text 는 MO 전용 배경을 쓰고, visual-bottom 은 MO 전용 비주얼을 써요.
+- **Figma 링크 재연결 도구**: `scripts/figma-relink.mjs` 를 추가했어요. 페이지 복사로 바뀐 노드 113건을 한 번에 다시 맞췄어요(Page 19 `6249:34928`).
+
 ## 0.2.0 — 2026-10-06
 히어로 리뉴얼 1단계 — 기획자·마케터용 **히어로 편집기**와 샘플 히어로 1종.
 

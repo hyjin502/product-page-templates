@@ -5,8 +5,8 @@
   "order": 6,
   "when": "큰 브랜드명 아래 넓은 비주얼(이미지·영상) — 제품 UI·영상·큰 비주얼을 강조할 때",
   "figma": {
-    "pc": "6233:29629",
-    "mo": null,
+    "pc": "6249:35087",
+    "mo": "6249:35368",
     "tb": null
   },
   "body": 980,
@@ -19,7 +19,11 @@
       "label": "메인 타이틀",
       "minLines": 1,
       "maxLines": 2,
-      "maxChars": 11
+      "maxChars": 11,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 7
+      }
     },
     "description": {
       "type": "richtext",
@@ -27,7 +31,11 @@
       "optional": true,
       "label": "서브타이틀",
       "maxLines": 2,
-      "maxChars": 35
+      "maxChars": 35,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 22
+      }
     },
     "ctas": {
       "type": "list",

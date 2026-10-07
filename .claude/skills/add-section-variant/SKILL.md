@@ -48,6 +48,7 @@ sections/<section>/<layout>/
      | 키 / 타입 | 뜻 |
      |---|---|
      | `maxLines` · `minLines` · `maxChars` | text/richtext 제약. **줄마다, 띄어쓰기 포함**으로 센다. richtext + maxLines → 줄마다 입력칸. 템플릿은 `lineSpans(slot)` 로 줄마다 `<span class="hero__line">` |
+     | richtext `mo` | `{ maxLines, maxChars }` — Figma MO 문구가 PC 와 다르면(줄여 쓰거나 줄바꿈이 다름) 값을 `{ pc, mo }` 로 받고 MO 는 이 한도로 검사. 편집기에 "MO 문구 따로 쓰기"가 생김 |
      | `color` | `tokens/hds.json` 색 키(`"white"`, `"blue/700"` …). `default` 로 기본값. 템플릿 `{{ c.color \| hdsColor }}` · `hdsOn`(글자색) · `hdsToken` |
      | `radius` | `xs` · `sm` · `md` · `lg` · `xl` · `full`. 템플릿 `{{ c.radius \| hdsRadius }}` · `hdsToken('radius')` |
      | `media` | 배경 `{ pc: { kind, src, alt?, poster? }, mo? }` (kind 는 image 또는 video). 템플릿 `bgMedia(slot)`(섹션 배경) · `visualMedia(slot)`(섹션 안 비주얼) — `sections/hero/_macros.njk`. `hint` = 편집기 안내 |

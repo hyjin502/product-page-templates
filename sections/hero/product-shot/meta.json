@@ -5,8 +5,8 @@
   "order": 7,
   "when": "어두운 바탕에 메시지와 버튼, 아래 제품 화면 — SaaS·앱 화면을 보여줄 때",
   "figma": {
-    "pc": "6233:29802",
-    "mo": null,
+    "pc": "6249:35306",
+    "mo": "6249:35379",
     "tb": null
   },
   "body": 1200,
@@ -19,7 +19,11 @@
       "label": "메인 타이틀",
       "minLines": 1,
       "maxLines": 2,
-      "maxChars": 14
+      "maxChars": 14,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 10
+      }
     },
     "description": {
       "type": "richtext",
@@ -27,7 +31,11 @@
       "optional": true,
       "label": "서브타이틀",
       "maxLines": 2,
-      "maxChars": 40
+      "maxChars": 40,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 22
+      }
     },
     "ctas": {
       "type": "list",

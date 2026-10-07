@@ -11,10 +11,13 @@
   }
 }
 
-/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+/* MO ≤767 — Figma 6249:35260 (375×812 한 화면: 문구는 위, 버튼은 아래, MO 전용 배경) */
 @media (max-width: 767px) {
   .hero--dark-gradient {
-    --hero-pad-y: 80px; --hero-gap: 48px;
-    --hero-title: 40px; --hero-desc: 16px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+    --hero-pad-y: 80px; --hero-gap: 48px; --hero-btn-gap: 16px;
+    --hero-title: 40px; --hero-title-lh: 1.4; --hero-desc: 18px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+    min-height: 812px;
   }
+  .hero--dark-gradient .hero__body { flex: 1 0 auto; justify-content: space-between; }
+  .hero--dark-gradient .hero-btn:first-child:not(.hero-btn--outline) { box-shadow: var(--hero-btn-shadow-md); }
 }

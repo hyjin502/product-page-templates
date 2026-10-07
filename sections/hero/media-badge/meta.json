@@ -5,8 +5,8 @@
   "order": 1,
   "when": "배경 이미지·영상 위에 뱃지와 큰 메시지 — 브랜드/프로모션 첫 화면",
   "figma": {
-    "pc": "6233:29729",
-    "mo": null,
+    "pc": "6249:35187",
+    "mo": "6249:35346",
     "tb": null
   },
   "body": 1200,
@@ -26,7 +26,11 @@
       "label": "메인 타이틀",
       "minLines": 1,
       "maxLines": 2,
-      "maxChars": 17
+      "maxChars": 17,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 10
+      }
     },
     "description": {
       "type": "richtext",
@@ -34,7 +38,11 @@
       "optional": true,
       "label": "서브타이틀",
       "maxLines": 2,
-      "maxChars": 20
+      "maxChars": 20,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 24
+      }
     },
     "ctas": {
       "type": "list",

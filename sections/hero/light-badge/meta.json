@@ -5,8 +5,8 @@
   "order": 3,
   "when": "밝은 바탕에 파란 뱃지와 버튼 두 개 — 서비스·솔루션 소개 첫 화면",
   "figma": {
-    "pc": "6233:29765",
-    "mo": null,
+    "pc": "6249:35223",
+    "mo": "6249:35357",
     "tb": null
   },
   "body": 1200,
@@ -26,7 +26,11 @@
       "label": "메인 타이틀",
       "minLines": 1,
       "maxLines": 2,
-      "maxChars": 17
+      "maxChars": 17,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 10
+      }
     },
     "description": {
       "type": "richtext",
@@ -34,7 +38,11 @@
       "optional": true,
       "label": "서브타이틀",
       "maxLines": 2,
-      "maxChars": 40
+      "maxChars": 40,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 27
+      }
     },
     "ctas": {
       "type": "list",

@@ -80,9 +80,9 @@ const isMediaEmpty = (v) => v && typeof v === 'object' && !Array.isArray(v) && !
 
 /** 줄 수 · 줄마다 글자 수(띄어쓰기 포함) — maxLines · minLines · maxChars */
 function checkLines(s, v, where, errors) {
-  if (s.maxLines == null && s.minLines == null && s.maxChars == null) return;
-  const devices = typeof v === 'string' ? [['', v]] : Object.entries(v).filter(([d]) => d === 'pc' || d === 'mo').map(([d, t]) => [` (${d.toUpperCase()})`, t]);
-  for (const [dev, text] of devices) {
+  if (s.maxLines == null && s.minLines == null && s.maxChars == null && !s.mo) return;
+  const devices = typeof v === 'string' ? [['', v, s]] : Object.entries(v).filter(([d]) => d === 'pc' || d === 'mo').map(([d, t]) => [` (${d.toUpperCase()})`, t, d === 'mo' && s.mo ? { ...s, ...s.mo } : s]);
+  for (const [dev, text, s] of devices) { // MO 문구는 spec.mo 의 한도(maxLines·maxChars)로 검사해요
     const ls = core.lines(text);
     if (s.maxLines != null && ls.length > s.maxLines) errors.push(`${where}${dev}: 최대 ${s.maxLines}줄이에요 (현재 ${ls.length}줄)`);
     if (s.minLines != null && ls.length < s.minLines) errors.push(`${where}${dev}: 최소 ${s.minLines}줄이에요 (현재 ${ls.length}줄)`);

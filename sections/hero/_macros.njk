@@ -44,8 +44,10 @@
 {% endif %}
 {% endmacro %}
 
-{# 줄마다 <span class="hero__line"> — 편집기에서 줄마다 따로 입력한 문구 #}
-{% macro lineSpans(value) %}{% for l in value | lines %}{% if not loop.first %} {% endif %}<span class="hero__line">{{ l }}</span>{% endfor %}{% endmacro %}
+{# 줄마다 <span class="hero__line"> — 편집기에서 줄마다 따로 입력한 문구.
+   { pc, mo } 로 MO 문구가 다르면 PC 줄 묶음(.only-pc)과 MO 줄 묶음(.only-mo)을 따로 내보내요 #}
+{% macro spanList(ls) %}{% for l in ls %}{% if not loop.first %} {% endif %}<span class="hero__line">{{ l }}</span>{% endfor %}{% endmacro %}
+{% macro lineSpans(value) %}{% set pcl = value | lines('pc') %}{% set mol = value | lines('mo') %}{% if pcl | join('¦') == mol | join('¦') %}{{ spanList(pcl) }}{% else %}<span class="hero__lines only-pc">{{ spanList(pcl) }}</span> <span class="hero__lines only-mo">{{ spanList(mol) }}</span>{% endif %}{% endmacro %}
 
 {# HDS 버튼 목록 — items: [{ label, href, color: HDS 색 키, radius: HDS radius 키, style?: fill|outline, arrow?: true }]
    fill 은 고른 색이 배경(글자색은 hds.json 의 on), outline 은 테두리형(색은 variant CSS 의 --outline-*).

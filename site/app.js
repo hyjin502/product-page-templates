@@ -473,8 +473,11 @@ function editFrom(v, content) {
   for (const [k, raw] of Object.entries(v.slots)) {
     const s = RC.specOf(raw);
     const val = ctx[k];
-    if (s.type === 'richtext') e[k] = RC.textLines(val);
-    else if (s.type === 'list') e[k] = (val || []).map((it) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(vv)])));
+    if (s.type === 'richtext') {
+      e[k] = RC.textLines(val, 'pc');
+      const mo = RC.textLines(val, 'mo');
+      if (s.mo && mo.join('\n') !== e[k].join('\n')) (e['@mo'] ||= {})[k] = mo;
+    } else if (s.type === 'list') e[k] = (val || []).map((it) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(vv)])));
     else if (s.type === 'media') e[k] = { pc: (val && val.pc) || null, mo: (val && val.mo) || null, moSame: !(val && val.mo) };
     else if (s.type === 'toggle') e[k] = !!val;
     else e[k] = val && typeof val === 'object' ? blank(val.pc) : blank(val);
@@ -504,8 +507,11 @@ function contentFrom(v, e, forExport) {
     const s = RC.specOf(raw);
     const val = e[k];
     if (s.type === 'richtext') {
-      const t = (val || []).map((l) => String(l).trim()).filter(Boolean).join('\n');
-      if (t) c[k] = t;
+      const join = (ls) => (ls || []).map((l) => String(l).trim()).filter(Boolean).join('\n');
+      const t = join(val);
+      const m = e['@mo'] && e['@mo'][k] ? join(e['@mo'][k]) : '';
+      if (m && m !== t) c[k] = t ? { pc: t, mo: m } : { mo: m };
+      else if (t) c[k] = t;
     } else if (s.type === 'list') {
       // 문구가 빈 버튼은 빼요
       const items = (val || []).filter((it) => !(s.item && s.item.label) || String(it.label || '').trim())
@@ -564,14 +570,25 @@ function fieldHead(s, note) {
 function textInput(path, value, max, label) {
   return `<div class="hed-in"><input type="text" ${attrs({ ...path, value, maxlength: max || null, 'aria-label': label })}>${cnt(value, max)}</div>`;
 }
-function linesField(k, s, ls) {
-  const max = s.maxLines || 1;
+const limitNote = (max, chars) => [max > 1 ? `최대 ${max}줄` : '', chars ? `줄마다 ${chars}자 (띄어쓰기 포함)` : ''].filter(Boolean).join(' · ');
+function lineRows(k, s, ls, dev, max, chars) {
   const rows = ls.length ? ls : [''];
-  const note = [max > 1 ? `최대 ${max}줄` : '', s.maxChars ? `줄마다 ${s.maxChars}자 (띄어쓰기 포함)` : ''].filter(Boolean).join(' · ');
-  return `<div class="hed-f">${fieldHead(s, note)}
-  ${rows.map((l, i) => `<div class="hed-in"><span class="hed-in__n">${i + 1}</span><input type="text" ${attrs({ 'data-f': k, 'data-line': i, value: l, maxlength: s.maxChars || null, 'aria-label': `${s.label} ${i + 1}번째 줄` })}>${cnt(l, s.maxChars)}${i > 0 || (rows.length > 1) ? `<button type="button" class="icon-btn" data-act="del-line" data-f="${k}" data-line="${i}" aria-label="${esc(s.label)} ${i + 1}번째 줄 빼기">✕</button>` : '<span class="hed-in__sp"></span>'}</div>`).join('')}
-  ${rows.length < max ? `<button type="button" class="hed-add" data-act="add-line" data-f="${k}">+ 줄 추가</button>` : ''}
-</div>`;
+  const tag = dev === 'mo' ? 'MO ' : '';
+  const d = dev === 'mo' ? { 'data-dev': 'mo' } : {};
+  return rows.map((l, i) => `<div class="hed-in"><span class="hed-in__n">${i + 1}</span><input type="text" ${attrs({ 'data-f': k, 'data-line': i, ...d, value: l, maxlength: chars || null, 'aria-label': `${tag}${s.label} ${i + 1}번째 줄` })}>${cnt(l, chars)}${i > 0 || (rows.length > 1) ? `<button type="button" class="icon-btn" ${attrs({ 'data-act': 'del-line', 'data-f': k, 'data-line': i, ...d, 'aria-label': `${tag}${s.label} ${i + 1}번째 줄 빼기` })}>✕</button>` : '<span class="hed-in__sp"></span>'}</div>`).join('')
+    + (rows.length < max ? `<button type="button" class="hed-add" ${attrs({ 'data-act': 'add-line', 'data-f': k, ...d })}>+ ${tag}줄 추가</button>` : '');
+}
+function linesField(k, s, ls, moLs) {
+  const max = s.maxLines || 1;
+  let html = `<div class="hed-f">${fieldHead(s, limitNote(max, s.maxChars))}
+  ${lineRows(k, s, ls, 'pc', max, s.maxChars)}`;
+  if (s.mo) {
+    const mmax = s.mo.maxLines || max;
+    const mchars = s.mo.maxChars || s.maxChars;
+    html += `<label class="hed-check hed-check--mo"><input type="checkbox" data-mo-sep="${k}"${moLs ? ' checked' : ''}> MO 문구 따로 쓰기 <span class="hed-f__note">${esc(limitNote(mmax, mchars))}</span></label>`;
+    if (moLs) html += `<div class="hed-mo">${lineRows(k, s, moLs, 'mo', mmax, mchars)}</div>`;
+  }
+  return html + '</div>';
 }
 function swatches(path, cur, label) {
   return `<div class="hed-sw" role="group" aria-label="${esc(label)}">${REG.hds.colors.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
@@ -648,7 +665,7 @@ function mediaField(k, s, m) {
 function heroForm(v, e) {
   return Object.entries(v.slots).map(([k, raw]) => {
     const s = RC.specOf(raw);
-    if (s.type === 'richtext') return linesField(k, s, e[k]);
+    if (s.type === 'richtext') return linesField(k, s, e[k], e['@mo'] && e['@mo'][k]);
     if (s.type === 'list') return listField(k, s, e[k]);
     if (s.type === 'media') return mediaField(k, s, e[k]);
     if (s.type === 'enum') return `<div class="hed-f">${fieldHead(s, s.note)}${enumChips({ 'data-f': k }, s, e[k], s.label)}</div>`;
@@ -773,8 +790,8 @@ function measureHero() {
     const el = doc.querySelector(sel);
     if (!el || !v.slots[slot]) continue;
     const label = v.slots[slot].label || slot;
-    const parts = el.querySelectorAll('.hero__line');
-    const lines = parts.length ? [...parts] : [el];
+    const parts = [...el.querySelectorAll('.hero__line')].filter((x) => x.getClientRects().length);
+    const lines = parts.length ? parts : [el];
     lines.forEach((ln, i) => {
       const n = lineCount(ln);
       const which = parts.length > 1 ? ` ${i + 1}번째 줄` : '';
@@ -814,7 +831,8 @@ heroEl.addEventListener('input', (ev) => {
   const v = byId[heroState().variant];
   const e = heroEdit(v);
   const p = at(t);
-  if (p.line != null) e[p.f][p.line] = t.value;
+  if (p.line != null && p.dev === 'mo') e['@mo'][p.f][p.line] = t.value;
+  else if (p.line != null) e[p.f][p.line] = t.value;
   else if (p.i != null) e[p.f][p.i][p.k] = t.value;
   else e[p.f] = t.value;
   const c = t.parentElement.querySelector('[data-cnt]');
@@ -831,6 +849,12 @@ heroEl.addEventListener('change', (ev) => {
   const v = byId[heroState().variant];
   const e = heroEdit(v);
   if (t.matches('[data-k="moSame"]')) { e[t.dataset.f].moSame = t.checked; redrawForm(); heroUpdate(); return; }
+  if (t.matches('[data-mo-sep]')) {
+    const k = t.dataset.moSep;
+    if (t.checked) (e['@mo'] ||= {})[k] = [...(e[k] || [])];
+    else if (e['@mo']) delete e['@mo'][k];
+    redrawForm(); heroUpdate(); return;
+  }
   if (t.matches('[data-toggle]')) { const p = at(t); if (p.i != null) e[p.f][p.i][p.k] = t.checked; else e[p.f] = t.checked; heroUpdate(); return; }
   if (t.matches('select[data-f][data-i]')) { const p = at(t); e[p.f][p.i][p.k] = t.value; heroUpdate(); return; }
   if (t.matches('.hed-media__url')) {
@@ -865,8 +889,8 @@ heroEl.addEventListener('click', (ev) => {
     const p = at(act);
     const s = RC.specOf(v.slots[p.f]);
     switch (act.dataset.act) {
-      case 'add-line': if (e[p.f].length === 0) e[p.f].push(''); e[p.f].push(''); break;
-      case 'del-line': e[p.f].splice(p.line, 1); break;
+      case 'add-line': { const ls = p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]; if (ls.length === 0) ls.push(''); ls.push(''); break; }
+      case 'del-line': (p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]).splice(p.line, 1); break;
       case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, blank(vv)]))); break;
       case 'del-item': e[p.f].splice(p.i, 1); break;
       case 'clear': e[p.f][p.dev] = null; break;

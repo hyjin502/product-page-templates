@@ -609,3 +609,6 @@ body.is-dev .flink__label::after { content: none; }
 :root[data-theme="dark"] .hed-warn.is-warn { background: #2b2210; color: #f3c46b; border-color: #6b5220; }
 .hed-warn__tip { margin-left: 6px; color: var(--ink-3); }
 .hed .compose__scroll > .hed-intro > p { display: block; } /* 조합기는 설명을 숨기지만 편집기는 보여요 */
+.hed-check--mo { margin-top: 2px; flex-wrap: wrap; }
+.hed-check--mo .hed-f__note { margin-left: auto; }
+.hed-mo { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 8px; background: var(--panel); border: 1px dashed var(--rule); }

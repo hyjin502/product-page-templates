@@ -8,6 +8,7 @@
   --hero-line: #e1e2e4;                 /* line/line-outline (light) */
   --hero-ghost: #f4f4f5;                /* background/bg-ghost (light) */
   --hero-btn-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.1), 0 4px 4px -4px rgba(0, 0, 0, 0.05); /* drop shadow/lg */
+  --hero-btn-shadow-md: 0 4px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 4px -1px rgba(0, 0, 0, 0.05); /* drop shadow/md — MO 버튼 */
   position: relative; isolation: isolate; overflow: hidden;
   display: flex; flex-direction: column; align-items: center;
 }
@@ -16,8 +17,9 @@
 .hero__bg picture,
 .hero__bg img,
 .hero__bg video { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; }
-/* 입력한 줄 하나 = 한 덩어리. 좁은 화면에서 줄이 넘치면 그 줄 안에서만 줄바꿈돼요 */
-.hero__line { display: block; }
+/* 입력한 줄 하나 = 한 덩어리. 좁은 화면에서 줄이 넘치면 그 줄 안에서만 줄바꿈돼요.
+   MO 문구가 따로 있으면 PC 묶음·MO 묶음(.hero__lines)이 기기에 따라 하나만 보여요 */
+.hero__line, .hero__lines { display: block; }
 
 /* 가운데 정렬 레이아웃 — 7종이 함께 써요. 크기·간격은 variant 가 기기마다 변수로 정해요
    --hero-pad-y 위아래 여백 · --hero-gap 문구↔버튼 · --hero-gap-heading 타이틀 묶음↔서브 · --hero-gap-titles 뱃지↔타이틀
@@ -42,7 +44,7 @@
   font-size: var(--hero-desc, 20px); font-weight: var(--hero-desc-w, 500); line-height: var(--hero-desc-lh, 1.4);
   letter-spacing: var(--hero-desc-ls, var(--tracking-tighter)); color: var(--hero-desc-color, inherit); white-space: nowrap;
 }
-.hero__btns { display: flex; justify-content: center; gap: 16px; }
+.hero__btns { display: flex; justify-content: center; gap: var(--hero-btn-gap, 16px); }
 
 /* HDS 버튼 — 배경색·글자색·radius 는 page.json 값이 인라인 변수로 와요 (--btn-bg · --btn-fg · --btn-r) */
 .hero-btn {
@@ -65,11 +67,11 @@
   .hero__title, .hero__desc { white-space: normal; text-wrap: balance; }
 }
 
-/* MO ≤767 — 제안값: Figma 에 hero MO 시안이 없어 기존 MO 히어로(6233:29490) 규칙을 따라요.
-   디자이너가 히어로별 MO 를 주면 각 variant 의 MO 블록을 그 시안으로 바꿔요 */
+/* MO ≤767 — Figma hero MO 시안(Page 19) 공통: 버튼은 HDS button xl(60 → 패딩 20/32, 글자 20), 전체 폭으로 쌓고 화살표 없음 */
 @media (max-width: 767px) {
   .hero__title, .hero__desc { white-space: normal; text-wrap: balance; }
   .hero__badge { max-width: 100%; white-space: normal; }
-  .hero__btns { flex-direction: column; gap: 12px; width: 100%; }
-  .hero-btn { height: 60px; padding: 0 32px; font-size: 20px; }
+  .hero__btns { flex-direction: column; gap: var(--hero-btn-gap, 12px); width: 100%; }
+  .hero-btn { padding: 20px 32px; font-size: 20px; }
+  .hero-btn svg { display: none; }
 }

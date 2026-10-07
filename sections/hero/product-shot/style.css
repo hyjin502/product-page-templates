@@ -28,10 +28,13 @@
   }
 }
 
-/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+/* MO ≤767 — Figma 6249:35379 (문구·버튼 위 80, 아래 제품 화면 343)
+   Figma 는 버튼과 제품 화면 사이가 812 비어 있어(배경 레이어가 흐름 안에 있음) 48 로 줄였어요 */
 @media (max-width: 767px) {
   .hero--product-shot {
-    --hero-top-pt: 72px; --hero-top-pb: 48px; --hero-bg-over: 40px; --hero-gap: 48px;
-    --hero-title: 44px; --hero-desc: 16px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight); --hero-visual-pb: 48px;
+    --hero-top-pt: 80px; --hero-top-pb: 48px; --hero-bg-over: 0px; --hero-gap: 40px;
+    --hero-title: 48px; --hero-title-lh: 1.4; --hero-desc: 18px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+    --hero-visual-pb: 48px;
   }
+  .hero--product-shot .hero-btn:first-child:not(.hero-btn--outline) { box-shadow: var(--hero-btn-shadow-md); }
 }

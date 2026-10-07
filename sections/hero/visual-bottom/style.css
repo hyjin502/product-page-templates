@@ -21,11 +21,13 @@
   }
 }
 
-/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+/* MO ≤767 — Figma 6249:35368 (흰 문구 영역 위 80 · 아래 비주얼 375:350) */
 @media (max-width: 767px) {
   .hero--visual-bottom {
-    --hero-pad-y: 72px; --hero-gap: 48px; --hero-gap-titles: 16px;
-    --hero-title: 52px; --hero-desc: 16px; --hero-visual-h: 240px;
-    gap: 48px;
+    --hero-pad-y: 80px; --hero-gap: 40px; --hero-gap-heading: 24px;
+    --hero-title: 64px; --hero-title-lh: 1.4; --hero-desc: 18px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+    --hero-visual-h: calc(100vw * 350 / 375);
+    gap: 80px; background: var(--hero-white);
   }
+  .hero--visual-bottom .hero-btn:first-child { box-shadow: var(--hero-btn-shadow-md); }
 }

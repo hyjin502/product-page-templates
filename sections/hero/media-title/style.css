@@ -14,7 +14,11 @@
   .hero--media-title { --hero-pad-y: 120px; --hero-title: 72px; --hero-desc: 22px; min-height: 600px; }
 }
 
-/* MO ≤767 — 제안값 (기존 MO 히어로 6233:29490 규칙) */
+/* MO ≤767 — Figma 6249:35395 (375×812 한 화면, 가운데) */
 @media (max-width: 767px) {
-  .hero--media-title { --hero-pad-y: 72px; --hero-gap-heading: 16px; --hero-title: 44px; --hero-desc: 18px; --hero-desc-lh: 1.6; min-height: 480px; }
+  .hero--media-title {
+    --hero-pad-y: 80px; --hero-title: 60px; --hero-title-lh: 1.4;
+    --hero-desc: 20px; --hero-desc-w: 500; --hero-desc-lh: 1.4;
+    min-height: 812px;
+  }
 }
