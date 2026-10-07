@@ -9,6 +9,9 @@
 - 커밋 작성자는 **hyjin502** (`user.email 270540887+hyjin502@users.noreply.github.com`, 저장소 로컬 설정). 전역 git 설정의 다른 이름으로 커밋하지 않는다. 새 PC 면 README 「GitHub 로 관리하기」대로 먼저 설정한다.
 - 공개 저장소다 → 비밀값·개인 정보·비공개 사내 문서를 넣지 않는다. 커밋·푸시는 사용자가 요청할 때만 한다.
 - CI: `.github/workflows/ci.yml` 이 푸시·PR 마다 validate · build 를 돌리고 `dist/` 를 site 아티팩트로 남긴다.
+- **GitHub Pages**: `.github/workflows/pages.yml` 이 main 푸시마다 build → validate → `scripts/protect.mjs`(비밀번호 잠금) → 배포한다. 주소 https://hyjin502.github.io/product-page-templates/
+  - 비밀번호는 저장소 secret `SITE_PASSWORD` 에만 있다. **비밀번호 값을 코드·문서·커밋·메모리에 절대 쓰지 않는다.**
+  - 잠금은 사이트 입구만 막는다(저장소는 공개). 비밀번호가 같으면 다시 배포해도 브라우저가 다시 묻지 않는다(고정 salt PBKDF2 → AES-GCM).
 
 ## Figma 원본
 - `[UI] 커피 정수기` 파일 **Page 19** (fileKey `S3cLqJIqHJbX2eREe4iGXr`, page `6249:34928`) — `sections/sections.json` 에 있다.
@@ -79,7 +82,7 @@ pages/*.page.json                       조립할 페이지 → dist/pages/<name
 pages/_verify/                          추출 검증 결과(Page 18 기준 scan · verify.final) · figma-page.json(링크 재연결용 페이지 덤프)
 site/                                   라이브러리·조합기·히어로 편집기 사이트 셸 (build 가 dist/index.html 로 합침)
 site/render-core.cjs                    렌더 공통(richtext·HDS 필터·기본값 채우기) — 빌드와 편집기(브라우저)가 같은 코드를 쓴다
-scripts/                                build · validate · preview · shot · serve · pack · figma-extract · figma-relink · lib
+scripts/                                build · validate · preview · shot · serve · pack · protect · figma-extract · figma-relink · lib
 .claude/skills/                         add-section-variant · figma-to-page
 ```
 

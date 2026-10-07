@@ -1,0 +1,41 @@
+# main 에 푸시하면 사이트를 빌드해 비밀번호로 잠근 뒤 GitHub Pages 에 올려요
+#   주소: https://hyjin502.github.io/product-page-templates/
+#   비밀번호는 저장소 secret SITE_PASSWORD (코드에 쓰지 않아요). 바꾸려면: gh secret set SITE_PASSWORD
+#   secret 이 비어 있으면 protect 단계가 실패해서 잠그지 않은 사이트는 올라가지 않아요
+name: pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run validate
+      - run: npm run build
+      - name: 비밀번호 잠금
+        run: node scripts/protect.mjs dist
+        env:
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deploy
+        uses: actions/deploy-pages@v4

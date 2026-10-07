@@ -1,5 +1,12 @@
 # 변경 내역
 
+## 0.3.1 — 2026-10-07
+- GitHub 저장소로 이전: https://github.com/hyjin502/product-page-templates
+- CI(`ci.yml`): 푸시·PR 마다 검증·빌드
+- **GitHub Pages 배포**(`pages.yml`)와 사이트 비밀번호 잠금(`scripts/protect.mjs`)
+  - 비밀번호는 저장소 secret 에만 둬요
+  - 한 번 맞히면 그 브라우저에서는 다시 묻지 않아요
+
 ## 0.3.0 — 2026-10-07
 Figma 최신화(Page 19) 반영 — hero 7종 MO 를 시안대로 구현.
 

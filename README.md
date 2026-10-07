@@ -15,6 +15,8 @@ sections/<section>/<layout>/  (meta.json · template.njk · style.css · sample.
 
 **히어로 편집기** (`dist/index.html#hero-editor`) — 기획자·마케터가 히어로 스타일 7종 중 하나를 고르고 문구·배경(PC·MO 따로, 이미지 또는 mp4)·버튼(HDS 색·radius)을 바꿔 PC/TB/MO 결과를 바로 봐요. `page.json 받기` → `pages/` 에 배경 파일과 같이 넣고 `npm run build` 하면 같은 화면의 HTML 이 나와요.
 
+**사이트 바로 보기** — https://hyjin502.github.io/product-page-templates/ (비밀번호 필요 · 히어로 편집기는 주소 끝에 `#hero-editor`)
+
 > 개발자가 아니라면 **`GUIDE.html`**(쉬운 사용 가이드)을 먼저 열어 보세요. 빌드 후에는 라이브러리 상단 `사용 가이드` 링크로도 열려요.
 
 ## 처음 받았을 때
@@ -40,6 +42,17 @@ sections/<section>/<layout>/  (meta.json · template.njk · style.css · sample.
 - `main` 에 푸시하면 GitHub Actions(`.github/workflows/ci.yml`)가 `npm run validate` · `npm run build` 를 돌려요. 실패하면 README 위 배지가 빨간색이 돼요.
 - 빌드된 사이트는 Actions 실행 화면 아래 **site** 아티팩트(zip)로 받을 수 있어요.
 
+## 사이트 (GitHub Pages · 비밀번호)
+- `main` 에 푸시하면 `.github/workflows/pages.yml` 이 빌드 → 검증 → **비밀번호 잠금** → 배포해요. 주소: https://hyjin502.github.io/product-page-templates/
+- 잠금은 `scripts/protect.mjs` 가 해요.
+  - 빌드된 HTML(라이브러리·가이드·조립 페이지)을 비밀번호로 암호화해요(AES-GCM).
+  - 비밀번호를 넣어야 브라우저에서 풀려요. 한 번 맞히면 그 브라우저에서는 다시 묻지 않아요.
+- 비밀번호는 **저장소 secret `SITE_PASSWORD` 에만** 있어요. 코드·문서·커밋에 쓰지 않아요. 비밀번호는 담당자에게 받으세요.
+  - 바꾸기: `gh secret set SITE_PASSWORD -R hyjin502/product-page-templates` → GitHub **Actions → pages → Run workflow** (또는 다음 푸시)
+  - secret 이 비면 배포가 실패해요 — 잠그지 않은 사이트는 올라가지 않아요.
+- ⚠️ 저장소가 공개라서 소스·이미지는 github.com 에서 그대로 보여요. 비밀번호는 **사이트 입구**만 막아요.
+- 직접 잠가 보기: `npm run build && SITE_PASSWORD='…' npm run protect` → `dist/` 가 잠긴 사이트가 돼요 (`npm run serve` 로 확인).
+
 ## 명령
 | | |
 |---|---|
@@ -51,6 +64,7 @@ sections/<section>/<layout>/  (meta.json · template.njk · style.css · sample.
 | `npm run shot` | **결과 확인** — PC 1920 · TB 1024 · MO 375 캡처 → `dist/shots/` (`-- all-templates` 처럼 페이지 이름, `-- preview/hero-media-badge` 도 가능) |
 | `npm run serve` | `dist/` 를 http://localhost:4173 으로 서빙 (`-- --base /templates/` 로 하위 경로 흉내) |
 | `npm run pack` | 전달용 zip 2개 → `release/` (소스 / 사이트) |
+| `SITE_PASSWORD=… npm run protect` | `dist/` 의 HTML 을 비밀번호로 잠그기 (Pages 배포 때 자동) |
 | `node scripts/figma-extract.mjs …` | Figma → page.json 추출 (scan → extract → finalize, 검증은 `--verify` + `report`) |
 | `node scripts/figma-relink.mjs pages/_verify/figma-page.json` | Figma 페이지를 다시 복사해 노드 ID 가 바뀌었을 때 링크 다시 맞추기 (`--dry` 로 먼저 확인) |
 
