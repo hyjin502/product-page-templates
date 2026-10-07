@@ -1,0 +1,5 @@
+# Mac·Windows 어디서 받아도 줄바꿈을 LF 로 맞춰요
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.mp4 binary

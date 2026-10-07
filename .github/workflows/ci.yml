@@ -1,0 +1,23 @@
+# 푸시·PR 마다 슬롯 검증과 빌드를 돌려요. 빌드된 사이트(dist/)는 Actions 실행 화면의 "site" 아티팩트로 받을 수 있어요.
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run validate
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist
+          retention-days: 14
