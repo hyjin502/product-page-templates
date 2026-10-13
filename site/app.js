@@ -782,6 +782,7 @@ function renderHero() {
   heroLoaded = false;
   heroFit = mountPreview(heroEl.querySelector('.compose__stage'), heroEl.querySelector('.v__frame'), iframe, heroEl.querySelector('.v__scale'), () => {
     heroLoaded = true;
+    try { attachPreviewPick(iframe.contentDocument); } catch (err) {}
     try { const d = iframe.contentDocument; (d.fonts ? d.fonts.ready : Promise.resolve()).then(measureSoon); } catch (err) {}
     measureSoon();
   });
@@ -872,6 +873,26 @@ function measureHero() {
   box.innerHTML = msgs.length
     ? `<b>${dev}</b> · ${msgs.map(esc).join(' · ')} <span class="hed-warn__tip">문구를 줄이거나 줄을 나눠 보세요</span>`
     : `<b>${dev}</b> · 줄 넘김 없음 <span class="hed-warn__tip">다른 기기는 위쪽 PC·TB·MO 로 확인</span>`;
+}
+
+/* ---------- 미리보기에서 이미지 바꾸기 — 섹션 안 비주얼(visual 슬롯)을 클릭하면 파일 선택이 열려요 */
+const PICK_AREAS = { visual: '.hero__visual' };
+function attachPreviewPick(doc) {
+  if (!doc || doc.__hedPick) return;
+  doc.__hedPick = true;
+  const st = doc.createElement('style');
+  st.textContent = Object.values(PICK_AREAS).map((sel) => `${sel}{position:relative;cursor:pointer}${sel}:hover{outline:3px dashed #3a50c9;outline-offset:-3px}${sel}:hover::after{content:"클릭해서 이미지·영상 바꾸기";position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:5;padding:6px 12px;border-radius:6px;background:#3a50c9;color:#fff;font:600 14px/1.4 system-ui,sans-serif;white-space:nowrap;pointer-events:none}`).join('');
+  doc.head.appendChild(st);
+  doc.addEventListener('click', (ev) => {
+    const v = byId[heroState().variant];
+    for (const [f, sel] of Object.entries(PICK_AREAS)) {
+      if (!ev.target.closest(sel) || !v.slots[f]) continue;
+      const m = heroEdit(v)[f];
+      pickTarget = { f, dev: state.device === 'mo' && m && !m.moSame ? 'mo' : 'pc' };
+      heroEl.querySelector('[data-hed-file]').click();
+      return;
+    }
+  });
 }
 
 /* ---------- page.json */

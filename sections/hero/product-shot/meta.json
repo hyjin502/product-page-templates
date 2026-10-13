@@ -91,6 +91,14 @@
         }
       }
     },
+    "visual": {
+      "type": "media",
+      "figmaLayer": "image 28",
+      "extract": false,
+      "optional": true,
+      "label": "제품 화면 (하단 이미지)",
+      "hint": "이미지 또는 mp4 · 가로 최대 1280, 잘리지 않아요 · 미리보기의 이미지를 클릭해도 바꿀 수 있어요"
+    },
     "background": {
       "type": "media",
       "cssPresets": true,
@@ -98,14 +106,6 @@
       "extract": false,
       "optional": true,
       "label": "배경"
-    },
-    "visual": {
-      "type": "media",
-      "figmaLayer": "image 28",
-      "extract": false,
-      "optional": true,
-      "label": "제품 화면",
-      "hint": "이미지 또는 mp4 · 가로 최대 1280, 잘리지 않아요"
     }
   }
 }
