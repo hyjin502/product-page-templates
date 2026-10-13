@@ -10,7 +10,7 @@
         <h1 class="hero__title">{{ lineSpans(title) }}</h1>
       </div>
 {% if description %}
-      <p class="hero__desc">{{ lineSpans(description) }}</p>
+      <p class="hero__desc"{% if descColor %} style="--hero-desc-color: {{ descColor | hdsText }}" data-hds="{{ descColor | hdsToken('text') }}"{% endif %}>{{ lineSpans(description) }}</p>
 {% endif %}
     </div>
     {{ btns(ctas) }}

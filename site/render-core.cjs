@@ -59,6 +59,7 @@
     return {
       colors: Object.fromEntries((hds.colors || []).map((c) => [c.key, c])),
       radius: Object.fromEntries((hds.radius || []).map((r) => [r.key, r])),
+      text: Object.fromEntries((hds.text || []).map((t) => [t.key, t])),
     };
   }
 
@@ -71,7 +72,8 @@
     env.addFilter('hdsColor', (k) => (idx.colors[k] ? idx.colors[k].hex : ''));
     env.addFilter('hdsOn', (k) => (idx.colors[k] ? idx.colors[k].on : ''));
     env.addFilter('hdsRadius', (k) => (idx.radius[k] ? idx.radius[k].px + 'px' : ''));
-    env.addFilter('hdsToken', (k, kind) => { const t = (kind === 'radius' ? idx.radius : idx.colors)[k]; return t ? t.token : ''; });
+    env.addFilter('hdsText', (k) => (idx.text[k] ? idx.text[k].value : ''));
+    env.addFilter('hdsToken', (k, kind) => { const t = (kind === 'radius' ? idx.radius : kind === 'text' ? idx.text : idx.colors)[k]; return t ? t.token : ''; });
     return env;
   }
 

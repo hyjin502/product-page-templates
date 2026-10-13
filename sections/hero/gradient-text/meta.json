@@ -44,6 +44,14 @@
         "maxChars": 27
       }
     },
+    "descColor": {
+      "type": "color",
+      "palette": "text",
+      "default": "white-80",
+      "extract": false,
+      "label": "서브타이틀 색",
+      "note": "HDS typography 글자색 · PC·MO 같이 바뀌어요"
+    },
     "ctas": {
       "type": "list",
       "figmaLayer": "cta",

@@ -1,5 +1,5 @@
 {
-  "_note": "HDS(휴넷 디자인 시스템) 토큰 중 편집기에서 고르는 값 — Figma 라이브러리 Atomic/Semantic 컬렉션에서 읽은 값이에요. on 은 그 색을 버튼 배경으로 쓸 때의 글자색이에요. 템플릿 필터(hdsColor · hdsOn · hdsRadius)와 히어로 편집기가 이 파일 하나만 봐요.",
+  "_note": "HDS(휴넷 디자인 시스템) 토큰 중 편집기에서 고르는 값 — Figma 라이브러리 Atomic/Semantic 컬렉션에서 읽은 값이에요. on 은 그 색을 버튼 배경으로 쓸 때의 글자색이에요. 템플릿 필터(hdsColor · hdsOn · hdsRadius)와 히어로 편집기가 이 파일 하나만 봐요. text 는 HDS Theme 컬렉션의 typography 글자색(라이트 값 — hero 는 테마를 따르지 않아요). 타이틀·서브 색 슬롯(palette: \"text\")과 hdsText 필터가 써요.",
   "colors": [
     { "key": "white",          "token": "color/white",          "hex": "#ffffff", "label": "화이트", "on": "#171719" },
     { "key": "gray/300",       "token": "color/gray/300",       "hex": "#eaebec", "label": "연한 회색 (bg-faint)", "on": "#171719" },
@@ -21,5 +21,17 @@
     { "key": "lg",   "token": "radius/lg",   "px": 16 },
     { "key": "xl",   "token": "radius/xl",   "px": 20 },
     { "key": "full", "token": "radius/full", "px": 900 }
+  ],
+  "text": [
+    { "key": "black-100", "token": "typography/black-100", "value": "#171719", "label": "검정 100" },
+    { "key": "black-80", "token": "typography/black-80", "value": "rgba(23, 23, 25, 0.8)", "label": "검정 80" },
+    { "key": "black-60", "token": "typography/black-60", "value": "rgba(23, 23, 25, 0.6)", "label": "검정 60" },
+    { "key": "black-45", "token": "typography/black-45", "value": "rgba(23, 23, 25, 0.45)", "label": "검정 45" },
+    { "key": "black-disabled", "token": "typography/black-disabled", "value": "rgba(23, 23, 25, 0.25)", "label": "검정 비활성" },
+    { "key": "white-100", "token": "typography/white-100", "value": "#ffffff", "label": "흰색 100" },
+    { "key": "white-80", "token": "typography/white-80", "value": "rgba(255, 255, 255, 0.8)", "label": "흰색 80" },
+    { "key": "white-60", "token": "typography/white-60", "value": "rgba(255, 255, 255, 0.6)", "label": "흰색 60" },
+    { "key": "white-45", "token": "typography/white-45", "value": "rgba(255, 255, 255, 0.45)", "label": "흰색 45" },
+    { "key": "white-disabled", "token": "typography/white-disabled", "value": "rgba(255, 255, 255, 0.25)", "label": "흰색 비활성" }
   ]
 }

@@ -25,6 +25,14 @@
         "maxChars": 7
       }
     },
+    "titleColor": {
+      "type": "color",
+      "palette": "text",
+      "default": "black-100",
+      "extract": false,
+      "label": "타이틀 색",
+      "note": "HDS typography 글자색 · PC·MO 같이 바뀌어요"
+    },
     "description": {
       "type": "richtext",
       "figmaLayer": "description",
@@ -36,6 +44,14 @@
         "maxLines": 3,
         "maxChars": 22
       }
+    },
+    "descColor": {
+      "type": "color",
+      "palette": "text",
+      "default": "black-80",
+      "extract": false,
+      "label": "서브타이틀 색",
+      "note": "HDS typography 글자색 · PC·MO 같이 바뀌어요"
     },
     "ctas": {
       "type": "list",

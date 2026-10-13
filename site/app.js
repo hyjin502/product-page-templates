@@ -603,8 +603,16 @@ function linesField(k, s, ls, moLs) {
   }
   return html + '</div>';
 }
-function swatches(path, cur, label) {
-  return `<div class="hed-sw" role="group" aria-label="${esc(label)}">${REG.hds.colors.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
+function swatches(path, cur, label, palette) {
+  // palette "text" = HDS typography 글자색(반투명 포함 → 체크무늬 위에 보여요), 없으면 버튼 색
+  const list = palette === 'text' ? REG.hds.text || [] : REG.hds.colors;
+  return `<div class="hed-sw${palette === 'text' ? ' hed-sw--text' : ''}" role="group" aria-label="${esc(label)}">${list.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.value || c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
+}
+/** 타이틀·서브 색 같은 최상위 색 슬롯 — 지금 고른 토큰 이름을 함께 보여요 */
+function colorField(k, s, cur) {
+  const list = s.palette === 'text' ? REG.hds.text || [] : REG.hds.colors;
+  const c = list.find((x) => x.key === cur);
+  return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label"><code>${c ? esc(c.token) : ''}</code>${c ? ` ${esc(c.label)}` : ''}</span>${swatches({ 'data-f': k }, cur, s.label, s.palette)}</div>`;
 }
 function radiusChips(path, cur, label) {
   return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${REG.hds.radius.map((r) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': r.key, title: r.token, 'aria-pressed': String(r.key === cur) })}><span class="hed-rad__ico" style="border-top-left-radius:${Math.min(r.px, 10)}px"></span>${r.key} <span class="hed-rad__px">${r.px === 900 ? '' : r.px}</span></button>`).join('')}</div>`;
@@ -691,6 +699,7 @@ function heroForm(v, e) {
     if (s.type === 'richtext') return linesField(k, s, e[k], e['@mo'] && e['@mo'][k]);
     if (s.type === 'list') return listField(k, s, e[k]);
     if (s.type === 'media') return mediaField(k, s, e[k]);
+    if (s.type === 'color') return colorField(k, s, e[k]);
     if (s.type === 'enum') return `<div class="hed-f">${fieldHead(s, s.note)}${enumChips({ 'data-f': k }, s, e[k], s.label)}</div>`;
     if (s.type === 'toggle') return `<div class="hed-f">${toggleBox({ 'data-f': k }, s, e[k])}</div>`;
     const note = [s.note, s.maxChars ? `최대 ${s.maxChars}자` : ''].filter(Boolean).join(' · ');

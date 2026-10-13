@@ -132,9 +132,12 @@ function validateValue(s, v, where, errors) {
     case 'toggle':
       if (typeof v !== 'boolean') errors.push(`${where}: true 또는 false 예요 (현재 ${JSON.stringify(v)})`);
       break;
-    case 'color':
-      if (!HDS_IDX.colors[v]) errors.push(`${where}: HDS 색 키예요 (가능: ${Object.keys(HDS_IDX.colors).join(', ')} / 현재 "${v}")`);
+    case 'color': {
+      // palette: "text" = HDS typography 글자색(tokens/hds.json text), 없으면 버튼 색(colors)
+      const pal = s.palette === 'text' ? HDS_IDX.text : HDS_IDX.colors;
+      if (!pal[v]) errors.push(`${where}: HDS ${s.palette === 'text' ? '글자색' : '색'} 키예요 (가능: ${Object.keys(pal).join(', ')} / 현재 "${v}")`);
       break;
+    }
     case 'radius':
       if (!HDS_IDX.radius[v]) errors.push(`${where}: HDS radius 키예요 (가능: ${Object.keys(HDS_IDX.radius).join(', ')} / 현재 "${v}")`);
       break;

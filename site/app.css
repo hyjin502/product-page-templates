@@ -678,3 +678,10 @@ body.is-dev .flink__label::after { content: none; }
   .hed-bgfx__list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
   .hed-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); align-items: start; }
 }
+
+/* 히어로 편집기 — HDS typography 글자색 칩 (반투명이라 체크무늬 위에 칠해요) */
+.hed-sw--text .hed-sw__b {
+  background:
+    linear-gradient(var(--c), var(--c)),
+    repeating-conic-gradient(#c8c9cd 0 25%, #ffffff 0 50%) 50% / 8px 8px;
+}
