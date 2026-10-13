@@ -1,54 +1,111 @@
 /* hero CSS 배경 프리셋 — 이미지·영상 없이 HTML/CSS 만으로 그려요 (목록·이름은 backgrounds.json)
    마크업: <div class="hero-bgfx hero-bgfx--<key>"><span></span><span></span><span></span><span></span></div>
-   빛 덩어리(span) 4개를 흐리게 겹쳐 띠·번짐을 만들고, 움직이는 프리셋은 @keyframes 로 천천히 흘러요.
-   색은 프리셋마다 변수(--fx-base · --fx-c1 · --fx-c2 · --fx-c3)로만 정해요 */
-.hero-bgfx {
-  --fx-base: #05060a; --fx-c1: #ff5a1f; --fx-c2: #ff9a3c; --fx-c3: #2f6bff;
-  position: absolute; inset: 0; overflow: hidden; background: var(--fx-base);
-}
-.hero-bgfx > span { position: absolute; display: block; border-radius: 50%; pointer-events: none; will-change: transform; }
-/* ① 넓은 번짐 — 왼쪽 아래에서 위로 비스듬히 */
-.hero-bgfx > span:nth-child(1) {
-  left: -30%; top: 52%; width: 120%; height: 46%;
-  background: radial-gradient(closest-side, var(--fx-c1), color-mix(in srgb, var(--fx-c1) 45%, transparent) 55%, transparent);
-  filter: blur(48px); transform: rotate(-24deg);
-  animation: hero-fx-drift-a 22s ease-in-out infinite alternate;
-}
-/* ② 밝은 코어 — 띠 가운데의 선명한 빛 */
-.hero-bgfx > span:nth-child(2) {
-  left: -20%; top: 66%; width: 105%; height: 9%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--fx-c2) 70%, #ffffff), var(--fx-c2) 45%, transparent);
-  filter: blur(14px); opacity: .9; transform: rotate(-24deg);
-  animation: hero-fx-drift-a 22s ease-in-out infinite alternate;
-}
-/* ③ 보조색 — 오른쪽 아래 */
-.hero-bgfx > span:nth-child(3) {
-  right: -28%; bottom: -26%; width: 85%; height: 70%;
-  background: radial-gradient(closest-side, var(--fx-c3), color-mix(in srgb, var(--fx-c3) 35%, transparent) 55%, transparent);
-  filter: blur(56px); opacity: .9;
-  animation: hero-fx-drift-b 26s ease-in-out infinite alternate;
-}
-/* ④ 보조색 가는 띠 — 오른쪽 */
-.hero-bgfx > span:nth-child(4) {
-  right: -12%; bottom: 14%; width: 70%; height: 6%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--fx-c3) 60%, #ffffff), transparent);
-  filter: blur(12px); opacity: .75; transform: rotate(18deg);
-  animation: hero-fx-drift-c 30s ease-in-out infinite alternate;
-}
-/* 위쪽 가운데는 어둡게 — 문구가 읽히게 */
+   프리셋마다 span 4개의 모양·움직임을 따로 정해요(쓰지 않는 span 은 숨겨요). 9종 모두 천천히 움직이고,
+   동작 줄이기 설정이면 멈춰요. 위쪽 가운데는 ::after 로 어둡게 해서 문구가 읽혀요 */
+.hero-bgfx { --fx-base: #05060a; position: absolute; inset: 0; overflow: hidden; background: var(--fx-base); }
+.hero-bgfx > span { position: absolute; display: block; pointer-events: none; will-change: transform; }
 .hero-bgfx::after {
   content: ""; position: absolute; inset: 0;
   background: radial-gradient(70% 60% at 50% 38%, color-mix(in srgb, var(--fx-base) 70%, transparent), transparent 75%);
 }
-@keyframes hero-fx-drift-a { from { transform: translate(-4%, 3%) rotate(-27deg); } to { transform: translate(5%, -4%) rotate(-20deg); } }
-@keyframes hero-fx-drift-b { from { transform: translate(6%, 4%) scale(1); } to { transform: translate(-6%, -6%) scale(1.12); } }
-@keyframes hero-fx-drift-c { from { transform: translate(4%, 3%) rotate(20deg); } to { transform: translate(-8%, -5%) rotate(12deg); } }
 
-/* 움직이는 프리셋 — 색만 달라요 */
-.hero-bgfx--sunset-glow { --fx-base: #05060a; --fx-c1: #ff5a1f; --fx-c2: #ff9a3c; --fx-c3: #2f6bff; }
-.hero-bgfx--hunet-glow  { --fx-base: #07070a; --fx-c1: #fa2e43; --fx-c2: #ff8a5c; --fx-c3: #3385ff; } /* brand/hunet-red · blue-600 */
-.hero-bgfx--blue-glow   { --fx-base: #03060f; --fx-c1: #0066ff; --fx-c2: #6aa8ff; --fx-c3: #7a5cff; } /* brand blue */
-.hero-bgfx--aurora      { --fx-base: #020807; --fx-c1: #1fd1a5; --fx-c2: #7cf0d0; --fx-c3: #a14bff; }
+/* 선셋 빛줄기 — 왼쪽 아래에서 따뜻한 빛줄기 3개가 서치라이트처럼 천천히 쓸고, 오른쪽에서 파란 빛이 마주 쏴요 */
+.hero-bgfx--sunset-glow { --fx-base: #07060a; }
+.hero-bgfx--sunset-glow > span {
+  left: -12%; bottom: -6%; width: 150%; height: 16%; border-radius: 50%;
+  transform-origin: 0 50%; mix-blend-mode: screen;
+}
+.hero-bgfx--sunset-glow > span:nth-child(1) {
+  background: linear-gradient(90deg, #ff9a3c, color-mix(in srgb, #ff5d00 60%, transparent) 40%, transparent 85%);
+  filter: blur(22px); animation: hero-fx-sweep-a 11s ease-in-out infinite alternate;
+}
+.hero-bgfx--sunset-glow > span:nth-child(2) {
+  height: 7%; background: linear-gradient(90deg, #fff1d6, #ff9a3c 30%, transparent 80%);
+  filter: blur(10px); animation: hero-fx-sweep-b 14s ease-in-out infinite alternate;
+}
+.hero-bgfx--sunset-glow > span:nth-child(3) {
+  left: auto; right: -12%; width: 120%; height: 12%; transform-origin: 100% 50%;
+  background: linear-gradient(270deg, #2f6bff, color-mix(in srgb, #0066ff 50%, transparent) 40%, transparent 85%);
+  filter: blur(26px); animation: hero-fx-sweep-c 17s ease-in-out infinite alternate;
+}
+.hero-bgfx--sunset-glow > span:nth-child(4) {
+  left: -20%; bottom: -30%; width: 80%; height: 60%; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, #ff5d00 70%, transparent), transparent);
+  filter: blur(40px); animation: hero-fx-breathe 8s ease-in-out infinite alternate;
+}
+@keyframes hero-fx-sweep-a { from { transform: rotate(-16deg); } to { transform: rotate(-34deg); } }
+@keyframes hero-fx-sweep-b { from { transform: rotate(-30deg); } to { transform: rotate(-12deg); } }
+@keyframes hero-fx-sweep-c { from { transform: rotate(14deg); } to { transform: rotate(30deg); } }
+
+/* 레드 파동 — 아래 가운데에서 붉은 고리가 물결처럼 번져 나가요 (휴넷 레드) */
+.hero-bgfx--hunet-glow { --fx-base: #0b0607; }
+.hero-bgfx--hunet-glow > span {
+  left: 50%; top: 100%; width: 44vmax; height: 44vmax; margin: -22vmax 0 0 -22vmax; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, #fa2e43 80%, transparent);
+  background: radial-gradient(closest-side, transparent 70%, color-mix(in srgb, #fa2e43 25%, transparent));
+  animation: hero-fx-ripple 9s linear infinite; opacity: 0;
+}
+.hero-bgfx--hunet-glow > span:nth-child(2) { animation-delay: -3s; }
+.hero-bgfx--hunet-glow > span:nth-child(3) { animation-delay: -6s; border-color: color-mix(in srgb, #ff8a5c 70%, transparent); }
+.hero-bgfx--hunet-glow > span:nth-child(4) {
+  width: 70vmax; height: 40vmax; margin: -20vmax 0 0 -35vmax; border: 0; opacity: 1;
+  background: radial-gradient(closest-side, color-mix(in srgb, #fa2e43 60%, transparent), transparent);
+  filter: blur(40px); animation: hero-fx-breathe 6s ease-in-out infinite alternate;
+}
+@keyframes hero-fx-ripple { 0% { transform: scale(.15); opacity: 0; } 12% { opacity: 1; } 100% { transform: scale(3.4); opacity: 0; } }
+
+/* 블루 버블 — 흐린 파란 구슬들이 아래에서 위로 천천히 떠오르며 좌우로 흔들려요 (보케) */
+.hero-bgfx--blue-glow { --fx-base: #030814; }
+.hero-bgfx--blue-glow > span {
+  top: 105%; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle at 35% 35%, color-mix(in srgb, #ffffff 35%, #6aa8ff), #0066ff 55%, transparent 72%);
+  animation: hero-fx-rise 22s linear infinite, hero-fx-wobble 6s ease-in-out infinite alternate;
+}
+.hero-bgfx--blue-glow > span:nth-child(1) { left: 6%;  width: 26%; aspect-ratio: 1; height: auto; filter: blur(24px); animation-duration: 24s, 7s; }
+.hero-bgfx--blue-glow > span:nth-child(2) { left: 34%; width: 12%; aspect-ratio: 1; height: auto; filter: blur(8px); animation-duration: 17s, 5s; animation-delay: -9s, -2s;
+  background: radial-gradient(circle at 35% 35%, #c4d9ff, #00aeff 55%, transparent 72%); }
+.hero-bgfx--blue-glow > span:nth-child(3) { left: 58%; width: 30%; aspect-ratio: 1; height: auto; filter: blur(30px); animation-duration: 28s, 8s; animation-delay: -18s, -4s;
+  background: radial-gradient(circle at 35% 35%, #b9a8ff, #6541f2 55%, transparent 72%); }
+.hero-bgfx--blue-glow > span:nth-child(4) { left: 82%; width: 9%; aspect-ratio: 1; height: auto; filter: blur(4px); animation-duration: 15s, 4s; animation-delay: -5s, -1s; }
+@keyframes hero-fx-rise {
+  0% { top: 105%; opacity: 0; }
+  12% { opacity: .75; }
+  85% { opacity: .75; }
+  100% { top: -45%; opacity: 0; }
+}
+@keyframes hero-fx-wobble { from { transform: translateX(-12%) scale(.92); } to { transform: translateX(12%) scale(1.06); } }
+
+/* 오로라 커튼 — 초록·청록·보라 빛의 커튼이 위에서 흔들리며 색이 천천히 바뀌어요 */
+.hero-bgfx--aurora { --fx-base: #02070a; }
+.hero-bgfx--aurora > span {
+  left: -25%; width: 150%; height: 55%; border-radius: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 35%, #000 55%, transparent);
+  mix-blend-mode: screen;
+}
+.hero-bgfx--aurora > span:nth-child(1) {
+  top: -8%; background: linear-gradient(90deg, transparent, #1fd1a5 25%, #00bdde 50%, #6541f2 75%, transparent);
+  opacity: .7; animation: hero-fx-curtain-a 16s ease-in-out infinite alternate;
+}
+.hero-bgfx--aurora > span:nth-child(2) {
+  top: 8%; height: 45%; background: linear-gradient(90deg, transparent, #a14bff 30%, #1fd1a5 60%, transparent);
+  opacity: .5; animation: hero-fx-curtain-b 21s ease-in-out infinite alternate;
+}
+.hero-bgfx--aurora > span:nth-child(3) {
+  top: 30%; height: 40%; background: linear-gradient(90deg, transparent, #58ce04 35%, #00bdde 65%, transparent);
+  opacity: .35; animation: hero-fx-curtain-a 27s ease-in-out infinite alternate-reverse;
+}
+.hero-bgfx--aurora > span:nth-child(4) { display: none; }
+@keyframes hero-fx-curtain-a {
+  from { transform: translateX(-8%) skewY(-10deg) scaleY(1); filter: blur(28px) hue-rotate(0deg); }
+  to   { transform: translateX(8%) skewY(6deg) scaleY(1.25); filter: blur(34px) hue-rotate(50deg); }
+}
+@keyframes hero-fx-curtain-b {
+  from { transform: translateX(10%) skewY(8deg); filter: blur(30px) hue-rotate(0deg); }
+  to   { transform: translateX(-10%) skewY(-6deg); filter: blur(24px) hue-rotate(-40deg); }
+}
+@keyframes hero-fx-breathe { from { transform: scale(.92); opacity: .8; } to { transform: scale(1.08); opacity: 1; } }
+@keyframes hero-fx-drift-b { from { transform: translate(6%, 4%) scale(1); } to { transform: translate(-6%, -6%) scale(1.12); } }
 
 /* ---------- 움직이는 프리셋 2 — 빛 덩어리와 다른 방식 ---------- */
 
@@ -117,7 +174,6 @@
   filter: blur(50px); opacity: .7; animation: hero-fx-sway 22s ease-in-out infinite alternate;
 }
 .hero-bgfx.hero-bgfx--violet-fade > span:nth-child(n+3) { display: none; }
-@keyframes hero-fx-breathe { from { transform: scale(.92); opacity: .8; } to { transform: scale(1.08); opacity: 1; } }
 @keyframes hero-fx-sway { from { transform: translateX(-10%); } to { transform: translateX(80%); } }
 
 /* 나이트 메쉬 — 파랑·보라·청록 빛 3개가 서로 다른 궤도로 천천히 떠다녀요 */
@@ -143,13 +199,17 @@
 @keyframes hero-fx-orbit-b { from { transform: translate(0, 0); } to { transform: translate(-30%, -25%); } }
 @keyframes hero-fx-orbit-c { from { transform: translate(-20%, 10%) scale(.9); } to { transform: translate(30%, 30%) scale(1.15); } }
 
-/* MO — 세로 화면에 맞게 띠를 더 가파르게, 번짐은 작게 */
+/* MO — 세로 화면: 선셋 빛줄기는 더 길고 가파르게(위쪽까지 닿게) */
 @media (max-width: 767px) {
-  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(1) { left: -60%; top: 60%; width: 200%; height: 34%; filter: blur(36px); }
-  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(2) { left: -50%; top: 72%; width: 180%; height: 6%; }
-  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(3) { right: -60%; bottom: -16%; width: 150%; height: 50%; filter: blur(44px); }
-  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(4) { right: -40%; bottom: 10%; width: 120%; }
+  .hero-bgfx--sunset-glow > span { width: 260%; height: 8%; }
+  .hero-bgfx--sunset-glow > span:nth-child(1) { animation-name: hero-fx-sweep-a-mo; }
+  .hero-bgfx--sunset-glow > span:nth-child(2) { height: 4%; animation-name: hero-fx-sweep-b-mo; }
+  .hero-bgfx--sunset-glow > span:nth-child(3) { width: 220%; animation-name: hero-fx-sweep-c-mo; }
+  .hero-bgfx--sunset-glow > span:nth-child(4) { width: 160%; height: 40%; }
 }
+@keyframes hero-fx-sweep-a-mo { from { transform: rotate(-40deg); } to { transform: rotate(-62deg); } }
+@keyframes hero-fx-sweep-b-mo { from { transform: rotate(-58deg); } to { transform: rotate(-36deg); } }
+@keyframes hero-fx-sweep-c-mo { from { transform: rotate(36deg); } to { transform: rotate(58deg); } }
 /* 동작 줄이기 설정이면 멈춰요 */
 @media (prefers-reduced-motion: reduce) {
   .hero-bgfx, .hero-bgfx > span { animation: none !important; }
