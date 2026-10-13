@@ -15,11 +15,14 @@
     { "key": "red-orange/600", "token": "color/red-orange/600", "hex": "#ff7e33", "label": "레드 오렌지", "on": "#171719" }
   ],
   "radius": [
+    { "key": "none", "token": "radius/none", "px": 0 },
     { "key": "xs",   "token": "radius/xs",   "px": 4 },
     { "key": "sm",   "token": "radius/sm",   "px": 8 },
     { "key": "md",   "token": "radius/md",   "px": 12 },
     { "key": "lg",   "token": "radius/lg",   "px": 16 },
     { "key": "xl",   "token": "radius/xl",   "px": 20 },
+    { "key": "2xl",  "token": "radius/2xl",  "px": 32 },
+    { "key": "3xl",  "token": "radius/3xl",  "px": 40 },
     { "key": "full", "token": "radius/full", "px": 900 }
   ],
   "text": [

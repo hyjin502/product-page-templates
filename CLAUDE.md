@@ -103,7 +103,7 @@ scripts/                                build · validate · preview · shot · 
 - 슬롯 제약·타입 (검증은 `scripts/lib.mjs`, 폼은 `site/app.js`)
   - `text`/`richtext`: `maxLines` · `minLines` · `maxChars`(줄마다, 띄어쓰기 포함). richtext + maxLines 는 줄마다 입력칸.
   - richtext 의 `mo: { maxLines, maxChars }` = MO 문구를 따로 받는다(값 `{ pc, mo }`, MO 는 이 한도로 검사). 템플릿 `lineSpans` 는 PC·MO 줄이 다르면 `.hero__lines.only-pc` / `.only-mo` 두 묶음을 낸다.
-  - `color`: `tokens/hds.json` 색 키(`"blue/700"`), `radius`: `xs|sm|md|lg|xl|full`, 둘 다 `default` 로 기본값.
+  - `color`: `tokens/hds.json` 색 키(`"blue/700"`), `radius`: HDS Semantic radius 9개 `none(0)|xs(4)|sm(8)|md(12)|lg(16)|xl(20)|2xl(32)|3xl(40)|full(900)`, 둘 다 `default` 로 기본값.
     - `color` + `"palette": "text"` = HDS Theme 의 typography 글자색 10개(`black-100`~`black-disabled`, `white-100`~`white-disabled`, 라이트 값 · `tokens/hds.json` 의 `text`). hero 의 `titleColor`·`descColor` 슬롯이 쓰고, 기본값은 variant 의 원래 글자색이다(그래서 샘플 화면은 그대로). 템플릿은 `hdsText` 필터 → 타이틀은 `color`, 서브는 `--hero-desc-color`. gradient-text 는 타이틀이 그라디언트 고정이라 `descColor` 만 있다.
   - `media`: `{ pc: { kind: "image"|"video", src, alt?, poster? } | { kind: "css", preset }, mo? }`. `hint` 는 편집기 안내 문구.
     - **CSS 배경 프리셋**(`kind: "css"`): 슬롯에 `"cssPresets": true` 가 있어야 쓸 수 있다(hero 배경 6종). 목록은 `sections/hero/backgrounds.json`(key · label · motion · swatch), 모양은 `sections/hero/_backgrounds.css` 의 `.hero-bgfx--<key>`(빛 덩어리 span 4개 + `@keyframes`, 동작 줄이기면 멈춤). 새 프리셋 = 두 파일에 한 항목씩. hero 의 `_backgrounds.css` 는 `_shared.css` 와 함께 섹션 공통 CSS 로 들어간다.
