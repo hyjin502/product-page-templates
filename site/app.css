@@ -635,22 +635,43 @@ body.is-dev .flink__label::after { content: none; }
 .hed-media__swatch { position: relative; }
 .hed-bgfx__name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ---------- 조합기·히어로 편집기: 패널과 미리보기를 위아래로 (모든 창 폭) ----------
-   패널이 옆에 있으면 미리보기가 라이브러리보다 작아져서, 미리보기를 항상 전체 폭으로 써요(라이브러리와 같거나 조금 커요).
-   히어로 편집기는 미리보기를 위에 붙여 두고(최대 화면 62%, 넘치면 그 안에서 스크롤) 아래에서 입력해요.
-   이 블록은 파일 맨 끝에 있어야 앞쪽 .compose 폭 규칙을 덮어요 */
-.compose { grid-template-columns: minmax(0, 1fr); }
-.compose__side {
-  position: static; height: auto; overflow: visible;
-  border-right: 0; border-bottom: 1px solid var(--rule);
+/* ---------- 조합기·히어로 편집기: 라이브러리와 같은 틀 ----------
+   왼쪽 패널 폭 = 라이브러리 목록(--side) + 라이브러리 본문 좌우 여백(32) → 오른쪽 미리보기 폭이 라이브러리와 같아요.
+   860 이하에서는 라이브러리처럼 위아래로 쌓여요. 이 블록은 파일 맨 끝에 있어야 앞쪽 .compose 폭 규칙을 덮어요 */
+.compose { grid-template-columns: calc(var(--side) + 32px) minmax(0, 1fr); }
+.compose__stage { padding: 12px 8px; }
+/* 좁은 패널에 맞춰 — 조합기 행: 1줄 섹션·버튼, 2줄 variant, 그 아래 옵션·카드 수 */
+.compose__scroll { padding: 12px 10px 20px; }
+.compose__foot { margin: 0 8px 8px; padding: 8px 10px; }
+.compose__foot .compose__actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.compose__foot .compose__actions .btn-ui { padding: 4px 6px; white-space: nowrap; }
+.compose__foot .compose__actions .btn-ui--primary { grid-column: 1 / -1; }
+.compose__foot .compose__hint { font-size: 10px; }
+.rows li { position: relative; grid-template-columns: 16px minmax(0, 1fr); }
+.rows__btns { position: absolute; top: 3px; right: 4px; }
+.rows__sec { flex: 1 1 100%; padding-right: 78px; min-height: 28px; line-height: 28px; }
+.rows__main select[data-variant] { flex: 1 1 100%; }
+.rows__pg .pg { flex-wrap: wrap; row-gap: 4px; }
+.rows__opt { white-space: normal; }
+.add { flex-wrap: wrap; }
+.add select { flex: 1 1 100%; }
+/* 히어로 편집기 — 한 열로 */
+.hed-styles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hed-media { grid-template-columns: minmax(0, 1fr); }
+.hed-bgfx__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hed-f { padding: 8px; }
+.hed-f__head { flex-wrap: wrap; row-gap: 2px; }
+.hed-f__note { text-align: left; }
+.hed-in input { min-width: 0; }
+.hed-check--mo .hed-f__note { margin-left: 0; }
+@media (max-width: 860px) {
+  .compose { grid-template-columns: minmax(0, 1fr); }
+  .compose__side { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .hed-styles { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .hed-bgfx__list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  /* 히어로 편집기는 쌓였을 때 미리보기를 위에 붙여 두고 아래에서 입력해요 */
+  .hed .compose__stage {
+    order: -1; position: sticky; top: var(--top-h, 44px); z-index: 5;
+    max-height: 50vh; overflow: auto; border-bottom: 1px solid var(--rule);
+  }
 }
-.compose__scroll { overflow: visible; }
-.compose__foot { position: sticky; bottom: 10px; z-index: 6; }
-.hed .compose__stage {
-  order: -1; position: sticky; top: var(--top-h, 44px); z-index: 5;
-  max-height: 62vh; overflow: auto; border-bottom: 1px solid var(--rule);
-}
-.hed-styles { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-.hed-bgfx__list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
-.hed-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); align-items: start; }
-@media (max-width: 767px) { .hed-form { grid-template-columns: minmax(0, 1fr); } }
