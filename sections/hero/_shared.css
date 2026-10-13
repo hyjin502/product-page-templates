@@ -59,6 +59,8 @@
   background: var(--outline-bg, #ffffff); color: var(--outline-fg, #171719);
   box-shadow: inset 0 0 0 1px var(--outline-line, var(--hero-line));
 }
+/* 투명 버튼 — 바탕 없이 hero 글자색을 따라요(라인과 함께). 첫 버튼 그림자도 빼요 */
+.hero-btn.hero-btn--clear { background: transparent; color: inherit; box-shadow: none !important; }
 /* 버튼 라인 — HDS line 색 1px. 채움형은 outline(그림자와 겹치지 않게), 테두리형은 --outline-line 으로 그 테두리 색을 바꿔요 */
 .hero-btn.has-line:not(.hero-btn--outline) { outline: 1px solid var(--btn-line); outline-offset: -1px; }
 /* 화살표(fn/button-right) — 글자 크기에 맞춰 24×48 / 20×40 */

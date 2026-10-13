@@ -62,7 +62,7 @@
 {% if c.style == "outline" %}
   <a class="hero-btn hero-btn--outline{% if c.line %} has-line{% endif %}" href="{{ c.href or '#' }}" style="--btn-r: {{ c.radius | hdsRadius }}{% if c.line %}; --btn-line: {{ c.line | hdsLine }}; --outline-line: {{ c.line | hdsLine }}{% endif %}" data-hds="outline {{ c.radius | hdsToken('radius') }}{% if c.line %} {{ c.line | hdsToken('line') }}{% endif %}">{{ c.label }}{% if c.arrow %} {{ 'chevron-right' | icon }}{% endif %}</a>
 {% else %}
-  <a class="hero-btn{% if c.line %} has-line{% endif %}" href="{{ c.href or '#' }}" style="--btn-bg: {{ c.color | hdsColor }}; --btn-fg: {{ c.color | hdsOn }}; --btn-r: {{ c.radius | hdsRadius }}{% if c.line %}; --btn-line: {{ c.line | hdsLine }}{% endif %}" data-hds="{{ c.color | hdsToken }} {{ c.radius | hdsToken('radius') }}{% if c.line %} {{ c.line | hdsToken('line') }}{% endif %}">{{ c.label }}{% if c.arrow %} {{ 'chevron-right' | icon }}{% endif %}</a>
+  <a class="hero-btn{% if c.color == 'transparent' %} hero-btn--clear{% endif %}{% if c.line %} has-line{% endif %}" href="{{ c.href or '#' }}" style="--btn-bg: {{ c.color | hdsColor }}; --btn-fg: {{ c.color | hdsOn }}; --btn-r: {{ c.radius | hdsRadius }}{% if c.line %}; --btn-line: {{ c.line | hdsLine }}{% endif %}" data-hds="{{ c.color | hdsToken }} {{ c.radius | hdsToken('radius') }}{% if c.line %} {{ c.line | hdsToken('line') }}{% endif %}">{{ c.label }}{% if c.arrow %} {{ 'chevron-right' | icon }}{% endif %}</a>
 {% endif %}
 {% endfor %}
 </div>

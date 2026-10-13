@@ -1,6 +1,7 @@
 # 변경 내역
 
 ## 미배포
+- **투명 버튼**: 버튼 배경색에 「투명」을 더했어요. 바탕 없이 hero 글자색을 따라가고, 라인과 함께 쓰면 테두리 버튼이 돼요(첫 버튼 그림자도 빠져요).
 - **버튼 배경색을 HDS 20색으로**: static 2(흰색·검정) · interaction 5(button-neutral · button-subtle · selected_fill · overlay-bg · overlay-outline) · Atomic 각 색 700번 13개. 글자색은 색마다 자동(밝으면 검정, 어두우면 흰색). 예전 키(`white`·`gray/1000`·`gray/1400`)는 같은 값의 새 키로 계속 동작해요. 샘플 화면은 그대로예요.
 - **버튼 라인**: 버튼마다 HDS line 색(line-layout · line-outline · line-strong · line-heavy) 1px 라인을 넣을 수 있어요(비우면 없음).
 - **버튼 모서리(radius)를 HDS 전체로**: HDS Semantic radius 에 있던 `none`(0) · `2xl`(32) · `3xl`(40) 을 더해 9개가 됐어요(xs~xl · full 값은 그대로).
