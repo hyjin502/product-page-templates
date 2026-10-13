@@ -103,20 +103,52 @@
 .hero-bgfx--color-flow > span { display: none; }
 @keyframes hero-fx-flow { from { background-position: 0% 30%; } to { background-position: 100% 70%; } }
 
-/* 정지 프리셋 — 빛 덩어리 없이 그라디언트만 */
-.hero-bgfx--violet-fade > span, .hero-bgfx--night-mesh > span { display: none; }
-.hero-bgfx--violet-fade { background: radial-gradient(120% 70% at 50% -10%, #8b5cff 0%, #4b1fd1 35%, transparent 75%), #000000; }
-.hero-bgfx--night-mesh  {
-  --fx-base: #121316;
-  background: radial-gradient(50% 60% at 0% 20%, #1e5a8c 0%, transparent 70%), radial-gradient(50% 60% at 100% 90%, #6b2fa8 0%, transparent 70%), #121316;
+/* 보라 페이드 — 위에서 내려오는 보라 빛이 숨 쉬듯 커졌다 작아지고, 아래 보조 빛이 좌우로 흘러요 */
+.hero-bgfx--violet-fade { --fx-base: #000000; }
+.hero-bgfx.hero-bgfx--violet-fade > span { right: auto; bottom: auto; border-radius: 50%; transform: none; }
+.hero-bgfx.hero-bgfx--violet-fade > span:nth-child(1) {
+  left: -15%; top: -55%; width: 130%; height: 110%;
+  background: radial-gradient(closest-side, #8b5cff, #4b1fd1 55%, transparent);
+  filter: blur(40px); opacity: .95; animation: hero-fx-breathe 9s ease-in-out infinite alternate;
 }
+.hero-bgfx.hero-bgfx--violet-fade > span:nth-child(2) {
+  left: 10%; top: 55%; width: 50%; height: 40%;
+  background: radial-gradient(closest-side, color-mix(in srgb, #6541f2 55%, transparent), transparent);
+  filter: blur(50px); opacity: .7; animation: hero-fx-sway 22s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--violet-fade > span:nth-child(n+3) { display: none; }
+@keyframes hero-fx-breathe { from { transform: scale(.92); opacity: .8; } to { transform: scale(1.08); opacity: 1; } }
+@keyframes hero-fx-sway { from { transform: translateX(-10%); } to { transform: translateX(80%); } }
+
+/* 나이트 메쉬 — 파랑·보라·청록 빛 3개가 서로 다른 궤도로 천천히 떠다녀요 */
+.hero-bgfx--night-mesh { --fx-base: #121316; }
+.hero-bgfx.hero-bgfx--night-mesh > span { right: auto; bottom: auto; border-radius: 50%; transform: none; filter: blur(60px); }
+.hero-bgfx.hero-bgfx--night-mesh > span:nth-child(1) {
+  left: -20%; top: -20%; width: 70%; height: 90%;
+  background: radial-gradient(closest-side, #1e5a8c, transparent); opacity: 1;
+  animation: hero-fx-orbit-a 24s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--night-mesh > span:nth-child(2) {
+  left: 50%; top: 40%; width: 70%; height: 90%;
+  background: radial-gradient(closest-side, #6b2fa8, transparent); opacity: 1;
+  animation: hero-fx-orbit-b 28s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--night-mesh > span:nth-child(3) {
+  left: 25%; top: 10%; width: 45%; height: 60%;
+  background: radial-gradient(closest-side, color-mix(in srgb, #00bdde 45%, transparent), transparent); opacity: .7;
+  animation: hero-fx-orbit-c 32s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--night-mesh > span:nth-child(4) { display: none; }
+@keyframes hero-fx-orbit-a { from { transform: translate(0, 0); } to { transform: translate(25%, 20%); } }
+@keyframes hero-fx-orbit-b { from { transform: translate(0, 0); } to { transform: translate(-30%, -25%); } }
+@keyframes hero-fx-orbit-c { from { transform: translate(-20%, 10%) scale(.9); } to { transform: translate(30%, 30%) scale(1.15); } }
 
 /* MO — 세로 화면에 맞게 띠를 더 가파르게, 번짐은 작게 */
 @media (max-width: 767px) {
-  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(1) { left: -60%; top: 60%; width: 200%; height: 34%; filter: blur(36px); }
-  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(2) { left: -50%; top: 72%; width: 180%; height: 6%; }
-  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(3) { right: -60%; bottom: -16%; width: 150%; height: 50%; filter: blur(44px); }
-  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(4) { right: -40%; bottom: 10%; width: 120%; }
+  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(1) { left: -60%; top: 60%; width: 200%; height: 34%; filter: blur(36px); }
+  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(2) { left: -50%; top: 72%; width: 180%; height: 6%; }
+  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(3) { right: -60%; bottom: -16%; width: 150%; height: 50%; filter: blur(44px); }
+  .hero-bgfx:is(.hero-bgfx--sunset-glow, .hero-bgfx--hunet-glow, .hero-bgfx--blue-glow, .hero-bgfx--aurora) > span:nth-child(4) { right: -40%; bottom: 10%; width: 120%; }
 }
 /* 동작 줄이기 설정이면 멈춰요 */
 @media (prefers-reduced-motion: reduce) {

@@ -8,7 +8,7 @@
     { "key": "wave",        "label": "물결",        "motion": true,  "swatch": "radial-gradient(120% 60% at 50% 120%, #6541f2 0%, #0066ff 35%, transparent 70%), #050816" },
     { "key": "tech-grid",   "label": "테크 그리드", "motion": true,  "swatch": "radial-gradient(70% 40% at 50% 55%, rgba(0,189,222,.45), transparent 70%), repeating-linear-gradient(90deg, rgba(0,189,222,.35) 0 1px, transparent 1px 14px), #04070d" },
     { "key": "color-flow",  "label": "컬러 흐름",   "motion": true,  "swatch": "linear-gradient(120deg, #6541f2, #0066ff, #f553da, #6541f2)" },
-    { "key": "violet-fade", "label": "보라 페이드", "motion": false, "swatch": "radial-gradient(120% 70% at 50% -10%, #8b5cff 0%, #4b1fd1 35%, transparent 75%), #000000" },
-    { "key": "night-mesh",  "label": "나이트 메쉬", "motion": false, "swatch": "radial-gradient(50% 60% at 0% 20%, #1e5a8c 0%, transparent 70%), radial-gradient(50% 60% at 100% 90%, #6b2fa8 0%, transparent 70%), #121316" }
+    { "key": "violet-fade", "label": "보라 페이드", "motion": true, "swatch": "radial-gradient(120% 70% at 50% -10%, #8b5cff 0%, #4b1fd1 35%, transparent 75%), #000000" },
+    { "key": "night-mesh",  "label": "나이트 메쉬", "motion": true, "swatch": "radial-gradient(50% 60% at 0% 20%, #1e5a8c 0%, transparent 70%), radial-gradient(50% 60% at 100% 90%, #6b2fa8 0%, transparent 70%), #121316" }
   ]
 }
