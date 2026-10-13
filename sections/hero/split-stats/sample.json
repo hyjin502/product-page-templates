@@ -1,0 +1,29 @@
+{
+  "eyebrow": "더 나은 성과를 만드는 새로운 방법",
+  "title": "데이터가 스스로\n차세대 워크 플로우",
+  "description": "우리 조직에 필요한 솔루션을 쉽고 효과적으로 경험해 보세요.\n더 나은 성과를 위한 새로운 방법을 제안합니다.",
+  "stats": [
+    {
+      "value": "98",
+      "unit": "%",
+      "label": "업무 효율 향상"
+    },
+    {
+      "value": "25",
+      "unit": "배",
+      "label": "매출 전환율 증가"
+    },
+    {
+      "value": "99",
+      "unit": "점",
+      "label": "교육생 만족도"
+    }
+  ],
+  "ctas": [],
+  "visual": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/split-stats.jpg"
+    }
+  }
+}

@@ -55,7 +55,7 @@ for (const sec of reg.catalog.sections) {
   // 줄 맞추기 준비 (이름으로 못 찾는 variant 용)
   const pcCol = frame.symbols.filter((s) => s.w >= 1280);
   const minX = Math.min(...pcCol.map((s) => s.x));
-  const rows = pcCol.filter((s) => s.x === minX).sort((a, b) => a.y - b.y);
+  const rows = pcCol.filter((s) => s.x - minX <= 40).sort((a, b) => a.y - b.y); // 디자이너가 몇 px 어긋나게 둔 심볼도 같은 열로 봐요
   const mos = frame.symbols.filter((s) => s.w <= 430);
   const rowMo = (pc) => mos.map((s) => [Math.abs(s.y - pc.y), s]).filter(([dy]) => dy < 400).sort((a, b) => a[0] - b[0] || a[1].x - b[1].x)[0]?.[1];
   const sortedMetas = [...metas].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));

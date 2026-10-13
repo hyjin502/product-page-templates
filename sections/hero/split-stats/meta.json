@@ -1,0 +1,161 @@
+{
+  "id": "hero-split-stats",
+  "section": "hero",
+  "layout": "split-stats",
+  "order": 8,
+  "when": "왼쪽 메시지 + 핵심 수치 3개, 오른쪽 정사각 사진 — 성과·신뢰를 숫자로 보여줄 때",
+  "figma": {
+    "pc": "469:32635",
+    "mo": null,
+    "tb": null
+  },
+  "body": 1200,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/split-stats.jpg",
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 문구",
+      "note": "문구만 (테두리 없음)",
+      "maxChars": 24
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 12,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 10
+      }
+    },
+    "titleColor": {
+      "type": "color",
+      "palette": "text",
+      "default": "white-100",
+      "extract": false,
+      "label": "타이틀 색",
+      "note": "HDS typography 글자색 · PC·MO 같이 바뀌어요"
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "서브타이틀",
+      "maxLines": 2,
+      "maxChars": 34,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 24
+      }
+    },
+    "descColor": {
+      "type": "color",
+      "palette": "text",
+      "default": "white-80",
+      "extract": false,
+      "label": "서브타이틀 색",
+      "note": "HDS typography 글자색 · PC·MO 같이 바뀌어요"
+    },
+    "stats": {
+      "type": "list",
+      "figmaLayer": "*",
+      "extract": false,
+      "min": 0,
+      "max": 3,
+      "label": "수치",
+      "note": "큰 숫자 + 단위 + 설명 · 최대 3개",
+      "item": {
+        "value": {
+          "type": "text",
+          "label": "숫자",
+          "maxChars": 5
+        },
+        "unit": {
+          "type": "text",
+          "optional": true,
+          "label": "단위",
+          "maxChars": 3
+        },
+        "label": {
+          "type": "text",
+          "label": "설명",
+          "maxChars": 10
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name",
+          "label": "버튼 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "fill",
+            "outline"
+          ],
+          "labels": {
+            "fill": "채움",
+            "outline": "테두리"
+          },
+          "default": "fill",
+          "extract": false,
+          "label": "모양"
+        },
+        "color": {
+          "type": "color",
+          "default": "static/white",
+          "extract": false,
+          "label": "배경색",
+          "hideWhen": {
+            "style": "outline"
+          }
+        },
+        "line": {
+          "type": "color",
+          "palette": "line",
+          "optional": true,
+          "extract": false,
+          "label": "라인",
+          "note": "HDS line 색 · 비우면 라인 없음"
+        },
+        "radius": {
+          "type": "radius",
+          "default": "full",
+          "extract": false,
+          "label": "모서리"
+        },
+        "arrow": {
+          "type": "toggle",
+          "default": true,
+          "extract": false,
+          "label": "화살표 넣기"
+        }
+      }
+    },
+    "visual": {
+      "type": "media",
+      "figmaLayer": "image",
+      "extract": false,
+      "optional": true,
+      "label": "오른쪽 이미지",
+      "hint": "이미지 또는 mp4 · 정사각형으로 잘려요 · 미리보기의 이미지를 클릭해도 바꿀 수 있어요"
+    }
+  }
+}

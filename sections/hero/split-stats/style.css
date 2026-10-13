@@ -1,0 +1,23 @@
+/* PC — Figma 469:32635 (Body 1200, 높이 768 · 문구 위아래 160, 오른쪽 사진 592 정사각) */
+.hero--split-stats {
+  --hero-title: 56px; --hero-gap: 64px; --hero-gap-heading: 24px; --hero-gap-titles: 20px;
+  --hero-desc: 18px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+  --hero-btn-py: 20px; --hero-btn-px: 64px;
+  background: var(--hero-ink); color: var(--hero-white); --hero-desc-color: var(--hero-white-80);
+}
+/* 상단 문구 — 테두리 없는 글자만 (heading-20 bold) */
+.hero--split-stats .hero__badge { padding: 0; border-radius: 0; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.hero--split-stats .hero__visual { width: 592px; aspect-ratio: 1; }
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--split-stats .hero__visual { width: 42%; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero--split-stats .hero__visual { width: 100%; }
+}
+/* MO ≤767 — 시안 없음(코드 기본값) */
+@media (max-width: 767px) {
+  .hero--split-stats .hero__badge { font-size: 16px; }
+  .hero--split-stats .hero__visual { width: 100%; }
+}

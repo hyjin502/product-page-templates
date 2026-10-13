@@ -13,7 +13,7 @@ sections/<section>/<layout>/  (meta.json · template.njk · style.css · sample.
                               dist/index.html  (라이브러리 사이트 · 조합기 · 히어로 편집기)
 ```
 
-**히어로 편집기** (`dist/index.html#hero-editor`) — 기획자·마케터가 히어로 스타일 7종 중 하나를 고르고 문구·배경(PC·MO 따로, 이미지 또는 mp4)·버튼(HDS 색·radius)을 바꿔 PC/TB/MO 결과를 바로 봐요. `page.json 받기` → `pages/` 에 배경 파일과 같이 넣고 `npm run build` 하면 같은 화면의 HTML 이 나와요.
+**히어로 편집기** (`dist/index.html#hero-editor`) — 기획자·마케터가 히어로 스타일 11종 중 하나를 고르고 문구·배경(PC·MO 따로, 이미지 또는 mp4)·버튼(HDS 색·radius)을 바꿔 PC/TB/MO 결과를 바로 봐요. `page.json 받기` → `pages/` 에 배경 파일과 같이 넣고 `npm run build` 하면 같은 화면의 HTML 이 나와요.
 
 **사이트 바로 보기** — https://hyjin502.github.io/product-page-templates/ (비밀번호 필요 · 히어로 편집기는 주소 끝에 `#hero-editor`)
 
@@ -132,7 +132,7 @@ jobs:
 - `sections/_partials/ui.njk` — 버튼 목록 `ctas()`, 이미지 `media()`, 섹션 제목 `secHead()`, 점 `pagerDots()` 매크로
 - `sections/hero/_macros.njk` — hero 배경 `bgMedia()`, 줄 단위 `lineSpans()`, HDS 버튼 `btns()`
 - `pages/*.page.json` — 조립할 페이지 (sections[] = { variant, content, options?, pager?, body?, theme? })
-- `pages/all-templates.page.json` — 46개 variant 전체 (Page 18 원문) → `dist/pages/all-templates/`
+- `pages/all-templates.page.json` — 50개 variant 전체 (Figma 원문) → `dist/pages/all-templates/`
 - `pages/pager-example.page.json` — 카드 수에 따른 배치 예시
 - `pages/_verify/` — Page 18 추출 검증 결과 (`report` 로 확인)
 - `site/` — 라이브러리·조합기·히어로 편집기 사이트 셸. `site/render-core.cjs` 는 빌드와 편집기가 함께 쓰는 렌더 코드

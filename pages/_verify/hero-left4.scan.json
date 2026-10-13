@@ -1,0 +1,72 @@
+{
+  "frames": {
+    "pc": {
+      "id": "components",
+      "name": "components-pc",
+      "items": [
+        {
+          "id": "469:32635",
+          "name": "469:32635",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "469:32635"
+        },
+        {
+          "id": "469:32762",
+          "name": "469:32762",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "469:32762"
+        },
+        {
+          "id": "469:32412",
+          "name": "469:32412",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "469:32412"
+        },
+        {
+          "id": "517:33408",
+          "name": "517:33408",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "517:33408"
+        }
+      ]
+    },
+    "mo": {
+      "id": "components",
+      "name": "components-mo",
+      "items": [
+        {
+          "id": "469:32635",
+          "name": "469:32635",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "469:32635"
+        },
+        {
+          "id": "469:32762",
+          "name": "469:32762",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "469:32762"
+        },
+        {
+          "id": "469:32412",
+          "name": "469:32412",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "469:32412"
+        },
+        {
+          "id": "517:33408",
+          "name": "517:33408",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "517:33408"
+        }
+      ]
+    }
+  }
+}

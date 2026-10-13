@@ -1,0 +1,20 @@
+{
+  "title": "더 나은\n교육을 향한 도약\n휴넷과 함께\n혁신을 경험하세요",
+  "description": "데이터 분석부터 자동화까지, 기업의 성장을\n가속화하는 가장 완벽한 AI 솔루션을 제공합니다.",
+  "ctas": [
+    {
+      "label": "휴넷 교육문의",
+      "href": "#",
+      "style": "fill",
+      "color": "static/white",
+      "radius": "full",
+      "arrow": true
+    }
+  ],
+  "visual": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/split-photo.jpg"
+    }
+  }
+}

@@ -17,7 +17,7 @@
 - **`상품페이지 템플릿 시스템` 파일 · Section Design System 페이지** (fileKey `dxhWkGXnev5U2Q1nLISR3h`, page `0:1`) — `sections/sections.json` 에 있다. 2026-10-13 사용자가 이 파일을 공식 원본으로 정했다(이 계정으로 읽기 가능).
   - 예전 원본 `[UI] 커피 정수기`(S3cLq…, Page 18 → Page 19 `6249:*`)는 더 쓰지 않는다. 이 계정은 그 파일 권한이 없다.
   - 섹션 프레임·심볼 구성이 바뀌면 `scripts/figma-relink.mjs` 로 다시 맞춘다. 스크립트 머리말의 DUMP 를 use_figma 로 `0:1` 에서 실행해 `pages/_verify/figma-page.json` 에 저장 → `--dry` 로 확인 → 적용. 이름으로 맞추고, hero 는 줄(PC 왼쪽 열 위→아래 = meta.order, MO = 같은 줄의 375 폭)로 맞춘다.
-  - hero 는 세트 `469:32313` 의 7종이다(이름이 같은 예전 세트 `1:1710` 은 쓰지 않는다 — relink 는 심볼이 더 많은 세트를 고른다). PC·MO 짝은 이렇다.
+  - hero 는 세트 `469:32313` 의 11종이다(이름이 같은 예전 세트 `1:1710` 은 쓰지 않는다 — relink 는 심볼이 더 많은 세트를 고른다). PC·MO 짝은 이렇다.
     | variant | PC | MO |
     |---|---|---|
     | media-badge | 469:32452 | 476:32991 |
@@ -27,8 +27,14 @@
     | gradient-text | 469:32833 | 479:33359 |
     | visual-bottom | 469:32373 | 479:33278 |
     | product-shot | 471:32914 | 479:33325 |
+    | split-stats | 469:32635 | (없음) |
+    | split-photo | 469:32762 | (없음) |
+    | media-left | 469:32412 | (없음) |
+    | media-left-bottom | 517:33408 | (없음) |
     - variant 이름이 서로 겹친다(대부분 `layout=center-inline`) → Figma 세트 오류. 479:33142·479:33359 는 MO 인데 `device=pc` 로 붙어 있다. 디자이너에게 `style=<variant>` 속성 추가를 요청할 것.
-    - 같은 세트 아래쪽 3종(split 2 · 사진 배경 왼쪽 정렬 1: 469:32635 · 469:32762 · 469:32412)은 아직 코드가 없다.
+    - 아래쪽 4종(split-stats · split-photo · media-left · media-left-bottom)은 **MO 시안이 없다** → MO·TB 는 코드 기본값(`_shared.css` 의 `.hero--left` 규칙: 문구 → 비주얼 순서로 쌓기, 왼쪽 정렬). 517:33408 은 x 가 108 로 8px 어긋나 있다(relink 는 40px 까지 같은 열로 본다).
+    - 4종은 `.hero--left` + `.hero__split`(왼쪽 `.hero__content` · 오른쪽 `.hero__visual`) 공통 틀을 쓰고 variant 는 변수만 정한다. split-stats 의 수치는 `stats` 목록(value · unit · label, 추출 안 함 — Figma 레이어 이름이 숫자·문구라서). split-photo·media-left-bottom 은 Figma 문구 묶음이 768 프레임을 넘쳐서(846 · 829) 위아래 여백을 줄여 768 에 맞췄다(타이틀·버튼 위치는 Figma 그대로).
+    - media-left-bottom 배경은 Figma 의 검정 + 큐브 이미지 20% 를 한 장(`media-left-bottom-bg.jpg`)으로 구웠다.
 - 원본 파일을 옮기면 `sections/sections.json` 의 `figma.fileKey`·`fileName`·`page` 와 각 `meta.json` 의 노드 ID 를 새 파일 기준으로 바꾼다(노드는 relink, 파일 정보는 손으로).
 - Figma MCP(claude.ai Figma 커넥터 또는 figma MCP)가 연결돼 있어야 한다. `use_figma` 전에는 `figma:figma-use` 스킬, `get_design_context` 전에는 `figma:figma-design-to-code` 스킬을 로드한다.
 - **원격 Figma 플러그인 환경에는 Pretendard 폰트가 없다.** 그래서 인스턴스를 만들거나 텍스트를 쓰는 작업은 실패한다(읽기는 가능). 실제 조합 프레임 테스트는 디자이너가 프레임을 만들어 URL 을 준다.

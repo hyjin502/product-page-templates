@@ -79,3 +79,48 @@
   .hero-btn { padding: 20px 32px; font-size: 20px; }
   .hero-btn svg { display: none; }
 }
+
+/* ---------- 왼쪽 정렬 · 2단(split) 레이아웃 — split-stats · split-photo · media-left · media-left-bottom ----------
+   .hero--left 를 붙이면 문구·버튼이 왼쪽 정렬이고, .hero__split 안에서 왼쪽 문구(.hero__content) · 오른쪽 비주얼(.hero__visual) 2단이에요.
+   PC 높이는 Figma 768 기준(--hero-h), 문구 위아래 여백은 --hero-pad-y(위만 다르면 --hero-pad-top) */
+.hero.hero--left { padding: 0 var(--container-pad); text-align: left; }
+.hero__split {
+  position: relative; width: var(--body, 1200px); max-width: 100%; min-height: var(--hero-h, 768px);
+  display: flex; align-items: center; justify-content: space-between; gap: 60px;
+}
+.hero__content {
+  flex: 0 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--hero-gap, 64px);
+  padding: var(--hero-pad-top, var(--hero-pad-y, 160px)) 0 var(--hero-pad-y, 160px);
+}
+.hero--left .hero__heading, .hero--left .hero__titles { align-items: flex-start; }
+.hero--left .hero__btns { justify-content: flex-start; }
+.hero--left .hero__visual { flex: 0 0 auto; }
+.hero--left .hero__visual-media,
+.hero--left .hero__visual-media img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+/* 수치 — 큰 숫자(48 Bold) + 단위(18 Bold, 아래 맞춤) · 설명(14, white-45) */
+.hero__stats { display: flex; flex-wrap: wrap; gap: 16px 48px; margin: 0; padding: 0; list-style: none; }
+.hero__stat { display: flex; flex-direction: column; gap: 8px; }
+.hero__stat-num { display: flex; align-items: baseline; height: 43px; font-size: 48px; font-weight: 700; line-height: 0.9; letter-spacing: var(--tracking-tighter); } /* Figma 숫자 줄 43 (글자 아래 맞춤) */
+.hero__stat-num small { font-size: 18px; font-weight: 700; line-height: 1; letter-spacing: var(--tracking-tight); }
+.hero__stat-label { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--hero-stat-label, rgba(255, 255, 255, 0.45)); white-space: nowrap; }
+
+/* TB 768–1279 — 코드 기본값: 여백·글자를 줄이고, 1024 미만은 위아래로 쌓아요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero.hero--left { --hero-h: 640px; --hero-pad-y: 112px; --hero-pad-top: 112px; --hero-title: 44px; } /* .hero.hero--left = variant PC 값보다 우선 */
+  .hero__split { gap: 40px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero__split { flex-direction: column; align-items: stretch; gap: 0; }
+  .hero--left .hero__content { padding-bottom: 64px; }
+  .hero--left .hero__visual { width: 100%; margin-bottom: 80px; }
+}
+/* MO ≤767 — Figma MO 시안 없음: 문구 → 비주얼 순서로 쌓고 왼쪽 정렬, 버튼은 공통 MO 규칙(전체 폭) */
+@media (max-width: 767px) {
+  .hero.hero--left { --hero-h: 0px; --hero-pad-y: 80px; --hero-pad-top: 80px; --hero-gap: 40px; --hero-gap-heading: 20px; --hero-gap-titles: 16px;
+    --hero-title: 36px; --hero-desc: 16px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight); }
+  .hero__split { flex-direction: column; align-items: stretch; gap: 0; }
+  .hero--left .hero__content { padding-bottom: 48px; }
+  .hero--left .hero__visual { width: 100%; margin-bottom: 48px; }
+  .hero__stats { gap: 16px 32px; }
+  .hero__stat-num { height: 34px; font-size: 36px; }
+}

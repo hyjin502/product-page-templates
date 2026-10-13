@@ -1,0 +1,21 @@
+{
+  "eyebrow": "더 나은 성과를 만드는 새로운 방법",
+  "title": "비즈니스의 성장을\n만드는 새로운 경험",
+  "ctas": [
+    {
+      "label": "휴넷 교육문의",
+      "href": "#",
+      "style": "fill",
+      "color": "transparent",
+      "line": "line-strong",
+      "radius": "none",
+      "arrow": false
+    }
+  ],
+  "background": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/media-left-bottom-bg.jpg"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans, btns %}
+<section class="hero hero--left hero--split-stats">
+  <div class="hero__split">
+    <div class="hero__content">
+      <div class="hero__heading">
+        <div class="hero__titles">
+{% if eyebrow %}
+          <p class="hero__badge">{{ eyebrow | rt }}</p>
+{% endif %}
+          <h1 class="hero__title"{% if titleColor %} style="color: {{ titleColor | hdsText }}" data-hds="{{ titleColor | hdsToken('text') }}"{% endif %}>{{ lineSpans(title) }}</h1>
+        </div>
+{% if description %}
+        <p class="hero__desc"{% if descColor %} style="--hero-desc-color: {{ descColor | hdsText }}" data-hds="{{ descColor | hdsToken('text') }}"{% endif %}>{{ lineSpans(description) }}</p>
+{% endif %}
+      </div>
+{% if stats and stats.length %}
+      <ul class="hero__stats">
+{% for s in stats %}
+        <li class="hero__stat"><span class="hero__stat-num">{{ s.value }}{% if s.unit %}<small>{{ s.unit }}</small>{% endif %}</span><span class="hero__stat-label">{{ s.label }}</span></li>
+{% endfor %}
+      </ul>
+{% endif %}
+      {{ btns(ctas) }}
+    </div>
+{% if visual %}
+    <div class="hero__visual">
+      {{ visualMedia(visual) }}
+    </div>
+{% endif %}
+  </div>
+</section>

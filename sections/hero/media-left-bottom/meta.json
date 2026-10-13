@@ -1,0 +1,135 @@
+{
+  "id": "hero-media-left-bottom",
+  "section": "hero",
+  "layout": "media-left-bottom",
+  "order": 11,
+  "when": "배경 위 아래쪽 왼쪽에 메시지 + 테두리 버튼 — 배경 비주얼을 크게 보여줄 때",
+  "figma": {
+    "pc": "517:33408",
+    "mo": null,
+    "tb": null
+  },
+  "body": 1200,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/media-left-bottom.jpg",
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 문구",
+      "note": "문구만 (테두리 없음)",
+      "maxChars": 24
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 14,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 10
+      }
+    },
+    "titleColor": {
+      "type": "color",
+      "palette": "text",
+      "default": "white-100",
+      "extract": false,
+      "label": "타이틀 색",
+      "note": "HDS typography 글자색 · PC·MO 같이 바뀌어요"
+    },
+    "description": {
+      "type": "richtext",
+      "figmaLayer": "description",
+      "optional": true,
+      "label": "서브타이틀",
+      "maxLines": 2,
+      "maxChars": 34,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 24
+      }
+    },
+    "descColor": {
+      "type": "color",
+      "palette": "text",
+      "default": "white-60",
+      "extract": false,
+      "label": "서브타이틀 색",
+      "note": "HDS typography 글자색 · PC·MO 같이 바뀌어요"
+    },
+    "ctas": {
+      "type": "list",
+      "figmaLayer": "cta",
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "item": {
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name",
+          "label": "버튼 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "fill",
+            "outline"
+          ],
+          "labels": {
+            "fill": "채움",
+            "outline": "테두리"
+          },
+          "default": "fill",
+          "extract": false,
+          "label": "모양"
+        },
+        "color": {
+          "type": "color",
+          "default": "transparent",
+          "extract": false,
+          "label": "배경색",
+          "hideWhen": {
+            "style": "outline"
+          }
+        },
+        "line": {
+          "type": "color",
+          "palette": "line",
+          "optional": true,
+          "extract": false,
+          "label": "라인",
+          "note": "HDS line 색 · 비우면 라인 없음"
+        },
+        "radius": {
+          "type": "radius",
+          "default": "none",
+          "extract": false,
+          "label": "모서리"
+        },
+        "arrow": {
+          "type": "toggle",
+          "default": false,
+          "extract": false,
+          "label": "화살표 넣기"
+        }
+      }
+    },
+    "background": {
+      "type": "media",
+      "cssPresets": true,
+      "figmaLayer": "bg-media",
+      "extract": false,
+      "optional": true,
+      "label": "배경",
+      "note": "PC·MO 따로 이미지 · mp4 · CSS 배경. MO 를 비우면 PC 것을 써요"
+    }
+  }
+}

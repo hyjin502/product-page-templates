@@ -1,0 +1,28 @@
+/* PC — Figma 469:32762 (Body 1280, 높이 768, 오른쪽 사진 768 정사각이 위아래 꽉)
+   Figma 는 문구 묶음(846)이 768 프레임을 넘쳐 가운데 정렬돼 있어요 → 위아래 121 로 768 에 맞춰요(타이틀 y 121 그대로) */
+.hero--split-photo {
+  --hero-pad-y: 121px;
+  --hero-title: 56px; --hero-gap: 64px; --hero-gap-heading: 24px; --hero-gap-titles: 20px;
+  --hero-desc: 18px; --hero-desc-lh: 1.6; --hero-desc-ls: var(--tracking-tight);
+  --hero-btn-py: 20px; --hero-btn-px: 64px;
+  background: var(--hero-ink); color: var(--hero-white); --hero-desc-color: var(--hero-white-80);
+}
+.hero--split-photo .hero__split { align-items: stretch; }
+.hero--split-photo .hero__content { justify-content: center; }
+/* 상단 문구(Figma 에서 꺼져 있음) — 켜면 line-outline 테두리 알약 */
+.hero--split-photo .hero__badge { padding: 8px 20px; box-shadow: inset 0 0 0 1px var(--hero-line); font-size: 18px; font-weight: 500; }
+.hero--split-photo .hero__visual { width: 768px; align-self: stretch; }
+.hero--split-photo .hero__visual-media,
+.hero--split-photo .hero__visual-media img { object-position: center bottom; }
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--split-photo .hero__visual { width: 50%; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero--split-photo .hero__visual { width: 100%; aspect-ratio: 1; }
+}
+/* MO ≤767 — 시안 없음(코드 기본값) */
+@media (max-width: 767px) {
+  .hero--split-photo .hero__visual { width: calc(100% + 2 * var(--container-pad)); margin-inline: calc(-1 * var(--container-pad)); margin-bottom: 0; aspect-ratio: 1; }
+}
