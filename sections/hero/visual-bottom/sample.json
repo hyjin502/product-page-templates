@@ -8,7 +8,7 @@
     {
       "label": "지금 무료 경험하기",
       "href": "#",
-      "color": "gray/1400",
+      "color": "interaction/button-neutral",
       "radius": "full",
       "arrow": true
     }

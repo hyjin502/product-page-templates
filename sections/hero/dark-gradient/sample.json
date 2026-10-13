@@ -20,7 +20,7 @@
       "label": "데모 영상보기",
       "href": "#",
       "style": "outline",
-      "color": "white",
+      "color": "static/white",
       "radius": "full",
       "arrow": true
     }

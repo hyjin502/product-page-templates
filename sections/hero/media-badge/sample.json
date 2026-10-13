@@ -6,7 +6,7 @@
     {
       "label": "지금 무료 경험하기",
       "href": "#",
-      "color": "white",
+      "color": "static/white",
       "radius": "md"
     }
   ],

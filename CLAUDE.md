@@ -62,7 +62,7 @@
   - 버튼 배경색·radius 는 HDS 토큰(`tokens/hds.json`)에서만 고른다. 글자색은 색마다 정해 둔 `on` 값이다.
   - 배경은 PC·MO 따로 이미지 또는 mp4. MO 를 비우면 PC 것을 쓴다.
   - 샘플은 Figma 원문 그대로 두되, 규칙을 넘는 원문(29729 서브타이틀 33자)은 같은 문구를 줄로 나눠 맞춘다.
-  - 버튼 색은 HDS 에서만 → product-shot 두 번째 버튼의 Figma 색 `#272840`(토큰 아님)은 가장 가까운 `gray/1400` 으로 뒀다.
+  - 버튼 색은 HDS 에서만 → product-shot 두 번째 버튼의 Figma 색 `#272840`(토큰 아님)은 가장 가까운 `interaction/button-neutral`(#292a2d) 로 뒀다.
   - 뱃지 모양(흰 바탕 · 파란 바탕 · 빨간 테두리)과 타이틀 그라디언트는 시안 고정이고, 문구만 바꾼다.
 - Figma 파일은 **읽기만** 한다. 수정이 필요하면 디자이너에게 요청 목록으로 전달한다.
 
@@ -104,6 +104,8 @@ scripts/                                build · validate · preview · shot · 
   - `text`/`richtext`: `maxLines` · `minLines` · `maxChars`(줄마다, 띄어쓰기 포함). richtext + maxLines 는 줄마다 입력칸.
   - richtext 의 `mo: { maxLines, maxChars }` = MO 문구를 따로 받는다(값 `{ pc, mo }`, MO 는 이 한도로 검사). 템플릿 `lineSpans` 는 PC·MO 줄이 다르면 `.hero__lines.only-pc` / `.only-mo` 두 묶음을 낸다.
   - `color`: `tokens/hds.json` 색 키(`"blue/700"`), `radius`: HDS Semantic radius 9개 `none(0)|xs(4)|sm(8)|md(12)|lg(16)|xl(20)|2xl(32)|3xl(40)|full(900)`, 둘 다 `default` 로 기본값.
+    - `color`(palette 없음) = 버튼 배경 20색: HDS Theme `static/white`·`static/black`, `interaction/button-neutral`·`button-subtle`·`selected_fill`·`overlay-bg`·`overlay-outline`, Atomic 각 색 `/700`(gray·red·red-orange·orange·yellow·lime·green·cyan·sky·blue·violet·purple·pink). `on` = 그 위 글자색(밝기 0.4 미만이면 흰색). 예전 키 `white`·`gray/1000`·`gray/1400` 은 `aliases` 로 같은 값의 새 키를 가리킨다.
+    - `color` + `"palette": "line"` = HDS Theme line 4색(`line-layout`·`line-outline`·`line-strong`·`line-heavy`, 라이트 값). hero 버튼 항목의 `line`(선택, 비우면 라인 없음) — 채움형은 1px outline, 테두리형은 그 테두리 색(`--outline-line`).
     - `color` + `"palette": "text"` = HDS Theme 의 typography 글자색 10개(`black-100`~`black-disabled`, `white-100`~`white-disabled`, 라이트 값 · `tokens/hds.json` 의 `text`). hero 의 `titleColor`·`descColor` 슬롯이 쓰고, 기본값은 variant 의 원래 글자색이다(그래서 샘플 화면은 그대로). 템플릿은 `hdsText` 필터 → 타이틀은 `color`, 서브는 `--hero-desc-color`. gradient-text 는 타이틀이 그라디언트 고정이라 `descColor` 만 있다.
   - `media`: `{ pc: { kind: "image"|"video", src, alt?, poster? } | { kind: "css", preset }, mo? }`. `hint` 는 편집기 안내 문구.
     - **CSS 배경 프리셋**(`kind: "css"`): 슬롯에 `"cssPresets": true` 가 있어야 쓸 수 있다(hero 배경 6종). 목록은 `sections/hero/backgrounds.json`(key · label · motion · swatch), 모양은 `sections/hero/_backgrounds.css` 의 `.hero-bgfx--<key>`(빛 덩어리 span 4개 + `@keyframes`, 동작 줄이기면 멈춤). 새 프리셋 = 두 파일에 한 항목씩. hero 의 `_backgrounds.css` 는 `_shared.css` 와 함께 섹션 공통 CSS 로 들어간다.

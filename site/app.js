@@ -458,6 +458,7 @@ const heroEl = document.getElementById('hero-editor');
 const EDITORS = REG.variants.filter((v) => v.editor);
 const RC = window.RenderCore;
 const HDS_COLOR = Object.fromEntries(REG.hds.colors.map((c) => [c.key, c]));
+for (const [old, k] of Object.entries(REG.hds.aliases || {})) if (HDS_COLOR[k]) HDS_COLOR[old] = HDS_COLOR[k]; // 예전 키 → 새 키
 const HDS_RADIUS = Object.fromEntries(REG.hds.radius.map((r) => [r.key, r]));
 // 줄 넘김을 재는 요소 — hero variant 들이 함께 쓰는 클래스
 const MEASURE = [['eyebrow', '.hero__badge'], ['title', '.hero__title'], ['description', '.hero__desc']];
@@ -604,9 +605,12 @@ function linesField(k, s, ls, moLs) {
   return html + '</div>';
 }
 function swatches(path, cur, label, palette) {
+  if (!palette && REG.hds.aliases && REG.hds.aliases[cur]) cur = REG.hds.aliases[cur]; // 예전 키로 저장된 값
   // palette "text" = HDS typography 글자색(반투명 포함 → 체크무늬 위에 보여요), 없으면 버튼 색
-  const list = palette === 'text' ? REG.hds.text || [] : REG.hds.colors;
-  return `<div class="hed-sw${palette === 'text' ? ' hed-sw--text' : ''}" role="group" aria-label="${esc(label)}">${list.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.value || c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
+  const list = palette === 'text' ? REG.hds.text || [] : palette === 'line' ? REG.hds.line || [] : REG.hds.colors;
+  // 라인처럼 비울 수 있는 색은 맨 앞에 「없음」
+  const none = palette === 'line' ? `<button type="button" class="hed-sw__b hed-sw__b--none" ${attrs({ ...path, 'data-val': '', title: '없음', 'aria-label': '없음', 'aria-pressed': String(!cur) })}></button>` : '';
+  return `<div class="hed-sw${palette === 'text' ? ' hed-sw--text' : ''}" role="group" aria-label="${esc(label)}">${none}${list.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.value || c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
 }
 /** 타이틀·서브 색 같은 최상위 색 슬롯 — 지금 고른 토큰 이름을 함께 보여요 */
 function colorField(k, s, cur) {
@@ -632,8 +636,9 @@ function itemField(k, i, kk, s, val, n, item) {
   if (hiddenBy(s, item)) return '';
   if (s.type === 'toggle') return `<div class="hed-sub">${toggleBox(path, s, val)}</div>`;
   if (s.type === 'color') {
-    const c = HDS_COLOR[val];
-    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <code>${c ? esc(c.token) : ''}</code></span>${swatches(path, val, label)}</div>`;
+    const list = s.palette === 'line' ? REG.hds.line || [] : s.palette === 'text' ? REG.hds.text || [] : REG.hds.colors;
+    const c = s.palette ? list.find((x) => x.key === val) : HDS_COLOR[val];
+    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <code>${c ? esc(c.token) : s.palette === 'line' ? '없음' : ''}</code></span>${swatches(path, val, label, s.palette)}</div>`;
   }
   if (s.type === 'radius') {
     const r = HDS_RADIUS[val];

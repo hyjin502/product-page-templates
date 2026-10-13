@@ -1,6 +1,8 @@
 # 변경 내역
 
 ## 미배포
+- **버튼 배경색을 HDS 20색으로**: static 2(흰색·검정) · interaction 5(button-neutral · button-subtle · selected_fill · overlay-bg · overlay-outline) · Atomic 각 색 700번 13개. 글자색은 색마다 자동(밝으면 검정, 어두우면 흰색). 예전 키(`white`·`gray/1000`·`gray/1400`)는 같은 값의 새 키로 계속 동작해요. 샘플 화면은 그대로예요.
+- **버튼 라인**: 버튼마다 HDS line 색(line-layout · line-outline · line-strong · line-heavy) 1px 라인을 넣을 수 있어요(비우면 없음).
 - **버튼 모서리(radius)를 HDS 전체로**: HDS Semantic radius 에 있던 `none`(0) · `2xl`(32) · `3xl`(40) 을 더해 9개가 됐어요(xs~xl · full 값은 그대로).
 - **히어로 타이틀·서브타이틀 글자색**: 편집기에서 HDS typography 색 10개(검정 100·80·60·45·비활성, 흰색 100·80·60·45·비활성)로 바꿀 수 있어요(`titleColor`·`descColor`, `tokens/hds.json` 의 `text`). 기본값은 지금 색 그대로예요. gradient-text 는 서브타이틀 색만 바꿔요.
 - **조합기·히어로 편집기 배치 되돌림**: 넓은 왼쪽 패널 + 오른쪽 미리보기 + 「패널 접고 크게 보기」 버튼으로 다시 돌렸어요(사용자 선택). 1280 미만 창에서는 위아래로 쌓여 미리보기가 전체 폭이에요. 그사이 시도한 "항상 위아래" · "패널을 라이브러리 목록 폭으로" 배치는 뺐어요.

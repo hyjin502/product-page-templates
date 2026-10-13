@@ -51,7 +51,8 @@
 {% macro spanList(ls) %}{% for l in ls %}{% if not loop.first %} {% endif %}<span class="hero__line">{{ l }}</span>{% endfor %}{% endmacro %}
 {% macro lineSpans(value) %}{% set pcl = value | lines('pc') %}{% set mol = value | lines('mo') %}{% if pcl | join('¦') == mol | join('¦') %}{{ spanList(pcl) }}{% else %}<span class="hero__lines only-pc">{{ spanList(pcl) }}</span> <span class="hero__lines only-mo">{{ spanList(mol) }}</span>{% endif %}{% endmacro %}
 
-{# HDS 버튼 목록 — items: [{ label, href, color: HDS 색 키, radius: HDS radius 키, style?: fill|outline, arrow?: true }]
+{# HDS 버튼 목록 — items: [{ label, href, color: HDS 색 키, radius: HDS radius 키, style?: fill|outline, arrow?: true, line?: HDS line 색 키 }]
+   line 이 있으면 1px 라인(채움형은 outline, 테두리형은 그 테두리 색)을 그려요 — data-hds 에 line 토큰도 남겨요
    fill 은 고른 색이 배경(글자색은 hds.json 의 on), outline 은 테두리형(색은 variant CSS 의 --outline-*).
    data-hds 에 토큰 이름을 남겨요 (예: "color/white radius/md") #}
 {% macro btns(items, cls="hero__btns") %}
@@ -59,9 +60,9 @@
 <div class="{{ cls }}">
 {% for c in items %}
 {% if c.style == "outline" %}
-  <a class="hero-btn hero-btn--outline" href="{{ c.href or '#' }}" style="--btn-r: {{ c.radius | hdsRadius }}" data-hds="outline {{ c.radius | hdsToken('radius') }}">{{ c.label }}{% if c.arrow %} {{ 'chevron-right' | icon }}{% endif %}</a>
+  <a class="hero-btn hero-btn--outline{% if c.line %} has-line{% endif %}" href="{{ c.href or '#' }}" style="--btn-r: {{ c.radius | hdsRadius }}{% if c.line %}; --btn-line: {{ c.line | hdsLine }}; --outline-line: {{ c.line | hdsLine }}{% endif %}" data-hds="outline {{ c.radius | hdsToken('radius') }}{% if c.line %} {{ c.line | hdsToken('line') }}{% endif %}">{{ c.label }}{% if c.arrow %} {{ 'chevron-right' | icon }}{% endif %}</a>
 {% else %}
-  <a class="hero-btn" href="{{ c.href or '#' }}" style="--btn-bg: {{ c.color | hdsColor }}; --btn-fg: {{ c.color | hdsOn }}; --btn-r: {{ c.radius | hdsRadius }}" data-hds="{{ c.color | hdsToken }} {{ c.radius | hdsToken('radius') }}">{{ c.label }}{% if c.arrow %} {{ 'chevron-right' | icon }}{% endif %}</a>
+  <a class="hero-btn{% if c.line %} has-line{% endif %}" href="{{ c.href or '#' }}" style="--btn-bg: {{ c.color | hdsColor }}; --btn-fg: {{ c.color | hdsOn }}; --btn-r: {{ c.radius | hdsRadius }}{% if c.line %}; --btn-line: {{ c.line | hdsLine }}{% endif %}" data-hds="{{ c.color | hdsToken }} {{ c.radius | hdsToken('radius') }}{% if c.line %} {{ c.line | hdsToken('line') }}{% endif %}">{{ c.label }}{% if c.arrow %} {{ 'chevron-right' | icon }}{% endif %}</a>
 {% endif %}
 {% endfor %}
 </div>

@@ -57,9 +57,12 @@
   /** HDS 토큰 조회 — tokens/hds.json */
   function hdsIndex(hds) {
     return {
-      colors: Object.fromEntries((hds.colors || []).map((c) => [c.key, c])),
+      // aliases = 예전 키 → 같은 값의 새 키 (저장해 둔 편집값·page.json 이 계속 동작하게)
+      colors: Object.assign(Object.fromEntries((hds.colors || []).map((c) => [c.key, c])),
+        Object.fromEntries(Object.entries(hds.aliases || {}).map(([old, k]) => [old, (hds.colors || []).find((c) => c.key === k)]).filter(([, c]) => c))),
       radius: Object.fromEntries((hds.radius || []).map((r) => [r.key, r])),
       text: Object.fromEntries((hds.text || []).map((t) => [t.key, t])),
+      line: Object.fromEntries((hds.line || []).map((t) => [t.key, t])),
     };
   }
 
@@ -73,7 +76,8 @@
     env.addFilter('hdsOn', (k) => (idx.colors[k] ? idx.colors[k].on : ''));
     env.addFilter('hdsRadius', (k) => (idx.radius[k] ? idx.radius[k].px + 'px' : ''));
     env.addFilter('hdsText', (k) => (idx.text[k] ? idx.text[k].value : ''));
-    env.addFilter('hdsToken', (k, kind) => { const t = (kind === 'radius' ? idx.radius : kind === 'text' ? idx.text : idx.colors)[k]; return t ? t.token : ''; });
+    env.addFilter('hdsLine', (k) => (idx.line[k] ? idx.line[k].value : ''));
+    env.addFilter('hdsToken', (k, kind) => { const t = (kind === 'radius' ? idx.radius : kind === 'text' ? idx.text : kind === 'line' ? idx.line : idx.colors)[k]; return t ? t.token : ''; });
     return env;
   }
 

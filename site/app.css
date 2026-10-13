@@ -680,8 +680,10 @@ body.is-dev .flink__label::after { content: none; }
 }
 
 /* 히어로 편집기 — HDS typography 글자색 칩 (반투명이라 체크무늬 위에 칠해요) */
-.hed-sw--text .hed-sw__b {
+.hed-sw .hed-sw__b:not(.hed-sw__b--none) {
   background:
     linear-gradient(var(--c), var(--c)),
     repeating-conic-gradient(#c8c9cd 0 25%, #ffffff 0 50%) 50% / 8px 8px;
 }
+/* 「없음」 칩 — 사선 */
+.hed-sw__b--none { background: linear-gradient(135deg, transparent 46%, #e5484d 46% 54%, transparent 54%), var(--panel); }

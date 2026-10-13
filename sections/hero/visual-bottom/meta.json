@@ -71,9 +71,17 @@
         },
         "color": {
           "type": "color",
-          "default": "gray/1400",
+          "default": "interaction/button-neutral",
           "extract": false,
           "label": "배경색"
+        },
+        "line": {
+          "type": "color",
+          "palette": "line",
+          "optional": true,
+          "extract": false,
+          "label": "라인",
+          "note": "HDS line 색 · 비우면 라인 없음"
         },
         "radius": {
           "type": "radius",

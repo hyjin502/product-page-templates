@@ -14,7 +14,7 @@
     {
       "label": "데모 영상보기",
       "href": "#",
-      "color": "gray/1400",
+      "color": "interaction/button-neutral",
       "radius": "full"
     }
   ],

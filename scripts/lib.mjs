@@ -134,8 +134,10 @@ function validateValue(s, v, where, errors) {
       break;
     case 'color': {
       // palette: "text" = HDS typography 글자색(tokens/hds.json text), 없으면 버튼 색(colors)
-      const pal = s.palette === 'text' ? HDS_IDX.text : HDS_IDX.colors;
-      if (!pal[v]) errors.push(`${where}: HDS ${s.palette === 'text' ? '글자색' : '색'} 키예요 (가능: ${Object.keys(pal).join(', ')} / 현재 "${v}")`);
+      // palette: "line" = HDS line 색(tokens/hds.json line). 버튼 색은 예전 키(aliases)도 받아요
+      const pal = s.palette === 'text' ? HDS_IDX.text : s.palette === 'line' ? HDS_IDX.line : HDS_IDX.colors;
+      const shown = s.palette ? Object.keys(pal) : HDS.colors.map((c) => c.key);
+      if (!pal[v]) errors.push(`${where}: HDS ${s.palette === 'text' ? '글자색' : s.palette === 'line' ? '선 색' : '색'} 키예요 (가능: ${shown.join(', ')} / 현재 "${v}")`);
       break;
     }
     case 'radius':
