@@ -50,6 +50,59 @@
 .hero-bgfx--blue-glow   { --fx-base: #03060f; --fx-c1: #0066ff; --fx-c2: #6aa8ff; --fx-c3: #7a5cff; } /* brand blue */
 .hero-bgfx--aurora      { --fx-base: #020807; --fx-c1: #1fd1a5; --fx-c2: #7cf0d0; --fx-c3: #a14bff; }
 
+/* ---------- 움직이는 프리셋 2 — 빛 덩어리와 다른 방식 ---------- */
+
+/* 물결 — 크게 둥근 사각형 3장을 천천히 돌려 아래쪽에 물결이 겹쳐 흐르는 모양 */
+.hero-bgfx--wave { --fx-base: #050816; --fx-c1: #0066ff; --fx-c2: #6541f2; --fx-c3: #00aeff; }
+.hero-bgfx.hero-bgfx--wave > span { /* 공통 빛 덩어리 규칙(.hero-bgfx > span:nth-child)보다 뒤에 와서 덮어요 */
+  left: 50%; top: auto; right: auto; bottom: auto; width: 220vmax; height: 220vmax; max-width: none;
+  margin-left: -110vmax; border-radius: 43%; filter: none; transform-origin: 50% 50%;
+  animation: hero-fx-spin 26s linear infinite;
+}
+.hero-bgfx--wave > span:nth-child(1) { top: 76%; background: color-mix(in srgb, var(--fx-c2) 45%, transparent); }
+.hero-bgfx--wave > span:nth-child(2) { top: 82%; background: color-mix(in srgb, var(--fx-c1) 50%, transparent); animation-duration: 34s; animation-direction: reverse; border-radius: 41%; }
+.hero-bgfx--wave > span:nth-child(3) { top: 88%; background: color-mix(in srgb, var(--fx-c3) 35%, transparent); animation-duration: 42s; border-radius: 45%; }
+.hero-bgfx--wave > span:nth-child(4) { display: none; }
+@keyframes hero-fx-spin { to { transform: rotate(360deg); } }
+
+/* 테크 그리드 — 원근감 있는 격자가 앞으로 다가오고, 지평선에 빛이 번져요 */
+.hero-bgfx--tech-grid { --fx-base: #04070d; --fx-c1: #00bdde; --fx-c2: #0066ff; --fx-c3: #6541f2; }
+.hero-bgfx--tech-grid > span:nth-child(1) {
+  left: -50%; top: 52%; width: 200%; height: 100%; border-radius: 0; filter: none; opacity: .9;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--fx-c1) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--fx-c1) 70%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(420px) rotateX(62deg); transform-origin: 50% 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%);
+  mask-image: linear-gradient(to bottom, transparent, #000 35%);
+  animation: hero-fx-grid 3.2s linear infinite;
+}
+.hero-bgfx--tech-grid > span:nth-child(2) {
+  left: 10%; top: 40%; width: 80%; height: 30%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--fx-c1) 75%, transparent), transparent);
+  filter: blur(30px); opacity: .9; transform: none;
+  animation: hero-fx-pulse 6s ease-in-out infinite alternate;
+}
+.hero-bgfx--tech-grid > span:nth-child(3) {
+  right: auto; left: -10%; bottom: auto; top: -20%; width: 60%; height: 60%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--fx-c3) 45%, transparent), transparent);
+  filter: blur(50px); animation: hero-fx-drift-b 24s ease-in-out infinite alternate;
+}
+.hero-bgfx--tech-grid > span:nth-child(4) { display: none; }
+@keyframes hero-fx-grid { to { background-position: 0 64px, 0 64px; } }
+@keyframes hero-fx-pulse { from { opacity: .55; transform: scaleX(.9); } to { opacity: 1; transform: scaleX(1.08); } }
+
+/* 컬러 흐름 — 큰 그라디언트가 대각선으로 천천히 흘러요 (빛 덩어리 없이) */
+.hero-bgfx--color-flow {
+  --fx-base: #2a1a6e;
+  background: linear-gradient(120deg, #6541f2, #0066ff, #f553da, #6541f2, #0066ff);
+  background-size: 300% 300%;
+  animation: hero-fx-flow 18s ease-in-out infinite alternate;
+}
+.hero-bgfx--color-flow > span { display: none; }
+@keyframes hero-fx-flow { from { background-position: 0% 30%; } to { background-position: 100% 70%; } }
+
 /* 정지 프리셋 — 빛 덩어리 없이 그라디언트만 */
 .hero-bgfx--violet-fade > span, .hero-bgfx--night-mesh > span { display: none; }
 .hero-bgfx--violet-fade { background: radial-gradient(120% 70% at 50% -10%, #8b5cff 0%, #4b1fd1 35%, transparent 75%), #000000; }
@@ -60,12 +113,12 @@
 
 /* MO — 세로 화면에 맞게 띠를 더 가파르게, 번짐은 작게 */
 @media (max-width: 767px) {
-  .hero-bgfx > span:nth-child(1) { left: -60%; top: 60%; width: 200%; height: 34%; filter: blur(36px); }
-  .hero-bgfx > span:nth-child(2) { left: -50%; top: 72%; width: 180%; height: 6%; }
-  .hero-bgfx > span:nth-child(3) { right: -60%; bottom: -16%; width: 150%; height: 50%; filter: blur(44px); }
-  .hero-bgfx > span:nth-child(4) { right: -40%; bottom: 10%; width: 120%; }
+  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(1) { left: -60%; top: 60%; width: 200%; height: 34%; filter: blur(36px); }
+  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(2) { left: -50%; top: 72%; width: 180%; height: 6%; }
+  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(3) { right: -60%; bottom: -16%; width: 150%; height: 50%; filter: blur(44px); }
+  .hero-bgfx:not(.hero-bgfx--wave):not(.hero-bgfx--tech-grid) > span:nth-child(4) { right: -40%; bottom: 10%; width: 120%; }
 }
 /* 동작 줄이기 설정이면 멈춰요 */
 @media (prefers-reduced-motion: reduce) {
-  .hero-bgfx > span { animation: none; }
+  .hero-bgfx, .hero-bgfx > span { animation: none !important; }
 }
