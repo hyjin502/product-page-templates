@@ -8,8 +8,7 @@ import { createRequire } from 'node:module';
 import nunjucks from 'nunjucks';
 import {
   ROOT, SECTIONS_DIR, BASE_CSS_PATH, PAGER_JS_PATH, RENDER_CORE_PATH, FONT_LINK, HDS, pagerOf, loadRegistry, createEnv, renderVariant, cssFor, figmaUrl,
-  validateContent, validatePage,
-} from './lib.mjs';
+  validateContent, validatePage, BG_PRESETS } from './lib.mjs';
 
 const DIST = path.join(ROOT, 'dist');
 const PAGES_DIR = path.join(ROOT, 'pages');
@@ -63,6 +62,7 @@ function buildLibrary(reg, env, baseCss) {
     figmaFile: figmaUrl(catalog, null),
     baseCss,
     hds: HDS,
+    bgPresets: BG_PRESETS,
     icons: editor.icons,
     pagerJs: fs.readFileSync(PAGER_JS_PATH, 'utf8'),
     fontLink: FONT_LINK,

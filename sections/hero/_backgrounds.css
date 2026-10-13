@@ -1,0 +1,71 @@
+/* hero CSS 배경 프리셋 — 이미지·영상 없이 HTML/CSS 만으로 그려요 (목록·이름은 backgrounds.json)
+   마크업: <div class="hero-bgfx hero-bgfx--<key>"><span></span><span></span><span></span><span></span></div>
+   빛 덩어리(span) 4개를 흐리게 겹쳐 띠·번짐을 만들고, 움직이는 프리셋은 @keyframes 로 천천히 흘러요.
+   색은 프리셋마다 변수(--fx-base · --fx-c1 · --fx-c2 · --fx-c3)로만 정해요 */
+.hero-bgfx {
+  --fx-base: #05060a; --fx-c1: #ff5a1f; --fx-c2: #ff9a3c; --fx-c3: #2f6bff;
+  position: absolute; inset: 0; overflow: hidden; background: var(--fx-base);
+}
+.hero-bgfx > span { position: absolute; display: block; border-radius: 50%; pointer-events: none; will-change: transform; }
+/* ① 넓은 번짐 — 왼쪽 아래에서 위로 비스듬히 */
+.hero-bgfx > span:nth-child(1) {
+  left: -30%; top: 52%; width: 120%; height: 46%;
+  background: radial-gradient(closest-side, var(--fx-c1), color-mix(in srgb, var(--fx-c1) 45%, transparent) 55%, transparent);
+  filter: blur(48px); transform: rotate(-24deg);
+  animation: hero-fx-drift-a 22s ease-in-out infinite alternate;
+}
+/* ② 밝은 코어 — 띠 가운데의 선명한 빛 */
+.hero-bgfx > span:nth-child(2) {
+  left: -20%; top: 66%; width: 105%; height: 9%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--fx-c2) 70%, #ffffff), var(--fx-c2) 45%, transparent);
+  filter: blur(14px); opacity: .9; transform: rotate(-24deg);
+  animation: hero-fx-drift-a 22s ease-in-out infinite alternate;
+}
+/* ③ 보조색 — 오른쪽 아래 */
+.hero-bgfx > span:nth-child(3) {
+  right: -28%; bottom: -26%; width: 85%; height: 70%;
+  background: radial-gradient(closest-side, var(--fx-c3), color-mix(in srgb, var(--fx-c3) 35%, transparent) 55%, transparent);
+  filter: blur(56px); opacity: .9;
+  animation: hero-fx-drift-b 26s ease-in-out infinite alternate;
+}
+/* ④ 보조색 가는 띠 — 오른쪽 */
+.hero-bgfx > span:nth-child(4) {
+  right: -12%; bottom: 14%; width: 70%; height: 6%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--fx-c3) 60%, #ffffff), transparent);
+  filter: blur(12px); opacity: .75; transform: rotate(18deg);
+  animation: hero-fx-drift-c 30s ease-in-out infinite alternate;
+}
+/* 위쪽 가운데는 어둡게 — 문구가 읽히게 */
+.hero-bgfx::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(70% 60% at 50% 38%, color-mix(in srgb, var(--fx-base) 70%, transparent), transparent 75%);
+}
+@keyframes hero-fx-drift-a { from { transform: translate(-4%, 3%) rotate(-27deg); } to { transform: translate(5%, -4%) rotate(-20deg); } }
+@keyframes hero-fx-drift-b { from { transform: translate(6%, 4%) scale(1); } to { transform: translate(-6%, -6%) scale(1.12); } }
+@keyframes hero-fx-drift-c { from { transform: translate(4%, 3%) rotate(20deg); } to { transform: translate(-8%, -5%) rotate(12deg); } }
+
+/* 움직이는 프리셋 — 색만 달라요 */
+.hero-bgfx--sunset-glow { --fx-base: #05060a; --fx-c1: #ff5a1f; --fx-c2: #ff9a3c; --fx-c3: #2f6bff; }
+.hero-bgfx--hunet-glow  { --fx-base: #07070a; --fx-c1: #fa2e43; --fx-c2: #ff8a5c; --fx-c3: #3385ff; } /* brand/hunet-red · blue-600 */
+.hero-bgfx--blue-glow   { --fx-base: #03060f; --fx-c1: #0066ff; --fx-c2: #6aa8ff; --fx-c3: #7a5cff; } /* brand blue */
+.hero-bgfx--aurora      { --fx-base: #020807; --fx-c1: #1fd1a5; --fx-c2: #7cf0d0; --fx-c3: #a14bff; }
+
+/* 정지 프리셋 — 빛 덩어리 없이 그라디언트만 */
+.hero-bgfx--violet-fade > span, .hero-bgfx--night-mesh > span { display: none; }
+.hero-bgfx--violet-fade { background: radial-gradient(120% 70% at 50% -10%, #8b5cff 0%, #4b1fd1 35%, transparent 75%), #000000; }
+.hero-bgfx--night-mesh  {
+  --fx-base: #121316;
+  background: radial-gradient(50% 60% at 0% 20%, #1e5a8c 0%, transparent 70%), radial-gradient(50% 60% at 100% 90%, #6b2fa8 0%, transparent 70%), #121316;
+}
+
+/* MO — 세로 화면에 맞게 띠를 더 가파르게, 번짐은 작게 */
+@media (max-width: 767px) {
+  .hero-bgfx > span:nth-child(1) { left: -60%; top: 60%; width: 200%; height: 34%; filter: blur(36px); }
+  .hero-bgfx > span:nth-child(2) { left: -50%; top: 72%; width: 180%; height: 6%; }
+  .hero-bgfx > span:nth-child(3) { right: -60%; bottom: -16%; width: 150%; height: 50%; filter: blur(44px); }
+  .hero-bgfx > span:nth-child(4) { right: -40%; bottom: 10%; width: 120%; }
+}
+/* 동작 줄이기 설정이면 멈춰요 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-bgfx > span { animation: none; }
+}

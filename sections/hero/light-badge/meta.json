@@ -99,11 +99,12 @@
     },
     "background": {
       "type": "media",
+      "cssPresets": true,
       "figmaLayer": "bg-media",
       "extract": false,
       "optional": true,
       "label": "배경",
-      "hint": "비우면 연한 회색 바탕 · 이미지 또는 mp4"
+      "hint": "비우면 연한 회색 바탕 · 이미지 · mp4 · CSS 배경"
     }
   }
 }

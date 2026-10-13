@@ -1,8 +1,10 @@
 {# hero 공통 매크로 — 배경 미디어 · 줄 단위 문구 · HDS 버튼 #}
 
-{# 미디어 한 개 — m: { kind: image|video, src, poster? } #}
+{# 미디어 한 개 — m: { kind: image|video, src, poster? } | { kind: css, preset } (CSS 배경 프리셋, _backgrounds.css) #}
 {% macro mediaEl(m, cls="") %}
-{% if m.kind == "video" %}
+{% if m.kind == "css" %}
+<div class="hero-bgfx hero-bgfx--{{ m.preset }}{% if cls %} {{ cls }}{% endif %}"><span></span><span></span><span></span><span></span></div>
+{% elif m.kind == "video" %}
 <video{% if cls %} class="{{ cls }}"{% endif %} src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %} autoplay muted loop playsinline></video>
 {% else %}
 <img{% if cls %} class="{{ cls }}"{% endif %} src="{{ m.src }}" alt="">
@@ -14,11 +16,11 @@
 {% macro bgMedia(bg, cls="hero__bg") %}
 {% set pc = (bg.pc or bg.mo) if bg else null %}
 {% set mo = (bg.mo or bg.pc) if bg else null %}
-{% if pc and pc.src %}
+{% if pc and (pc.src or pc.kind == "css") %}
 <div class="{{ cls }}" aria-hidden="true">
-{% if pc.src == mo.src and pc.kind == mo.kind %}
+{% if pc.src == mo.src and pc.kind == mo.kind and pc.preset == mo.preset %}
   {{ mediaEl(pc) }}
-{% elif pc.kind != "video" and mo.kind != "video" %}
+{% elif pc.kind == "image" and mo.kind == "image" %}
   <picture><source media="(max-width: 767px)" srcset="{{ mo.src }}"><img src="{{ pc.src }}" alt=""></picture>
 {% else %}
   {{ mediaEl(pc, "only-pc") }}

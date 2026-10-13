@@ -635,3 +635,22 @@ body.is-dev .flink__label::after { content: none; }
   .compose.is-wide .compose__side > :not(.panel-toggle) { display: revert; }
   .compose.is-wide .compose__side > .compose__scroll, .compose.is-wide .compose__side > .compose__foot { display: flex; }
 }
+
+/* 히어로 편집기 — CSS 배경 프리셋 칩 */
+.hed-media__swatch { display: block; width: 100%; height: 100%; }
+.hed-bgfx { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; }
+.hed-bgfx__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.hed-bgfx__b {
+  display: flex; flex-direction: column; gap: 4px; padding: 4px; border: 1px solid var(--rule); border-radius: 8px;
+  background: var(--panel); color: var(--ink-2); font: inherit; cursor: pointer; text-align: left;
+}
+.hed-bgfx__b:hover { border-color: var(--ink-3); }
+.hed-bgfx__b[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); }
+.hed-bgfx__sw { position: relative; display: block; aspect-ratio: 16 / 9; border-radius: 5px; }
+/* 움직이는 프리셋 표시 — 오른쪽 아래 작은 ▶ */
+.hed-bgfx__sw.is-motion::after, .hed-media__swatch.is-motion::after {
+  content: ""; position: absolute; right: 5px; bottom: 5px; width: 0; height: 0;
+  border-left: 6px solid rgba(255,255,255,.85); border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+}
+.hed-media__swatch { position: relative; }
+.hed-bgfx__name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

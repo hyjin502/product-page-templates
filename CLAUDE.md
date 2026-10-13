@@ -104,7 +104,8 @@ scripts/                                build · validate · preview · shot · 
   - `text`/`richtext`: `maxLines` · `minLines` · `maxChars`(줄마다, 띄어쓰기 포함). richtext + maxLines 는 줄마다 입력칸.
   - richtext 의 `mo: { maxLines, maxChars }` = MO 문구를 따로 받는다(값 `{ pc, mo }`, MO 는 이 한도로 검사). 템플릿 `lineSpans` 는 PC·MO 줄이 다르면 `.hero__lines.only-pc` / `.only-mo` 두 묶음을 낸다.
   - `color`: `tokens/hds.json` 색 키(`"blue/700"`), `radius`: `xs|sm|md|lg|xl|full`, 둘 다 `default` 로 기본값.
-  - `media`: `{ pc: { kind: "image"|"video", src, alt?, poster? }, mo? }`. `hint` 는 편집기 안내 문구.
+  - `media`: `{ pc: { kind: "image"|"video", src, alt?, poster? } | { kind: "css", preset }, mo? }`. `hint` 는 편집기 안내 문구.
+    - **CSS 배경 프리셋**(`kind: "css"`): 슬롯에 `"cssPresets": true` 가 있어야 쓸 수 있다(hero 배경 6종). 목록은 `sections/hero/backgrounds.json`(key · label · motion · swatch), 모양은 `sections/hero/_backgrounds.css` 의 `.hero-bgfx--<key>`(빛 덩어리 span 4개 + `@keyframes`, 동작 줄이기면 멈춤). 새 프리셋 = 두 파일에 한 항목씩. hero 의 `_backgrounds.css` 는 `_shared.css` 와 함께 섹션 공통 CSS 로 들어간다.
   - `enum` 은 칩으로 고른다(`labels` 로 표시 이름), `toggle` 은 체크박스(true/false). 항목 필드의 `hideWhen: { style: "outline" }` 은 그 조건일 때 입력칸을 숨긴다.
   - meta `thumb` = 편집기 스타일 썸네일(`assets/hero/thumbs/<layout>.jpg`, Figma 렌더를 가로 480 으로).
 - 렌더: build 가 편집기 섹션의 `.njk` 를 `nunjucks.precompile` 해서 `nunjucks-slim` 과 함께 `dist/index.html` 에 넣는다. 편집기 미리보기 = `npm run build` 결과 (동일성 확인함).

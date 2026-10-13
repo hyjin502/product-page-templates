@@ -69,6 +69,7 @@
     },
     "background": {
       "type": "media",
+      "cssPresets": true,
       "figmaLayer": "bg",
       "extract": false,
       "optional": true,

@@ -507,6 +507,7 @@ const blobUrls = {};
 /** 미디어 참조 → content 값. 미리보기는 blob: 주소, 내보내기는 page.json 옆에 둘 파일 이름 */
 function mediaOut(ref, slot, dev, forExport) {
   if (!ref) return null;
+  if (ref.kind === 'css') return ref.preset ? { kind: 'css', preset: ref.preset } : null;
   if (ref.file) {
     if (forExport) return { kind: ref.kind, src: exportName(slot, dev, ref) };
     return blobUrls[ref.file] ? { kind: ref.kind, src: blobUrls[ref.file] } : null;
@@ -645,33 +646,43 @@ function listField(k, s, items) {
   ${items.length < max ? `<button type="button" class="hed-add" data-act="add-item" data-f="${k}">+ ${esc(one)} 추가</button>` : ''}
 </div>`;
 }
+const bgPreset = (key) => (REG.bgPresets || []).find((p) => p.key === key);
 function mediaThumb(ref) {
   if (!ref) return '<span class="hed-media__none">없음</span>';
+  if (ref.kind === 'css') { const p = bgPreset(ref.preset); return `<span class="hed-media__swatch${p && p.motion ? ' is-motion' : ''}" style="background:${esc(p ? p.swatch : '#000')}"></span>`; }
   const src = ref.file ? blobUrls[ref.file] : ref.src;
   if (!src) return '<span class="hed-media__none">파일을 다시<br>골라 주세요</span>';
   return ref.kind === 'video' ? `<video src="${esc(src)}" muted loop autoplay playsinline></video>` : `<img src="${esc(src)}" alt="">`;
 }
 function mediaName(ref) {
   if (!ref) return '없음';
+  if (ref.kind === 'css') { const p = bgPreset(ref.preset); return p ? `${p.label}${p.motion ? ' · 움직임' : ''}` : ref.preset; }
   if (ref.file) return `${ref.name || '올린 파일'}${blobUrls[ref.file] ? '' : ' (다시 골라 주세요)'}`;
   return ref.src;
 }
-function mediaBox(k, dev, ref, title) {
+/** CSS 배경 프리셋 칩 — 슬롯에 cssPresets: true 일 때만 */
+function bgPresetChips(k, dev, ref) {
+  return `<div class="hed-bgfx" role="group" aria-label="CSS 배경"><span class="hed-sub__label">또는 CSS 배경 <span class="hed-f__opt">이미지·영상 없이 코드로 그려요</span></span>
+  <div class="hed-bgfx__list">${(REG.bgPresets || []).map((p) => `<button type="button" class="hed-bgfx__b" ${attrs({ 'data-act': 'bg-preset', 'data-f': k, 'data-dev': dev, 'data-preset': p.key, 'aria-pressed': String(!!ref && ref.kind === 'css' && ref.preset === p.key), title: p.label + (p.motion ? ' · 천천히 움직여요' : '') })}><span class="hed-bgfx__sw${p.motion ? ' is-motion' : ''}" style="background:${esc(p.swatch)}"></span><span class="hed-bgfx__name">${esc(p.label)}</span></button>`).join('')}</div></div>`;
+}
+function mediaBox(k, dev, ref, title, css) {
   return `<div class="hed-media">
   <div class="hed-media__thumb">${mediaThumb(ref)}</div>
   <div class="hed-media__info">
-    <b>${title}${ref ? ` <span class="hed-media__kind">${ref.kind === 'video' ? '영상' : '이미지'}</span>` : ''}</b>
+    <b>${title}${ref ? ` <span class="hed-media__kind">${ref.kind === 'css' ? 'CSS 배경' : ref.kind === 'video' ? '영상' : '이미지'}</span>` : ''}</b>
     <span class="hed-media__name" title="${esc(mediaName(ref))}">${esc(mediaName(ref))}</span>
     <div class="hed-media__btns"><button type="button" class="btn-ui" data-act="pick" data-f="${k}" data-dev="${dev}">파일 선택</button>${ref ? `<button type="button" class="btn-ui" data-act="clear" data-f="${k}" data-dev="${dev}">지우기</button>` : ''}</div>
     <input type="url" class="hed-media__url" ${attrs({ 'data-f': k, 'data-dev': dev, 'data-k': 'url', placeholder: '또는 이미지·mp4 주소 붙여넣기', 'aria-label': `${title} 주소` })}>
   </div>
+  ${css ? bgPresetChips(k, dev, ref) : ''}
 </div>`;
 }
 function mediaField(k, s, m) {
-  return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 또는 mp4 · PC 것은 TB 에도 쓰여요')}
-  ${mediaBox(k, 'pc', m.pc, 'PC · TB')}
+  const css = !!s.cssPresets;
+  return `<div class="hed-f">${fieldHead(s, s.hint || (css ? '이미지 · mp4 · CSS 배경 · PC 것은 TB 에도 쓰여요' : '이미지 또는 mp4 · PC 것은 TB 에도 쓰여요'))}
+  ${mediaBox(k, 'pc', m.pc, 'PC · TB', css)}
   <label class="hed-check"><input type="checkbox" data-f="${k}" data-k="moSame"${m.moSame ? ' checked' : ''}> MO 도 PC ${esc(s.label || '')} 그대로 쓰기</label>
-  ${m.moSame ? '' : mediaBox(k, 'mo', m.mo, 'MO')}
+  ${m.moSame ? '' : mediaBox(k, 'mo', m.mo, 'MO', css)}
 </div>`;
 }
 function heroForm(v, e) {
@@ -907,6 +918,7 @@ heroEl.addEventListener('click', (ev) => {
       case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, blank(vv)]))); break;
       case 'del-item': e[p.f].splice(p.i, 1); break;
       case 'clear': e[p.f][p.dev] = null; break;
+      case 'bg-preset': e[p.f][p.dev] = { kind: 'css', preset: act.dataset.preset }; break;
       case 'pick': pickTarget = p; heroEl.querySelector('[data-hed-file]').click(); return;
       default: return;
     }

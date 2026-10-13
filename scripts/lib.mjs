@@ -18,6 +18,10 @@ const core = createRequire(import.meta.url)(RENDER_CORE_PATH);
 export const HDS_PATH = path.join(ROOT, 'tokens/hds.json');
 export const HDS = readJson(HDS_PATH);
 const HDS_IDX = core.hdsIndex(HDS);
+
+/** hero CSS 배경 프리셋 — sections/hero/backgrounds.json (모양은 sections/hero/_backgrounds.css) */
+export const BG_PRESETS_PATH = path.join(ROOT, 'sections/hero/backgrounds.json');
+export const BG_PRESETS = fs.existsSync(BG_PRESETS_PATH) ? readJson(BG_PRESETS_PATH).presets : [];
 const readIf = (p) => (fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '');
 
 /* ---------------------------------------------------------------- registry */
@@ -28,7 +32,7 @@ export function loadRegistry() {
   const loadErrors = [];
   for (const sec of catalog.sections) {
     const dir = path.join(SECTIONS_DIR, sec.key);
-    sec.sharedCss = readIf(path.join(dir, '_shared.css'));
+    sec.sharedCss = [readIf(path.join(dir, '_shared.css')), readIf(path.join(dir, '_backgrounds.css'))].filter(Boolean).join('\n');
     sec.variants = [];
     if (!fs.existsSync(dir)) continue;
     for (const name of fs.readdirSync(dir).sort()) {
@@ -95,8 +99,14 @@ function checkLines(s, v, where, errors) {
   }
 }
 
-function checkMediaItem(m, where, errors) {
+function checkMediaItem(m, where, errors, s = {}) {
   if (m == null) return;
+  if (m && m.kind === 'css') {
+    // CSS 배경 프리셋 — { kind: "css", preset } · 슬롯에 cssPresets: true 가 있어야 써요
+    if (!s.cssPresets) errors.push(`${where}: 이 슬롯은 CSS 배경을 쓸 수 없어요 (이미지·mp4)`);
+    else if (!BG_PRESETS.some((p) => p.key === m.preset)) errors.push(`${where}.preset: CSS 배경 프리셋 키예요 (가능: ${BG_PRESETS.map((p) => p.key).join(', ')} / 현재 "${m.preset}")`);
+    return;
+  }
   if (typeof m !== 'object' || typeof m.src !== 'string' || !m.src) { errors.push(`${where}: { kind, src } 여야 해요`); return; }
   if (!['image', 'video'].includes(m.kind)) errors.push(`${where}.kind: image | video 중 하나예요 (현재 "${m.kind}")`);
 }
@@ -129,11 +139,11 @@ function validateValue(s, v, where, errors) {
       if (!HDS_IDX.radius[v]) errors.push(`${where}: HDS radius 키예요 (가능: ${Object.keys(HDS_IDX.radius).join(', ')} / 현재 "${v}")`);
       break;
     case 'media':
-      // 배경 — { pc: { kind, src, alt?, poster? }, mo?: 같은 모양 } · mo 가 없으면 PC 것을 써요
+      // 배경 — { pc: { kind, src, alt?, poster? } | { kind: "css", preset }, mo?: 같은 모양 } · mo 가 없으면 PC 것을 써요
       if (typeof v !== 'object' || Array.isArray(v)) { errors.push(`${where}: { pc, mo } 여야 해요`); break; }
       for (const k of Object.keys(v)) if (!['pc', 'mo'].includes(k)) errors.push(`${where}: 알 수 없는 키 "${k}" (pc, mo)`);
-      checkMediaItem(v.pc, `${where}.pc`, errors);
-      checkMediaItem(v.mo, `${where}.mo`, errors);
+      checkMediaItem(v.pc, `${where}.pc`, errors, s);
+      checkMediaItem(v.mo, `${where}.mo`, errors, s);
       break;
     case 'url':
       if (typeof v !== 'string') errors.push(`${where}: 문자열(URL) 이어야 해요`);
