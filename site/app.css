@@ -613,28 +613,8 @@ body.is-dev .flink__label::after { content: none; }
 .hed-check--mo .hed-f__note { margin-left: auto; }
 .hed-mo { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 8px; background: var(--panel); border: 1px dashed var(--rule); }
 
-/* ---------- 조합기·히어로 편집기: 패널 접고 크게 보기 ---------- */
+/* ---------- 조합기·히어로 편집기 무대 여백 ---------- */
 .compose__stage { padding: 8px; } /* 라이브러리 무대(.v__stage)와 같은 여백 */
-.panel-toggle {
-  flex: none; display: flex; align-items: center; gap: 8px; margin: 10px 10px 0; padding: 6px 10px;
-  border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink-2);
-  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left;
-}
-.panel-toggle:hover { border-color: var(--accent); color: var(--accent); }
-.panel-toggle__ico {
-  flex: none; width: 7px; height: 7px; margin-left: 2px;
-  border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg);
-}
-.compose.is-wide { grid-template-columns: 44px minmax(0, 1fr); }
-.compose.is-wide .compose__side > :not(.panel-toggle) { display: none; }
-.compose.is-wide .panel-toggle { justify-content: center; margin: 10px 6px; padding: 10px 0; }
-.compose.is-wide .panel-toggle__ico { margin: 0 2px 0 0; transform: rotate(-135deg); }
-@media (max-width: 860px) {
-  .panel-toggle { display: none; }
-  .compose.is-wide { grid-template-columns: minmax(0, 1fr); }
-  .compose.is-wide .compose__side > :not(.panel-toggle) { display: revert; }
-  .compose.is-wide .compose__side > .compose__scroll, .compose.is-wide .compose__side > .compose__foot { display: flex; }
-}
 
 /* 히어로 편집기 — CSS 배경 프리셋 칩 */
 .hed-media__swatch { display: block; width: 100%; height: 100%; }
@@ -659,10 +639,7 @@ body.is-dev .flink__label::after { content: none; }
    패널(360~380px)이 옆에 있으면 미리보기가 라이브러리보다 훨씬 작아져서, 좁은 창에서는 미리보기를 전체 폭으로 써요.
    (예전 860 쌓기 규칙은 뒤쪽 .compose 폭 규칙에 덮여 동작하지 않았어요 — 이 블록이 파일 맨 끝에 있어야 해요) */
 @media (max-width: 1279px) {
-  .compose, .compose.is-wide { grid-template-columns: minmax(0, 1fr); }
-  .panel-toggle { display: none; }
-  .compose.is-wide .compose__side > .compose__scroll,
-  .compose.is-wide .compose__side > .compose__foot { display: flex; }
+  .compose { grid-template-columns: minmax(0, 1fr); }
   .compose__side {
     position: static; height: auto; overflow: visible;
     border-right: 0; border-bottom: 1px solid var(--rule);
@@ -696,3 +673,33 @@ body.is-dev .flink__label::after { content: none; }
   margin-left: auto; padding: 0; border: 0; background: none; color: var(--accent); font: inherit; font-size: 11px;
   cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
 }
+
+/* ---------- 조합기·히어로 편집기: 패널 폭 드래그 · 미리보기 배율 ----------
+   패널 폭은 --panel-w(경계선을 끌어 조절, 더블클릭 = 기본 380). 1280 미만 창은 위 블록대로 위아래로 쌓여요 */
+@media (min-width: 1280px) {
+  .compose { grid-template-columns: var(--panel-w, 380px) minmax(0, 1fr); }
+}
+.compose__side { position: sticky; }
+.split {
+  position: absolute; top: 0; right: 0; z-index: 8; width: 7px; height: 100%;
+  cursor: col-resize; touch-action: none; outline: none;
+}
+.split::after {
+  content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 3px;
+  background: transparent; transition: background .15s;
+}
+.split:hover::after, .split:focus-visible::after, .is-resizing .split::after { background: var(--accent); }
+.is-resizing, .is-resizing * { cursor: col-resize !important; user-select: none; }
+.is-resizing iframe { pointer-events: none; }
+@media (max-width: 1279px) { .split { display: none; } }
+
+/* 미리보기 무대 — 위쪽 막대(배율 · 편집기 안내) + 미리보기. 배율이 무대보다 크면 가로 스크롤 */
+.compose__stage, .hed .compose__stage {
+  flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 8px; overflow-x: auto;
+}
+.compose__stage > .v__frame { flex: none; margin-inline: auto; }
+.stage-bar { position: sticky; left: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.stage-bar .hed-warn { flex: 1 1 320px; align-self: stretch; }
+.zoom { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; padding: 3px; border-radius: 9px; background: var(--panel); border: 1px solid var(--rule); }
+.zoom__label { padding: 0 4px 0 6px; font-size: 11px; color: var(--ink-3); }
+.zoom .chip { min-height: 24px; }

@@ -23,20 +23,27 @@ try {
   if (Array.isArray(s.open)) state.open = s.open.filter((k) => secByKey[k]);
   if (s.compose && Array.isArray(s.compose.rows)) state.compose = s.compose;
   if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
-  state.wide = s.wide === true;
+  if (Number.isFinite(s.panelW)) state.panelW = s.panelW;
+  if (s.zoom === 'fit' || [0.5, 0.75, 1].includes(s.zoom)) state.zoom = s.zoom;
 } catch (e) {}
 if (!state.compose) state.compose = { title: '새 상품페이지', rows: defaultRows() };
 state.compose.rows = state.compose.rows.filter((r) => byId[r.variant]);
 function save() { try { localStorage.setItem('tpl-site', JSON.stringify(state)); } catch (e) {} }
-/** 조합기·히어로 편집기 왼쪽 패널 접기 — 접으면 미리보기가 거의 화면 전체 폭이 돼요 */
-const PANEL_TOGGLE = '<button type="button" class="panel-toggle" data-panel-toggle><span class="panel-toggle__ico" aria-hidden="true"></span><span class="panel-toggle__label"></span></button>';
-function syncPanelToggles() {
-  [composeEl, heroEl].forEach((el) => el.classList.toggle('is-wide', state.wide));
-  document.querySelectorAll('[data-panel-toggle]').forEach((b) => {
-    const label = state.wide ? '패널 열기' : '패널 접고 크게 보기';
-    b.setAttribute('aria-expanded', String(!state.wide)); b.setAttribute('aria-label', label); b.title = label;
-    b.querySelector('.panel-toggle__label').textContent = state.wide ? '' : '패널 접고 크게 보기';
-  });
+/* 조합기·히어로 편집기 — 왼쪽 패널 폭은 경계선을 끌어 조절(더블클릭 = 기본 폭), 미리보기 배율은 위쪽 막대에서 골라요.
+   패널은 접히지 않아요(예전 「패널 접고 크게 보기」는 뒤로가기처럼 보여 메뉴가 사라진 것처럼 보였어요) */
+const PANEL_W = { def: 380, min: 300, previewMin: 480 };
+const ZOOMS = [['fit', '폭 맞춤'], [0.5, '50%'], [0.75, '75%'], [1, '100%']];
+const SPLIT = '<div class="split" data-split role="separator" aria-orientation="vertical" tabindex="0" aria-label="패널 폭 조절 — 끌거나 ←→ 키, 더블클릭하면 기본 폭" title="끌어서 패널 폭 조절 · 더블클릭하면 기본 폭"></div>';
+const zoomBar = () => `<div class="zoom" role="group" aria-label="미리보기 배율"><span class="zoom__label">보기</span>${ZOOMS.map(([z, l]) => `<button type="button" class="chip" data-zoom="${z}" aria-pressed="${String(z === (state.zoom || 'fit'))}">${l}</button>`).join('')}</div>`;
+const clampPanel = (w) => Math.round(Math.max(PANEL_W.min, Math.min(w, window.innerWidth - PANEL_W.previewMin)));
+function syncPanel() {
+  const w = clampPanel(state.panelW || PANEL_W.def);
+  [composeEl, heroEl].forEach((el) => el.style.setProperty('--panel-w', w + 'px'));
+  document.querySelectorAll('[data-split]').forEach((h) => { h.setAttribute('aria-valuenow', String(w)); h.setAttribute('aria-valuemin', String(PANEL_W.min)); h.setAttribute('aria-valuemax', String(clampPanel(9999))); });
+}
+function syncZoom() {
+  document.querySelectorAll('[data-zoom]').forEach((b) => b.setAttribute('aria-pressed', String(String(state.zoom || 'fit') === b.dataset.zoom)));
+  composeFit && composeFit(); heroFit && heroFit();
 }
 
 function defaultRows() {
@@ -63,11 +70,13 @@ ${REG.fontLink}
 }
 
 /** iframe 을 실제 기기 폭으로 렌더하고 무대 폭에 맞춰 축소해요 (@media 가 진짜 폭에서 동작) */
-function mountPreview(stage, frame, iframe, scaleTag, onLoad) {
+function mountPreview(stage, frame, iframe, scaleTag, onLoad, opts = {}) {
   function fit() {
     const w = DEVICE_W[state.device];
     const pad = parseFloat(getComputedStyle(stage).paddingLeft) * 2;
-    const s = Math.min(1, Math.max(200, stage.clientWidth - pad) / w);
+    const fitS = Math.min(1, Math.max(200, stage.clientWidth - pad) / w);
+    // 배율을 고른 미리보기(조합기·편집기)는 그 배율 그대로 — 무대보다 크면 가로로 스크롤돼요
+    const s = opts.zoomable && typeof state.zoom === 'number' ? state.zoom : fitS;
     iframe.style.width = w + 'px';
     let h = 400;
     try { const b = iframe.contentDocument && iframe.contentDocument.body; if (b) h = Math.ceil(b.scrollHeight) || h; } catch (e) {}
@@ -75,7 +84,7 @@ function mountPreview(stage, frame, iframe, scaleTag, onLoad) {
     iframe.style.transform = `scale(${s})`;
     frame.style.width = Math.floor(w * s) + 'px';
     frame.style.height = Math.ceil(h * s) + 'px';
-    if (scaleTag) scaleTag.textContent = `${DEVICE_LABEL[state.device]} ${w}px · ${Math.round(s * 100)}%`;
+    if (scaleTag) scaleTag.textContent = `${DEVICE_LABEL[state.device]} ${w}px · ${Math.round(s * 100)}%${opts.zoomable && typeof state.zoom !== 'number' ? ' (폭 맞춤)' : ''}`;
   }
   iframe.addEventListener('load', () => {
     onLoad && onLoad();
@@ -344,7 +353,7 @@ function renderCompose() {
   const avail = REG.sections.filter((s) => s.variants.length).sort((a, b) => a.order - b.order);
   const soon = REG.sections.filter((s) => !s.variants.length).map((s) => s.key);
   const keepScroll = composeEl.querySelector('.compose__scroll')?.scrollTop || 0;
-  composeEl.innerHTML = `<aside class="compose__side">${PANEL_TOGGLE}
+  composeEl.innerHTML = `<aside class="compose__side">${SPLIT}
   <div class="compose__scroll">
   <div><h2>페이지 조합기</h2><p>섹션 순서와 variant를 고르면 전체 페이지를 미리 봐요. 결과는 <code>page.json</code>으로 받아 내용을 채운 뒤 빌드하세요.</p></div>
   <label class="field">페이지 제목<input type="text" data-title value="${esc(c.title)}"></label>
@@ -370,9 +379,9 @@ function renderCompose() {
   <p class="compose__hint"><code>pages/이름.page.json</code>으로 저장 → 내용 수정 → <code>npm run build</code> → <code>dist/pages/이름/index.html</code></p>
   </div>
 </aside>
-<div class="compose__stage">${c.rows.length ? '<div class="v__frame"><iframe title="조합 미리보기"></iframe><span class="v__scale"></span></div>' : '<p class="compose__empty">섹션을 추가하세요</p>'}</div>`;
+<div class="compose__stage">${c.rows.length ? `<div class="stage-bar">${zoomBar()}</div><div class="v__frame"><iframe title="조합 미리보기"></iframe><span class="v__scale"></span></div>` : '<p class="compose__empty">섹션을 추가하세요</p>'}</div>`;
   composeEl.querySelector('.compose__scroll').scrollTop = keepScroll;
-  syncPanelToggles();
+  syncPanel();
   if (!c.rows.length) return;
   const ids = c.rows.map((r) => r.variant);
   const css = [...new Set(ids)].map((id) => byId[id].css).join('\n\n'); // 같은 섹션 공통 CSS가 겹쳐도 미리보기에선 무해해요
@@ -382,7 +391,7 @@ function renderCompose() {
   const js = [...new Set(ids)].map((id) => byId[id].js).filter(Boolean).join('\n');
   const stage = ids.every((id) => byId[id].stage === 'sticky') ? 'sticky' : null;
   const iframe = composeEl.querySelector('iframe');
-  composeFit = mountPreview(composeEl.querySelector('.compose__stage'), composeEl.querySelector('.v__frame'), iframe, composeEl.querySelector('.v__scale'));
+  composeFit = mountPreview(composeEl.querySelector('.compose__stage'), composeEl.querySelector('.v__frame'), iframe, composeEl.querySelector('.v__scale'), null, { zoomable: true });
   // 편집기 내용을 쓰는 행은 올린 배경 파일(IndexedDB)을 먼저 불러와요
   Promise.all(c.rows.filter(rowUsesEditor).flatMap((r) => mediaKeys(heroEditOf(r.variant))).map(loadBlob)).then(() => {
     iframe.srcdoc = srcdoc(c.rows.map(rowHtml).join('\n'), css, js, stage);
@@ -749,7 +758,7 @@ function renderHero() {
   const v = byId[hs.variant];
   const e = heroEdit(v);
   const keep = heroEl.querySelector('.compose__scroll')?.scrollTop || 0;
-  heroEl.innerHTML = `<aside class="compose__side">${PANEL_TOGGLE}
+  heroEl.innerHTML = `<aside class="compose__side">${SPLIT}
   <div class="compose__scroll">
   <div class="hed-intro"><h2>히어로 편집기</h2><p>스타일을 고르고 문구·배경·버튼을 바꿔 보세요. 미리보기가 실제 결과예요 (기기는 위쪽 PC·TB·MO).</p></div>
   <div class="hed-styles" role="group" aria-label="히어로 스타일">${EDITORS.map((x) => {
@@ -773,11 +782,11 @@ function renderHero() {
   <input type="file" accept="image/*,video/mp4" hidden data-hed-file>
 </aside>
 <div class="compose__stage">
-  <div class="hed-warn" data-hed-warn role="status" aria-live="polite"></div>
+  <div class="stage-bar"><div class="hed-warn" data-hed-warn role="status" aria-live="polite"></div>${zoomBar()}</div>
   <div class="v__frame"><iframe title="히어로 미리보기"></iframe><span class="v__scale"></span></div>
 </div>`;
   heroEl.querySelector('.compose__scroll').scrollTop = keep;
-  syncPanelToggles();
+  syncPanel();
   const iframe = heroEl.querySelector('iframe');
   heroLoaded = false;
   heroFit = mountPreview(heroEl.querySelector('.compose__stage'), heroEl.querySelector('.v__frame'), iframe, heroEl.querySelector('.v__scale'), () => {
@@ -785,7 +794,7 @@ function renderHero() {
     try { attachPreviewPick(iframe.contentDocument); } catch (err) {}
     try { const d = iframe.contentDocument; (d.fonts ? d.fonts.ready : Promise.resolve()).then(measureSoon); } catch (err) {}
     measureSoon();
-  });
+  }, { zoomable: true });
   // 저장해 둔 파일을 불러온 뒤 그려요
   const keys = [];
   for (const m of Object.values(e)) if (m && typeof m === 'object' && 'moSame' in m) for (const r of [m.pc, m.mo]) if (r && r.file) keys.push(r.file);
@@ -1051,7 +1060,8 @@ document.addEventListener('click', (e) => {
     sideEl.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('is-current', a.dataset.nav === id));
     return;
   }
-  if (e.target.closest('[data-panel-toggle]')) { state.wide = !state.wide; syncPanelToggles(); save(); return; }
+  const zb = e.target.closest('[data-zoom]');
+  if (zb) { const z = zb.dataset.zoom; state.zoom = z === 'fit' ? 'fit' : Number(z); syncZoom(); save(); return; }
   const m = e.target.closest('[data-mode]');
   if (m) { state.mode = m.dataset.mode; applyAll(); return; }
   const oe = e.target.closest('[data-open-editor]');
@@ -1061,6 +1071,34 @@ document.addEventListener('click', (e) => {
   const dv = e.target.closest('[data-device]');
   if (dv) { state.device = dv.dataset.device; applyGlobal(); cards.forEach((c) => { c.apply(); c.fit(); }); composeFit && composeFit(); heroFit && heroFit(); if (state.mode === 'hero') measureSoon(); save(); }
 });
+
+/* 패널 폭 드래그 — 조합기·히어로 편집기 공통 (끄는 동안 미리보기 iframe 이 마우스를 가로채지 않게 막아요) */
+document.addEventListener('pointerdown', (e) => {
+  const h = e.target.closest('[data-split]');
+  if (!h || e.button !== 0) return;
+  e.preventDefault();
+  const host = h.closest('.compose');
+  const left = host.getBoundingClientRect().left;
+  document.body.classList.add('is-resizing');
+  try { h.setPointerCapture(e.pointerId); } catch (err) {}
+  const move = (ev) => { state.panelW = clampPanel(ev.clientX - left); syncPanel(); };
+  const up = () => {
+    document.body.classList.remove('is-resizing');
+    h.removeEventListener('pointermove', move); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up);
+    save();
+  };
+  h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+});
+document.addEventListener('dblclick', (e) => { if (e.target.closest('[data-split]')) { state.panelW = PANEL_W.def; syncPanel(); save(); } });
+document.addEventListener('keydown', (e) => {
+  const h = e.target.closest && e.target.closest('[data-split]');
+  if (!h || !['ArrowLeft', 'ArrowRight', 'Home'].includes(e.key)) return;
+  e.preventDefault();
+  const cur = clampPanel(state.panelW || PANEL_W.def);
+  state.panelW = e.key === 'Home' ? PANEL_W.def : clampPanel(cur + (e.key === 'ArrowRight' ? 20 : -20));
+  syncPanel(); save();
+});
+window.addEventListener('resize', syncPanel);
 
 function applyGlobal() {
   document.body.classList.toggle('is-dev', state.view === 'dev');
