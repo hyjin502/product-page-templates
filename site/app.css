@@ -612,3 +612,26 @@ body.is-dev .flink__label::after { content: none; }
 .hed-check--mo { margin-top: 2px; flex-wrap: wrap; }
 .hed-check--mo .hed-f__note { margin-left: auto; }
 .hed-mo { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 8px; background: var(--panel); border: 1px dashed var(--rule); }
+
+/* ---------- 조합기·히어로 편집기: 패널 접고 크게 보기 ---------- */
+.compose__stage { padding: 8px; } /* 라이브러리 무대(.v__stage)와 같은 여백 */
+.panel-toggle {
+  flex: none; display: flex; align-items: center; gap: 8px; margin: 10px 10px 0; padding: 6px 10px;
+  border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink-2);
+  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; text-align: left;
+}
+.panel-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.panel-toggle__ico {
+  flex: none; width: 7px; height: 7px; margin-left: 2px;
+  border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg);
+}
+.compose.is-wide { grid-template-columns: 44px minmax(0, 1fr); }
+.compose.is-wide .compose__side > :not(.panel-toggle) { display: none; }
+.compose.is-wide .panel-toggle { justify-content: center; margin: 10px 6px; padding: 10px 0; }
+.compose.is-wide .panel-toggle__ico { margin: 0 2px 0 0; transform: rotate(-135deg); }
+@media (max-width: 860px) {
+  .panel-toggle { display: none; }
+  .compose.is-wide { grid-template-columns: minmax(0, 1fr); }
+  .compose.is-wide .compose__side > :not(.panel-toggle) { display: revert; }
+  .compose.is-wide .compose__side > .compose__scroll, .compose.is-wide .compose__side > .compose__foot { display: flex; }
+}

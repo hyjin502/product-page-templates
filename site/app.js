@@ -13,7 +13,7 @@ const vname = (v) => v.id.slice(v.section.length + 1) || v.layout; // grid-defau
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* ---------------------------------------------------------------- state */
-const state = { mode: 'library', view: 'designer', device: 'pc', cat: 'hero', open: null, compose: null, hero: null };
+const state = { mode: 'library', view: 'designer', device: 'pc', cat: 'hero', open: null, compose: null, hero: null, wide: false };
 try {
   const s = JSON.parse(localStorage.getItem('tpl-site') || '{}');
   if (['library', 'compose', 'hero'].includes(s.mode)) state.mode = s.mode;
@@ -23,10 +23,21 @@ try {
   if (Array.isArray(s.open)) state.open = s.open.filter((k) => secByKey[k]);
   if (s.compose && Array.isArray(s.compose.rows)) state.compose = s.compose;
   if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
+  state.wide = s.wide === true;
 } catch (e) {}
 if (!state.compose) state.compose = { title: '새 상품페이지', rows: defaultRows() };
 state.compose.rows = state.compose.rows.filter((r) => byId[r.variant]);
 function save() { try { localStorage.setItem('tpl-site', JSON.stringify(state)); } catch (e) {} }
+/** 조합기·히어로 편집기 왼쪽 패널 접기 — 접으면 미리보기가 거의 화면 전체 폭이 돼요 */
+const PANEL_TOGGLE = '<button type="button" class="panel-toggle" data-panel-toggle><span class="panel-toggle__ico" aria-hidden="true"></span><span class="panel-toggle__label"></span></button>';
+function syncPanelToggles() {
+  [composeEl, heroEl].forEach((el) => el.classList.toggle('is-wide', state.wide));
+  document.querySelectorAll('[data-panel-toggle]').forEach((b) => {
+    const label = state.wide ? '패널 열기' : '패널 접고 크게 보기';
+    b.setAttribute('aria-expanded', String(!state.wide)); b.setAttribute('aria-label', label); b.title = label;
+    b.querySelector('.panel-toggle__label').textContent = state.wide ? '' : '패널 접고 크게 보기';
+  });
+}
 
 function defaultRows() {
   return REG.sections.filter((s) => s.variants.length).sort((a, b) => a.order - b.order).map((s) => ({ variant: s.variants[0] }));
@@ -333,7 +344,7 @@ function renderCompose() {
   const avail = REG.sections.filter((s) => s.variants.length).sort((a, b) => a.order - b.order);
   const soon = REG.sections.filter((s) => !s.variants.length).map((s) => s.key);
   const keepScroll = composeEl.querySelector('.compose__scroll')?.scrollTop || 0;
-  composeEl.innerHTML = `<aside class="compose__side">
+  composeEl.innerHTML = `<aside class="compose__side">${PANEL_TOGGLE}
   <div class="compose__scroll">
   <div><h2>페이지 조합기</h2><p>섹션 순서와 variant를 고르면 전체 페이지를 미리 봐요. 결과는 <code>page.json</code>으로 받아 내용을 채운 뒤 빌드하세요.</p></div>
   <label class="field">페이지 제목<input type="text" data-title value="${esc(c.title)}"></label>
@@ -360,6 +371,7 @@ function renderCompose() {
 </aside>
 <div class="compose__stage">${c.rows.length ? '<div class="v__frame"><iframe title="조합 미리보기"></iframe><span class="v__scale"></span></div>' : '<p class="compose__empty">섹션을 추가하세요</p>'}</div>`;
   composeEl.querySelector('.compose__scroll').scrollTop = keepScroll;
+  syncPanelToggles();
   if (!c.rows.length) return;
   const ids = c.rows.map((r) => r.variant);
   const css = [...new Set(ids)].map((id) => byId[id].css).join('\n\n'); // 같은 섹션 공통 CSS가 겹쳐도 미리보기에선 무해해요
@@ -684,7 +696,7 @@ function renderHero() {
   const v = byId[hs.variant];
   const e = heroEdit(v);
   const keep = heroEl.querySelector('.compose__scroll')?.scrollTop || 0;
-  heroEl.innerHTML = `<aside class="compose__side">
+  heroEl.innerHTML = `<aside class="compose__side">${PANEL_TOGGLE}
   <div class="compose__scroll">
   <div class="hed-intro"><h2>히어로 편집기</h2><p>스타일을 고르고 문구·배경·버튼을 바꿔 보세요. 오른쪽이 실제 결과예요 (기기는 위쪽 PC·TB·MO).</p></div>
   <div class="hed-styles" role="group" aria-label="히어로 스타일">${EDITORS.map((x) => {
@@ -711,6 +723,7 @@ function renderHero() {
   <div class="v__frame"><iframe title="히어로 미리보기"></iframe><span class="v__scale"></span></div>
 </div>`;
   heroEl.querySelector('.compose__scroll').scrollTop = keep;
+  syncPanelToggles();
   const iframe = heroEl.querySelector('iframe');
   heroLoaded = false;
   heroFit = mountPreview(heroEl.querySelector('.compose__stage'), heroEl.querySelector('.v__frame'), iframe, heroEl.querySelector('.v__scale'), () => {
@@ -951,6 +964,7 @@ document.addEventListener('click', (e) => {
     sideEl.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('is-current', a.dataset.nav === id));
     return;
   }
+  if (e.target.closest('[data-panel-toggle]')) { state.wide = !state.wide; syncPanelToggles(); save(); return; }
   const m = e.target.closest('[data-mode]');
   if (m) { state.mode = m.dataset.mode; applyAll(); return; }
   const oe = e.target.closest('[data-open-editor]');
