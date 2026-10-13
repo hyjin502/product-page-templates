@@ -14,28 +14,27 @@
   - 잠금은 사이트 입구만 막는다(저장소는 공개). 비밀번호가 같으면 다시 배포해도 브라우저가 다시 묻지 않는다(고정 salt PBKDF2 → AES-GCM).
 
 ## Figma 원본
-- `[UI] 커피 정수기` 파일 **Page 19** (fileKey `S3cLqJIqHJbX2eREe4iGXr`, page `6249:34928`) — `sections/sections.json` 에 있다.
-  - 사용자는 권한이 없는 원본 페이지를 복사해서 쓴다. **최신화할 때마다 페이지가 새로 복사돼 노드 ID 가 전부 바뀐다**(Page 18 `6187:*` → `6233:*` → Page 19 `6249:*`). 사용자도 알고 있고 어쩔 수 없는 일이다.
-  - 바뀌면 `scripts/figma-relink.mjs` 로 다시 맞춘다. 스크립트 머리말의 DUMP 를 use_figma 로 새 페이지에서 실행해 `pages/_verify/figma-page.json` 에 저장 → `--dry` 로 확인 → 적용. 이름으로 맞추고, hero 는 줄(PC 왼쪽 열 위→아래 = meta.order, MO = 같은 줄의 375 폭)로 맞춘다.
-  - hero 는 프레임 `6249:35086` 의 7종이다. PC·MO 짝은 이렇다.
+- **`상품페이지 템플릿 시스템` 파일 · Section Design System 페이지** (fileKey `dxhWkGXnev5U2Q1nLISR3h`, page `0:1`) — `sections/sections.json` 에 있다. 2026-10-13 사용자가 이 파일을 공식 원본으로 정했다(이 계정으로 읽기 가능).
+  - 예전 원본 `[UI] 커피 정수기`(S3cLq…, Page 18 → Page 19 `6249:*`)는 더 쓰지 않는다. 이 계정은 그 파일 권한이 없다.
+  - 섹션 프레임·심볼 구성이 바뀌면 `scripts/figma-relink.mjs` 로 다시 맞춘다. 스크립트 머리말의 DUMP 를 use_figma 로 `0:1` 에서 실행해 `pages/_verify/figma-page.json` 에 저장 → `--dry` 로 확인 → 적용. 이름으로 맞추고, hero 는 줄(PC 왼쪽 열 위→아래 = meta.order, MO = 같은 줄의 375 폭)로 맞춘다.
+  - hero 는 세트 `469:32313` 의 7종이다(이름이 같은 예전 세트 `1:1710` 은 쓰지 않는다 — relink 는 심볼이 더 많은 세트를 고른다). PC·MO 짝은 이렇다.
     | variant | PC | MO |
     |---|---|---|
-    | media-badge | 35187 | 35346 |
-    | media-title | 35205 | 35395 |
-    | light-badge | 35223 | 35357 |
-    | dark-gradient | 35243 | 35260 |
-    | gradient-text | 35326 | 35289 |
-    | visual-bottom | 35087 | 35368 |
-    | product-shot | 35306 | 35379 |
-    - 35260·35289 는 이름이 `device=pc` 로 잘못 붙어 있다. 35274 는 작업 중인 MO 초안이라 쓰지 않는다.
-    - 같은 프레임의 split 3종은 범위 밖이다. 다른 프레임 `6249:34929`("hero", 예전 3종)는 쓰지 않는다.
-- 원본 파일을 옮기거나 공식 템플릿 파일로 바꾸면 `sections/sections.json` 의 `figma.fileKey` 와 각 `meta.json` 의 `figma.pc/mo`·`options.*.figma` 노드 ID 를 새 파일 기준으로 바꾼다.
-- 예전 아티팩트가 가리키던 `상품페이지 템플릿 시스템`(dxhWk…) 파일은 권한이 없던 파일이다. 참고용일 뿐이다.
+    | media-badge | 469:32452 | 476:32991 |
+    | media-title | 471:32967 | 476:33045 |
+    | light-badge | 469:32558 | 476:33069 |
+    | dark-gradient | 469:32681 | 479:33142 |
+    | gradient-text | 469:32833 | 479:33359 |
+    | visual-bottom | 469:32373 | 479:33278 |
+    | product-shot | 471:32914 | 479:33325 |
+    - variant 이름이 서로 겹친다(대부분 `layout=center-inline`) → Figma 세트 오류. 479:33142·479:33359 는 MO 인데 `device=pc` 로 붙어 있다. 디자이너에게 `style=<variant>` 속성 추가를 요청할 것.
+    - 같은 세트 아래쪽 3종(split 2 · 사진 배경 왼쪽 정렬 1: 469:32635 · 469:32762 · 469:32412)은 아직 코드가 없다.
+- 원본 파일을 옮기면 `sections/sections.json` 의 `figma.fileKey`·`fileName`·`page` 와 각 `meta.json` 의 노드 ID 를 새 파일 기준으로 바꾼다(노드는 relink, 파일 정보는 손으로).
 - Figma MCP(claude.ai Figma 커넥터 또는 figma MCP)가 연결돼 있어야 한다. `use_figma` 전에는 `figma:figma-use` 스킬, `get_design_context` 전에는 `figma:figma-design-to-code` 스킬을 로드한다.
 - **원격 Figma 플러그인 환경에는 Pretendard 폰트가 없다.** 그래서 인스턴스를 만들거나 텍스트를 쓰는 작업은 실패한다(읽기는 가능). 실제 조합 프레임 테스트는 디자이너가 프레임을 만들어 URL 을 준다.
 
 ## 반드시 지킬 규칙
-- **샘플 문구·이미지는 Page 18 원문 그대로.** 지어낸 문구(예: 제품 카피)를 넣지 않는다. 사용자가 명시적으로 지적한 사항이다.
+- **샘플 문구·이미지는 Figma 원문 그대로** (지금 샘플은 예전 원본 Page 18·19 에서 뽑았다 — 새 원본과 다를 수 있어 추출 검증으로 확인할 것). 지어낸 문구(예: 제품 카피)를 넣지 않는다. 사용자가 명시적으로 지적한 사항이다.
 - 반응형 3단 — **MO ≤767 / TB 768–1279 / PC ≥1280** (정의는 `tokens/base.css` 상단 한 곳). Figma 에 TB 프레임이 없어서 TB 값은 코드에서 정한 기본값이다.
 - 버튼 클래스는 Figma button `type` 값 그대로: `.btn--neutral` = 진한 회색, `.btn--subtle` = 연한 회색 (예전 아티팩트는 반대였다).
 - 색·자간은 `tokens/base.css` 토큰만 쓴다. 섹션 CSS 는 섹션 루트 클래스로 한정(BEM)하고 PC → TB → MO 순서로 쓴다.
@@ -120,6 +119,7 @@ scripts/                                build · validate · preview · shot · 
 - 라이브러리 사이트는 결과물(미리보기)이 먼저 보이도록 컴팩트하게 유지한다. 설명 문구를 늘리지 않는다.
 
 ## 알려진 과제 (다음에 할 일 후보)
+- 원본을 상품페이지 템플릿 시스템(dxhWk)으로 옮겼다(2026-10-13, 노드 113건 relink). 샘플·이미지는 아직 예전 원본 기준이라 새 원본과 문구·이미지 차이를 추출 검증으로 확인해야 한다. 예전 히어로 세트 `1:1710` 의 `459:32173` 에 Claude 가 넣은 `bg-media` 레이어(모션 GIF)는 정리 대상.
 - 새 hero 7종은 아직 추출 검증 전이다 (`pages/_verify/` 의 hero 결과는 예전 3종·예전 노드 기록). gradient-text 타이틀은 Figma 에서 줄마다 `title` 레이어가 따로 있어(2개) 추출 매핑을 따로 맞춰야 한다. 버튼 화살표는 Figma `right-icon` 속성으로 읽을 수 있다.
 - 추출 검증에서 차이가 난 6건(설명 가능한 차이): feature compact 옵션 문구, detail-slide 슬라이드 수, faq·notice 유의사항 줄바꿈(Figma 원문 수정 필요)
 - 추출하지 않는 슬롯(sample 유지): compare-vs-spec 행(Figma 가 열 단위 구조), inquiry 폼 그룹, plan-comparison 셀 태그. pricing-receipt·sticky-cta·inquiry 는 MO 를 추출하지 않음(`extractFrom: "pc"`)

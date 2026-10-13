@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/hyjin502/product-page-templates/actions/workflows/ci.yml/badge.svg)](https://github.com/hyjin502/product-page-templates/actions/workflows/ci.yml)
 
-Figma 섹션 템플릿(`[UI] 커피 정수기` Page 18)과 같은 규칙의 HTML 템플릿을 한곳에서 관리해요.
+Figma 섹션 템플릿(`상품페이지 템플릿 시스템` 파일 Section Design System 페이지)과 같은 규칙의 HTML 템플릿을 한곳에서 관리해요.
 **AI는 Figma에서 내용만 뽑고(page.json), HTML은 템플릿으로 정해진 대로 조립해요.**
 
 ```

@@ -1,5 +1,8 @@
 # 변경 내역
 
+## 미배포
+- **Figma 원본 이전**: `[UI] 커피 정수기` Page 19 → `상품페이지 템플릿 시스템` 파일(`dxhWk…`) Section Design System 페이지. 섹션 프레임·variant 노드 113건을 `figma-relink.mjs` 로 다시 맞췄어요(hero 는 새 세트 `469:32313`).
+
 ## 0.3.1 — 2026-10-07
 - GitHub 저장소로 이전: https://github.com/hyjin502/product-page-templates
 - CI(`ci.yml`): 푸시·PR 마다 검증·빌드
