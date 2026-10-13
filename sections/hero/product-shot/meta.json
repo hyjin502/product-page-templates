@@ -99,6 +99,21 @@
       "label": "제품 화면 (하단 이미지)",
       "hint": "이미지 또는 mp4 · 가로 최대 1280, 잘리지 않아요 · 미리보기의 이미지를 클릭해도 바꿀 수 있어요"
     },
+    "visualFit": {
+      "type": "enum",
+      "values": [
+        "fit",
+        "natural"
+      ],
+      "labels": {
+        "fit": "가로 1280 에 맞춤",
+        "natural": "이미지 원래 크기 (최대 1280)"
+      },
+      "default": "fit",
+      "extract": false,
+      "label": "제품 화면 크기",
+      "note": "세로는 어느 쪽이든 이미지 비율대로예요"
+    },
     "background": {
       "type": "media",
       "cssPresets": true,

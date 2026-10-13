@@ -11,6 +11,9 @@
 .hero--visual-bottom .hero__visual-media img {
   display: block; width: 100%; height: var(--hero-visual-h); max-width: none; object-fit: cover; object-position: bottom;
 }
+/* 이미지 비율대로(visualFit: auto) — 높이를 고정하지 않고 가로 꽉 채운 이미지의 비율을 따라요 (모든 기기) */
+.hero--visual-bottom.hero--visual-auto .hero__visual-media,
+.hero--visual-bottom.hero--visual-auto .hero__visual-media img { height: auto; object-fit: initial; }
 
 /* TB 768–1279 — 코드 기본값 */
 @media (min-width: 768px) and (max-width: 1279px) {

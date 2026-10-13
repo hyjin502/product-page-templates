@@ -1,5 +1,5 @@
 {% from "hero/_macros.njk" import visualMedia, lineSpans, btns %}
-<section class="hero hero--visual-bottom">
+<section class="hero hero--visual-bottom{% if visualFit == 'auto' %} hero--visual-auto{% endif %}">
   <div class="hero__body">
     <div class="hero__heading">
       <h1 class="hero__title"{% if titleColor %} style="color: {{ titleColor | hdsText }}" data-hds="{{ titleColor | hdsToken('text') }}"{% endif %}>{{ lineSpans(title) }}</h1>

@@ -104,6 +104,21 @@
       "optional": true,
       "label": "하단 비주얼",
       "hint": "이미지 또는 mp4 · 가로로 꽉 차고 아래쪽 기준으로 잘려요 · 미리보기의 이미지를 클릭해도 바꿀 수 있어요"
+    },
+    "visualFit": {
+      "type": "enum",
+      "values": [
+        "crop",
+        "auto"
+      ],
+      "labels": {
+        "crop": "높이 고정 · 아래 기준으로 잘림",
+        "auto": "이미지 비율대로 (세로가 이미지에 맞춰져요)"
+      },
+      "default": "crop",
+      "extract": false,
+      "label": "하단 비주얼 크기",
+      "note": "crop = Figma 시안(PC 553 · MO 375:350)"
     }
   }
 }

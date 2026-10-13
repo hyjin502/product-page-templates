@@ -18,6 +18,9 @@
 /* 제품 화면 — 가로 최대 1280, 비율 유지(잘리지 않아요) · drop shadow/md */
 .hero--product-shot .hero__visual-media { display: block; width: 1280px; max-width: 100%; height: auto; box-shadow: 0 4px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 4px -1px rgba(0, 0, 0, 0.05); }
 .hero--product-shot .hero__visual-media img { display: block; width: 100%; height: auto; }
+/* 이미지 원래 크기(visualFit: natural) — 늘리지 않고 원본 픽셀 크기로, 1280·화면 폭을 넘으면 줄여요 */
+.hero--product-shot.hero--visual-natural .hero__visual-media { width: auto; max-width: min(1280px, 100%); }
+.hero--product-shot.hero--visual-natural .hero__visual-media img { width: auto; max-width: 100%; }
 
 /* TB 768–1279 — 코드 기본값 */
 @media (min-width: 768px) and (max-width: 1279px) {

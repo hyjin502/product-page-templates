@@ -1,5 +1,5 @@
 {% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans, btns %}
-<section class="hero hero--product-shot">
+<section class="hero hero--product-shot{% if visualFit == 'natural' %} hero--visual-natural{% endif %}">
   <div class="hero__top">
     {{ bgMedia(background) }}
     <div class="hero__body">
