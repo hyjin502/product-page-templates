@@ -354,7 +354,8 @@ function renderCompose() {
     return `<li data-row="${i}"><div class="rows__main"><span class="rows__sec">${v.section}</span>
       <select data-variant aria-label="${v.section} variant">${sec.variants.map((id) => `<option value="${id}"${id === r.variant ? ' selected' : ''}>${vname(byId[id])}</option>`).join('')}</select>
       ${Object.entries(v.options).map(([k, o]) => `<label class="rows__opt"><input type="checkbox" data-row-opt="${k}"${(r.options || []).includes(k) ? ' checked' : ''}> ${esc(o.label || k)}</label>`).join('')}
-      ${v.pager ? `<div class="rows__pg">${pagerControls(v, rowPager(r))}</div>` : ''}</div>
+      ${v.pager ? `<div class="rows__pg">${pagerControls(v, rowPager(r))}</div>` : ''}
+      ${v.editor ? rowSrcControls(r) : ''}</div>
       <div class="rows__btns"><button type="button" class="icon-btn" data-move="-1" aria-label="위로"${i === 0 ? ' disabled' : ''}>↑</button><button type="button" class="icon-btn" data-move="1" aria-label="아래로"${i === c.rows.length - 1 ? ' disabled' : ''}>↓</button><button type="button" class="icon-btn" data-remove aria-label="빼기">✕</button></div></li>`;
   }).join('')}</ol>
   <div class="add"><select data-add aria-label="추가할 섹션">${avail.map((s) => `<option value="${s.variants[0]}">${s.key} — ${esc(s.role)}</option>`).join('')}</select><button type="button" class="btn-ui" data-add-btn>추가</button></div>
@@ -375,14 +376,40 @@ function renderCompose() {
   if (!c.rows.length) return;
   const ids = c.rows.map((r) => r.variant);
   const css = [...new Set(ids)].map((id) => byId[id].css).join('\n\n'); // 같은 섹션 공통 CSS가 겹쳐도 미리보기에선 무해해요
-  const html = c.rows.map((r) => withPager(byId[r.variant], withOptions(byId[r.variant], r.options), byId[r.variant].pager ? rowPager(r) : null)).join('\n');
+  const rowHtml = (r) => (rowUsesEditor(r)
+    ? heroHtmlOrError(byId[r.variant], heroEditOf(r.variant))
+    : withPager(byId[r.variant], withOptions(byId[r.variant], r.options), byId[r.variant].pager ? rowPager(r) : null));
   const js = [...new Set(ids)].map((id) => byId[id].js).filter(Boolean).join('\n');
   const stage = ids.every((id) => byId[id].stage === 'sticky') ? 'sticky' : null;
   const iframe = composeEl.querySelector('iframe');
   composeFit = mountPreview(composeEl.querySelector('.compose__stage'), composeEl.querySelector('.v__frame'), iframe, composeEl.querySelector('.v__scale'));
-  iframe.srcdoc = srcdoc(html, css, js, stage);
+  // 편집기 내용을 쓰는 행은 올린 배경 파일(IndexedDB)을 먼저 불러와요
+  Promise.all(c.rows.filter(rowUsesEditor).flatMap((r) => mediaKeys(heroEditOf(r.variant))).map(loadBlob)).then(() => {
+    iframe.srcdoc = srcdoc(c.rows.map(rowHtml).join('\n'), css, js, stage);
+  });
 }
 let composeFit = null;
+/** 편집기 variant(hero) 행의 내용 — r.src 가 없으면 편집기에서 고친 적이 있을 때 편집기 내용을 써요 */
+const heroEditOf = (id) => state.hero && state.hero.edits && state.hero.edits[id];
+function rowUsesEditor(r) {
+  const v = byId[r.variant];
+  if (!v || !v.editor || !heroEditOf(r.variant)) return false;
+  return r.src ? r.src === 'editor' : true;
+}
+function rowSrcControls(r) {
+  const has = !!heroEditOf(r.variant);
+  const ed = rowUsesEditor(r);
+  return `<div class="rows__src" role="group" aria-label="내용"><span class="rows__src-label">내용</span>
+    <button type="button" class="chip" data-row-src="sample" aria-pressed="${!ed}">샘플</button>
+    <button type="button" class="chip" data-row-src="editor" aria-pressed="${ed}"${has ? '' : ' disabled title="히어로 편집기에서 이 스타일을 아직 고치지 않았어요"'}>히어로 편집기</button>
+    <button type="button" class="rows__src-open" data-row-open-editor>편집기에서 고치기</button></div>`;
+}
+/** 편집 값 안의 올린 파일 키 */
+function mediaKeys(e) {
+  const keys = [];
+  for (const m of Object.values(e || {})) if (m && typeof m === 'object' && 'moSame' in m) for (const ref of [m.pc, m.mo]) if (ref && ref.file) keys.push(ref.file);
+  return keys;
+}
 function rowPager(r) {
   const v = byId[r.variant];
   const d = pagerDefault(v);
@@ -406,7 +433,7 @@ function pageJson() {
         variant: r.variant,
         ...(r.options && r.options.length ? { options: r.options } : {}),
         ...(perChanged ? { pager: pg.per } : {}),
-        content: pg ? contentFor(v, pg.count) : v.sample,
+        content: rowUsesEditor(r) ? contentFrom(v, heroEditOf(r.variant), true) : pg ? contentFor(v, pg.count) : v.sample,
       };
     }),
   }, null, 2) + '\n';
@@ -423,14 +450,15 @@ composeEl.addEventListener('click', (e) => {
   if (pc && li) { const r = rows[i]; r.count = Math.max(1, rowPager(r).count + +pc.dataset.pgCount); return commitCompose(); }
   if (e.target.closest('[data-add-btn]')) { rows.push({ variant: composeEl.querySelector('[data-add]').value }); return commitCompose(); }
   if (e.target.closest('[data-reset]')) { state.compose.rows = defaultRows(); return commitCompose(); }
+  const rs = e.target.closest('[data-row-src]');
+  if (rs && li) { rows[i].src = rs.dataset.rowSrc; return commitCompose(); }
+  if (e.target.closest('[data-row-open-editor]') && li) { heroState().variant = rows[i].variant; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
   const cj = e.target.closest('[data-copy-json]');
   if (cj) return copyText(pageJson(), cj);
   if (e.target.closest('[data-download]')) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([pageJson()], { type: 'application/json' }));
-    a.download = (state.compose.title.trim().replace(/[\\/:*?"<>|\s]+/g, '-') || 'page') + '.page.json';
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    download((state.compose.title.trim().replace(/[\\/:*?"<>|\s]+/g, '-') || 'page') + '.page.json', new Blob([pageJson()], { type: 'application/json' }));
+    // 히어로 편집기 내용을 쓰는 행 — 올린 배경 파일도 page.json 이 가리키는 이름으로 함께 받아요
+    for (const r of rows.filter(rowUsesEditor)) downloadMedia(byId[r.variant], heroEditOf(r.variant));
   }
 });
 composeEl.addEventListener('change', (e) => {
@@ -738,6 +766,7 @@ function renderHero() {
     <button type="button" class="btn-ui btn-ui--primary" data-hed-act="download">page.json 받기</button>
     <button type="button" class="btn-ui" data-hed-act="copy">page.json 복사</button>
     <button type="button" class="btn-ui" data-hed-act="reset">샘플로 되돌리기</button>
+    <button type="button" class="btn-ui" data-hed-act="to-compose">조합기에서 보기</button>
   </div>
   <p class="compose__hint">받은 page.json 과 배경 파일을 <code>pages/</code> 에 같이 넣고 <code>npm run build</code> → <code>dist/pages/이름/</code></p>
   </div>
@@ -850,6 +879,17 @@ function heroPage() {
   const v = byId[heroState().variant];
   return { title: `${vname(v)} 히어로 시안`, theme: 'light', sections: [{ variant: v.id, content: contentFrom(v, heroEdit(v), true) }] };
 }
+/** 편집 값 안의 올린 파일을 page.json 이 가리키는 이름으로 내려받아요 */
+function downloadMedia(v, e) {
+  for (const [k, raw] of Object.entries(v.slots)) {
+    if (RC.specOf(raw).type !== 'media' || !e[k]) continue;
+    for (const dev of ['pc', 'mo']) {
+      const ref = e[k][dev];
+      if (dev === 'mo' && e[k].moSame) continue;
+      if (ref && ref.file && files[ref.file]) download(exportName(k, dev, ref), files[ref.file]);
+    }
+  }
+}
 function download(name, blob) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -944,15 +984,15 @@ heroEl.addEventListener('click', (ev) => {
   if (ha.dataset.hedAct === 'copy') return copyText(json, ha);
   if (ha.dataset.hedAct === 'download') {
     download(`hero-${vname(v)}.page.json`, new Blob([json], { type: 'application/json' }));
-    // 올린 배경 파일도 page.json 이 가리키는 이름으로 함께 받아요
-    for (const [k, raw] of Object.entries(v.slots)) {
-      if (RC.specOf(raw).type !== 'media') continue;
-      for (const dev of ['pc', 'mo']) {
-        const ref = e[k][dev];
-        if (dev === 'mo' && e[k].moSame) continue;
-        if (ref && ref.file && files[ref.file]) download(exportName(k, dev, ref), files[ref.file]);
-      }
-    }
+    downloadMedia(v, e); // 올린 배경 파일도 page.json 이 가리키는 이름으로 함께 받아요
+    return;
+  }
+  if (ha.dataset.hedAct === 'to-compose') {
+    // 조합기의 같은 섹션 행을 이 스타일 + 편집기 내용으로 (없으면 맨 위에 넣어요) — 복사가 아니라 연결이에요
+    const rows = state.compose.rows;
+    const r = rows.find((x) => byId[x.variant] && byId[x.variant].section === v.section);
+    if (r) { r.variant = v.id; r.src = 'editor'; r.options = []; } else rows.unshift({ variant: v.id, src: 'editor' });
+    state.mode = 'compose'; applyAll(); window.scrollTo(0, 0);
     return;
   }
   if (ha.dataset.hedAct === 'reset' && confirm('입력한 내용을 지우고 Figma 샘플로 되돌릴까요?')) {

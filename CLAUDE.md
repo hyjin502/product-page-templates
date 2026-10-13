@@ -113,6 +113,7 @@ scripts/                                build · validate · preview · shot · 
   - meta `thumb` = 편집기 스타일 썸네일(`assets/hero/thumbs/<layout>.jpg`, Figma 렌더를 가로 480 으로).
 - 렌더: build 가 편집기 섹션의 `.njk` 를 `nunjucks.precompile` 해서 `nunjucks-slim` 과 함께 `dist/index.html` 에 넣는다. 편집기 미리보기 = `npm run build` 결과 (동일성 확인함).
 - 저장: 문구·선택값은 localStorage(`tpl-site` 의 `hero`), 올린 파일은 IndexedDB(`tpl-hero-editor`). 내보내기는 page.json + 올린 파일(`hero-bg-pc.<확장자>` 이름으로)을 함께 내려받는다.
+- **조합기 연결**: 조합기 행 `src`(`sample`|`editor`, 없으면 편집 값이 있을 때 editor). editor 행은 `state.hero.edits[variant]` 를 편집기와 같은 렌더러(`heroHtmlOrError`)로 그리고, page.json 은 `contentFrom(…, true)` + 올린 파일(`downloadMedia`)을 함께 낸다. 편집기 「조합기에서 보기」(`to-compose`) = 같은 섹션 행을 지금 variant + `src: editor` 로(없으면 맨 위에 추가).
 - 바로가기: `index.html#hero-editor`. 줄 넘김 경고는 지금 기기 폭의 iframe 에서 `.hero__badge` · `.hero__title` · `.hero__desc` 의 줄 수를 잰다 (hero variant 는 이 클래스를 함께 쓴다).
 
 ## 작업 흐름

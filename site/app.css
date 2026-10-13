@@ -687,3 +687,12 @@ body.is-dev .flink__label::after { content: none; }
 }
 /* 「없음」 칩 — 사선 */
 .hed-sw__b--none { background: linear-gradient(135deg, transparent 46%, #e5484d 46% 54%, transparent 54%), var(--panel); }
+
+/* 조합기 행 — 내용: 샘플 / 히어로 편집기 */
+.rows__src { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 11px; }
+.rows__src-label { color: var(--ink-3); margin-right: 2px; }
+.rows__src .chip { min-height: 22px; padding: 1px 8px; font-size: 11px; }
+.rows__src-open {
+  margin-left: auto; padding: 0; border: 0; background: none; color: var(--accent); font: inherit; font-size: 11px;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+}
