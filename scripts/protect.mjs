@@ -30,26 +30,27 @@ function encrypt(text) {
 
 function gate(payload) {
   return `<!doctype html>
-<html lang="ko">
+<html lang="ko" class="gate">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>상품페이지 템플릿</title>
-<style>
-:root { --paper: #f5f5f7; --panel: #fff; --ink: #17181b; --ink-3: #868a93; --rule: #e2e3e7; --accent: #3a50c9; color-scheme: light; }
-@media (prefers-color-scheme: dark) { :root { --paper: #111214; --panel: #1a1b1e; --ink: #ececef; --ink-3: #7c7f88; --rule: #2b2d32; --accent: #93a3ff; color-scheme: dark; } }
-* { box-sizing: border-box; }
-body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px; background: var(--paper); color: var(--ink);
+<style id="gate-style">
+/* 잠금 화면 전용 — 모든 규칙을 html.gate 아래로 한정해요 (풀린 페이지에는 영향이 없게) */
+html.gate { --paper: #f5f5f7; --panel: #fff; --ink: #17181b; --ink-3: #868a93; --rule: #e2e3e7; --accent: #3a50c9; color-scheme: light; }
+@media (prefers-color-scheme: dark) { html.gate { --paper: #111214; --panel: #1a1b1e; --ink: #ececef; --ink-3: #7c7f88; --rule: #2b2d32; --accent: #93a3ff; color-scheme: dark; } }
+html.gate * { box-sizing: border-box; }
+html.gate body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px; background: var(--paper); color: var(--ink);
   font: 14px/1.6 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif; }
-form { width: 100%; max-width: 340px; padding: 28px 24px; border: 1px solid var(--rule); border-radius: 16px; background: var(--panel); display: flex; flex-direction: column; gap: 12px; }
-h1 { margin: 0; font-size: 18px; letter-spacing: -0.3px; }
-p { margin: 0; color: var(--ink-3); font-size: 13px; }
-input { font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 10px; background: var(--panel); color: var(--ink); }
-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-button { font: inherit; font-weight: 700; padding: 10px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; cursor: pointer; }
-button:disabled { opacity: .6; cursor: wait; }
-.err { color: #e5484d; font-size: 13px; min-height: 1.6em; }
+html.gate form { width: 100%; max-width: 340px; padding: 28px 24px; border: 1px solid var(--rule); border-radius: 16px; background: var(--panel); display: flex; flex-direction: column; gap: 12px; }
+html.gate h1 { margin: 0; font-size: 18px; letter-spacing: -0.3px; }
+html.gate p { margin: 0; color: var(--ink-3); font-size: 13px; }
+html.gate input { font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 10px; background: var(--panel); color: var(--ink); }
+html.gate input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+html.gate button { font: inherit; font-weight: 700; padding: 10px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; cursor: pointer; }
+html.gate button:disabled { opacity: .6; cursor: wait; }
+html.gate .err { color: #e5484d; font-size: 13px; min-height: 1.6em; }
 </style>
 </head>
 <body>
@@ -76,7 +77,15 @@ button:disabled { opacity: .6; cursor: wait; }
       .then(function (key) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(P.iv) }, key, b64(P.data)); })
       .then(function (buf) { return new TextDecoder().decode(buf); });
   }
-  function show(html) { document.open(); document.write(html); document.close(); }
+  // 원래 페이지로 바꿔 끼우기 — 잠금 화면을 다 읽은 뒤에 해요.
+  // (저장된 키로 바로 열 때 읽기가 끝나기 전에 바꾸면 잠금 화면 스타일이 남아 사이트가 가운데로 몰렸어요)
+  function show(html) {
+    var go = function () {
+      document.open(); document.write(html); document.close();
+      var left = document.getElementById('gate-style'); if (left) left.remove();
+    };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true });
+  }
   var form = document.getElementById('gate'), err = document.getElementById('err'), go = document.getElementById('go');
   var saved = null;
   try { saved = localStorage.getItem(STORE); } catch (e) {}
