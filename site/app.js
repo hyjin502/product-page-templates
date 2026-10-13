@@ -709,7 +709,7 @@ function renderHero() {
   const keep = heroEl.querySelector('.compose__scroll')?.scrollTop || 0;
   heroEl.innerHTML = `<aside class="compose__side">${PANEL_TOGGLE}
   <div class="compose__scroll">
-  <div class="hed-intro"><h2>히어로 편집기</h2><p>스타일을 고르고 문구·배경·버튼을 바꿔 보세요. 오른쪽이 실제 결과예요 (기기는 위쪽 PC·TB·MO).</p></div>
+  <div class="hed-intro"><h2>히어로 편집기</h2><p>스타일을 고르고 문구·배경·버튼을 바꿔 보세요. 미리보기가 실제 결과예요 (기기는 위쪽 PC·TB·MO).</p></div>
   <div class="hed-styles" role="group" aria-label="히어로 스타일">${EDITORS.map((x) => {
     const bg = x.sample.background && x.sample.background.pc;
     const src = x.thumb || (bg && bg.kind === 'image' ? bg.src : '');

@@ -654,3 +654,27 @@ body.is-dev .flink__label::after { content: none; }
 }
 .hed-media__swatch { position: relative; }
 .hed-bgfx__name { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- 조합기·히어로 편집기: 1280 미만 창에서는 패널과 미리보기를 위아래로 ----------
+   패널(360~380px)이 옆에 있으면 미리보기가 라이브러리보다 훨씬 작아져서, 좁은 창에서는 미리보기를 전체 폭으로 써요.
+   (예전 860 쌓기 규칙은 뒤쪽 .compose 폭 규칙에 덮여 동작하지 않았어요 — 이 블록이 파일 맨 끝에 있어야 해요) */
+@media (max-width: 1279px) {
+  .compose, .compose.is-wide { grid-template-columns: minmax(0, 1fr); }
+  .panel-toggle { display: none; }
+  .compose.is-wide .compose__side > .compose__scroll,
+  .compose.is-wide .compose__side > .compose__foot { display: flex; }
+  .compose__side {
+    position: static; height: auto; overflow: visible;
+    border-right: 0; border-bottom: 1px solid var(--rule);
+  }
+  .compose__scroll { overflow: visible; }
+  .compose__foot { position: sticky; bottom: 10px; z-index: 6; }
+  /* 히어로 편집기 — 미리보기를 위에 붙여 두고 아래에서 입력해요 */
+  .hed .compose__stage {
+    order: -1; position: sticky; top: var(--top-h, 44px); z-index: 5;
+    max-height: 60vh; overflow: auto; border-bottom: 1px solid var(--rule);
+  }
+  .hed-styles { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .hed-bgfx__list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  .hed-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); align-items: start; }
+}
