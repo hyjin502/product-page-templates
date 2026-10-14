@@ -1,0 +1,97 @@
+/* PC — Figma 537:36633 월간휴넷_pc (1920 × 864 · 위쪽 어두운 띠 + 아래 흰 바탕)
+   로고·공유는 본문(980) 양 끝 위 26 · 타이틀 40 · 비주얼 980×580(둥근 20 · 그림자) 위에 일정(왼쪽 아래)·연사(오른쪽 아래)
+
+   배경 띠는 비주얼 아래에서 --overlap 만큼 위에서 끝나요(PC 206 · MO 32 — Figma 띠 628·437 과 같은 자리).
+   그리드 줄로 비주얼에 묶어서, 상단 문구를 비우거나 타이틀 줄 수가 바뀌어도 비주얼이 띠에 걸친 모양이 그대로예요.
+   줄: ① 위 여백(로고·공유) ② 문구 ③ 문구↔비주얼 ④ 비주얼(띠 안) ⑤ 비주얼(띠 밖 = --overlap) ⑥ (MO) 일정 ⑦ (MO) 버튼 */
+.hero--monthly-live {
+  --body: 980px; --hero-pad-y: 94px; --hero-gap: 48px; --hero-gap-heading: 20px;
+  --hero-title: 40px; --hero-title-lh: 1.4;
+  --overlap: 206px; --top-y: 26px;
+  display: grid; align-items: stretch; justify-items: stretch; /* hero 공통의 가운데 정렬(flex)을 그리드 칸 채우기로 */
+  grid-template-columns: minmax(var(--container-pad), 1fr) minmax(0, var(--body)) minmax(var(--container-pad), 1fr);
+  grid-template-rows: var(--hero-pad-y) auto var(--hero-gap) auto var(--overlap) auto auto;
+  padding: 0 0 64px; /* Figma 는 본문 아래 30(프레임 864)인데, 비주얼 그림자(아래 4 + 번짐 27)가 섹션 끝에서 잘려 보여서 64 로 늘렸어요 */
+  background: var(--hero-white); color: var(--hero-white);
+}
+.hero--monthly-live .hero__body { display: contents; }
+.hero--monthly-live .hero__bg { position: relative; inset: auto; grid-column: 1 / -1; grid-row: 1 / 5; z-index: -1; contain: size; } /* 배경 이미지 크기가 줄 높이를 밀어내지 않게 */
+.hero--monthly-live .hero__top {
+  grid-column: 2; grid-row: 1; align-self: start; margin-top: var(--top-y);
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.hero--monthly-live .hero__heading { grid-column: 2; grid-row: 2; }
+.hero--monthly-live .hero__title { font-weight: 700; }
+.hero--monthly-live .hero__logo { display: block; width: 66px; height: 62px; object-fit: contain; object-position: left top; }
+.hero--monthly-live .hero__share {
+  margin-left: auto; display: grid; place-items: center; width: 24px; height: 24px; padding: 0;
+  border: 0; background: none; color: var(--hero-white); cursor: pointer;
+}
+.hero--monthly-live .hero__share svg { width: 18px; height: 22px; }
+/* 상단 문구 — 뱃지 상자 없이 글자만 (Figma heading-24 bold) */
+.hero--monthly-live .hero__eyebrow { padding: 0; background: none; font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+
+/* 비주얼 + 일정 + 연사 (PC 는 한 상자 안에 겹쳐요) */
+.hero--monthly-live .hero__stage {
+  grid-column: 2; grid-row: 4 / 6; align-self: start;
+  position: relative; width: 100%; aspect-ratio: 980 / 580; border-radius: 20px; overflow: hidden;
+  filter: drop-shadow(0 4px 27px rgba(0, 0, 0, 0.5)); background: var(--hero-ink);
+}
+.hero--monthly-live .hero__visual { position: absolute; inset: 0; cursor: pointer; }
+.hero--monthly-live .hero__visual-media,
+.hero--monthly-live .hero__visual-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hero--monthly-live .hero__info {
+  position: absolute; left: 48px; bottom: 48px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  text-align: left; pointer-events: none;
+}
+.hero--monthly-live .hero__date,
+.hero--monthly-live .hero__live-label { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.hero--monthly-live .hero__live { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.hero--monthly-live .hero__channel {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight);
+}
+.hero--monthly-live .hero__yt { display: block; width: 54px; height: 12px; }
+.hero--monthly-live .hero__speakers { /* 최대 3장 — 오른쪽 끝부터 붙어요 */
+  position: absolute; right: 48px; bottom: 48px; display: flex; justify-content: flex-end; gap: 16px; margin: 0; padding: 0; list-style: none;
+}
+.hero--monthly-live .hero__speakers img { display: block; width: 120px; height: 120px; border-radius: 12px; object-fit: cover; background: #dee2e6; }
+/* 버튼은 Figma MO 에만 있어요 */
+.hero--monthly-live .hero__btns--mo { display: none; }
+
+/* TB 768–1279 — 코드 기본값(제안값): PC 구조 그대로, 타이틀·여백만 줄여요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--monthly-live { --hero-pad-y: 96px; --hero-gap: 40px; --hero-title: 36px; --overlap: 160px; --top-y: 24px; }
+  .hero--monthly-live .hero__info { left: 32px; bottom: 32px; }
+  .hero--monthly-live .hero__speakers { right: 32px; bottom: 32px; gap: 12px; }
+  .hero--monthly-live .hero__speakers img { width: 96px; height: 96px; }
+}
+
+/* MO ≤767 — Figma 537:40224 월간휴넷_mo (375 × 651 · 어두운 띠 437)
+   로고 58×55(왼쪽 16 · 위 24) · 상단 문구 24 → 20 → 타이틀 28 → 32 → 비주얼 343×203(둥근 16, 아래 32 가 띠 밖) → 40 → 일정(검정 글자) → 16 → 버튼 */
+@media (max-width: 767px) {
+  .hero--monthly-live {
+    --hero-pad-y: 102px; --hero-gap: 32px; --hero-title: 28px; --overlap: 32px; --top-y: 24px;
+    padding-bottom: 40px; /* 제안값 — Figma 는 버튼 아래가 프레임 끝(0) */
+  }
+  .hero--monthly-live .hero__logo { width: 58.5px; height: 55px; }
+  /* 비주얼·일정이 각자 그리드 줄에 놓여요 (PC 의 겹침 상자를 풀어요) */
+  .hero--monthly-live .hero__stage { display: contents; }
+  .hero--monthly-live .hero__visual {
+    grid-column: 2; grid-row: 4 / 6; align-self: start; position: relative; inset: auto; aspect-ratio: 343 / 203;
+    border-radius: 16px; overflow: hidden; background: #000;
+  }
+  .hero--monthly-live .hero__info {
+    grid-column: 2; grid-row: 6; position: static; margin-top: 40px;
+    align-items: center; gap: 0; text-align: center; color: var(--hero-ink);
+  }
+  .hero--monthly-live .hero__live { display: block; white-space: normal; }
+  .hero--monthly-live .hero__channel { display: inline; font-weight: 700; letter-spacing: var(--tracking-tight); }
+  .hero--monthly-live .hero__channel::before { content: "("; }
+  .hero--monthly-live .hero__channel::after { content: ")"; }
+  .hero--monthly-live .hero__yt { display: none; }
+  .hero--monthly-live .hero__speakers { display: none; }
+  .hero--monthly-live .hero__btns--mo { grid-column: 2; grid-row: 7; display: flex; margin-top: 16px; }
+  .hero--monthly-live .hero-btn { height: 58px; padding: 0 20px; font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .hero--monthly-live .hero-btn svg { display: block; width: 16px; height: 32px; }
+}

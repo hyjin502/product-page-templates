@@ -1,0 +1,64 @@
+{
+  "logo": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-logo.svg",
+      "alt": "월간휴넷 LIVE"
+    }
+  },
+  "share": true,
+  "eyebrow": {
+    "pc": "",
+    "mo": "AX 시대, 핵심은 HRD!"
+  },
+  "title": "학습-성장-성과로 이어지는\nAI-Native Platform, LABS !",
+  "visual": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-visual.jpg"
+    },
+    "mo": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-visual-mo.jpg"
+    }
+  },
+  "date": {
+    "pc": "2026. 12. 31. (화) 오후 2시",
+    "mo": "2026. 12. 31. (목) 오후 2시"
+  },
+  "live": "온라인 LIVE",
+  "channel": "유튜브 ’휴넷TV’",
+  "youtube": true,
+  "speaker1": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-profile-1.jpg",
+      "alt": "변재명 팀장"
+    }
+  },
+  "speaker2": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-profile-2.jpg"
+    }
+  },
+  "ctas": [
+    {
+      "label": "무료 신청하기",
+      "href": "#",
+      "color": "red/700",
+      "radius": "sm",
+      "arrow": true
+    }
+  ],
+  "background": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-bg.jpg"
+    },
+    "mo": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-bg-mo.jpg"
+    }
+  }
+}

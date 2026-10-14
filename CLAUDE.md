@@ -31,10 +31,14 @@
     | split-photo | 469:32762 | (없음) |
     | media-left | 469:32412 | (없음) |
     | media-left-bottom | 517:33408 | (없음) |
+    | monthly-live (월간휴넷) | 537:36633 | 537:40224 |
     - variant 이름이 서로 겹친다(대부분 `layout=center-inline`) → Figma 세트 오류. 479:33142·479:33359 는 MO 인데 `device=pc` 로 붙어 있다. 디자이너에게 `style=<variant>` 속성 추가를 요청할 것.
     - 아래쪽 4종(split-stats · split-photo · media-left · media-left-bottom)은 **MO 시안이 없다** → MO·TB 는 코드 기본값(`_shared.css` 의 `.hero--left` 규칙: 문구 → 비주얼 순서로 쌓기, 왼쪽 정렬). 517:33408 은 x 가 108 로 8px 어긋나 있다(relink 는 40px 까지 같은 열로 본다).
     - 4종은 `.hero--left` + `.hero__split`(왼쪽 `.hero__content` · 오른쪽 `.hero__visual`) 공통 틀을 쓰고 variant 는 변수만 정한다. split-stats 의 수치는 `stats` 목록(value · unit · label, 추출 안 함 — Figma 레이어 이름이 숫자·문구라서). split-photo·media-left-bottom 은 Figma 문구 묶음이 768 프레임을 넘쳐서(846 · 829) 위아래 여백을 줄여 768 에 맞췄다(타이틀·버튼 위치는 Figma 그대로).
     - media-left-bottom 배경은 Figma 의 검정 + 큐브 이미지 20% 를 한 장(`media-left-bottom-bg.jpg`)으로 구웠다.
+    - **monthly-live(월간휴넷 LIVE)** 는 hero 세트 밖의 **프레임**(컴포넌트 아님)이다 → meta `figmaFrame: true`. relink 는 건너뛰고(노드는 손으로), Figma 플러그인은 원본 파일에서만 프레임을 복제(clone)한다. 위쪽 어두운 띠만 배경이고 아래는 흰 바탕. 띠는 고정 높이가 아니라 그리드 줄로 비주얼에 묶여 비주얼 아래 `--overlap`(PC 206 · TB 160 · MO 32) 위에서 끝난다(= Figma 628 · 437). `.hero__body` 는 `display: contents`, MO 는 `.hero__stage` 도 contents. 배경 띠·메인 비주얼·연사 사진은 Figma 렌더를 구웠다(`assets/hero/monthly-hunet-*`). 로고(`monthly-hunet-logo.svg`, 두 SVG 합침)·공유 아이콘(`assets/icons/share.svg`)·YouTube 로고는 Figma 에셋.
+      - PC·MO 가 다르다: 상단 문구·버튼은 MO 에만(PC 에선 숨김), 연사 사진·YouTube 로고는 PC 에만. 일정은 PC 비주얼 위 왼쪽 아래(흰 글자), MO 는 비주얼 아래(검정 글자, 채널은 괄호). 상단 문구 PC 비움 = `{ pc: "", mo }` (편집기도 PC 를 비우고 MO 만 쓰면 이렇게 낸다). 연사 사진은 `speaker1~3`(`pcOnly`, 최대 3장 · 오른쪽 정렬 · 미리보기 클릭 교체 `[data-pick]`). 메인 비주얼 MO(`monthly-hunet-visual-mo.jpg`)는 Figma MO 의 노트북 사진(원본 이미지 e6832 를 Figma 배치대로 잘라 3배 1029×609). PC 비주얼은 렌더 1배(980)라 2배 원본이 오면 바꾼다. 프레임 채우기가 꺼져 있어(Figma 화면의 회색은 캔버스색) 아래 바탕은 흰색으로 뒀다.
+      - Figma 확인 요청: 일정 요일이 PC (화) · MO (목)으로 다르다(2026-12-31 은 목요일). 레이어 이름이 문구라 바뀐다(상단 문구 레이어가 「AI X HRD = AI칼리지」→ 문구로 바뀜) → `eyebrow`·`title`·`date`·`live`·`channel`·`speaker` 표준 이름 요청. MO 버튼 아래 여백은 Figma 0 → 코드 40(제안값).
 - 원본 파일을 옮기면 `sections/sections.json` 의 `figma.fileKey`·`fileName`·`page` 와 각 `meta.json` 의 노드 ID 를 새 파일 기준으로 바꾼다(노드는 relink, 파일 정보는 손으로).
 - Figma MCP(claude.ai Figma 커넥터 또는 figma MCP)가 연결돼 있어야 한다. `use_figma` 전에는 `figma:figma-use` 스킬, `get_design_context` 전에는 `figma:figma-design-to-code` 스킬을 로드한다.
 - **원격 Figma 플러그인 환경에는 Pretendard 폰트가 없다.** 그래서 인스턴스를 만들거나 텍스트를 쓰는 작업은 실패한다(읽기는 가능). 실제 조합 프레임 테스트는 디자이너가 프레임을 만들어 URL 을 준다.

@@ -1,0 +1,169 @@
+{
+  "id": "hero-monthly-live",
+  "section": "hero",
+  "layout": "monthly-live",
+  "order": 12,
+  "when": "월간휴넷 LIVE 같은 라이브 행사 — 로고·타이틀 아래 큰 비주얼에 일정·연사 사진을 얹어요",
+  "figma": {
+    "pc": "537:36633",
+    "mo": "537:40224",
+    "tb": null
+  },
+  "figmaFrame": true,
+  "body": 980,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/monthly-live.jpg",
+  "slots": {
+    "logo": {
+      "type": "media",
+      "extract": false,
+      "optional": true,
+      "label": "로고",
+      "hint": "왼쪽 위 로고 · 흰색 로고(SVG·PNG)를 권해요. 비우면 로고 없음"
+    },
+    "share": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "공유 버튼(오른쪽 위)"
+    },
+    "eyebrow": {
+      "type": "richtext",
+      "optional": true,
+      "extract": false,
+      "label": "상단 문구",
+      "note": "Figma 는 MO 에만 있어요 (AX 시대, 핵심은 HRD!)",
+      "maxLines": 1,
+      "maxChars": 30,
+      "mo": {
+        "maxLines": 1,
+        "maxChars": 20
+      }
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 26,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 26
+      }
+    },
+    "visual": {
+      "type": "media",
+      "extract": false,
+      "label": "메인 비주얼",
+      "hint": "PC 980×580 · MO 343×203 둥근 모서리 · 이미지 또는 mp4 · 미리보기의 이미지를 클릭해도 바꿀 수 있어요",
+      "figmaLayer": "Main"
+    },
+    "date": {
+      "type": "richtext",
+      "extract": false,
+      "label": "일정",
+      "maxLines": 1,
+      "maxChars": 26,
+      "mo": {
+        "maxLines": 1,
+        "maxChars": 23
+      },
+      "figmaLayer": "2025. 2. 25 (화) 오후 2"
+    },
+    "live": {
+      "type": "text",
+      "extract": false,
+      "label": "진행 방식",
+      "maxChars": 12
+    },
+    "channel": {
+      "type": "text",
+      "optional": true,
+      "extract": false,
+      "label": "채널",
+      "note": "PC 는 진행 방식 옆, MO 는 괄호 안에 보여요",
+      "maxChars": 16,
+      "figmaLayer": "유튜브 ’휴넷TV’"
+    },
+    "youtube": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "채널 옆 YouTube 로고 (PC)"
+    },
+    "speaker1": {
+      "type": "media",
+      "optional": true,
+      "extract": false,
+      "label": "연사 사진 1",
+      "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
+      "pcOnly": true
+    },
+    "speaker2": {
+      "type": "media",
+      "optional": true,
+      "extract": false,
+      "label": "연사 사진 2",
+      "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
+      "pcOnly": true
+    },
+    "speaker3": {
+      "type": "media",
+      "optional": true,
+      "extract": false,
+      "label": "연사 사진 3",
+      "pcOnly": true,
+      "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요"
+    },
+    "ctas": {
+      "type": "list",
+      "extract": false,
+      "min": 0,
+      "max": 1,
+      "label": "버튼 (MO)",
+      "note": "Figma 는 MO 에만 있어요 — PC 에는 보이지 않아요",
+      "item": {
+        "label": {
+          "type": "text",
+          "label": "버튼 문구",
+          "maxChars": 14
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "color": {
+          "type": "color",
+          "default": "red/700",
+          "label": "배경색"
+        },
+        "line": {
+          "type": "color",
+          "palette": "line",
+          "optional": true,
+          "label": "라인",
+          "note": "HDS line 색 · 비우면 라인 없음"
+        },
+        "radius": {
+          "type": "radius",
+          "default": "sm",
+          "label": "모서리"
+        },
+        "arrow": {
+          "type": "toggle",
+          "default": true,
+          "label": "화살표"
+        }
+      }
+    },
+    "background": {
+      "type": "media",
+      "cssPresets": true,
+      "extract": false,
+      "optional": true,
+      "label": "위쪽 배경",
+      "hint": "위쪽 어두운 띠(PC 628 · MO 437) · 아래는 흰 바탕이에요. MO 를 비우면 PC 것을 써요"
+    }
+  }
+}

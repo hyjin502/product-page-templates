@@ -1,0 +1,43 @@
+{% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans, btns %}
+{% set lg = (logo.pc or logo.mo) if logo else null %}
+{% set ebPc = eyebrow | lines('pc') %}{% set ebMo = eyebrow | lines('mo') %}
+{% set dtPc = date | lines('pc') %}{% set dtMo = date | lines('mo') %}
+<section class="hero hero--monthly-live">
+  {{ bgMedia(background) }}
+  <div class="hero__body">
+{% if (lg and lg.src) or share %}
+    <div class="hero__top">
+{% if lg and lg.src %}
+      <img class="hero__logo" src="{{ lg.src }}" alt="{{ lg.alt or '' }}">
+{% endif %}
+{% if share %}
+      <button type="button" class="hero__share" aria-label="공유하기">{{ 'share' | icon }}</button>
+{% endif %}
+    </div>
+{% endif %}
+    <div class="hero__heading">
+{% if ebPc.length or ebMo.length %}
+      <p class="hero__badge hero__eyebrow{% if not ebPc.length %} only-mo{% elif not ebMo.length %} only-pc{% endif %}">{{ lineSpans(eyebrow) }}</p>
+{% endif %}
+      <h1 class="hero__title">{{ lineSpans(title) }}</h1>
+    </div>
+    <div class="hero__stage">
+      <div class="hero__visual">{{ visualMedia(visual) }}</div>
+      <div class="hero__info">
+{% if dtPc.length or dtMo.length %}
+        <p class="hero__date">{{ lineSpans(date) }}</p>
+{% endif %}
+        <p class="hero__live"><span class="hero__live-label">{{ live }}</span>{% if channel %} <span class="hero__channel">{{ channel }}{% if youtube %}<img class="hero__yt" src="assets/hero/youtube-logo.png" alt="YouTube" width="54" height="12">{% endif %}</span>{% endif %}</p>
+      </div>
+{% set sps = [] %}{% for sp in [speaker1, speaker2, speaker3] %}{% set m = (sp.pc or sp.mo) if sp else null %}{% if m and m.src %}{% set sps = (sps.push({ m: m, slot: 'speaker' + loop.index }), sps) %}{% endif %}{% endfor %}
+{% if sps.length %}
+      <ul class="hero__speakers">
+{% for s in sps %}
+        <li data-pick="{{ s.slot }}"><img src="{{ s.m.src }}" alt="{{ s.m.alt or '' }}"></li>
+{% endfor %}
+      </ul>
+{% endif %}
+    </div>
+    {{ btns(ctas, "hero__btns hero__btns--mo") }}
+  </div>
+</section>

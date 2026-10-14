@@ -135,7 +135,7 @@ function plan(root, v, content, dev, warn) {
         continue;
       }
       if (kind.type === 'text' || kind.type === 'richtext') {
-        if (!names(s).length && !s.figmaProp) continue;
+        if (!names(s).length && !s.figmaProp) { if (has && !same(val, sample && sample[k])) warn(label + ': Figma 레이어 연결이 없어 원본 문구 그대로예요'); continue; }
         if (s.figmaProp) { // 인스턴스 속성 (버튼 문구 등)
           const inst = s.names ? target(node, s, 'INSTANCE') : node;
           const i = inst && (inst.type === 'INSTANCE' ? inst : findAll(inst, (n) => n.type === 'INSTANCE')[0]);
@@ -155,7 +155,8 @@ function plan(root, v, content, dev, warn) {
         const m = mediaSrc(val, dev);
         if (!m) continue;
         // 숨겨 둔 이미지 레이어도 찾아요(보이게 바꿔요). 배경 레이어가 따로 없으면 섹션 자체 채우기가 배경이에요
-        ALL = true; let t = target(node, s); ALL = false;
+        let t = target(node, s);
+        if (!t) { ALL = true; t = target(node, s); ALL = false; }
         // 숨긴 그림 프레임(예: product-shot MO 의 40px bg)은 배경 자리가 아니에요 → 섹션 자체를 채워요
         if (k === 'background' && node === TOP && (!t || (!t.visible && !hasImg(t)))) t = TOP;
         let img = t && (hasImg(t) ? t : findAll(t, hasImg)[0] || ('fills' in t ? t : null));
@@ -257,6 +258,10 @@ async function componentOf(id) {
   const c = DATA.components[id];
   if (!c) throw new Error('컴포넌트 정보가 없어요: ' + id);
   const local = await figma.getNodeByIdAsync(id).catch(() => null);
+  if (c.frame) { // 컴포넌트가 아닌 프레임 시안 → 원본 파일에서 복제해요 (다른 파일에서는 불러올 수 없어요)
+    if (local && local.type === 'FRAME') return { createInstance: () => local.clone() };
+    throw new Error('이 시안(' + id + ')은 컴포넌트가 아닌 프레임이라 원본 파일(상품페이지 템플릿 시스템)에서만 만들 수 있어요.');
+  }
   if (local && local.type === 'COMPONENT' && local.key === c.key) return local;
   try { return await figma.importComponentByKeyAsync(c.key); }
   catch (e) { throw new Error('원본 컴포넌트를 불러오지 못했어요. 원본 파일(상품페이지 템플릿 시스템)에서 실행하거나, 원본을 팀 라이브러리로 게시한 뒤 이 파일에서 켜 주세요.'); }

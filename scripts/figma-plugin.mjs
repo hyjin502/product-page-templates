@@ -34,7 +34,8 @@ export function buildFigmaPlugin(reg = loadRegistry()) {
   const missing = [];
   for (const v of reg.variants) {
     const figma = { pc: v.figma?.pc || null, mo: v.figma?.mo || null };
-    for (const d of ['pc', 'mo']) if (figma[d] && !comps[figma[d]]) { missing.push(`${v.id} ${d} ${figma[d]}`); figma[d] = null; }
+    // figmaFrame: 컴포넌트가 아닌 프레임 시안 — 원본 파일에서만 복제(clone)해요
+    for (const d of ['pc', 'mo']) if (figma[d] && !comps[figma[d]]) { if (v.figmaFrame) comps[figma[d]] = { frame: true }; else { missing.push(`${v.id} ${d} ${figma[d]}`); figma[d] = null; } }
     variants[v.id] = { figma, spec: slimSpec(v.slots, true), kinds: kinds(v.slots), sample: v.sample };
   }
   const data = {

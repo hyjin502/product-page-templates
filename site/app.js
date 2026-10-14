@@ -98,10 +98,18 @@ function mountPreview(stage, frame, iframe, scaleTag, onLoad, opts = {}) {
     const pad = parseFloat(getComputedStyle(stage).paddingLeft) * 2;
     const fitS = Math.min(1, Math.max(200, stage.clientWidth - pad) / w);
     // 배율을 고른 미리보기(조합기·편집기)는 그 배율 그대로 — 무대보다 크면 가로로 스크롤돼요
-    const s = opts.zoomable && typeof state.zoom === 'number' ? state.zoom : fitS;
     iframe.style.width = w + 'px';
     let h = 400;
     try { const b = iframe.contentDocument && iframe.contentDocument.body; if (b) h = Math.ceil(b.scrollHeight) || h; } catch (e) {}
+    // 무대 높이가 정해져 있으면(좁은 화면의 히어로 편집기 — 화면 60%) 「폭 맞춤」은 높이까지 다 보이게 줄여요
+    let fitH = fitS;
+    const cs = getComputedStyle(stage);
+    if (cs.maxHeight !== 'none') {
+      const bar = stage.querySelector('.stage-bar');
+      const avail = parseFloat(cs.maxHeight) - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - (bar ? bar.offsetHeight + (parseFloat(cs.rowGap) || 0) : 0);
+      if (avail > 120) fitH = Math.min(fitS, avail / h);
+    }
+    const s = opts.zoomable && typeof state.zoom === 'number' ? state.zoom : fitH;
     iframe.style.height = h + 'px';
     iframe.style.transform = `scale(${s})`;
     frame.style.width = Math.floor(w * s) + 'px';
@@ -425,7 +433,7 @@ function renderCompose() {
 }
 let composeFit = null;
 /** 편집기 variant(hero) 행의 내용 — r.src 가 없으면 편집기에서 고친 적이 있을 때 편집기 내용을 써요 */
-const heroEditOf = (id) => state.hero && state.hero.edits && state.hero.edits[id];
+const heroEditOf = (id) => { const e = state.hero && state.hero.edits && state.hero.edits[id]; if (e && byId[id]) fixStaleAssets(byId[id], e); return e; };
 function rowUsesEditor(r) {
   const v = byId[r.variant];
   if (!v || !v.editor || !heroEditOf(r.variant)) return false;
@@ -718,7 +726,20 @@ function editFrom(v, content) {
 function heroEdit(v) {
   const hs = heroState();
   if (!hs.edits[v.id]) hs.edits[v.id] = editFrom(v, v.sample);
+  else fixStaleAssets(v, hs.edits[v.id]);
   return hs.edits[v.id];
+}
+/** 저장해 둔 편집값의 미디어 칸이 샘플 이미지(저장소 assets/…)만 쓰고 있으면 지금 샘플을 따라가요.
+ *  샘플 이미지를 바꾸거나 지우거나 MO 이미지를 더해도 예전 편집값 때문에 옛 이미지가 남지 않게 —
+ *  직접 올린 파일 · 붙여넣은 주소 · CSS 배경을 고른 칸은 그대로 둬요 */
+function fixStaleAssets(v, e) {
+  const fresh = editFrom(v, v.sample);
+  for (const [k, raw] of Object.entries(v.slots)) {
+    if (RC.specOf(raw).type !== 'media' || !e[k]) continue;
+    const refs = ['pc', 'mo'].map((d) => e[k][d]).filter(Boolean);
+    const sampleOnly = refs.length > 0 && refs.every((r) => !r.file && r.kind !== 'css' && typeof r.src === 'string' && /^assets\//.test(r.src));
+    if (sampleOnly && JSON.stringify(e[k]) !== JSON.stringify(fresh[k])) e[k] = fresh[k];
+  }
 }
 const extOf = (ref) => { const m = /\.([a-z0-9]+)$/i.exec(ref.name || ''); return (m ? m[1] : ref.kind === 'video' ? 'mp4' : 'jpg').toLowerCase(); };
 const exportName = (slot, dev, ref) => `hero-${slot === 'background' ? 'bg' : slot}-${dev}.${extOf(ref)}`;
@@ -742,7 +763,7 @@ function contentFrom(v, e, forExport) {
       const join = (ls) => (ls || []).map((l) => String(l).trim()).filter(Boolean).join('\n');
       const t = join(val);
       const m = e['@mo'] && e['@mo'][k] ? join(e['@mo'][k]) : '';
-      if (m && m !== t) c[k] = t ? { pc: t, mo: m } : { mo: m };
+      if (m && m !== t) c[k] = { pc: t, mo: m }; // PC 를 비우고 MO 만 쓰면 PC 에는 안 보여요 (pc: '')
       else if (t) c[k] = t;
     } else if (s.type === 'list') {
       // 문구가 빈 버튼은 빼요
@@ -919,6 +940,7 @@ function mediaBox(k, dev, ref, title, css) {
 }
 function mediaField(k, s, m) {
   const css = !!s.cssPresets;
+  if (s.pcOnly) return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 · PC·TB 에만 보여요')}${mediaBox(k, 'pc', m.pc, 'PC · TB', css)}</div>`;
   return `<div class="hed-f">${fieldHead(s, s.hint || (css ? '이미지 · mp4 · CSS 배경 · PC 것은 TB 에도 쓰여요' : '이미지 또는 mp4 · PC 것은 TB 에도 쓰여요'))}
   ${mediaBox(k, 'pc', m.pc, 'PC · TB', css)}
   <label class="hed-check"><input type="checkbox" data-f="${k}" data-k="moSame"${m.moSame ? ' checked' : ''}> MO 도 PC ${esc(s.label || '')} 그대로 쓰기</label>
@@ -1076,7 +1098,7 @@ function measureHero() {
 }
 
 /* ---------- 미리보기에서 이미지 바꾸기 — 섹션 안 비주얼(visual 슬롯)을 클릭하면 파일 선택이 열려요 */
-const PICK_AREAS = { visual: '.hero__visual' };
+const PICK_AREAS = { visual: '.hero__visual', speaker1: '[data-pick="speaker1"]', speaker2: '[data-pick="speaker2"]', speaker3: '[data-pick="speaker3"]' };
 function attachPreviewPick(doc) {
   if (!doc || doc.__hedPick) return;
   doc.__hedPick = true;
@@ -1088,7 +1110,7 @@ function attachPreviewPick(doc) {
     for (const [f, sel] of Object.entries(PICK_AREAS)) {
       if (!ev.target.closest(sel) || !v.slots[f]) continue;
       const m = heroEdit(v)[f];
-      pickTarget = { f, dev: state.device === 'mo' && m && !m.moSame ? 'mo' : 'pc' };
+      pickTarget = { f, dev: state.device === 'mo' && m && !m.moSame && !RC.specOf(v.slots[f]).pcOnly ? 'mo' : 'pc' };
       heroEl.querySelector('[data-hed-file]').click();
       return;
     }
