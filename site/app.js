@@ -34,6 +34,13 @@ function save() { try { localStorage.setItem('tpl-site', JSON.stringify(state));
 const PANEL_W = { def: 380, min: 300, previewMin: 480 };
 const ZOOMS = [['fit', '폭 맞춤'], [0.5, '50%'], [0.75, '75%'], [1, '100%']];
 const SPLIT = '<div class="split" data-split role="separator" aria-orientation="vertical" tabindex="0" aria-label="패널 폭 조절 — 끌거나 ←→ 키, 더블클릭하면 기본 폭" title="끌어서 패널 폭 조절 · 더블클릭하면 기본 폭"></div>';
+/** 조합기 테마 — 라이브러리의 라이트/다크와 같아요 (<html data-theme="dark">). page.json 의 theme 로도 나가요 */
+const themeBar = () => `<div class="zoom" role="group" aria-label="테마"><span class="zoom__label">테마</span>${[['light', '라이트'], ['dark', '다크']].map(([t, l]) => `<button type="button" class="chip" data-compose-theme="${t}" aria-pressed="${String((state.compose.theme || 'light') === t)}">${l}</button>`).join('')}</div>`;
+function applyComposeTheme() {
+  const t = state.compose.theme || 'light';
+  composeEl.querySelectorAll('[data-compose-theme]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.composeTheme === t)));
+  try { const d = composeEl.querySelector('iframe').contentDocument; d.documentElement.setAttribute('data-theme', t); } catch (e) {}
+}
 const zoomBar = () => `<div class="zoom" role="group" aria-label="미리보기 배율"><span class="zoom__label">보기</span>${ZOOMS.map(([z, l]) => `<button type="button" class="chip" data-zoom="${z}" aria-pressed="${String(z === (state.zoom || 'fit'))}">${l}</button>`).join('')}</div>`;
 const clampPanel = (w) => Math.round(Math.max(PANEL_W.min, Math.min(w, window.innerWidth - PANEL_W.previewMin)));
 function syncPanel() {
@@ -379,7 +386,7 @@ function renderCompose() {
   <p class="compose__hint"><code>pages/이름.page.json</code>으로 저장 → 내용 수정 → <code>npm run build</code> → <code>dist/pages/이름/index.html</code></p>
   </div>
 </aside>
-<div class="compose__stage">${c.rows.length ? `<div class="stage-bar">${zoomBar()}</div><div class="v__frame"><iframe title="조합 미리보기"></iframe><span class="v__scale"></span></div>` : '<p class="compose__empty">섹션을 추가하세요</p>'}</div>`;
+<div class="compose__stage">${c.rows.length ? `<div class="stage-bar">${themeBar()}${zoomBar()}</div><div class="v__frame"><iframe title="조합 미리보기"></iframe><span class="v__scale"></span></div>` : '<p class="compose__empty">섹션을 추가하세요</p>'}</div>`;
   composeEl.querySelector('.compose__scroll').scrollTop = keepScroll;
   syncPanel();
   if (!c.rows.length) return;
@@ -391,7 +398,7 @@ function renderCompose() {
   const js = [...new Set(ids)].map((id) => byId[id].js).filter(Boolean).join('\n');
   const stage = ids.every((id) => byId[id].stage === 'sticky') ? 'sticky' : null;
   const iframe = composeEl.querySelector('iframe');
-  composeFit = mountPreview(composeEl.querySelector('.compose__stage'), composeEl.querySelector('.v__frame'), iframe, composeEl.querySelector('.v__scale'), null, { zoomable: true });
+  composeFit = mountPreview(composeEl.querySelector('.compose__stage'), composeEl.querySelector('.v__frame'), iframe, composeEl.querySelector('.v__scale'), applyComposeTheme, { zoomable: true });
   // 편집기 내용을 쓰는 행은 올린 배경 파일(IndexedDB)을 먼저 불러와요
   Promise.all(c.rows.filter(rowUsesEditor).flatMap((r) => mediaKeys(heroEditOf(r.variant))).map(loadBlob)).then(() => {
     iframe.srcdoc = srcdoc(c.rows.map(rowHtml).join('\n'), css, js, stage);
@@ -433,7 +440,7 @@ function withOptions(v, opts) {
 function pageJson() {
   return JSON.stringify({
     title: state.compose.title,
-    theme: 'light',
+    theme: state.compose.theme || 'light',
     sections: state.compose.rows.map((r) => {
       const v = byId[r.variant];
       const pg = v.pager ? rowPager(r) : null;
@@ -459,6 +466,8 @@ composeEl.addEventListener('click', (e) => {
   if (pc && li) { const r = rows[i]; r.count = Math.max(1, rowPager(r).count + +pc.dataset.pgCount); return commitCompose(); }
   if (e.target.closest('[data-add-btn]')) { rows.push({ variant: composeEl.querySelector('[data-add]').value }); return commitCompose(); }
   if (e.target.closest('[data-reset]')) { state.compose.rows = defaultRows(); return commitCompose(); }
+  const ct = e.target.closest('[data-compose-theme]');
+  if (ct) { state.compose.theme = ct.dataset.composeTheme; save(); applyComposeTheme(); return; }
   const rs = e.target.closest('[data-row-src]');
   if (rs && li) { rows[i].src = rs.dataset.rowSrc; return commitCompose(); }
   if (e.target.closest('[data-row-open-editor]') && li) { heroState().variant = rows[i].variant; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
