@@ -709,3 +709,29 @@ body.is-dev .flink__label::after { content: none; }
   background: var(--panel); color: var(--ink-2); font: inherit; font-size: 11px; font-weight: 600;
 }
 .stage-bar .zoom + .zoom { margin-left: 0; }
+
+/* ---------- 조합기: 행 안 종류 고르기 — 히어로 편집기 스타일처럼 3열 썸네일 ---------- */
+.rows__variants { flex: 1 1 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.rows__variant { padding: 3px; }
+.vthumb { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 5px; background: var(--stage); }
+.vthumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.vthumb iframe {
+  position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; border: 0; pointer-events: none; background: #fff;
+  transform-origin: 0 0; transform: scale(var(--vt-s, 0.08)) translateX(-320px); /* 가운데 1280 만 */
+}
+/* 썸네일 격자가 행 전체 폭을 쓰게 — ↑↓✕ 는 행 오른쪽 위에 */
+.rows li { position: relative; grid-template-columns: 16px minmax(0, 1fr); }
+.rows__btns { position: absolute; top: 3px; right: 4px; padding-top: 0; }
+.rows__sec { flex: 1 1 100%; min-height: 26px; line-height: 26px; padding-right: 84px; }
+
+/* 조합기 행 드래그 앤 드롭 — 섹션 이름 줄이 손잡이(⋮⋮), 놓을 자리는 파란 줄 */
+.rows__sec[data-drag-handle] { cursor: grab; display: flex; align-items: center; gap: 6px; }
+.rows__sec[data-drag-handle]:active { cursor: grabbing; }
+.rows__grip {
+  flex: none; width: 8px; height: 14px; opacity: .55;
+  background: radial-gradient(circle, var(--ink-3) 1.2px, transparent 1.4px) 0 0 / 4px 4px;
+}
+.rows li:hover .rows__grip { opacity: 1; }
+.rows li.is-dragging { opacity: .45; }
+.rows li.drop-before { box-shadow: 0 -3px 0 0 var(--accent); }
+.rows li.drop-after { box-shadow: 0 3px 0 0 var(--accent); }

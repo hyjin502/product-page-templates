@@ -39,7 +39,7 @@ const themeBar = () => `<div class="zoom" role="group" aria-label="테마"><span
 function applyComposeTheme() {
   const t = state.compose.theme || 'light';
   composeEl.querySelectorAll('[data-compose-theme]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.composeTheme === t)));
-  try { const d = composeEl.querySelector('iframe').contentDocument; d.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  try { const d = composeEl.querySelector('.compose__stage iframe').contentDocument; d.documentElement.setAttribute('data-theme', t); } catch (e) {}
 }
 const zoomBar = () => `<div class="zoom" role="group" aria-label="미리보기 배율"><span class="zoom__label">보기</span>${ZOOMS.map(([z, l]) => `<button type="button" class="chip" data-zoom="${z}" aria-pressed="${String(z === (state.zoom || 'fit'))}">${l}</button>`).join('')}</div>`;
 const clampPanel = (w) => Math.round(Math.max(PANEL_W.min, Math.min(w, window.innerWidth - PANEL_W.previewMin)));
@@ -52,6 +52,21 @@ function syncZoom() {
   document.querySelectorAll('[data-zoom]').forEach((b) => b.setAttribute('aria-pressed', String(String(state.zoom || 'fit') === b.dataset.zoom)));
   composeFit && composeFit(); heroFit && heroFit();
 }
+
+/* 조합기 variant 썸네일 — hero 는 Figma 렌더(meta.thumb), 나머지는 샘플을 1920 폭으로 그려 가운데 1280(본문)만 줄여 보여 줘요(항상 지금 코드 그대로).
+   썸네일 폭은 칸에 맞춰 늘고(16:9), 배율 --vt-s 는 칸 폭이 바뀔 때마다 다시 재요 */
+function vThumb(v) {
+  if (v.thumb) return `<span class="vthumb"><img src="${esc(new URL(v.thumb, assetBase).href)}" alt="" loading="lazy"></span>`;
+  const doc = srcdoc(v.html, v.css + '\nhtml,body{overflow:hidden}', '', v.stage);
+  return `<span class="vthumb"><iframe tabindex="-1" aria-hidden="true" loading="lazy" scrolling="no" srcdoc="${esc(doc)}"></iframe></span>`;
+}
+/** 행 안의 종류 고르기 — 히어로 편집기 스타일처럼 3열 썸네일 */
+function rowVariants(r, sec) {
+  return `<div class="rows__variants" role="group" aria-label="${esc(sec.key)} 종류">${sec.variants.map((id) => { const x = byId[id]; return `<button type="button" class="hed-style rows__variant" data-pick-variant="${id}" aria-pressed="${String(id === r.variant)}" title="${esc(x.when || '')}">${vThumb(x)}<span class="hed-style__name">${esc(vname(x))}</span></button>`; }).join('')}</div>`;
+}
+const vtObserver = new ResizeObserver((entries) => {
+  for (const en of entries) { const w = en.contentRect.width; if (w) en.target.style.setProperty('--vt-s', String(w / 1280)); }
+});
 
 function defaultRows() {
   return REG.sections.filter((s) => s.variants.length).sort((a, b) => a.order - b.order).map((s) => ({ variant: s.variants[0] }));
@@ -367,8 +382,8 @@ function renderCompose() {
   <ol class="rows">${c.rows.map((r, i) => {
     const v = byId[r.variant];
     const sec = secByKey[v.section];
-    return `<li data-row="${i}"><div class="rows__main"><span class="rows__sec">${v.section}</span>
-      <select data-variant aria-label="${v.section} variant">${sec.variants.map((id) => `<option value="${id}"${id === r.variant ? ' selected' : ''}>${vname(byId[id])}</option>`).join('')}</select>
+    return `<li data-row="${i}"><div class="rows__main"><span class="rows__sec" data-drag-handle title="끌어서 순서 바꾸기"><span class="rows__grip" aria-hidden="true"></span>${v.section}</span>
+      ${rowVariants(r, sec)}
       ${Object.entries(v.options).map(([k, o]) => `<label class="rows__opt"><input type="checkbox" data-row-opt="${k}"${(r.options || []).includes(k) ? ' checked' : ''}> ${esc(o.label || k)}</label>`).join('')}
       ${v.pager ? `<div class="rows__pg">${pagerControls(v, rowPager(r))}</div>` : ''}
       ${v.editor ? rowSrcControls(r) : rowThemeControls(r)}</div>
@@ -388,6 +403,7 @@ function renderCompose() {
 </aside>
 <div class="compose__stage">${c.rows.length ? `<div class="stage-bar">${themeBar()}${zoomBar()}</div><div class="v__frame"><iframe title="조합 미리보기"></iframe><span class="v__scale"></span></div>` : '<p class="compose__empty">섹션을 추가하세요</p>'}</div>`;
   composeEl.querySelector('.compose__scroll').scrollTop = keepScroll;
+  composeEl.querySelectorAll('.rows__variant .vthumb').forEach((t) => vtObserver.observe(t));
   syncPanel();
   if (!c.rows.length) return;
   const ids = c.rows.map((r) => r.variant);
@@ -397,7 +413,7 @@ function renderCompose() {
     : withTheme(withPager(byId[r.variant], withOptions(byId[r.variant], r.options), byId[r.variant].pager ? rowPager(r) : null), r.theme));
   const js = [...new Set(ids)].map((id) => byId[id].js).filter(Boolean).join('\n');
   const stage = ids.every((id) => byId[id].stage === 'sticky') ? 'sticky' : null;
-  const iframe = composeEl.querySelector('iframe');
+  const iframe = composeEl.querySelector('.compose__stage iframe');
   composeFit = mountPreview(composeEl.querySelector('.compose__stage'), composeEl.querySelector('.v__frame'), iframe, composeEl.querySelector('.v__scale'), applyComposeTheme, { zoomable: true });
   // 편집기 내용을 쓰는 행은 올린 배경 파일(IndexedDB)을 먼저 불러와요
   Promise.all(c.rows.filter(rowUsesEditor).flatMap((r) => mediaKeys(heroEditOf(r.variant))).map(loadBlob)).then(() => {
@@ -477,6 +493,8 @@ composeEl.addEventListener('click', (e) => {
   if (ct) { state.compose.theme = ct.dataset.composeTheme; save(); applyComposeTheme(); return; }
   const rt = e.target.closest('[data-row-theme]');
   if (rt && li) { if (rt.dataset.rowTheme) rows[i].theme = rt.dataset.rowTheme; else delete rows[i].theme; return commitCompose(); }
+  const pv = e.target.closest('[data-pick-variant]');
+  if (pv && li) { const r = rows[i]; if (r.variant !== pv.dataset.pickVariant) { r.variant = pv.dataset.pickVariant; r.options = []; delete r.count; delete r.per; delete r.src; commitCompose(); } return; }
   const rs = e.target.closest('[data-row-src]');
   if (rs && li) { rows[i].src = rs.dataset.rowSrc; return commitCompose(); }
   if (e.target.closest('[data-row-open-editor]') && li) { heroState().variant = rows[i].variant; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
@@ -488,6 +506,52 @@ composeEl.addEventListener('click', (e) => {
     for (const r of rows.filter(rowUsesEditor)) downloadMedia(byId[r.variant], heroEditOf(r.variant));
   }
 });
+/* 행 드래그 앤 드롭 — 섹션 이름 줄(⋮⋮)을 잡고 끌어 순서를 바꿔요 (↑↓ 버튼도 그대로) */
+let dragFrom = -1;
+const clearDrop = () => composeEl.querySelectorAll('.rows li').forEach((x) => x.classList.remove('drop-before', 'drop-after', 'is-dragging'));
+composeEl.addEventListener('pointerdown', (e) => {
+  const h = e.target.closest('[data-drag-handle]');
+  const li = h && h.closest('[data-row]');
+  if (li) li.draggable = true; // 손잡이를 잡았을 때만 끌 수 있어요 (입력칸·칩 클릭은 그대로)
+});
+composeEl.addEventListener('dragstart', (e) => {
+  const li = e.target.closest && e.target.closest('[data-row]');
+  if (!li || !li.draggable) return;
+  dragFrom = +li.dataset.row;
+  li.classList.add('is-dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  try { e.dataTransfer.setData('text/plain', String(dragFrom)); } catch (err) {}
+});
+composeEl.addEventListener('dragover', (e) => {
+  if (dragFrom < 0) return;
+  const li = e.target.closest && e.target.closest('[data-row]');
+  if (!li) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const r = li.getBoundingClientRect();
+  const after = e.clientY > r.top + r.height / 2;
+  composeEl.querySelectorAll('.rows li').forEach((x) => { if (x !== li) x.classList.remove('drop-before', 'drop-after'); });
+  li.classList.toggle('drop-before', !after);
+  li.classList.toggle('drop-after', after);
+});
+composeEl.addEventListener('drop', (e) => {
+  if (dragFrom < 0) return;
+  const li = e.target.closest && e.target.closest('[data-row]');
+  e.preventDefault();
+  if (li) {
+    const to0 = +li.dataset.row + (li.classList.contains('drop-after') ? 1 : 0);
+    const rows = state.compose.rows;
+    const [moved] = rows.splice(dragFrom, 1);
+    rows.splice(to0 > dragFrom ? to0 - 1 : to0, 0, moved);
+  }
+  dragFrom = -1; clearDrop(); commitCompose();
+});
+composeEl.addEventListener('dragend', (e) => {
+  const li = e.target.closest && e.target.closest('[data-row]');
+  if (li) li.draggable = false;
+  dragFrom = -1; clearDrop();
+});
+
 composeEl.addEventListener('change', (e) => {
   const sel = e.target.closest('[data-variant]');
   if (sel) { const r = state.compose.rows[+sel.closest('[data-row]').dataset.row]; r.variant = sel.value; r.options = []; delete r.count; delete r.per; commitCompose(); return; }
