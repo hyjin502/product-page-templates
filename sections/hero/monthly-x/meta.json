@@ -1,0 +1,111 @@
+{
+  "id": "hero-monthly-x",
+  "section": "hero",
+  "layout": "monthly-x",
+  "order": 13,
+  "when": "월간X 같은 오프라인 행사·해커톤 — 검정 패턴 위 타이틀과 티켓 모양 카드(사진 + 일정·장소)",
+  "figma": {
+    "pc": "550:41282",
+    "mo": "550:41355",
+    "tb": null
+  },
+  "figmaFrame": true,
+  "body": 980,
+  "editor": true,
+  "thumb": "assets/hero/thumbs/monthly-x.jpg",
+  "slots": {
+    "logo": {
+      "type": "media",
+      "extract": false,
+      "optional": true,
+      "label": "로고",
+      "hint": "왼쪽 위 로고 · 흰색 로고(SVG·PNG)를 권해요. 비우면 로고 없음"
+    },
+    "share": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "공유 버튼(오른쪽 위)"
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "메인 타이틀",
+      "minLines": 1,
+      "maxLines": 2,
+      "maxChars": 22,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 22
+      }
+    },
+    "visual": {
+      "type": "media",
+      "extract": false,
+      "label": "티켓 사진",
+      "hint": "PC 470×420 · MO 280×250 · 위에 파란 빛·아래 파란 그라디언트가 덮여요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요"
+    },
+    "cardColor": {
+      "type": "color",
+      "optional": true,
+      "extract": false,
+      "label": "티켓 색",
+      "note": "버튼과 같은 HDS 색 — 정보 칸 바탕과 사진 위·아래 그라디언트가 함께 바뀌어요 · 「기본」은 시안 색(#1927ec)"
+    },
+    "details": {
+      "type": "list",
+      "extract": false,
+      "min": 1,
+      "max": 3,
+      "label": "티켓 정보",
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": [
+            "clock",
+            "pin",
+            "none"
+          ],
+          "labels": {
+            "clock": "시계",
+            "pin": "장소",
+            "none": "없음"
+          },
+          "default": "clock",
+          "label": "아이콘"
+        },
+        "label": {
+          "type": "text",
+          "label": "작은 제목",
+          "maxChars": 20
+        },
+        "value": {
+          "type": "text",
+          "label": "내용",
+          "maxChars": 24
+        },
+        "sub": {
+          "type": "text",
+          "optional": true,
+          "label": "보조 문구",
+          "note": "내용 옆에 작게",
+          "maxChars": 16
+        }
+      }
+    },
+    "mark": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "X 장식(티켓 오른쪽 아래)"
+    },
+    "background": {
+      "type": "media",
+      "cssPresets": true,
+      "extract": false,
+      "optional": true,
+      "label": "배경",
+      "hint": "기본은 Figma X 패턴 이미지 · 이미지·mp4·CSS 배경(「X 패턴」 등)으로 바꿀 수 있어요. MO 를 비우면 PC 것을 써요"
+    }
+  }
+}

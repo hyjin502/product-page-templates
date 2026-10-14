@@ -1,6 +1,6 @@
 /* hero CSS 배경 프리셋 — 이미지·영상 없이 HTML/CSS 만으로 그려요 (목록·이름은 backgrounds.json)
    마크업: <div class="hero-bgfx hero-bgfx--<key>"><span></span><span></span><span></span><span></span></div>
-   프리셋마다 span 4개의 모양·움직임을 따로 정해요(쓰지 않는 span 은 숨겨요). 9종 모두 천천히 움직이고,
+   프리셋마다 span 4개의 모양·움직임을 따로 정해요(쓰지 않는 span 은 숨겨요). 11종 모두 천천히 움직이고,
    동작 줄이기 설정이면 멈춰요. 위쪽 가운데는 ::after 로 어둡게 해서 문구가 읽혀요 */
 .hero-bgfx { --fx-base: #05060a; position: absolute; inset: 0; overflow: hidden; background: var(--fx-base); }
 .hero-bgfx > span { position: absolute; display: block; pointer-events: none; will-change: transform; }
@@ -199,6 +199,83 @@
 @keyframes hero-fx-orbit-b { from { transform: translate(0, 0); } to { transform: translate(-30%, -25%); } }
 @keyframes hero-fx-orbit-c { from { transform: translate(-20%, 10%) scale(.9); } to { transform: translate(30%, 30%) scale(1.15); } }
 
+/* 라이브 글로우 — 월간휴넷 LIVE 배경 색(검정 위 자주·남보라·남색 빛)을 CSS 로.
+   빛 4개가 서로 다른 궤도로 떠다니며 커졌다 작아져요(8~14초). 가운데 어둡게 하는 막은 옅게 */
+.hero-bgfx--live-glow { --fx-base: #050208; }
+.hero-bgfx--live-glow::after { background: radial-gradient(55% 45% at 50% 35%, rgba(5, 2, 8, 0.4), transparent 75%); }
+.hero-bgfx.hero-bgfx--live-glow > span { right: auto; bottom: auto; border-radius: 50%; transform: none; filter: blur(56px); mix-blend-mode: screen; }
+.hero-bgfx.hero-bgfx--live-glow > span:nth-child(1) { /* 위쪽 가운데 왼쪽 — 자주 */
+  left: 8%; top: -45%; width: 55%; height: 100%;
+  background: radial-gradient(closest-side, #a01c8c, color-mix(in srgb, #6a1260 70%, transparent) 55%, transparent);
+  animation: hero-fx-live-a 11s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--live-glow > span:nth-child(2) { /* 오른쪽 위 — 남보라 */
+  left: 55%; top: -55%; width: 55%; height: 110%;
+  background: radial-gradient(closest-side, #4646f0, color-mix(in srgb, #2a22b0 70%, transparent) 55%, transparent);
+  animation: hero-fx-live-b 13s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--live-glow > span:nth-child(3) { /* 왼쪽 아래 — 남색 */
+  left: -18%; top: 40%; width: 55%; height: 95%;
+  background: radial-gradient(closest-side, #2240c8, color-mix(in srgb, #14207a 70%, transparent) 55%, transparent);
+  animation: hero-fx-live-c 9s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--live-glow > span:nth-child(4) { /* 아래 가운데 — 보라 */
+  left: 32%; top: 55%; width: 45%; height: 75%;
+  background: radial-gradient(closest-side, #6a1fa8, transparent);
+  opacity: .8; animation: hero-fx-live-d 14s ease-in-out infinite alternate;
+}
+@keyframes hero-fx-live-a { from { transform: translate(-8%, 0) scale(.85); opacity: .75; } to { transform: translate(22%, 14%) scale(1.2); opacity: 1; } }
+@keyframes hero-fx-live-b { from { transform: translate(10%, 0) scale(1.15); opacity: 1; } to { transform: translate(-25%, 12%) scale(.85); opacity: .7; } }
+@keyframes hero-fx-live-c { from { transform: translate(0, 10%) scale(.9); opacity: .7; } to { transform: translate(30%, -12%) scale(1.25); opacity: 1; } }
+@keyframes hero-fx-live-d { from { transform: translate(-30%, 0) scale(.9); } to { transform: translate(35%, -10%) scale(1.15); } }
+
+/* X 패턴 — 월간X 배경. 검정 위에 모양이 다른 X 4개(체크 픽셀 · 사선 줄무늬 · 점 · 면)가 천천히 떠다니며 돌고 숨 쉬어요.
+   뒤에는 작은 X 무늬(::before)가 아주 옅게 흘러가요. X 모양은 대각선 두 줄(mask)로 오려요 */
+.hero-bgfx--x-pattern { --fx-base: #000000; --x-ink: rgba(255, 255, 255, 0.16); }
+.hero-bgfx--x-pattern::before {
+  content: ""; position: absolute; inset: -64px; opacity: .07;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M22 22l20 20M42 22L22 42' stroke='%23fff' stroke-width='5' stroke-linecap='square'/%3E%3C/svg%3E") 0 0 / 64px 64px;
+  animation: hero-fx-x-tile 30s linear infinite;
+}
+.hero-bgfx--x-pattern::after { background: radial-gradient(45% 35% at 50% 22%, rgba(0, 0, 0, .55), transparent 75%); }
+.hero-bgfx.hero-bgfx--x-pattern > span {
+  right: auto; bottom: auto; aspect-ratio: 1; height: auto; border-radius: 0; filter: none;
+  -webkit-mask-image: linear-gradient(45deg, transparent 37%, #000 37% 63%, transparent 63%), linear-gradient(-45deg, transparent 37%, #000 37% 63%, transparent 63%);
+  mask-image: linear-gradient(45deg, transparent 37%, #000 37% 63%, transparent 63%), linear-gradient(-45deg, transparent 37%, #000 37% 63%, transparent 63%);
+}
+.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(1) { /* 체크 픽셀 X — 왼쪽 */
+  left: 14%; top: 18%; width: 22%; max-width: 420px;
+  background: conic-gradient(var(--x-ink) 25%, transparent 0 50%, var(--x-ink) 0 75%, transparent 0) 0 0 / 18px 18px;
+  animation: hero-fx-x-a 18s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(2) { /* 사선 줄무늬 X — 오른쪽 위 */
+  left: 62%; top: -8%; width: 20%; max-width: 380px;
+  background: repeating-linear-gradient(45deg, var(--x-ink) 0 3px, transparent 3px 10px);
+  animation: hero-fx-x-b 22s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(3) { /* 점 X — 오른쪽 아래 */
+  left: 66%; top: 52%; width: 18%; max-width: 340px;
+  background: radial-gradient(circle, var(--x-ink) 38%, transparent 40%) 0 0 / 14px 14px;
+  animation: hero-fx-x-c 16s ease-in-out infinite alternate;
+}
+.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(4) { /* 면 X — 왼쪽 아래 */
+  left: 20%; top: 62%; width: 16%; max-width: 300px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: hero-fx-x-d 20s ease-in-out infinite alternate;
+}
+@keyframes hero-fx-x-tile { to { transform: translate(64px, 64px); } }
+@keyframes hero-fx-x-a { from { transform: translate(-6%, -4%) rotate(-6deg) scale(.95); opacity: .7; } to { transform: translate(10%, 8%) rotate(8deg) scale(1.08); opacity: 1; } }
+@keyframes hero-fx-x-b { from { transform: translate(6%, 0) rotate(10deg); opacity: 1; } to { transform: translate(-10%, 12%) rotate(-8deg); opacity: .6; } }
+@keyframes hero-fx-x-c { from { transform: translate(0, 8%) rotate(0deg) scale(1.05); } to { transform: translate(-12%, -6%) rotate(14deg) scale(.9); } }
+@keyframes hero-fx-x-d { from { transform: translate(-8%, 6%) rotate(4deg); opacity: .6; } to { transform: translate(12%, -8%) rotate(-10deg); opacity: 1; } }
+/* MO — 세로 화면이라 X 를 더 크게 */
+@media (max-width: 767px) {
+  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(1) { left: -12%; top: 8%; width: 60%; }
+  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(2) { left: 55%; top: -4%; width: 55%; }
+  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(3) { left: 58%; top: 60%; width: 50%; }
+  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(4) { left: -6%; top: 70%; width: 45%; }
+}
+
 /* MO — 세로 화면: 선셋 빛줄기는 더 길고 가파르게(위쪽까지 닿게) */
 @media (max-width: 767px) {
   .hero-bgfx--sunset-glow > span { width: 260%; height: 8%; }
@@ -212,5 +289,5 @@
 @keyframes hero-fx-sweep-c-mo { from { transform: rotate(36deg); } to { transform: rotate(58deg); } }
 /* 동작 줄이기 설정이면 멈춰요 */
 @media (prefers-reduced-motion: reduce) {
-  .hero-bgfx, .hero-bgfx > span { animation: none !important; }
+  .hero-bgfx, .hero-bgfx::before, .hero-bgfx > span { animation: none !important; }
 }

@@ -49,12 +49,8 @@
   ],
   "background": {
     "pc": {
-      "kind": "image",
-      "src": "assets/hero/monthly-hunet-bg.jpg"
-    },
-    "mo": {
-      "kind": "image",
-      "src": "assets/hero/monthly-hunet-bg-mo.jpg"
+      "kind": "css",
+      "preset": "live-glow"
     }
   }
 }

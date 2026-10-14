@@ -1,0 +1,34 @@
+{% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans %}
+{% set lg = (logo.pc or logo.mo) if logo else null %}
+<section class="hero hero--monthly-x">
+  {{ bgMedia(background) }}
+  <div class="hero__body">
+{% if (lg and lg.src) or share %}
+    <div class="hero__top">
+{% if lg and lg.src %}
+      <img class="hero__logo" src="{{ lg.src }}" alt="{{ lg.alt or '' }}">
+{% endif %}
+{% if share %}
+      <button type="button" class="hero__share" aria-label="공유하기">{{ 'share' | icon }}</button>
+{% endif %}
+    </div>
+{% endif %}
+    <h1 class="hero__title">{{ lineSpans(title) }}</h1>
+    <div class="hero__ticket"{% if cardColor %} style="--ticket-blue: {{ cardColor | hdsColor }}; --ticket-on: {{ cardColor | hdsOn }}" data-hds="{{ cardColor | hdsToken }}"{% endif %}>
+      <div class="hero__card">
+      <div class="hero__visual">{{ visualMedia(visual) }}</div>
+      <dl class="hero__details">
+{% for d in details %}
+        <div class="hero__detail">
+          <dt>{% if d.icon == 'clock' %}{{ 'clock-16' | icon }}{% elif d.icon == 'pin' %}{{ 'map-pin-16' | icon }}{% endif %}{{ d.label }}</dt>
+          <dd><strong>{{ d.value }}</strong>{% if d.sub %} <span>{{ d.sub }}</span>{% endif %}</dd>
+        </div>
+{% endfor %}
+      </dl>
+      </div>
+{% if mark %}
+      <img class="hero__mark" src="assets/hero/monthly-x-mark.svg" alt="" aria-hidden="true">
+{% endif %}
+    </div>
+  </div>
+</section>

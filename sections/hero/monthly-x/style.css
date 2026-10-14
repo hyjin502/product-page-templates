@@ -1,0 +1,86 @@
+/* PC — Figma 550:41282 월간X_pc (1920 × 1108 · 검정 바탕 + 가운데 980 폭 X 패턴 12%)
+   로고·공유는 본문(980) 양 끝 위 26 · 타이틀 48 ExtraBold(줄 62) 위 120 → 64 → 티켓 470(사진 420 + 파란 정보 칸) → 아래 160
+   티켓: 사진 위쪽 파란 빛(hard-light 50%) · 아래 130 은 파란색으로 이어지는 그라디언트 · 이음선(점선) 양 끝 반원 홈 · 오른쪽 아래 X 장식 */
+.hero--monthly-x {
+  --body: 980px; --hero-pad-y: 120px; --hero-gap: 64px; --top-y: 26px;
+  --hero-title: 48px; --hero-title-lh: 62px;
+  --ticket-w: 470px; --vis-h: 420px; --notch: 18px; --ticket-blue: #1927ec; /* Figma 티켓 색 (HDS 토큰 아님) */
+  padding-bottom: 160px;
+  background: #000000; color: var(--hero-white); /* Figma color/white-&-black/black */
+}
+.hero--monthly-x .hero__top {
+  position: absolute; left: 0; right: 0; top: calc(var(--top-y) - var(--hero-pad-y));
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+.hero--monthly-x .hero__logo { display: block; width: 69.4px; height: 26.9px; object-fit: contain; object-position: left top; }
+.hero--monthly-x .hero__share {
+  margin-left: auto; display: grid; place-items: center; width: 24px; height: 24px; padding: 0;
+  border: 0; background: none; color: var(--hero-white); cursor: pointer;
+}
+.hero--monthly-x .hero__share svg { width: 18px; height: 22px; }
+.hero--monthly-x .hero__title { letter-spacing: -0.2px; } /* Figma -0.2 */
+
+/* 티켓 */
+.hero--monthly-x .hero__ticket { position: relative; width: var(--ticket-w); max-width: 100%; text-align: left; }
+.hero--monthly-x .hero__card {
+  /* 이음선 양 끝 반원 홈 — 배경을 바꿔도 맞게 구멍으로 뚫어요 */
+  -webkit-mask-image: radial-gradient(circle var(--notch) at 1px var(--vis-h), transparent calc(var(--notch) - .5px), #000 var(--notch)), radial-gradient(circle var(--notch) at 100% var(--vis-h), transparent calc(var(--notch) - .5px), #000 var(--notch));
+  -webkit-mask-composite: source-in;
+  mask-image: radial-gradient(circle var(--notch) at 1px var(--vis-h), transparent calc(var(--notch) - .5px), #000 var(--notch)), radial-gradient(circle var(--notch) at 100% var(--vis-h), transparent calc(var(--notch) - .5px), #000 var(--notch));
+  mask-composite: intersect;
+}
+.hero--monthly-x .hero__visual {
+  position: relative; height: var(--vis-h); border-radius: 4px 4px 0 0; overflow: hidden; background: #ffffff; cursor: pointer; isolation: isolate;
+}
+.hero--monthly-x .hero__visual-media,
+.hero--monthly-x .hero__visual-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hero--monthly-x .hero__visual::before { /* 위쪽 파란 빛 */
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 46.4%; z-index: 1;
+  background: linear-gradient(var(--ticket-blue), transparent); mix-blend-mode: hard-light; opacity: .5; pointer-events: none;
+}
+.hero--monthly-x .hero__visual::after { /* 아래 130 → 파란색 */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 31%; z-index: 1;
+  background: linear-gradient(transparent, var(--ticket-blue)); pointer-events: none;
+}
+.hero--monthly-x .hero__details {
+  position: relative; display: flex; flex-direction: column; gap: 20px; margin: 0; padding: 40px;
+  background: var(--ticket-blue); border-radius: 0 0 4px 4px; color: var(--ticket-on, var(--hero-white));
+}
+/* 글자색 on 이 inherit(투명)이면 흰 글자 그대로 */
+.hero--monthly-x .hero__details::before { /* 이음선 — 검정 50% 점선 4/8 */
+  content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, .5) 0 4px, transparent 4px 12px);
+}
+.hero--monthly-x .hero__detail dt {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 16px; font-weight: 500; line-height: 1.6;
+}
+.hero--monthly-x .hero__detail dt svg { flex: none; width: 15px; height: 15px; margin: 0.5px; }
+.hero--monthly-x .hero__detail dd { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; margin: 0; }
+.hero--monthly-x .hero__detail strong { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.hero--monthly-x .hero__detail dd span { font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.hero--monthly-x .hero__mark { position: absolute; left: 347px; top: 498px; width: 233.6px; height: auto; pointer-events: none; }
+
+/* TB 768–1279 — 코드 기본값(제안값): PC 구조, 타이틀만 줄여요 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .hero--monthly-x { --hero-pad-y: 104px; --hero-title: 40px; --hero-title-lh: 1.3; --top-y: 24px; padding-bottom: 140px; }
+}
+
+/* MO ≤767 — Figma 550:41355 월간X_mo (375 × 723)
+   로고 62×24(왼쪽 16 · 위 24) · 타이틀 28 Bold 위 108 → 40 → 티켓 280(사진 250 + 정보 패딩 24/32) → 아래 80 */
+@media (max-width: 767px) {
+  .hero--monthly-x {
+    --hero-pad-y: 108px; --hero-gap: 40px; --top-y: 24px;
+    --hero-title: 28px; --hero-title-lh: 1.4; --ticket-w: 280px; --vis-h: 250px; --notch: 10.7px; /* Figma 가 티켓을 280/470 로 줄여서 홈도 18 → 10.7 */
+    padding-bottom: 80px;
+  }
+  .hero--monthly-x .hero__logo { width: 61.9px; height: 24px; }
+  .hero--monthly-x .hero__title { font-weight: 700; letter-spacing: var(--tracking-tighter); }
+  .hero--monthly-x .hero__visual { border-radius: 2.4px 2.4px 0 0; }
+  .hero--monthly-x .hero__details { gap: 16px; padding: 24px 32px; }
+  .hero--monthly-x .hero__detail dt { font-size: 14px; letter-spacing: var(--tracking-tight); }
+  .hero--monthly-x .hero__detail dd { gap: 0 4px; }
+  .hero--monthly-x .hero__detail strong { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .hero--monthly-x .hero__detail dd span { font-size: 14px; }
+  .hero--monthly-x .hero__mark { left: 213.5px; top: 350px; width: 105.6px; }
+}

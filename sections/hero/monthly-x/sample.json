@@ -1,0 +1,41 @@
+{
+  "logo": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-x-logo.svg",
+      "alt": "월간X"
+    }
+  },
+  "share": true,
+  "title": "Drag & Drop으로 완성하는\nAI 교육 설계 해커톤",
+  "visual": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-x-visual.jpg"
+    }
+  },
+  "details": [
+    {
+      "icon": "clock",
+      "label": "Event Details",
+      "value": "2025. 7. 2. 수요일, 오후 2시"
+    },
+    {
+      "icon": "pin",
+      "label": "Venue",
+      "value": "휴넷캠퍼스",
+      "sub": "디지털로 271 B2"
+    }
+  ],
+  "mark": true,
+  "background": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/hero/monthly-x-bg.jpg"
+    },
+    "mo": {
+      "kind": "image",
+      "src": "assets/hero/monthly-x-bg-mo.jpg"
+    }
+  }
+}
