@@ -30,11 +30,11 @@
     | split-stats | 469:32635 | (없음) |
     | split-photo | 469:32762 | (없음) |
     | media-left | 469:32412 | (없음) |
-    | media-left-bottom | 517:33408 | (없음) |
+    | media-left-bottom | 517:33408 | 550:41490 |
     | monthly-live (월간휴넷) | 537:36633 | 537:40224 |
     | monthly-x (월간X) | 550:41282 | 550:41355 |
     - variant 이름이 서로 겹친다(대부분 `layout=center-inline`) → Figma 세트 오류. 479:33142·479:33359 는 MO 인데 `device=pc` 로 붙어 있다. 디자이너에게 `style=<variant>` 속성 추가를 요청할 것.
-    - 아래쪽 4종(split-stats · split-photo · media-left · media-left-bottom)은 **MO 시안이 없다** → MO·TB 는 코드 기본값(`_shared.css` 의 `.hero--left` 규칙: 문구 → 비주얼 순서로 쌓기, 왼쪽 정렬). 517:33408 은 x 가 108 로 8px 어긋나 있다(relink 는 40px 까지 같은 열로 본다).
+    - 아래쪽 4종 중 split-stats · split-photo · media-left 는 **MO 시안이 없다**(media-left-bottom 은 2026-10-14 MO 550:41490 추가 — 검정+큐브 20% 배경 `media-left-bottom-bg-mo.jpg`, 문구 묶음 아래쪽 · 버튼은 글자 폭) → MO·TB 는 코드 기본값(`_shared.css` 의 `.hero--left` 규칙: 문구 → 비주얼 순서로 쌓기, 왼쪽 정렬). 517:33408 은 x 가 108 로 8px 어긋나 있다(relink 는 40px 까지 같은 열로 본다).
     - 4종은 `.hero--left` + `.hero__split`(왼쪽 `.hero__content` · 오른쪽 `.hero__visual`) 공통 틀을 쓰고 variant 는 변수만 정한다. split-stats 의 수치는 `stats` 목록(value · unit · label, 추출 안 함 — Figma 레이어 이름이 숫자·문구라서). split-photo·media-left-bottom 은 Figma 문구 묶음이 768 프레임을 넘쳐서(846 · 829) 위아래 여백을 줄여 768 에 맞췄다(타이틀·버튼 위치는 Figma 그대로).
     - media-left-bottom 배경은 Figma 의 검정 + 큐브 이미지 20% 를 한 장(`media-left-bottom-bg.jpg`)으로 구웠다.
     - **monthly-live(월간휴넷 LIVE)** 는 hero 세트 밖의 **프레임**(컴포넌트 아님)이다 → meta `figmaFrame: true`. relink 는 건너뛰고(노드는 손으로), Figma 플러그인은 원본 파일에서만 프레임을 복제(clone)한다. 위쪽 어두운 띠만 배경이고 아래는 흰 바탕. 띠는 고정 높이가 아니라 그리드 줄로 비주얼에 묶여 비주얼 아래 `--overlap`(PC 206 · TB 160 · MO 32) 위에서 끝난다(= Figma 628 · 437). `.hero__body` 는 `display: contents`, MO 는 `.hero__stage` 도 contents. 배경 띠 기본값은 CSS 프리셋 `live-glow`(사용자 요청, Figma 배경 이미지 색을 참고 — 이미지 `monthly-hunet-bg*.jpg` 는 남겨 둠). 메인 비주얼·연사 사진은 Figma 렌더를 구웠다(`assets/hero/monthly-hunet-*`). 로고(`monthly-hunet-logo.svg`, 두 SVG 합침)·공유 아이콘(`assets/icons/share.svg`)·YouTube 로고는 Figma 에셋.

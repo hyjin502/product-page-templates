@@ -13,8 +13,12 @@
 @media (min-width: 768px) and (max-width: 1279px) {
   .hero.hero--media-left-bottom { --hero-pad-top: 280px; --hero-pad-y: 100px; }
 }
-/* MO ≤767 — 시안 없음(코드 기본값): 위쪽을 비워 배경을 보여 줘요 */
+/* MO ≤767 — Figma 550:41490 (375 × 812 · 검정 + 큐브 20% · 문구 묶음은 아래쪽: 위 413 · 아래 128)
+   상단 문구 18 → 16 → 타이틀 42 ExtraBold(줄 1.4) → 40 → 테두리 버튼(패딩 20/32 · 글자 20, 글자 폭만큼) */
 @media (max-width: 767px) {
-  .hero.hero--media-left-bottom { --hero-pad-top: 280px; }
-  .hero--media-left-bottom .hero__badge { font-size: 16px; }
+  .hero.hero--media-left-bottom { --hero-h: 812px; --hero-pad-top: 0px; --hero-pad-y: 128px; --hero-title: 42px; --hero-title-lh: 1.4; --hero-gap: 40px; --hero-gap-titles: 16px; }
+  .hero--media-left-bottom .hero__split { justify-content: flex-end; align-items: stretch; } /* PC 의 아래 맞춤(align-items: flex-end)을 풀어요 — 세로 쌓기라 오른쪽으로 밀려요 */
+  .hero--media-left-bottom .hero__content { padding: 0 0 128px; }
+  .hero--media-left-bottom .hero__badge { font-size: 18px; }
+  .hero--media-left-bottom .hero__btns { align-items: flex-start; } /* Figma MO 버튼은 전체 폭이 아니라 글자 폭만큼 */
 }
