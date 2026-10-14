@@ -379,15 +379,16 @@ function renderCompose() {
   <div class="compose__scroll">
   <div><h2>페이지 조합기</h2><p>섹션 순서와 variant를 고르면 전체 페이지를 미리 봐요. 결과는 <code>page.json</code>으로 받아 내용을 채운 뒤 빌드하세요.</p></div>
   <label class="field">페이지 제목<input type="text" data-title value="${esc(c.title)}"></label>
+  <div class="rows__bar"><span>섹션 ${c.rows.length}개</span><button type="button" class="btn-ui" data-fold-all="1">모두 접기</button><button type="button" class="btn-ui" data-fold-all="0">모두 펴기</button></div>
   <ol class="rows">${c.rows.map((r, i) => {
     const v = byId[r.variant];
     const sec = secByKey[v.section];
-    return `<li data-row="${i}"><div class="rows__main"><span class="rows__sec" data-drag-handle title="끌어서 순서 바꾸기"><span class="rows__grip" aria-hidden="true"></span>${v.section}</span>
-      ${rowVariants(r, sec)}
+    return `<li data-row="${i}"${r.folded ? ' class="is-folded"' : ''}><div class="rows__main"><span class="rows__sec" data-drag-handle data-fold title="눌러서 접기·펴기 · 끌어서 순서 바꾸기"><span class="rows__grip" aria-hidden="true"></span>${v.section}<span class="rows__cur">${esc(vname(v))}</span></span>
+      <div class="rows__body">${r.folded ? '' : rowVariants(r, sec)}
       ${Object.entries(v.options).map(([k, o]) => `<label class="rows__opt"><input type="checkbox" data-row-opt="${k}"${(r.options || []).includes(k) ? ' checked' : ''}> ${esc(o.label || k)}</label>`).join('')}
       ${v.pager ? `<div class="rows__pg">${pagerControls(v, rowPager(r))}</div>` : ''}
-      ${v.editor ? rowSrcControls(r) : rowThemeControls(r)}</div>
-      <div class="rows__btns"><button type="button" class="icon-btn" data-move="-1" aria-label="위로"${i === 0 ? ' disabled' : ''}>↑</button><button type="button" class="icon-btn" data-move="1" aria-label="아래로"${i === c.rows.length - 1 ? ' disabled' : ''}>↓</button><button type="button" class="icon-btn" data-remove aria-label="빼기">✕</button></div></li>`;
+      ${v.editor ? rowSrcControls(r) : rowThemeControls(r)}</div></div>
+      <div class="rows__btns"><button type="button" class="icon-btn" data-fold aria-label="${r.folded ? '펴기' : '접기'}" aria-expanded="${String(!r.folded)}">${r.folded ? '▸' : '▾'}</button><button type="button" class="icon-btn" data-move="-1" aria-label="위로"${i === 0 ? ' disabled' : ''}>↑</button><button type="button" class="icon-btn" data-move="1" aria-label="아래로"${i === c.rows.length - 1 ? ' disabled' : ''}>↓</button><button type="button" class="icon-btn" data-remove aria-label="빼기">✕</button></div></li>`;
   }).join('')}</ol>
   <div class="add"><select data-add aria-label="추가할 섹션">${avail.map((s) => `<option value="${s.variants[0]}">${s.key} — ${esc(s.role)}</option>`).join('')}</select><button type="button" class="btn-ui" data-add-btn>추가</button></div>
   ${soon.length ? `<p>코드 준비 중: ${soon.join(', ')}</p>` : ''}
@@ -431,7 +432,7 @@ function rowUsesEditor(r) {
 /** 행 테마 — 페이지 따라감 · 라이트 · 다크 (hero 는 시안 고정 색이라 없어요) */
 function rowThemeControls(r) {
   const cur = r.theme || '';
-  return `<div class="rows__src" role="group" aria-label="이 섹션 테마"><span class="rows__src-label">테마</span>${[['', '페이지'], ['light', '라이트'], ['dark', '다크']].map(([t, l]) => `<button type="button" class="chip" data-row-theme="${t}" aria-pressed="${String(cur === t)}">${l}</button>`).join('')}</div>`;
+  return `<div class="rows__src" role="group" aria-label="이 섹션 테마"><span class="rows__src-label" title="기본 = 페이지 테마를 따라가요">테마</span>${[['', '기본'], ['light', '라이트'], ['dark', '다크']].map(([t, l]) => `<button type="button" class="chip" data-row-theme="${t}" aria-pressed="${String(cur === t)}">${l}</button>`).join('')}</div>`;
 }
 const withTheme = (html, t) => (t ? html.replace(/^<([a-z][\w-]*)/, `<$1 data-theme="${t}"`) : html);
 function rowSrcControls(r) {
@@ -482,6 +483,9 @@ composeEl.addEventListener('click', (e) => {
   const rows = state.compose.rows;
   const li = e.target.closest('[data-row]');
   const i = li ? +li.dataset.row : -1;
+  const fa = e.target.closest('[data-fold-all]');
+  if (fa) { rows.forEach((r) => { if (fa.dataset.foldAll === '1') r.folded = true; else delete r.folded; }); return commitCompose(); }
+  if (e.target.closest('[data-fold]') && li) { if (rows[i].folded) delete rows[i].folded; else rows[i].folded = true; return commitCompose(); }
   const mv = e.target.closest('[data-move]');
   if (mv) { const j = i + +mv.dataset.move; [rows[i], rows[j]] = [rows[j], rows[i]]; return commitCompose(); }
   if (e.target.closest('[data-remove]')) { rows.splice(i, 1); return commitCompose(); }

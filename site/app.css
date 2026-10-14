@@ -735,3 +735,12 @@ body.is-dev .flink__label::after { content: none; }
 .rows li.is-dragging { opacity: .45; }
 .rows li.drop-before { box-shadow: 0 -3px 0 0 var(--accent); }
 .rows li.drop-after { box-shadow: 0 3px 0 0 var(--accent); }
+
+/* 조합기 행 접기·펴기 — 섹션 이름 줄을 누르거나 ▾ 버튼. 접으면 이름 + 지금 종류만 */
+.rows__bar { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; font-size: 11px; color: var(--ink-3); }
+.rows__bar span { margin-right: auto; }
+.rows__bar .btn-ui { min-height: 24px; padding: 2px 8px; font-size: 11px; }
+.rows__body { display: contents; }
+.rows li.is-folded .rows__body { display: none; }
+.rows__sec { padding-right: 112px; }
+.rows__cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--accent); }
