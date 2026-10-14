@@ -1,0 +1,11 @@
+{% from "_partials/ui.njk" import secHead %}
+<section class="problem problem--check">
+  <div class="problem__body">
+    {{ secHead(eyebrow, title, subtitle, "sec-head--center") }}
+    <ul class="problem__checks">
+{% for it in items %}
+      <li class="problem__check">{{ 'problem-check-circle' | icon }}<p class="problem__check-text">{{ it.text | rt }}</p></li>
+{% endfor %}
+    </ul>
+  </div>
+</section>

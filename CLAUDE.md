@@ -37,7 +37,7 @@
     - 4종은 `.hero--left` + `.hero__split`(왼쪽 `.hero__content` · 오른쪽 `.hero__visual`) 공통 틀을 쓰고 variant 는 변수만 정한다. split-stats 의 수치는 `stats` 목록(value · unit · label, 추출 안 함 — Figma 레이어 이름이 숫자·문구라서). split-photo·media-left-bottom 은 Figma 문구 묶음이 768 프레임을 넘쳐서(846 · 829) 위아래 여백을 줄여 768 에 맞췄다(타이틀·버튼 위치는 Figma 그대로).
     - media-left-bottom 배경은 Figma 의 검정 + 큐브 이미지 20% 를 한 장(`media-left-bottom-bg.jpg`)으로 구웠다.
     - **monthly-live(월간휴넷 LIVE)** 는 hero 세트 밖의 **프레임**(컴포넌트 아님)이다 → meta `figmaFrame: true`. relink 는 건너뛰고(노드는 손으로), Figma 플러그인은 원본 파일에서만 프레임을 복제(clone)한다. 위쪽 어두운 띠만 배경이고 아래는 흰 바탕. 띠는 고정 높이가 아니라 그리드 줄로 비주얼에 묶여 비주얼 아래 `--overlap`(PC 206 · TB 160 · MO 32) 위에서 끝난다(= Figma 628 · 437). `.hero__body` 는 `display: contents`, MO 는 `.hero__stage` 도 contents. 배경 띠·메인 비주얼·연사 사진은 Figma 렌더를 구웠다(`assets/hero/monthly-hunet-*`). 로고(`monthly-hunet-logo.svg`, 두 SVG 합침)·공유 아이콘(`assets/icons/share.svg`)·YouTube 로고는 Figma 에셋.
-      - PC·MO 가 다르다: 상단 문구·버튼은 MO 에만(PC 에선 숨김), 연사 사진·YouTube 로고는 PC 에만. 일정은 PC 비주얼 위 왼쪽 아래(흰 글자), MO 는 비주얼 아래(검정 글자, 채널은 괄호). 상단 문구 PC 비움 = `{ pc: "", mo }` (편집기도 PC 를 비우고 MO 만 쓰면 이렇게 낸다). 연사 사진은 `speaker1~3`(`pcOnly`, 최대 3장 · 오른쪽 정렬 · 미리보기 클릭 교체 `[data-pick]`). 메인 비주얼 MO(`monthly-hunet-visual-mo.jpg`)는 Figma MO 의 노트북 사진(원본 이미지 e6832 를 Figma 배치대로 잘라 3배 1029×609). PC 비주얼은 렌더 1배(980)라 2배 원본이 오면 바꾼다. 프레임 채우기가 꺼져 있어(Figma 화면의 회색은 캔버스색) 아래 바탕은 흰색으로 뒀다.
+      - PC·MO 가 다르다: 상단 문구·버튼은 MO 에만(PC 에선 숨김), 연사 사진·YouTube 로고는 PC 에만. 일정은 PC 비주얼 위 왼쪽 아래(흰 글자), MO 는 비주얼 아래(검정 글자, 채널은 괄호). 상단 문구 PC 비움 = `{ pc: "", mo }` (편집기도 PC 를 비우고 MO 만 쓰면 이렇게 낸다). 연사 사진은 `speaker1~3`(`pcOnly`, 최대 3장 · 오른쪽 정렬 · 미리보기 클릭 교체 `[data-pick]`). 메인 비주얼 샘플은 사용자 요청으로 PC·MO 모두 Figma PC 비주얼(`monthly-hunet-visual.jpg`, 렌더 1배 980 — 2배 원본이 오면 바꾼다). Figma MO 의 노트북 크롭 사진은 쓰지 않는다. 프레임 채우기가 꺼져 있어(Figma 화면의 회색은 캔버스색) 아래 바탕은 흰색으로 뒀다.
       - Figma 확인 요청: 일정 요일이 PC (화) · MO (목)으로 다르다(2026-12-31 은 목요일). 레이어 이름이 문구라 바뀐다(상단 문구 레이어가 「AI X HRD = AI칼리지」→ 문구로 바뀜) → `eyebrow`·`title`·`date`·`live`·`channel`·`speaker` 표준 이름 요청. MO 버튼 아래 여백은 Figma 0 → 코드 40(제안값).
 - 원본 파일을 옮기면 `sections/sections.json` 의 `figma.fileKey`·`fileName`·`page` 와 각 `meta.json` 의 노드 ID 를 새 파일 기준으로 바꾼다(노드는 relink, 파일 정보는 손으로).
 - Figma MCP(claude.ai Figma 커넥터 또는 figma MCP)가 연결돼 있어야 한다. `use_figma` 전에는 `figma:figma-use` 스킬, `get_design_context` 전에는 `figma:figma-design-to-code` 스킬을 로드한다.
@@ -153,6 +153,6 @@ scripts/                                build · validate · preview · shot · 
 - 추출 검증에서 차이가 난 6건(설명 가능한 차이): feature compact 옵션 문구, detail-slide 슬라이드 수, faq·notice 유의사항 줄바꿈(Figma 원문 수정 필요)
 - 추출하지 않는 슬롯(sample 유지): compare-vs-spec 행(Figma 가 열 단위 구조), inquiry 폼 그룹, plan-comparison 셀 태그. pricing-receipt·sticky-cta·inquiry 는 MO 를 추출하지 않음(`extractFrom: "pc"`)
 - 디자이너 레이어 이름 정리 요청: 문구가 레이어 이름인 곳, 같은 이름이 겹치는 곳, `Frame 2147…`·`Group 51` 같은 의미 없는 이름. 정리되면 meta 의 `*`/`nth` 우회 규칙을 표준 이름으로 바꾼다
-- Figma 오타: countdown `MUNUTES`. 빈 레이어: awards-stats `Group 14`
+- Figma 오타: countdown `MUNUTES`. 빈 레이어: awards-stats `Group 14`. problem `check` 의 MO(537:41167)가 `layout=image-list` 로 잘못 붙어 있다(→ relink 가 image-list MO 와 헷갈릴 수 있어 이름 수정 요청). check 의 PC 타이틀·항목 텍스트 레이어 이름이 다른 문구(「오직 월간휴넷에서만 공개합니다」·「마이크로소프트의 <업무동향지표 202…」) → `title`·`text` 로 정리 요청
 - compare 2종·pricing plan-comparison 의 TB/MO 배치는 Figma 에 없어서 제안안이다
 - 실제 디자이너 조합 프레임으로 `figma-to-page` E2E (인스턴스 덮어쓰기·이미지 교체 반영 확인)

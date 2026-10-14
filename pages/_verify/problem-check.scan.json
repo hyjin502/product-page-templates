@@ -1,0 +1,30 @@
+{
+  "frames": {
+    "pc": {
+      "id": "components",
+      "name": "components-pc",
+      "items": [
+        {
+          "id": "537:41072",
+          "name": "537:41072",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "537:41072"
+        }
+      ]
+    },
+    "mo": {
+      "id": "components",
+      "name": "components-mo",
+      "items": [
+        {
+          "id": "537:41167",
+          "name": "537:41167",
+          "type": "INSTANCE",
+          "visible": true,
+          "mainId": "537:41167"
+        }
+      ]
+    }
+  }
+}

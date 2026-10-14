@@ -1,0 +1,24 @@
+/* .problem, __body 는 _shared.css
+   PC — Figma 537:41072 (본문 860 · 타이틀 32 → 60 → 체크 줄 8 간격: bg-page 바탕 · 둥근 8 · 패딩 16/40 · 아이콘 24 + 8 + 글자 18 medium) */
+.problem--check { --body: 860px; }
+.problem--check .problem__checks { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.problem--check .problem__check {
+  display: flex; align-items: center; gap: 8px; padding: 16px 40px;
+  border-radius: 8px; background: var(--bg-page);
+}
+.problem--check .problem__check svg { flex: none; width: 24px; height: 24px; color: var(--brand); }
+.problem--check .problem__check-text {
+  flex: 1 1 auto; min-width: 0; font-size: 18px; font-weight: 500; line-height: 1.6;
+  letter-spacing: var(--tracking-tight); color: var(--t-100);
+}
+
+/* TB 768–1279 — 코드 기본값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .problem--check .problem__check { padding: 16px 32px; }
+}
+
+/* MO ≤767 — Figma 537:41167 (타이틀 28 → 48 → 체크 줄: 패딩 16/20 · 글자 16 regular, 줄바꿈) */
+@media (max-width: 767px) {
+  .problem--check .problem__check { padding: 16px 20px; }
+  .problem--check .problem__check-text { font-size: 16px; font-weight: 400; }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "problem-check",
+  "section": "problem",
+  "layout": "check",
+  "order": 9,
+  "when": "\"이런 분께 추천합니다\"처럼 해당되는 상황을 체크 목록으로 한 줄씩 보여줄 때",
+  "figma": {
+    "pc": "537:41072",
+    "mo": "537:41167",
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "figmaLayer": "eyebrow",
+      "optional": true,
+      "label": "상단 보조 문구"
+    },
+    "title": {
+      "type": "richtext",
+      "figmaLayer": "title",
+      "aliases": ["오직 월간휴넷에서만 공개합니다"],
+      "note": "PC 는 Body 바로 아래 텍스트(레이어 이름이 다른 문구), MO 는 heading-mo/title — PC·MO 문구가 달라요",
+      "label": "섹션 타이틀"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "figmaLayer": "subtitle",
+      "optional": true,
+      "label": "섹션 설명"
+    },
+    "items": {
+      "type": "list",
+      "figmaLayer": "Title",
+      "min": 1,
+      "max": 12,
+      "label": "체크 항목",
+      "item": {
+        "text": {
+          "type": "richtext",
+          "figmaLayer": "*",
+          "label": "항목 문구",
+          "note": "PC 는 한 줄, MO 는 줄바꿈돼요"
+        }
+      }
+    }
+  }
+}

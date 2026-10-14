@@ -16,10 +16,6 @@
     "pc": {
       "kind": "image",
       "src": "assets/hero/monthly-hunet-visual.jpg"
-    },
-    "mo": {
-      "kind": "image",
-      "src": "assets/hero/monthly-hunet-visual-mo.jpg"
     }
   },
   "date": {

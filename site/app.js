@@ -24,7 +24,7 @@ try {
   if (s.compose && Array.isArray(s.compose.rows)) state.compose = s.compose;
   if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
   if (Number.isFinite(s.panelW)) state.panelW = s.panelW;
-  if (s.zoom === 'fit' || [0.5, 0.75, 1].includes(s.zoom)) state.zoom = s.zoom;
+  if (s.zoom === 'fit' || [0.25, 0.5, 0.75, 1].includes(s.zoom)) state.zoom = s.zoom;
 } catch (e) {}
 if (!state.compose) state.compose = { title: '새 상품페이지', rows: defaultRows() };
 state.compose.rows = state.compose.rows.filter((r) => byId[r.variant]);
@@ -32,7 +32,7 @@ function save() { try { localStorage.setItem('tpl-site', JSON.stringify(state));
 /* 조합기·히어로 편집기 — 왼쪽 패널 폭은 경계선을 끌어 조절(더블클릭 = 기본 폭), 미리보기 배율은 위쪽 막대에서 골라요.
    패널은 접히지 않아요(예전 「패널 접고 크게 보기」는 뒤로가기처럼 보여 메뉴가 사라진 것처럼 보였어요) */
 const PANEL_W = { def: 380, min: 300, previewMin: 480 };
-const ZOOMS = [['fit', '폭 맞춤'], [0.5, '50%'], [0.75, '75%'], [1, '100%']];
+const ZOOMS = [['fit', '폭 맞춤'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']];
 const SPLIT = '<div class="split" data-split role="separator" aria-orientation="vertical" tabindex="0" aria-label="패널 폭 조절 — 끌거나 ←→ 키, 더블클릭하면 기본 폭" title="끌어서 패널 폭 조절 · 더블클릭하면 기본 폭"></div>';
 /** 조합기 테마 — 라이브러리의 라이트/다크와 같아요 (<html data-theme="dark">). page.json 의 theme 로도 나가요 */
 const themeBar = () => `<div class="zoom" role="group" aria-label="테마"><span class="zoom__label">테마</span>${[['light', '라이트'], ['dark', '다크']].map(([t, l]) => `<button type="button" class="chip" data-compose-theme="${t}" aria-pressed="${String((state.compose.theme || 'light') === t)}">${l}</button>`).join('')}</div>`;
@@ -428,8 +428,34 @@ function renderCompose() {
   composeFit = mountPreview(composeEl.querySelector('.compose__stage'), composeEl.querySelector('.v__frame'), iframe, composeEl.querySelector('.v__scale'), applyComposeTheme, { zoomable: true });
   // 편집기 내용을 쓰는 행은 올린 배경 파일(IndexedDB)을 먼저 불러와요
   Promise.all(c.rows.filter(rowUsesEditor).flatMap((r) => mediaKeys(heroEditOf(r.variant))).map(loadBlob)).then(() => {
-    iframe.srcdoc = srcdoc(c.rows.map(rowHtml).join('\n'), css, js, stage);
+    if (composeFocus != null) { const i = composeFocus; iframe.addEventListener('load', () => setTimeout(() => focusComposeRow(i), 60), { once: true }); composeFocus = null; }
+    iframe.srcdoc = srcdoc(c.rows.map((r, i) => markRow(rowHtml(r), i)).join('\n'), css, js, stage);
   });
+}
+/* 조합기 — 행에서 종류(썸네일)를 고르면 오른쪽 미리보기도 그 섹션으로 스크롤하고 잠깐 테두리를 보여줘요 */
+let composeFocus = null;
+const markRow = (html, i) => html.replace(/^(\s*)<([a-z][\w-]*)/, `$1<$2 data-compose-row="${i}"`);
+function focusComposeRow(i) {
+  const iframe = composeEl.querySelector('.compose__stage iframe');
+  const doc = iframe && iframe.contentDocument;
+  const el = doc && doc.querySelector(`[data-compose-row="${i}"]`);
+  if (!el) return;
+  if (!doc.getElementById('compose-flash')) {
+    const st = doc.createElement('style');
+    st.id = 'compose-flash';
+    st.textContent = '[data-compose-row]{transition:outline-color .5s}[data-compose-row].is-flash{outline:4px solid #3a50c9;outline-offset:-4px}';
+    doc.head.appendChild(st);
+  }
+  // 미리보기는 배율(transform)로 줄여 보여요 → 섹션 위치에 배율을 곱해 바깥 스크롤을 옮겨요
+  const rect = iframe.getBoundingClientRect();
+  const s = iframe.offsetHeight ? rect.height / iframe.offsetHeight : 1;
+  const y = rect.top + el.getBoundingClientRect().top * s;
+  let sc = iframe.parentElement;
+  while (sc && sc !== document.body && !(sc.scrollHeight > sc.clientHeight + 2 && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement;
+  if (sc && sc !== document.body) sc.scrollBy({ top: y - sc.getBoundingClientRect().top - 12, behavior: 'smooth' });
+  else window.scrollBy({ top: y - (document.querySelector('.top')?.offsetHeight || 56) - 12, behavior: 'smooth' });
+  el.classList.add('is-flash');
+  setTimeout(() => el.classList.remove('is-flash'), 1200);
 }
 let composeFit = null;
 /** 편집기 variant(hero) 행의 내용 — r.src 가 없으면 편집기에서 고친 적이 있을 때 편집기 내용을 써요 */
@@ -593,7 +619,7 @@ composeEl.addEventListener('click', (e) => {
   const rt = e.target.closest('[data-row-theme]');
   if (rt && li) { if (rt.dataset.rowTheme) rows[i].theme = rt.dataset.rowTheme; else delete rows[i].theme; return commitCompose(); }
   const pv = e.target.closest('[data-pick-variant]');
-  if (pv && li) { const r = rows[i]; if (r.variant !== pv.dataset.pickVariant) { r.variant = pv.dataset.pickVariant; r.options = []; delete r.count; delete r.per; delete r.src; commitCompose(); } return; }
+  if (pv && li) { const r = rows[i]; if (r.variant !== pv.dataset.pickVariant) { r.variant = pv.dataset.pickVariant; r.options = []; delete r.count; delete r.per; delete r.src; composeFocus = i; commitCompose(); } else focusComposeRow(i); return; }
   const rs = e.target.closest('[data-row-src]');
   if (rs && li) { rows[i].src = rs.dataset.rowSrc; return commitCompose(); }
   if (e.target.closest('[data-row-open-editor]') && li) { heroState().variant = rows[i].variant; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
