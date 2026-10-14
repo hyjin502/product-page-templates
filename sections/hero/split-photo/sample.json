@@ -8,7 +8,7 @@
       "style": "fill",
       "color": "static/white",
       "radius": "full",
-      "arrow": true
+      "icon": "chevron-right"
     }
   ],
   "visual": {

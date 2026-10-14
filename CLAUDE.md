@@ -61,7 +61,7 @@
   - hero 7종의 MO 는 Page 19 MO 시안대로 구현했다.
     - 한 화면 812: media-badge · light-badge · dark-gradient 는 문구 위·버튼 아래, media-title · gradient-text 는 가운데.
     - 위아래로 쌓기: visual-bottom · product-shot.
-    - MO 버튼은 패딩 20/32 · 글자 20 · 전체 폭이고 화살표가 없다.
+    - MO 버튼은 패딩 20/32 · 글자 20 · 전체 폭. 오른쪽 아이콘은 PC 와 같이 고른 대로 보인다(사용자 결정 — Figma MO 시안은 아이콘 없음).
   - **MO 문구는 따로 쓸 수 있다**: 타이틀·서브타이틀은 `{ pc, mo }`. 디자이너가 MO 에서 문구를 줄여 쓴다(예: "비즈니스 성과로 바꾸다" → "비즈니스 성과로"). 편집기는 "MO 문구 따로 쓰기"로 받는다.
   - 글자 수 한도(줄마다):
     - PC 타이틀: 80px 17자 · 100px 14자 · 120px 11자.
@@ -86,7 +86,7 @@ sections/sections.json                  섹션 카탈로그(기본 순서·Figma
 sections/<section>/<layout>/            variant = meta.json · template.njk · style.css · sample.json (+ script.js)
 sections/<section>/_shared.css          섹션 공통 CSS
 sections/_partials/ui.njk               ctas · media · secHead · pagerDots 매크로
-sections/hero/_macros.njk               hero 공통: bgMedia(배경) · visualMedia(섹션 안 비주얼) · lineSpans(줄 단위) · btns(HDS 버튼: 채움/테두리·화살표)
+sections/hero/_macros.njk               hero 공통: bgMedia(배경) · visualMedia(섹션 안 비주얼) · lineSpans(줄 단위) · btns(HDS 버튼: 채움/테두리·오른쪽 아이콘 btnIcon)
 sections/hero/_shared.css               hero 공통 레이아웃 — variant 는 기기마다 변수(--hero-title, --hero-pad-y …)만 정한다
 assets/hero/                            hero 배경·비주얼, thumbs/(편집기 스타일 썸네일)
 pages/*.page.json                       조립할 페이지 → dist/pages/<name>/
@@ -124,6 +124,7 @@ scripts/                                build · validate · preview · shot · 
   - **뱃지 꾸미기** `badgeColor`(color, 버튼 팔레트) · `badgeLine`(color palette line, `noneValue: "none"` = 테두리 빼기) · `badgeRadius`(radius): 모두 optional·기본값 없음 → 비우면 variant 시안 그대로(편집기 「기본」 칩). 템플릿은 `badge()` 매크로가 고른 값만 인라인으로 덮어쓴다. 글자형 뱃지(split-stats·media-left-bottom)는 색·테두리가 있으면 `.hero__badge--custom` 으로 여백 8/20.
   - `media`: `{ pc: { kind: "image"|"video", src, alt?, poster? } | { kind: "css", preset }, mo? }`. `hint` 는 편집기 안내 문구.
     - **CSS 배경 프리셋**(`kind: "css"`): 슬롯에 `"cssPresets": true` 가 있어야 쓸 수 있다(hero 배경 6종). 목록은 `sections/hero/backgrounds.json`(key · label · motion · swatch), 모양은 `sections/hero/_backgrounds.css` 의 `.hero-bgfx--<key>`(span 4개를 프리셋마다 따로 꾸미고 `@keyframes` 로 움직임 — 11종 모두 움직이고 동작 줄이기면 멈춤 — `live-glow` 는 월간휴넷 배경 색을, `x-pattern` 은 월간X 패턴을 옮긴 것(X 모양은 대각선 두 줄 mask, 뒤 작은 X 무늬는 `::before`). 정지 배경은 이미지로 넣는다). 새 프리셋 = 두 파일에 한 항목씩. hero 의 `_backgrounds.css` 는 `_shared.css` 와 함께 섹션 공통 CSS 로 들어간다.
+  - hero 버튼 항목의 `icon`(enum, 기본 none) = 글자 오른쪽 HDS 아이콘 `arrows/chevron-right` · `arrows/arrow-right` · `general/plus`(🖤 HDS 라이브러리 line 24 → `assets/icons/hds-*.svg`). 예전 `arrow: true` 는 chevron-right 로 읽고(검증도 통과), 편집기 저장값은 icon 으로 옮긴다. MO 도 고른 아이콘이 보인다(20px, monthly-live 는 16px).
   - `enum` 은 칩으로 고른다(`labels` 로 표시 이름), `toggle` 은 체크박스(true/false). 항목 필드의 `hideWhen: { style: "outline" }` 은 그 조건일 때 입력칸을 숨긴다.
   - meta `thumb` = 편집기 스타일 썸네일(`assets/hero/thumbs/<layout>.jpg`, Figma 렌더를 가로 480 으로).
 - 렌더: build 가 편집기 섹션의 `.njk` 를 `nunjucks.precompile` 해서 `nunjucks-slim` 과 함께 `dist/index.html` 에 넣는다. 편집기 미리보기 = `npm run build` 결과 (동일성 확인함).
@@ -137,7 +138,7 @@ scripts/                                build · validate · preview · shot · 
 ## 조합기 → Figma (플러그인)
 - 조합기 「Figma용으로 받기」 = `.figma.json`(`format: tpl-figma/1`, page.json + `files`: 히어로 편집기에서 올린 파일 data URL, 이름 `upload/<variant>/hero-bg-pc.jpg`).
 - `figma-plugin/` 플러그인이 섹션마다 원본 컴포넌트 인스턴스를 만들고(같은 파일 = 노드 ID, 아니면 `components.json` 의 key → 팀 라이브러리 게시 필요) `plan()` → `run()` 으로 값을 넣는다. 레이어 찾기는 `slimSpec(slots, true)`(`scripts/lib.mjs`, figma-extract 와 공통 — `extract: false` 슬롯도 레이어 이름을 넣음).
-  - 색·모서리 슬롯은 `DECOR`(titleColor·descColor → 문구 글자색, badge* → 뱃지 글자를 감싼 프레임)와 버튼 항목 `itemDecor`(color·line·radius·style outline·arrow = `right-icon` 속성). 기본값과 같으면 손대지 않는다.
+  - 색·모서리 슬롯은 `DECOR`(titleColor·descColor → 문구 글자색, badge* → 뱃지 글자를 감싼 프레임)와 버튼 항목 `itemDecor`(color·line·radius·style outline·icon ≠ none = `right-icon` 속성 켜기 — 모양은 Figma 버튼 기본 아이콘). 기본값과 같으면 손대지 않는다.
   - 이미지: 샘플과 같으면 Figma 원본을 둔다. 숨긴 레이어도 찾아 보이게 하고, `background` 레이어가 없으면 섹션 자체 채우기. 그림(그라디언트 원)으로 된 bg 프레임은 안을 숨기고 이미지로 채운다. CSS 프리셋 = `assets/hero/bgfx/<key>.jpg`.
   - 아직 안 하는 것: 섹션 options·theme, Figma 에 없는 목록 항목 추가, split-stats 수치, TB. 2단계(나머지 섹션)에서 카드 수(pager)·options(Figma variant 속성) 매핑을 더한다.
 - Claude 는 원격 환경에 Pretendard 가 없어 플러그인을 직접 돌려 볼 수 없다 → 바꾼 뒤엔 `plan()` 만 use_figma 로 원본 컴포넌트에 **읽기 전용**으로 돌려 레이어를 찾는지 확인한다(쓰기 금지).

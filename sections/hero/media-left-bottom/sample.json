@@ -8,8 +8,7 @@
       "style": "fill",
       "color": "transparent",
       "line": "line-strong",
-      "radius": "none",
-      "arrow": false
+      "radius": "none"
     }
   ],
   "background": {

@@ -113,6 +113,7 @@ function checkMediaItem(m, where, errors, s = {}) {
 
 function validateFields(fields, obj, where, errors) {
   for (const key of Object.keys(obj || {})) {
+    if (key === 'arrow' && fields.icon) continue; // 예전 버튼 화살표 — 템플릿이 chevron-right 로 읽어요(icon 으로 바뀜)
     if (!fields[key]) errors.push(`${where}: 알 수 없는 슬롯 "${key}" (가능: ${Object.keys(fields).join(', ')})`);
   }
   for (const [key, raw] of Object.entries(fields)) validateValue(specOf(raw), obj?.[key], `${where}.${key}`, errors);

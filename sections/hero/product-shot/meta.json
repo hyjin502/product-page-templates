@@ -88,6 +88,24 @@
           "default": "full",
           "extract": false,
           "label": "모서리"
+        },
+        "icon": {
+          "type": "enum",
+          "values": [
+            "none",
+            "chevron-right",
+            "arrow-right",
+            "plus"
+          ],
+          "labels": {
+            "none": "없음",
+            "chevron-right": "› chevron-right",
+            "arrow-right": "→ arrow-right",
+            "plus": "+ plus"
+          },
+          "default": "none",
+          "label": "오른쪽 아이콘",
+          "note": "HDS 아이콘 · 기본은 없음"
         }
       }
     },

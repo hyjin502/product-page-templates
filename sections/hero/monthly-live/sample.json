@@ -44,7 +44,7 @@
       "href": "#",
       "color": "red/700",
       "radius": "sm",
-      "arrow": true
+      "icon": "chevron-right"
     }
   ],
   "background": {

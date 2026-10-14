@@ -93,5 +93,5 @@
   .hero--monthly-live .hero__speakers { display: none; }
   .hero--monthly-live .hero__btns--mo { grid-column: 2; grid-row: 7; display: flex; margin-top: 16px; }
   .hero--monthly-live .hero-btn { height: 58px; padding: 0 20px; font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
-  .hero--monthly-live .hero-btn svg { display: block; width: 16px; height: 32px; }
+  .hero--monthly-live .hero-btn svg { display: block; width: 16px; height: 16px; }
 }

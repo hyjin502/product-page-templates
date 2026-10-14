@@ -10,7 +10,7 @@
       "href": "#",
       "color": "interaction/button-neutral",
       "radius": "full",
-      "arrow": true
+      "icon": "chevron-right"
     }
   ],
   "visual": {

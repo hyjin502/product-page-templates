@@ -187,8 +187,9 @@ function plan(root, v, content, dev, warn) {
 /** 버튼 항목의 color · line · radius (기본값과 다를 때만) — 항목 인스턴스 자체를 꾸며요 */
 function itemDecor(kinds, it, val, ops) {
   const btn = it.type === 'INSTANCE' ? it : findAll(it, (n) => n.type === 'INSTANCE')[0] || it;
-  // 화살표 = Figma 버튼의 right-icon 속성
-  if (kinds.arrow && val.arrow != null && btn.type === 'INSTANCE') ops.push({ op: 'prop', node: btn, key: 'right-icon', value: !!val.arrow, soft: true });
+  // 오른쪽 아이콘 = Figma 버튼의 right-icon 속성(켜고 끄기만 — 모양은 Figma 버튼의 기본 아이콘)
+  const ic = val.icon || (val.arrow ? 'chevron-right' : null);
+  if (kinds.icon && ic && btn.type === 'INSTANCE') ops.push({ op: 'prop', node: btn, key: 'right-icon', value: ic !== 'none', soft: true });
   // 테두리형 = 바탕 없이 테두리·글자를 그 색으로 (라인을 고르면 테두리는 라인 색)
   if (kinds.style && val.style === 'outline') {
     const c = colorOf(val.color || (kinds.color && kinds.color.default));

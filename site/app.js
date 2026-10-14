@@ -755,17 +755,33 @@ function heroEdit(v) {
   else fixStaleAssets(v, hs.edits[v.id]);
   return hs.edits[v.id];
 }
-/** 저장해 둔 편집값의 미디어 칸이 샘플 이미지(저장소 assets/…)만 쓰고 있으면 지금 샘플을 따라가요.
- *  샘플 이미지를 바꾸거나 지우거나 MO 이미지를 더해도 예전 편집값 때문에 옛 이미지가 남지 않게 —
- *  직접 올린 파일 · 붙여넣은 주소 · CSS 배경을 고른 칸은 그대로 둬요 */
+/** 미디어 칸이 "처음 받은 샘플 그대로"(손대지 않음)면 지금 샘플을 따라가요.
+ *  e['@base'] = 편집값을 만들 때의 미디어 칸 값 — 지금 값과 같으면 손대지 않은 거예요.
+ *  @base 가 없던 예전 편집값은 샘플 이미지(저장소 assets/…)만 쓰는 칸을 손대지 않은 것으로 봐요.
+ *  직접 올린 파일 · 붙여넣은 주소 · 직접 고른 CSS 배경 · 비운 칸은 그대로 둬요 */
+/* 예전 샘플 기본값 — @base 가 생기기 전(2026-10-14)에 잠깐 샘플이었던 값이면 손대지 않은 것으로 봐요 */
+const FORMER_SAMPLES = { 'hero-monthly-x': { background: [JSON.stringify({ pc: { kind: 'css', preset: 'x-pattern' }, mo: null, moSame: true })] } };
 function fixStaleAssets(v, e) {
+  // 예전 버튼 화살표(arrow: true/false) → 오른쪽 아이콘(icon: chevron-right / none)
+  if (Array.isArray(e.ctas)) for (const it of e.ctas) if (it && 'arrow' in it) { if (!it.icon || it.icon === 'none') it.icon = it.arrow === true || it.arrow === 'true' ? 'chevron-right' : 'none'; delete it.arrow; }
   const fresh = editFrom(v, v.sample);
+  const base = e['@base'];
+  const next = {};
   for (const [k, raw] of Object.entries(v.slots)) {
-    if (RC.specOf(raw).type !== 'media' || !e[k]) continue;
-    const refs = ['pc', 'mo'].map((d) => e[k][d]).filter(Boolean);
-    const sampleOnly = refs.length > 0 && refs.every((r) => !r.file && r.kind !== 'css' && typeof r.src === 'string' && /^assets\//.test(r.src));
-    if (sampleOnly && JSON.stringify(e[k]) !== JSON.stringify(fresh[k])) e[k] = fresh[k];
+    if (RC.specOf(raw).type !== 'media') continue;
+    const cur = JSON.stringify(e[k] || null);
+    const want = JSON.stringify(fresh[k] || null);
+    let untouched;
+    if (base) untouched = base[k] === cur;
+    else {
+      const refs = e[k] ? ['pc', 'mo'].map((d) => e[k][d]).filter(Boolean) : [];
+      untouched = (refs.length > 0 && refs.every((r) => !r.file && r.kind !== 'css' && typeof r.src === 'string' && /^assets\//.test(r.src)))
+        || ((FORMER_SAMPLES[v.id] || {})[k] || []).includes(cur);
+    }
+    if (untouched && cur !== want) e[k] = fresh[k];
+    next[k] = untouched ? want : (base ? base[k] : want);
   }
+  e['@base'] = next;
 }
 const extOf = (ref) => { const m = /\.([a-z0-9]+)$/i.exec(ref.name || ''); return (m ? m[1] : ref.kind === 'video' ? 'mp4' : 'jpg').toLowerCase(); };
 const exportName = (slot, dev, ref) => `hero-${slot === 'background' ? 'bg' : slot}-${dev}.${extOf(ref)}`;

@@ -63,21 +63,21 @@
 .hero-btn.hero-btn--clear { background: transparent; color: inherit; box-shadow: none !important; }
 /* 버튼 라인 — HDS line 색 1px. 채움형은 outline(그림자와 겹치지 않게), 테두리형은 --outline-line 으로 그 테두리 색을 바꿔요 */
 .hero-btn.has-line:not(.hero-btn--outline) { outline: 1px solid var(--btn-line); outline-offset: -1px; }
-/* 화살표(fn/button-right) — 글자 크기에 맞춰 24×48 / 20×40 */
-.hero-btn svg { flex: none; width: 1em; height: 2em; }
+/* 오른쪽 아이콘(HDS line 24) — 글자 크기만큼 (24 / MO 20) */
+.hero-btn svg { flex: none; width: 1em; height: 1em; }
 
 /* TB 768–1279 — PC 처럼 줄마다 쓰되, 넘치면 그 줄 안에서 줄바꿈 */
 @media (min-width: 768px) and (max-width: 1279px) {
   .hero__title, .hero__desc { white-space: normal; text-wrap: balance; }
 }
 
-/* MO ≤767 — Figma hero MO 시안(Page 19) 공통: 버튼은 HDS button xl(60 → 패딩 20/32, 글자 20), 전체 폭으로 쌓고 화살표 없음 */
+/* MO ≤767 — Figma hero MO 시안(Page 19) 공통: 버튼은 HDS button xl(60 → 패딩 20/32, 글자 20), 전체 폭으로 쌓아요.
+   오른쪽 아이콘은 PC 와 같이 고른 대로 보여요(글자 크기 20 에 맞춰 20px) */
 @media (max-width: 767px) {
   .hero__title, .hero__desc { white-space: normal; text-wrap: balance; }
   .hero__badge { max-width: 100%; white-space: normal; }
   .hero__btns { flex-direction: column; gap: var(--hero-btn-gap, 12px); width: 100%; }
   .hero-btn { padding: 20px 32px; font-size: 20px; }
-  .hero-btn svg { display: none; }
 }
 
 /* ---------- 왼쪽 정렬 · 2단(split) 레이아웃 — split-stats · split-photo · media-left · media-left-bottom ----------

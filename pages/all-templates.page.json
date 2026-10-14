@@ -67,7 +67,7 @@
             "style": "fill",
             "color": "blue/700",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           },
           {
             "label": "데모 영상보기",
@@ -75,7 +75,7 @@
             "style": "outline",
             "color": "static/white",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           }
         ]
       }
@@ -98,7 +98,7 @@
             "style": "fill",
             "color": "violet/700",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           },
           {
             "label": "데모 영상보기",
@@ -106,7 +106,7 @@
             "style": "outline",
             "color": "static/white",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           }
         ],
         "background": {
@@ -140,7 +140,7 @@
             "style": "fill",
             "color": "red/700",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           },
           {
             "label": "데모 영상보기",
@@ -148,7 +148,7 @@
             "style": "outline",
             "color": "static/white",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           }
         ],
         "background": {
@@ -177,7 +177,7 @@
             "href": "#",
             "color": "interaction/button-neutral",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           }
         ],
         "visual": {
@@ -272,7 +272,7 @@
             "style": "fill",
             "color": "static/white",
             "radius": "full",
-            "arrow": true
+            "icon": "chevron-right"
           }
         ],
         "visual": {
@@ -296,7 +296,7 @@
             "style": "fill",
             "color": "blue/700",
             "radius": "none",
-            "arrow": true
+            "icon": "chevron-right"
           },
           {
             "label": "휴넷 교육문의",
@@ -305,7 +305,7 @@
             "color": "transparent",
             "line": "line-outline",
             "radius": "none",
-            "arrow": true
+            "icon": "chevron-right"
           }
         ],
         "background": {
@@ -328,8 +328,7 @@
             "style": "fill",
             "color": "transparent",
             "line": "line-strong",
-            "radius": "none",
-            "arrow": false
+            "radius": "none"
           }
         ],
         "background": {

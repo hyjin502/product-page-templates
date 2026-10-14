@@ -14,7 +14,7 @@
       "style": "fill",
       "color": "violet/700",
       "radius": "full",
-      "arrow": true
+      "icon": "chevron-right"
     },
     {
       "label": "데모 영상보기",
@@ -22,7 +22,7 @@
       "style": "outline",
       "color": "static/white",
       "radius": "full",
-      "arrow": true
+      "icon": "chevron-right"
     }
   ],
   "background": {
