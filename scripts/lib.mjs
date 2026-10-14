@@ -137,6 +137,7 @@ function validateValue(s, v, where, errors) {
       // palette: "line" = HDS line 색(tokens/hds.json line). 버튼 색은 예전 키(aliases)도 받아요
       const pal = s.palette === 'text' ? HDS_IDX.text : s.palette === 'line' ? HDS_IDX.line : HDS_IDX.colors;
       const shown = s.palette ? Object.keys(pal) : HDS.colors.map((c) => c.key);
+      if (s.noneValue && v === s.noneValue) break; // 예: 뱃지 테두리 "none" = 빼기
       if (!pal[v]) errors.push(`${where}: HDS ${s.palette === 'text' ? '글자색' : s.palette === 'line' ? '선 색' : '색'} 키예요 (가능: ${shown.join(', ')} / 현재 "${v}")`);
       break;
     }

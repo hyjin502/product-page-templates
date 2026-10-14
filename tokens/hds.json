@@ -51,6 +51,7 @@
     { "key": "line-layout", "token": "line/line-layout", "value": "#eaebec", "label": "레이아웃 선" },
     { "key": "line-outline", "token": "line/line-outline", "value": "#e1e2e4", "label": "외곽선" },
     { "key": "line-strong", "token": "line/line-strong", "value": "#aeb0b6", "label": "진한 선" },
-    { "key": "line-heavy", "token": "line/line-heavy", "value": "#70737c", "label": "아주 진한 선" }
+    { "key": "line-heavy", "token": "line/line-heavy", "value": "#70737c", "label": "아주 진한 선" },
+    { "key": "static/white", "token": "static/white", "value": "#ffffff", "label": "흰색" }
   ]
 }

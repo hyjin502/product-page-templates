@@ -7,6 +7,7 @@
 .hero--media-left-bottom .hero__split { align-items: flex-end; }
 /* 상단 문구 — 테두리 없는 글자만 (body-18 regular) */
 .hero--media-left-bottom .hero__badge { padding: 0; border-radius: 0; font-size: 18px; font-weight: 400; }
+.hero--media-left-bottom .hero__badge.hero__badge--custom { padding: 8px 20px; } /* 배경·테두리를 넣으면 상자 여백 */
 
 /* TB 768–1279 — 코드 기본값 */
 @media (min-width: 768px) and (max-width: 1279px) {

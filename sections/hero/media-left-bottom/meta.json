@@ -21,6 +21,29 @@
       "note": "문구만 (테두리 없음)",
       "maxChars": 24
     },
+    "badgeColor": {
+      "type": "color",
+      "optional": true,
+      "extract": false,
+      "label": "뱃지 배경색",
+      "note": "버튼과 같은 HDS 색 · 「기본」은 시안 그대로"
+    },
+    "badgeLine": {
+      "type": "color",
+      "palette": "line",
+      "noneValue": "none",
+      "optional": true,
+      "extract": false,
+      "label": "뱃지 테두리",
+      "note": "HDS line 색 · 「기본」은 시안 그대로, 「없음」은 테두리 빼기"
+    },
+    "badgeRadius": {
+      "type": "radius",
+      "optional": true,
+      "extract": false,
+      "label": "뱃지 모서리",
+      "note": "「기본」은 시안 그대로"
+    },
     "title": {
       "type": "richtext",
       "figmaLayer": "title",

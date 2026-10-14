@@ -7,6 +7,7 @@
 }
 /* 상단 문구 — 테두리 없는 글자만 (heading-20 bold) */
 .hero--split-stats .hero__badge { padding: 0; border-radius: 0; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.hero--split-stats .hero__badge.hero__badge--custom { padding: 8px 20px; } /* 배경·테두리를 넣으면 상자 여백 */
 .hero--split-stats .hero__visual { width: 592px; aspect-ratio: 1; }
 
 /* TB 768–1279 — 코드 기본값 */

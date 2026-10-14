@@ -1,11 +1,11 @@
-{% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans, btns %}
+{% from "hero/_macros.njk" import badge, bgMedia, visualMedia, lineSpans, btns %}
 <section class="hero hero--left hero--split-stats">
   <div class="hero__split">
     <div class="hero__content">
       <div class="hero__heading">
         <div class="hero__titles">
 {% if eyebrow %}
-          <p class="hero__badge">{{ eyebrow | rt }}</p>
+          {{ badge(eyebrow, badgeColor, badgeLine, badgeRadius) }}
 {% endif %}
           <h1 class="hero__title"{% if titleColor %} style="color: {{ titleColor | hdsText }}" data-hds="{{ titleColor | hdsToken('text') }}"{% endif %}>{{ lineSpans(title) }}</h1>
         </div>

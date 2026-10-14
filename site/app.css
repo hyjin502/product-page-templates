@@ -703,3 +703,8 @@ body.is-dev .flink__label::after { content: none; }
 .zoom { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; padding: 3px; border-radius: 9px; background: var(--panel); border: 1px solid var(--rule); }
 .zoom__label { padding: 0 4px 0 6px; font-size: 11px; color: var(--ink-3); }
 .zoom .chip { min-height: 24px; }
+/* 「기본」(시안 그대로) 칩 */
+.hed-sw .hed-sw__b.hed-sw__b--base {
+  width: auto; min-width: 24px; padding: 0 8px; border-radius: 12px; border: 1px dashed var(--ink-3);
+  background: var(--panel); color: var(--ink-2); font: inherit; font-size: 11px; font-weight: 600;
+}

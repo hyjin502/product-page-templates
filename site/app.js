@@ -641,22 +641,31 @@ function linesField(k, s, ls, moLs) {
   }
   return html + '</div>';
 }
-function swatches(path, cur, label, palette) {
+function swatches(path, cur, label, palette, opt = {}) {
   if (!palette && REG.hds.aliases && REG.hds.aliases[cur]) cur = REG.hds.aliases[cur]; // 예전 키로 저장된 값
   // palette "text" = HDS typography 글자색(반투명 포함 → 체크무늬 위에 보여요), 없으면 버튼 색
   const list = palette === 'text' ? REG.hds.text || [] : palette === 'line' ? REG.hds.line || [] : REG.hds.colors;
   // 라인처럼 비울 수 있는 색은 맨 앞에 「없음」
-  const none = palette === 'line' ? `<button type="button" class="hed-sw__b hed-sw__b--none" ${attrs({ ...path, 'data-val': '', title: '없음', 'aria-label': '없음', 'aria-pressed': String(!cur) })}></button>` : '';
-  return `<div class="hed-sw${palette === 'text' ? ' hed-sw--text' : ''}" role="group" aria-label="${esc(label)}">${none}${list.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.value || c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
+  // opt.base = 맨 앞 「기본」(비우면 시안 그대로), opt.noneValue = 맨 뒤 「없음」(그 값으로 빼기)
+  const none = palette === 'line' && !opt.base ? `<button type="button" class="hed-sw__b hed-sw__b--none" ${attrs({ ...path, 'data-val': '', title: '없음', 'aria-label': '없음', 'aria-pressed': String(!cur) })}></button>` : '';
+  const base = opt.base ? `<button type="button" class="hed-sw__b hed-sw__b--base" ${attrs({ ...path, 'data-val': '', title: '기본 (시안 그대로)', 'aria-label': '기본 (시안 그대로)', 'aria-pressed': String(!cur) })}>기본</button>` : '';
+  const off = opt.noneValue ? `<button type="button" class="hed-sw__b hed-sw__b--none" ${attrs({ ...path, 'data-val': opt.noneValue, title: '없음', 'aria-label': '없음', 'aria-pressed': String(cur === opt.noneValue) })}></button>` : '';
+  return `<div class="hed-sw${palette === 'text' ? ' hed-sw--text' : ''}" role="group" aria-label="${esc(label)}">${base}${none}${off}${list.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.value || c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
 }
 /** 타이틀·서브 색 같은 최상위 색 슬롯 — 지금 고른 토큰 이름을 함께 보여요 */
 function colorField(k, s, cur) {
-  const list = s.palette === 'text' ? REG.hds.text || [] : REG.hds.colors;
-  const c = list.find((x) => x.key === cur);
-  return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label"><code>${c ? esc(c.token) : ''}</code>${c ? ` ${esc(c.label)}` : ''}</span>${swatches({ 'data-f': k }, cur, s.label, s.palette)}</div>`;
+  const list = s.palette === 'text' ? REG.hds.text || [] : s.palette === 'line' ? REG.hds.line || [] : REG.hds.colors;
+  const c = s.palette ? list.find((x) => x.key === cur) : HDS_COLOR[cur];
+  const base = s.optional && s.default == null; // 기본값이 없으면 「기본」 = 시안 그대로
+  const now = c ? `<code>${esc(c.token)}</code> ${esc(c.label)}` : cur && cur === s.noneValue ? '없음' : base ? '기본 (시안 그대로)' : '';
+  return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label">${now}</span>${swatches({ 'data-f': k }, cur, s.label, s.palette, { base, noneValue: s.noneValue })}</div>`;
 }
-function radiusChips(path, cur, label) {
-  return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${REG.hds.radius.map((r) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': r.key, title: r.token, 'aria-pressed': String(r.key === cur) })}><span class="hed-rad__ico" style="border-top-left-radius:${Math.min(r.px, 10)}px"></span>${r.key} <span class="hed-rad__px">${r.px === 900 ? '' : r.px}</span></button>`).join('')}</div>`;
+function radiusField(k, s, cur) {
+  const r = HDS_RADIUS[cur];
+  return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label">${r ? `<code>${esc(r.token)}</code>` : '기본 (시안 그대로)'}</span>${radiusChips({ 'data-f': k }, cur, s.label, s.optional && s.default == null)}</div>`;
+}
+function radiusChips(path, cur, label, base) {
+  return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${base ? `<button type="button" class="chip" ${attrs({ ...path, 'data-val': '', 'aria-pressed': String(!cur) })}>기본</button>` : ''}${REG.hds.radius.map((r) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': r.key, title: r.token, 'aria-pressed': String(r.key === cur) })}><span class="hed-rad__ico" style="border-top-left-radius:${Math.min(r.px, 10)}px"></span>${r.key} <span class="hed-rad__px">${r.px === 900 ? '' : r.px}</span></button>`).join('')}</div>`;
 }
 /** enum — 칩 하나를 고르는 그룹. 표시 이름은 spec.labels */
 function enumChips(path, s, cur, label) {
@@ -742,6 +751,7 @@ function heroForm(v, e) {
     if (s.type === 'list') return listField(k, s, e[k]);
     if (s.type === 'media') return mediaField(k, s, e[k]);
     if (s.type === 'color') return colorField(k, s, e[k]);
+    if (s.type === 'radius') return radiusField(k, s, e[k]);
     if (s.type === 'enum') return `<div class="hed-f">${fieldHead(s, s.note)}${enumChips({ 'data-f': k }, s, e[k], s.label)}</div>`;
     if (s.type === 'toggle') return `<div class="hed-f">${toggleBox({ 'data-f': k }, s, e[k])}</div>`;
     const note = [s.note, s.maxChars ? `최대 ${s.maxChars}자` : ''].filter(Boolean).join(' · ');
