@@ -122,6 +122,7 @@ scripts/                                build · validate · preview · shot · 
 - 저장: 문구·선택값은 localStorage(`tpl-site` 의 `hero`), 올린 파일은 IndexedDB(`tpl-hero-editor`). 내보내기는 page.json + 올린 파일(`hero-bg-pc.<확장자>` 이름으로)을 함께 내려받는다.
 - **하단 이미지 크기 `visualFit`**(enum, 기본은 시안 그대로): visual-bottom `crop`(높이 고정·아래 기준 잘림) | `auto`(`.hero--visual-auto`, 세로 = 이미지 비율), product-shot `fit`(가로 1280) | `natural`(`.hero--visual-natural`, 원본 크기·최대 1280). 둘 다 세로는 이미지에 따라 정해진다(crop 만 고정).
 - **미리보기에서 이미지 바꾸기**: `PICK_AREAS`(`visual` → `.hero__visual`)를 편집기 iframe 에서 클릭하면 그 슬롯의 파일 선택이 열린다(MO 보기 + MO 따로면 mo). 새 hero 의 섹션 안 비주얼도 `.hero__visual` 을 쓰면 그대로 된다.
+- **테마**: 조합기 페이지 테마(`state.compose.theme` → page.json `theme`)와 행 테마(`row.theme` → 섹션 `theme: light|dark`, hero 제외). 빌드는 섹션 루트에 `data-theme` 을 붙이고, `tokens/base.css` 의 `[data-theme="light"]` 블록이 다크 페이지 안 라이트 섹션을 되돌린다. 바탕이 없는 섹션은 `:where(section[data-theme])` 가 `--bg-surface`·`--t-100` 을 준다.
 - **조합기 연결**: 조합기 행 `src`(`sample`|`editor`, 없으면 편집 값이 있을 때 editor). editor 행은 `state.hero.edits[variant]` 를 편집기와 같은 렌더러(`heroHtmlOrError`)로 그리고, page.json 은 `contentFrom(…, true)` + 올린 파일(`downloadMedia`)을 함께 낸다. 편집기 「조합기에서 보기」(`to-compose`) = 같은 섹션 행을 지금 variant + `src: editor` 로(없으면 맨 위에 추가).
 - 바로가기: `index.html#hero-editor`. 줄 넘김 경고는 지금 기기 폭의 iframe 에서 `.hero__badge` · `.hero__title` · `.hero__desc` 의 줄 수를 잰다 (hero variant 는 이 클래스를 함께 쓴다).
 

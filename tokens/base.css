@@ -77,6 +77,26 @@
   --line-layout: #292a2d;
   color-scheme: dark;
 }
+/* 라이트로 되돌리기 — 다크 페이지 안의 한 섹션만 라이트로 둘 때 (조합기 행 테마 · page.json 섹션 theme: "light") */
+[data-theme="light"] {
+  --bg-surface: #ffffff;
+  --bg-faint: #eaebec;
+  --bg-ghost: #f4f4f5;
+  --bg-muted: #aeb0b6;
+  --line-outline: #e1e2e4;
+  --t-100: #171719;
+  --t-80: rgba(23, 23, 25, 0.8);
+  --t-60: rgba(23, 23, 25, 0.6);
+  --t-45: rgba(23, 23, 25, 0.45);
+  --t-disabled: rgba(23, 23, 25, 0.25);
+  --btn-subtle: #70737c;
+  --selected-fill: #46474c;
+  --bg-page: #f7f7f8;
+  --line-layout: #eaebec;
+  color-scheme: light;
+}
+/* 테마를 따로 정한 섹션 — 글자색·바탕을 그 테마로 (섹션 자체 규칙이 있으면 그쪽이 이겨요: :where = 우선순위 0) */
+:where(section[data-theme]) { color: var(--t-100); background-color: var(--bg-surface); }
 
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; }

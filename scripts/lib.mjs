@@ -223,7 +223,7 @@ function decorateRoot(html, classes, attrs) {
   });
 }
 
-/** opts.body: PC 콘텐츠 폭 덮어쓰기(740/860/980/1200), opts.theme: 섹션만 다크로,
+/** opts.body: PC 콘텐츠 폭 덮어쓰기(740/860/980/1200), opts.theme: 섹션만 다크·라이트로(페이지 테마와 다르게),
     opts.options: meta.options 키 목록 — 각 옵션의 class 를 루트에 붙여요 (예: MO compact, mode=dark) */
 export function renderVariant(env, variant, content, opts = {}) {
   let html = core.finalize(env.render(variant.templatePath, core.contextFor(variant.slots, content)));
@@ -240,7 +240,7 @@ export function renderVariant(env, variant, content, opts = {}) {
     for (const d of ['pc', 'tb', 'mo']) style.push(`--mode-${d}: ${pg.mode[d]}`);
   }
   if (style.length) attrs.push(`style="${style.join('; ')}"`);
-  if (opts.theme === 'dark') attrs.push('data-theme="dark"');
+  if (opts.theme === 'dark' || opts.theme === 'light') attrs.push(`data-theme="${opts.theme}"`); // 섹션만 다크·라이트
   if (classes.length || attrs.length) html = decorateRoot(html, classes, attrs);
   return html;
 }

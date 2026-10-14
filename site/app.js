@@ -371,7 +371,7 @@ function renderCompose() {
       <select data-variant aria-label="${v.section} variant">${sec.variants.map((id) => `<option value="${id}"${id === r.variant ? ' selected' : ''}>${vname(byId[id])}</option>`).join('')}</select>
       ${Object.entries(v.options).map(([k, o]) => `<label class="rows__opt"><input type="checkbox" data-row-opt="${k}"${(r.options || []).includes(k) ? ' checked' : ''}> ${esc(o.label || k)}</label>`).join('')}
       ${v.pager ? `<div class="rows__pg">${pagerControls(v, rowPager(r))}</div>` : ''}
-      ${v.editor ? rowSrcControls(r) : ''}</div>
+      ${v.editor ? rowSrcControls(r) : rowThemeControls(r)}</div>
       <div class="rows__btns"><button type="button" class="icon-btn" data-move="-1" aria-label="위로"${i === 0 ? ' disabled' : ''}>↑</button><button type="button" class="icon-btn" data-move="1" aria-label="아래로"${i === c.rows.length - 1 ? ' disabled' : ''}>↓</button><button type="button" class="icon-btn" data-remove aria-label="빼기">✕</button></div></li>`;
   }).join('')}</ol>
   <div class="add"><select data-add aria-label="추가할 섹션">${avail.map((s) => `<option value="${s.variants[0]}">${s.key} — ${esc(s.role)}</option>`).join('')}</select><button type="button" class="btn-ui" data-add-btn>추가</button></div>
@@ -394,7 +394,7 @@ function renderCompose() {
   const css = [...new Set(ids)].map((id) => byId[id].css).join('\n\n'); // 같은 섹션 공통 CSS가 겹쳐도 미리보기에선 무해해요
   const rowHtml = (r) => (rowUsesEditor(r)
     ? heroHtmlOrError(byId[r.variant], heroEditOf(r.variant))
-    : withPager(byId[r.variant], withOptions(byId[r.variant], r.options), byId[r.variant].pager ? rowPager(r) : null));
+    : withTheme(withPager(byId[r.variant], withOptions(byId[r.variant], r.options), byId[r.variant].pager ? rowPager(r) : null), r.theme));
   const js = [...new Set(ids)].map((id) => byId[id].js).filter(Boolean).join('\n');
   const stage = ids.every((id) => byId[id].stage === 'sticky') ? 'sticky' : null;
   const iframe = composeEl.querySelector('iframe');
@@ -412,6 +412,12 @@ function rowUsesEditor(r) {
   if (!v || !v.editor || !heroEditOf(r.variant)) return false;
   return r.src ? r.src === 'editor' : true;
 }
+/** 행 테마 — 페이지 따라감 · 라이트 · 다크 (hero 는 시안 고정 색이라 없어요) */
+function rowThemeControls(r) {
+  const cur = r.theme || '';
+  return `<div class="rows__src" role="group" aria-label="이 섹션 테마"><span class="rows__src-label">테마</span>${[['', '페이지'], ['light', '라이트'], ['dark', '다크']].map(([t, l]) => `<button type="button" class="chip" data-row-theme="${t}" aria-pressed="${String(cur === t)}">${l}</button>`).join('')}</div>`;
+}
+const withTheme = (html, t) => (t ? html.replace(/^<([a-z][\w-]*)/, `<$1 data-theme="${t}"`) : html);
 function rowSrcControls(r) {
   const has = !!heroEditOf(r.variant);
   const ed = rowUsesEditor(r);
@@ -449,6 +455,7 @@ function pageJson() {
         variant: r.variant,
         ...(r.options && r.options.length ? { options: r.options } : {}),
         ...(perChanged ? { pager: pg.per } : {}),
+        ...(r.theme && !v.editor ? { theme: r.theme } : {}),
         content: rowUsesEditor(r) ? contentFrom(v, heroEditOf(r.variant), true) : pg ? contentFor(v, pg.count) : v.sample,
       };
     }),
@@ -468,6 +475,8 @@ composeEl.addEventListener('click', (e) => {
   if (e.target.closest('[data-reset]')) { state.compose.rows = defaultRows(); return commitCompose(); }
   const ct = e.target.closest('[data-compose-theme]');
   if (ct) { state.compose.theme = ct.dataset.composeTheme; save(); applyComposeTheme(); return; }
+  const rt = e.target.closest('[data-row-theme]');
+  if (rt && li) { if (rt.dataset.rowTheme) rows[i].theme = rt.dataset.rowTheme; else delete rows[i].theme; return commitCompose(); }
   const rs = e.target.closest('[data-row-src]');
   if (rs && li) { rows[i].src = rs.dataset.rowSrc; return commitCompose(); }
   if (e.target.closest('[data-row-open-editor]') && li) { heroState().variant = rows[i].variant; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
