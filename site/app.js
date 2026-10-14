@@ -397,8 +397,10 @@ function renderCompose() {
   <div class="compose__actions">
     <button type="button" class="btn-ui btn-ui--primary" data-download>page.json 받기</button>
     <button type="button" class="btn-ui" data-copy-json>page.json 복사</button>
+    <button type="button" class="btn-ui" data-figma title="Figma 플러그인에 넣으면 원본 섹션 컴포넌트로 조립돼요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
     <button type="button" class="btn-ui" data-reset>기본 순서로</button>
   </div>
+  <div class="compose__plugin"><button type="button" class="compose__help" data-figma-help>Figma로 가져가는 법</button><span aria-hidden="true">·</span><a href="figma-plugin.zip" download>Figma 플러그인 받기 (처음 한 번)</a></div>
   <p class="compose__hint"><code>pages/이름.page.json</code>으로 저장 → 내용 수정 → <code>npm run build</code> → <code>dist/pages/이름/index.html</code></p>
   </div>
 </aside>
@@ -460,6 +462,91 @@ function withOptions(v, opts) {
   return v.html.replace(/^<([a-z][\w-]*)([^>]*?)class="([^"]*)"/, (m, t, a, c) => `<${t}${a}class="${c} ${cls.join(' ')}"`);
 }
 
+/** 「Figma로 가져가는 법」 안내 창 — 처음 열 때 한 번 만들어 body 에 둬요 */
+function figmaHelp() {
+  let d = document.getElementById('figma-help');
+  if (!d) {
+    document.body.insertAdjacentHTML('beforeend', `<dialog class="fhelp" id="figma-help" aria-labelledby="figma-help-title">
+  <div class="fhelp__head"><h2 id="figma-help-title">Figma로 가져가기</h2><button type="button" class="icon-btn" data-close aria-label="닫기">✕</button></div>
+  <div class="fhelp__body">
+    <p class="fhelp__lead">조합기에서 만든 페이지를 Figma 원본 섹션 컴포넌트 <b>인스턴스</b>로 조립해요. 레이어·오토레이아웃이 그대로 살아 있어서 이어서 다듬을 수 있어요.</p>
+    <ol class="fhelp__steps">
+      <li><b>플러그인 설치 — 처음 한 번</b>
+        <ul>
+          <li><b>Figma 데스크톱 앱</b>이 필요해요. 웹 브라우저 Figma 에서는 개발용 플러그인을 불러올 수 없어요.</li>
+          <li>조합기 아래 <a href="figma-plugin.zip" download>Figma 플러그인 받기</a> → zip 을 풀어 폴더를 원하는 곳에 둬요.</li>
+          <li>Figma 메뉴 <kbd>Plugins</kbd> → <kbd>Development</kbd> → <kbd>Import plugin from manifest…</kbd> → 풀린 폴더의 <code>manifest.json</code></li>
+          <li>새 버전이 나오면 새 zip 의 파일 3개를 <b>같은 폴더에 덮어쓰기</b>만 하면 돼요(다시 Import 안 해도 돼요).</li>
+        </ul></li>
+      <li><b>파일 받기</b>
+        <ul><li>조합을 마치고 <b>Figma용으로 받기</b> → <code>제목.figma.json</code>. 히어로 편집기에서 올린 이미지·영상도 이 파일에 함께 담겨요.</li></ul></li>
+      <li><b>Figma 에서 만들기</b>
+        <ul>
+          <li>원본 파일 <b>「상품페이지 템플릿 시스템」</b>을 열어요.</li>
+          <li><kbd>Plugins</kbd> → <kbd>Development</kbd> → <b>상품페이지 템플릿 → Figma</b> → 작은 창이 떠요.</li>
+          <li>창에 받은 파일을 끌어 놓고(또는 page.json 붙여넣기) PC·MO 를 고른 뒤 <b>Figma 에 만들기</b>.</li>
+          <li>창 아래에 「만드는 중 · PC 3/16 · …」로 진행 상황이 보여요. 끝나면 지금 페이지 오른쪽에 <code>제목 — PC</code>(1920) · <code>제목 — MO</code>(375) 프레임이 생겨요.</li>
+        </ul></li>
+    </ol>
+    <h3>들어가는 것</h3>
+    <ul>
+      <li>섹션 순서대로 원본 컴포넌트 인스턴스</li>
+      <li>문구(타이틀·서브·뱃지 등, MO 문구 따로 쓴 것 포함) · 글자색</li>
+      <li>버튼 문구·색·라인·모서리·화살표·테두리형, 뱃지 색·테두리·모서리</li>
+      <li>바꾼 배경·이미지(샘플과 같으면 Figma 원본 이미지를 그대로 둬요)</li>
+    </ul>
+    <h3>아직 안 되는 것</h3>
+    <ul>
+      <li>TB 화면 — Figma 에 TB 시안이 없어요</li>
+      <li>움직이는 CSS 배경 → 멈춘 화면 한 장으로 들어가요. mp4 는 Figma 요금제에 따라 빠질 수 있어요</li>
+      <li>Figma 컴포넌트보다 많은 버튼·항목, 섹션 옵션·테마, MO 시안이 없는 hero 4종의 MO</li>
+      <li>hero 외 섹션은 문구·이미지가 일부만 반영돼요(다음 단계에서 다듬어요)</li>
+    </ul>
+    <p>반영하지 못한 것은 플러그인 창 아래 <b>확인할 것</b>에 목록으로 나와요.</p>
+    <h3>안 될 때</h3>
+    <ul>
+      <li><b>「준비 중…」에서 멈춰요</b> → Figma 안에서 연 게 아니에요(브라우저에서 <code>ui.html</code> 을 연 경우). 위 3번처럼 Figma 메뉴에서 여세요.</li>
+      <li><b>「원본 컴포넌트를 불러오지 못했어요」</b> → 원본 파일에서 실행하세요. 다른 파일에서 쓰려면 원본을 팀 라이브러리로 게시하고 그 파일에서 라이브러리를 켜야 해요.</li>
+      <li><b>이미지가 빠져요</b> → 샘플 이미지는 GitHub 공개 저장소에서 받아요. 인터넷 연결과 「확인할 것」 목록을 확인하세요.</li>
+      <li>그 밖의 오류 → <kbd>Plugins</kbd> → <kbd>Development</kbd> → <kbd>Show/Hide console</kbd> 의 빨간 오류를 캡처해 알려 주세요.</li>
+    </ul>
+  </div>
+</dialog>`);
+    d = document.getElementById('figma-help');
+    d.addEventListener('click', (ev) => { if (ev.target === d || ev.target.closest('[data-close]')) d.close(); });
+  }
+  d.showModal();
+}
+
+/** Figma 플러그인용 — page.json + 히어로 편집기에서 올린 파일(data URL). 저장소 이미지는 플러그인이 GitHub 원본 주소에서 받아요 */
+async function figmaBundle() {
+  const page = JSON.parse(pageJson());
+  const out = {};
+  const toDataUrl = (blob) => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(blob); });
+  for (const [i, r] of state.compose.rows.entries()) {
+    if (!rowUsesEditor(r)) continue;
+    const v = byId[r.variant];
+    const e = heroEditOf(r.variant);
+    const content = page.sections[i].content;
+    for (const [k, raw] of Object.entries(v.slots)) {
+      if (RC.specOf(raw).type !== 'media' || !e[k]) continue;
+      for (const dev of ['pc', 'mo']) {
+        const ref = e[k][dev];
+        if (!ref || !ref.file || (dev === 'mo' && e[k].moSame)) continue;
+        await loadBlob(ref.file);
+        if (!files[ref.file]) continue;
+        // 같은 이름(hero-bg-pc.jpg)이 hero 여러 행에서 겹치지 않게 variant 를 앞에 붙여요
+        const name = exportName(k, dev, ref);
+        const key = `upload/${r.variant}/${name}`;
+        out[key] = await toDataUrl(files[ref.file]);
+        const m = content[k] && content[k][dev];
+        if (m && m.src === name) m.src = key;
+      }
+    }
+  }
+  return JSON.stringify({ format: 'tpl-figma/1', ...page, files: out }) + '\n';
+}
+
 function pageJson() {
   return JSON.stringify({
     title: state.compose.title,
@@ -502,6 +589,14 @@ composeEl.addEventListener('click', (e) => {
   const rs = e.target.closest('[data-row-src]');
   if (rs && li) { rows[i].src = rs.dataset.rowSrc; return commitCompose(); }
   if (e.target.closest('[data-row-open-editor]') && li) { heroState().variant = rows[i].variant; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
+  if (e.target.closest('[data-figma-help]')) { figmaHelp(); return; }
+  const fg = e.target.closest('[data-figma]');
+  if (fg) {
+    fg.disabled = true;
+    figmaBundle().then((json) => download((state.compose.title.trim().replace(/[\\/:*?"<>|\s]+/g, '-') || 'page') + '.figma.json', new Blob([json], { type: 'application/json' })))
+      .finally(() => { fg.disabled = false; });
+    return;
+  }
   const cj = e.target.closest('[data-copy-json]');
   if (cj) return copyText(pageJson(), cj);
   if (e.target.closest('[data-download]')) {

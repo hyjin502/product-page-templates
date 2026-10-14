@@ -744,3 +744,23 @@ body.is-dev .flink__label::after { content: none; }
 .rows li.is-folded .rows__body { display: none; }
 .rows__sec { padding-right: 112px; }
 .rows__cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--accent); }
+
+/* 조합기 — Figma 플러그인 받기 링크 */
+.compose__plugin { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; font-size: 11px; color: var(--ink-3); }
+.compose__plugin a, .compose__help { color: var(--ink-3); }
+.compose__plugin a:hover, .compose__help:hover { color: var(--accent); }
+.compose__help { padding: 0; border: 0; background: none; font: inherit; text-decoration: underline; cursor: pointer; }
+/* Figma로 가져가는 법 — 안내 창 */
+.fhelp { width: min(640px, calc(100vw - 32px)); max-height: min(86vh, 900px); padding: 0; border: 1px solid var(--rule); border-radius: 12px; background: var(--panel); color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.fhelp::backdrop { background: rgba(0,0,0,.45); }
+.fhelp__head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--rule); background: inherit; }
+.fhelp__head h2 { margin: 0; font-size: 16px; }
+.fhelp__body { padding: 4px 18px 18px; font-size: 13px; line-height: 1.65; }
+.fhelp__lead { color: var(--ink-2); }
+.fhelp h3 { margin: 18px 0 4px; font-size: 13px; }
+.fhelp ul, .fhelp ol { margin: 4px 0; padding-left: 20px; }
+.fhelp__steps > li { margin: 10px 0; }
+.fhelp__steps > li > b { display: block; margin-bottom: 2px; }
+.fhelp kbd { padding: 1px 5px; border: 1px solid var(--rule); border-radius: 4px; font: 11px var(--font-mono); background: var(--stage); }
+.fhelp code { font-size: 12px; }
+.fhelp a { color: var(--accent); }

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: light dark; --fg: var(--figma-color-text, #1e1e1e); --sub: var(--figma-color-text-secondary, #6b6b6b); --line: var(--figma-color-border, #e6e6e6); --bg2: var(--figma-color-bg-secondary, #f5f5f5); --accent: var(--figma-color-bg-brand, #0d99ff); }
+  body { margin: 0; padding: 14px; font: 12px/1.5 Inter, system-ui, sans-serif; color: var(--fg); background: var(--figma-color-bg, #fff); }
+  h1 { margin: 0 0 4px; font-size: 13px; }
+  p { margin: 0 0 10px; color: var(--sub); }
+  .drop { display: grid; place-items: center; min-height: 96px; padding: 10px; border: 1.5px dashed var(--line); border-radius: 8px; text-align: center; color: var(--sub); cursor: pointer; }
+  .drop.is-over { border-color: var(--accent); color: var(--fg); }
+  .drop b { color: var(--fg); }
+  textarea { box-sizing: border-box; width: 100%; height: 70px; margin-top: 8px; padding: 6px; border: 1px solid var(--line); border-radius: 6px; font: 11px ui-monospace, monospace; background: var(--bg2); color: var(--fg); resize: vertical; }
+  .row { display: flex; gap: 12px; align-items: center; margin: 10px 0; }
+  button { width: 100%; padding: 9px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: 600 12px Inter, system-ui, sans-serif; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; }
+  .log { margin-top: 10px; max-height: 190px; overflow: auto; padding: 8px; border-radius: 6px; background: var(--bg2); font-size: 11px; white-space: pre-wrap; }
+  .log:empty { display: none; }
+  .status { margin-top: 8px; min-height: 16px; color: var(--sub); font-size: 11px; }
+  .ok { color: #14ae5c; font-weight: 600; }
+  .err { color: #f24822; font-weight: 600; }
+</style>
+<h1>상품페이지 템플릿 → Figma</h1>
+<p class="err" id="notFigma" hidden>지금은 Figma 밖(브라우저)에서 열려 있어요. Figma 데스크톱 앱 메뉴 Plugins → Development → 「상품페이지 템플릿 → Figma」로 여세요.</p>
+<p>조합기 「Figma용으로 받기」 파일(또는 page.json)을 넣으면 원본 섹션 컴포넌트로 페이지를 조립해요.</p>
+<label class="drop" id="drop"><input type="file" id="file" accept=".json,application/json" hidden><span id="dropText"><b>파일을 끌어 놓거나 눌러서 고르기</b><br>*.figma.json · *.page.json</span></label>
+<textarea id="paste" placeholder="또는 page.json 내용을 붙여넣기"></textarea>
+<div class="row"><label><input type="checkbox" id="pc" checked> PC (1920)</label><label><input type="checkbox" id="mo" checked> MO (375)</label></div>
+<button id="go" disabled>Figma 에 만들기</button>
+<div class="status" id="status"></div>
+<div class="log" id="log"></div>
+<script>
+const $ = (id) => document.getElementById(id);
+if (window.parent === window) $('notFigma').hidden = false; // Figma 는 플러그인 창을 iframe 으로 열어요
+let page = null;
+const log = (html) => { $('log').innerHTML += html + '\n'; $('log').scrollTop = 1e9; };
+const status = (t) => { $('status').textContent = t || ''; };
+let needTimer = null;
+let started = 0;
+const secs = () => Math.round((Date.now() - started) / 1000) + '초';
+function load(text, name) {
+  try {
+    const j = JSON.parse(text);
+    if (!Array.isArray(j.sections)) throw new Error('sections 가 없어요');
+    page = j;
+    $('dropText').innerHTML = '<b>' + (name || '붙여넣은 내용') + '</b><br>' + (j.title || '') + ' · 섹션 ' + j.sections.length + '개';
+    $('log').innerHTML = '';
+  } catch (e) { page = null; $('log').innerHTML = '<span class="err">읽을 수 없는 파일이에요: ' + e.message + '</span>'; }
+  $('go').disabled = !page;
+}
+$('file').onchange = (e) => { const f = e.target.files[0]; if (f) f.text().then((t) => load(t, f.name)); };
+$('paste').oninput = (e) => { if (e.target.value.trim()) load(e.target.value, null); };
+const drop = $('drop');
+drop.ondragover = (e) => { e.preventDefault(); drop.classList.add('is-over'); };
+drop.ondragleave = () => drop.classList.remove('is-over');
+drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove('is-over'); const f = e.dataTransfer.files[0]; if (f) f.text().then((t) => load(t, f.name)); };
+
+const devices = () => ['pc', 'mo'].filter((d) => $(d).checked);
+function dataUrlBytes(u) { const b = atob(u.slice(u.indexOf(',') + 1)); const a = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+$('go').onclick = () => {
+  if (!page || !devices().length) return;
+  $('go').disabled = true;
+  $('log').innerHTML = '';
+  started = Date.now();
+  status('준비 중…');
+  // 본체에는 올린 파일(files)을 빼고 보내요 — 큰 영상이 있어도 빨리 오가게
+  const { files, ...lite } = page;
+  parent.postMessage({ pluginMessage: { type: 'need', page: lite, devices: devices() } }, '*');
+  needTimer = setTimeout(() => { status(''); log('<span class="err">✗ 플러그인 본체가 답하지 않아요. Figma 메뉴 Plugins → Development → Show/Hide console 의 빨간 오류를 알려 주세요.</span>'); $('go').disabled = false; }, 15000);
+};
+onmessage = async (e) => {
+  const m = e.data.pluginMessage;
+  if (!m) return;
+  if (m.type === 'progress') { status('만드는 중 · ' + m.text + ' · ' + secs()); return; }
+  if (m.type === 'need') {
+    clearTimeout(needTimer);
+    if (m.list.length) status('이미지 ' + m.list.length + '개 받는 중…');
+    // 이미지 모으기 — 올린 파일은 받은 파일 안(files), 저장소 이미지는 GitHub 원본 주소에서
+    const images = {}; const warns = [];
+    const files = page.files || {};
+    await Promise.all(m.list.map(async (src) => {
+      try {
+        if (files[src]) { images[src] = dataUrlBytes(files[src]); return; }
+        if (/^(data:)/.test(src)) { images[src] = dataUrlBytes(src); return; }
+        if (/^https?:/.test(src)) { warns.push('외부 주소 이미지는 받을 수 없어 건너뛰었어요: ' + src); return; }
+        const ctl = new AbortController();
+        const t = setTimeout(() => ctl.abort(), 20000); // 한 장에 20초 넘으면 건너뛰어요
+        const r = await fetch(m.raw + src.replace(/^\.?\//, ''), { signal: ctl.signal }).finally(() => clearTimeout(t));
+        if (!r.ok) throw new Error(r.status);
+        images[src] = new Uint8Array(await r.arrayBuffer());
+      } catch (err) { warns.push('이미지를 받지 못했어요(' + (err.name === 'AbortError' ? '20초 초과' : err.message) + '): ' + src); }
+    }));
+    if (m.list.length) log('이미지 ' + Object.keys(images).length + '/' + m.list.length + '개 받음');
+    status('만드는 중…');
+    const { files: _f, ...lite } = page;
+    parent.postMessage({ pluginMessage: { type: 'build', page: lite, images, devices: devices(), warns } }, '*');
+  }
+  if (m.type === 'done') {
+    status('');
+    log('<span class="ok">✓ 만들었어요 (' + secs() + '): ' + m.frames.join(', ') + '</span>');
+    if (m.warns.length) log('확인할 것 ' + m.warns.length + '건\n· ' + m.warns.join('\n· '));
+    $('go').disabled = false;
+  }
+  if (m.type === 'error') { clearTimeout(needTimer); status(''); log('<span class="err">✗ ' + m.message + '</span>'); $('go').disabled = false; }
+};
+</script>

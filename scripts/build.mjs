@@ -6,6 +6,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
 import nunjucks from 'nunjucks';
+import { buildFigmaPlugin, packFigmaPlugin } from './figma-plugin.mjs';
 import {
   ROOT, SECTIONS_DIR, BASE_CSS_PATH, PAGER_JS_PATH, RENDER_CORE_PATH, FONT_LINK, HDS, pagerOf, loadRegistry, createEnv, renderVariant, cssFor, figmaUrl,
   validateContent, validatePage, BG_PRESETS } from './lib.mjs';
@@ -181,7 +182,9 @@ export function build() {
   fs.copyFileSync(path.join(ROOT, 'GUIDE.html'), path.join(DIST, 'guide.html')); // 비개발자용 사용 가이드
   fs.writeFileSync(path.join(DIST, '.nojekyll'), ''); // GitHub Pages 가 _ 로 시작하는 파일을 숨기지 않게
   const pages = buildPages(reg, env, baseCss);
-  return { variants: reg.variants.length, pages };
+  const plugin = buildFigmaPlugin(reg); // figma-plugin/code.js — 조합기 「Figma용으로 받기」 파일을 Figma 에 조립
+  plugin.zip = packFigmaPlugin(DIST); // 사이트에서 받는 dist/figma-plugin.zip
+  return { variants: reg.variants.length, pages, plugin };
 }
 
 function run() {
@@ -189,6 +192,7 @@ function run() {
     const r = build();
     console.log(`✓ 라이브러리 dist/index.html (variant ${r.variants}개)`);
     r.pages.forEach((p) => console.log(`✓ 페이지 ${p}`));
+    console.log(`✓ Figma 플러그인 figma-plugin/code.js${r.plugin.zip ? ' · dist/figma-plugin.zip' : ' (zip 못 만듦)'}${r.plugin.missing.length ? ` (컴포넌트 키 없음 ${r.plugin.missing.length}건)` : ''}`);
     return true;
   } catch (e) {
     console.error(`✗ 빌드 실패\n${e.message}`);
@@ -201,7 +205,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
   const ok = run();
   if (process.argv.includes('--watch')) {
     let t;
-    for (const d of ['sections', 'tokens', 'site', 'pages', 'assets']) {
+    for (const d of ['sections', 'tokens', 'site', 'pages', 'assets', 'figma-plugin/src']) {
       fs.watch(path.join(ROOT, d), { recursive: true }, () => { clearTimeout(t); t = setTimeout(run, 120); });
     }
     console.log('변경을 기다리는 중… (Ctrl+C 로 종료)');

@@ -3,3 +3,6 @@ dist/
 release/
 .DS_Store
 *.log
+
+# Figma 플러그인 본체 — npm run build 가 figma-plugin/src/main.js + 섹션 데이터로 만들어요
+figma-plugin/code.js

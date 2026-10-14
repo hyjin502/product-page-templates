@@ -11,7 +11,7 @@
 //        pages/<name>.page.json 작성. 새 이미지 목록은 pages/<name>.images.json
 import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT, loadRegistry, specOf } from './lib.mjs';
+import { ROOT, loadRegistry, specOf, slimSpec } from './lib.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
 const reg = loadRegistry();
@@ -89,30 +89,6 @@ function byName(row) {
   if (!v) return null;
   if (p.mode && v.options?.[p.mode]) opts.push(p.mode);
   return { variant: id, options: opts.filter((o) => v.options?.[o]) };
-}
-
-/** 플러그인에 넣을 슬롯 스펙 — 라벨·설명은 빼고 매핑에 필요한 것만 */
-function slimSpec(fields) {
-  const out = {};
-  for (const [k, raw] of Object.entries(fields || {})) {
-    const s = specOf(raw);
-    const o = { type: s.type };
-    if (s.extract === false) { if (s.type === 'list') o.skip = true; out[k] = o; continue; }
-    // 이름과 경로를 나눠요: "heading-mo/title" 같은 별칭은 경로로도, 이름 전체로도 봐요 (레이어 이름 자체에 / 가 있는 경우)
-    const refs = [s.figmaLayer, ...(s.aliases || [])].filter(Boolean);
-    const paths = [...[].concat(s.figmaPath || []), ...refs.filter((r) => r.includes('/') && !s.literalNames)];
-    const ns = [...new Set([...refs, ...refs.map((r) => r.split('/').at(-1)), ...paths.map((p) => p.split('/').at(-1))])];
-    if (s.split) o.split = true;
-    if (ns.length) o.names = ns;
-    if (paths.length) o.paths = paths;
-    if (s.figmaProp) o.figmaProp = s.figmaProp;
-    if (s.nth != null) o.nth = s.nth;
-    if (s.scope) o.scope = { names: [].concat(s.scope.figmaLayer || []), nth: s.scope.nth || 0 };
-    if (s.figmaLayer || s.figmaPath || (s.aliases || []).length) o.figmaLayer = true;
-    if (s.type === 'list') o.item = slimSpec(s.item);
-    out[k] = o;
-  }
-  return out;
 }
 
 const EXTRACT = (jobs, specs) => `const JOBS = ${JSON.stringify(jobs)};

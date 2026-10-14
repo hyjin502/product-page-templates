@@ -278,3 +278,27 @@ export function cssFor(reg, variantIds) {
 export const BASE_CSS_PATH = path.join(ROOT, 'tokens/base.css');
 export const PAGER_JS_PATH = path.join(ROOT, 'tokens/pager.js');
 export const FONT_LINK = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">';
+
+/** 플러그인에 넣을 슬롯 스펙 — 라벨·설명은 빼고 매핑에 필요한 것만 (figma-extract · Figma 플러그인 공통). all = extract:false 슬롯도 레이어 이름을 넣어요(Figma 로 내보낼 때) */
+export function slimSpec(fields, all = false) {
+  const out = {};
+  for (const [k, raw] of Object.entries(fields || {})) {
+    const s = specOf(raw);
+    const o = { type: s.type };
+    if (s.extract === false && !all) { if (s.type === 'list') o.skip = true; out[k] = o; continue; }
+    // 이름과 경로를 나눠요: "heading-mo/title" 같은 별칭은 경로로도, 이름 전체로도 봐요 (레이어 이름 자체에 / 가 있는 경우)
+    const refs = [s.figmaLayer, ...(s.aliases || [])].filter(Boolean);
+    const paths = [...[].concat(s.figmaPath || []), ...refs.filter((r) => r.includes('/') && !s.literalNames)];
+    const ns = [...new Set([...refs, ...refs.map((r) => r.split('/').at(-1)), ...paths.map((p) => p.split('/').at(-1))])];
+    if (s.split) o.split = true;
+    if (ns.length) o.names = ns;
+    if (paths.length) o.paths = paths;
+    if (s.figmaProp) o.figmaProp = s.figmaProp;
+    if (s.nth != null) o.nth = s.nth;
+    if (s.scope) o.scope = { names: [].concat(s.scope.figmaLayer || []), nth: s.scope.nth || 0 };
+    if (s.figmaLayer || s.figmaPath || (s.aliases || []).length) o.figmaLayer = true;
+    if (s.type === 'list') o.item = slimSpec(s.item, all);
+    out[k] = o;
+  }
+  return out;
+}

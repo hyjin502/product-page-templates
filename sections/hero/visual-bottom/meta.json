@@ -100,6 +100,7 @@
     "visual": {
       "type": "media",
       "figmaLayer": "image",
+      "aliases": ["Rectangle 18"],
       "extract": false,
       "optional": true,
       "label": "하단 비주얼",

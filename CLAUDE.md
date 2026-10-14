@@ -87,7 +87,8 @@ pages/*.page.json                       조립할 페이지 → dist/pages/<name
 pages/_verify/                          추출 검증 결과(Page 18 기준 scan · verify.final) · figma-page.json(링크 재연결용 페이지 덤프)
 site/                                   라이브러리·조합기·히어로 편집기 사이트 셸 (build 가 dist/index.html 로 합침)
 site/render-core.cjs                    렌더 공통(richtext·HDS 필터·기본값 채우기) — 빌드와 편집기(브라우저)가 같은 코드를 쓴다
-scripts/                                build · validate · preview · shot · serve · pack · protect · figma-extract · figma-relink · lib
+figma-plugin/                           조합기 결과 → Figma 인스턴스 조립 플러그인 (src/main.js · ui.html · manifest · components.json, code.js 는 빌드가 만듦)
+scripts/                                build · validate · preview · shot · serve · pack · protect · figma-extract · figma-relink · figma-plugin · bgfx-stills · lib
 .claude/skills/                         add-section-variant · figma-to-page
 ```
 
@@ -102,6 +103,7 @@ scripts/                                build · validate · preview · shot · 
 | `npm run serve [-- --base /templates/]` | dist 를 http 로 서빙 (사내 호스팅 흉내) |
 | `npm run pack` | 전달용 zip 2개 → `release/` |
 | `node scripts/figma-extract.mjs …` | Figma → page.json (scan → extract → finalize), 검증 `--verify` + `report` |
+| `node scripts/bgfx-stills.mjs` | hero CSS 배경 프리셋 정지 화면 → `assets/hero/bgfx/<key>.jpg` (프리셋을 바꾸면 다시 실행·커밋. Chrome 이 없으면 macOS `scripts/webshot.swift`) |
 | `node scripts/figma-relink.mjs pages/_verify/figma-page.json [--dry]` | 페이지가 다시 복사돼 노드 ID 가 바뀌었을 때 meta·sections.json 의 Figma 링크를 다시 맞춤 |
 
 ## 히어로 편집기 구조
@@ -125,6 +127,14 @@ scripts/                                build · validate · preview · shot · 
 - **테마**: 조합기 페이지 테마(`state.compose.theme` → page.json `theme`)와 행 테마(`row.theme` → 섹션 `theme: light|dark`, hero 제외). 빌드는 섹션 루트에 `data-theme` 을 붙이고, `tokens/base.css` 의 `[data-theme="light"]` 블록이 다크 페이지 안 라이트 섹션을 되돌린다. 바탕이 없는 섹션은 `:where(section[data-theme])` 가 `--bg-surface`·`--t-100` 을 준다.
 - **조합기 연결**: 조합기 행 `src`(`sample`|`editor`, 없으면 편집 값이 있을 때 editor). editor 행은 `state.hero.edits[variant]` 를 편집기와 같은 렌더러(`heroHtmlOrError`)로 그리고, page.json 은 `contentFrom(…, true)` + 올린 파일(`downloadMedia`)을 함께 낸다. 편집기 「조합기에서 보기」(`to-compose`) = 같은 섹션 행을 지금 variant + `src: editor` 로(없으면 맨 위에 추가).
 - 바로가기: `index.html#hero-editor`. 줄 넘김 경고는 지금 기기 폭의 iframe 에서 `.hero__badge` · `.hero__title` · `.hero__desc` 의 줄 수를 잰다 (hero variant 는 이 클래스를 함께 쓴다).
+
+## 조합기 → Figma (플러그인)
+- 조합기 「Figma용으로 받기」 = `.figma.json`(`format: tpl-figma/1`, page.json + `files`: 히어로 편집기에서 올린 파일 data URL, 이름 `upload/<variant>/hero-bg-pc.jpg`).
+- `figma-plugin/` 플러그인이 섹션마다 원본 컴포넌트 인스턴스를 만들고(같은 파일 = 노드 ID, 아니면 `components.json` 의 key → 팀 라이브러리 게시 필요) `plan()` → `run()` 으로 값을 넣는다. 레이어 찾기는 `slimSpec(slots, true)`(`scripts/lib.mjs`, figma-extract 와 공통 — `extract: false` 슬롯도 레이어 이름을 넣음).
+  - 색·모서리 슬롯은 `DECOR`(titleColor·descColor → 문구 글자색, badge* → 뱃지 글자를 감싼 프레임)와 버튼 항목 `itemDecor`(color·line·radius·style outline·arrow = `right-icon` 속성). 기본값과 같으면 손대지 않는다.
+  - 이미지: 샘플과 같으면 Figma 원본을 둔다. 숨긴 레이어도 찾아 보이게 하고, `background` 레이어가 없으면 섹션 자체 채우기. 그림(그라디언트 원)으로 된 bg 프레임은 안을 숨기고 이미지로 채운다. CSS 프리셋 = `assets/hero/bgfx/<key>.jpg`.
+  - 아직 안 하는 것: 섹션 options·theme, Figma 에 없는 목록 항목 추가, split-stats 수치, TB. 2단계(나머지 섹션)에서 카드 수(pager)·options(Figma variant 속성) 매핑을 더한다.
+- Claude 는 원격 환경에 Pretendard 가 없어 플러그인을 직접 돌려 볼 수 없다 → 바꾼 뒤엔 `plan()` 만 use_figma 로 원본 컴포넌트에 **읽기 전용**으로 돌려 레이어를 찾는지 확인한다(쓰기 금지).
 
 ## 작업 흐름
 - **새 섹션/variant** → `add-section-variant` 스킬 (슬롯 매핑 문법·pager 판단 규칙 포함)
