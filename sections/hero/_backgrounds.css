@@ -229,52 +229,19 @@
 @keyframes hero-fx-live-c { from { transform: translate(0, 10%) scale(.9); opacity: .7; } to { transform: translate(30%, -12%) scale(1.25); opacity: 1; } }
 @keyframes hero-fx-live-d { from { transform: translate(-30%, 0) scale(.9); } to { transform: translate(35%, -10%) scale(1.15); } }
 
-/* X 패턴 — 월간X 배경. 검정 위에 모양이 다른 X 4개(체크 픽셀 · 사선 줄무늬 · 점 · 면)가 천천히 떠다니며 돌고 숨 쉬어요.
-   뒤에는 작은 X 무늬(::before)가 아주 옅게 흘러가요. X 모양은 대각선 두 줄(mask)로 오려요 */
-.hero-bgfx--x-pattern { --fx-base: #000000; --x-ink: rgba(255, 255, 255, 0.16); }
-.hero-bgfx--x-pattern::before {
-  content: ""; position: absolute; inset: -64px; opacity: .07;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M22 22l20 20M42 22L22 42' stroke='%23fff' stroke-width='5' stroke-linecap='square'/%3E%3C/svg%3E") 0 0 / 64px 64px;
-  animation: hero-fx-x-tile 30s linear infinite;
+/* X 패턴 — 월간X 배경. Figma 「Asset 2」(587:6031) X 패턴 이미지(12%)를 세로로 두 장 이어(두 번째는 위아래 뒤집어 이음매 없이)
+   아주 천천히 위로 흘려요(90초에 이미지 한 장 — 초당 약 30px). 이미지는 assets/hero/bgfx/x-pattern-strip.png — 매크로가 <img> 로 넣어요 */
+.hero-bgfx--x-pattern { --fx-base: #000000; }
+.hero-bgfx--x-pattern::after { background: radial-gradient(55% 35% at 50% 20%, rgba(0, 0, 0, .45), transparent 75%); }
+.hero-bgfx__flow {
+  position: absolute; top: 0; left: 50%; width: min(980px, 100%); transform: translateX(-50%);
+  display: flex; flex-direction: column; opacity: .12; will-change: transform;
+  animation: hero-fx-x-flow 90s linear infinite;
 }
-.hero-bgfx--x-pattern::after { background: radial-gradient(45% 35% at 50% 22%, rgba(0, 0, 0, .55), transparent 75%); }
-.hero-bgfx.hero-bgfx--x-pattern > span {
-  right: auto; bottom: auto; aspect-ratio: 1; height: auto; border-radius: 0; filter: none;
-  -webkit-mask-image: linear-gradient(45deg, transparent 37%, #000 37% 63%, transparent 63%), linear-gradient(-45deg, transparent 37%, #000 37% 63%, transparent 63%);
-  mask-image: linear-gradient(45deg, transparent 37%, #000 37% 63%, transparent 63%), linear-gradient(-45deg, transparent 37%, #000 37% 63%, transparent 63%);
-}
-.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(1) { /* 체크 픽셀 X — 왼쪽 */
-  left: 14%; top: 18%; width: 22%; max-width: 420px;
-  background: conic-gradient(var(--x-ink) 25%, transparent 0 50%, var(--x-ink) 0 75%, transparent 0) 0 0 / 18px 18px;
-  animation: hero-fx-x-a 18s ease-in-out infinite alternate;
-}
-.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(2) { /* 사선 줄무늬 X — 오른쪽 위 */
-  left: 62%; top: -8%; width: 20%; max-width: 380px;
-  background: repeating-linear-gradient(45deg, var(--x-ink) 0 3px, transparent 3px 10px);
-  animation: hero-fx-x-b 22s ease-in-out infinite alternate;
-}
-.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(3) { /* 점 X — 오른쪽 아래 */
-  left: 66%; top: 52%; width: 18%; max-width: 340px;
-  background: radial-gradient(circle, var(--x-ink) 38%, transparent 40%) 0 0 / 14px 14px;
-  animation: hero-fx-x-c 16s ease-in-out infinite alternate;
-}
-.hero-bgfx.hero-bgfx--x-pattern > span:nth-child(4) { /* 면 X — 왼쪽 아래 */
-  left: 20%; top: 62%; width: 16%; max-width: 300px;
-  background: rgba(255, 255, 255, 0.07);
-  animation: hero-fx-x-d 20s ease-in-out infinite alternate;
-}
-@keyframes hero-fx-x-tile { to { transform: translate(64px, 64px); } }
-@keyframes hero-fx-x-a { from { transform: translate(-6%, -4%) rotate(-6deg) scale(.95); opacity: .7; } to { transform: translate(10%, 8%) rotate(8deg) scale(1.08); opacity: 1; } }
-@keyframes hero-fx-x-b { from { transform: translate(6%, 0) rotate(10deg); opacity: 1; } to { transform: translate(-10%, 12%) rotate(-8deg); opacity: .6; } }
-@keyframes hero-fx-x-c { from { transform: translate(0, 8%) rotate(0deg) scale(1.05); } to { transform: translate(-12%, -6%) rotate(14deg) scale(.9); } }
-@keyframes hero-fx-x-d { from { transform: translate(-8%, 6%) rotate(4deg); opacity: .6; } to { transform: translate(12%, -8%) rotate(-10deg); opacity: 1; } }
-/* MO — 세로 화면이라 X 를 더 크게 */
-@media (max-width: 767px) {
-  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(1) { left: -12%; top: 8%; width: 60%; }
-  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(2) { left: 55%; top: -4%; width: 55%; }
-  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(3) { left: 58%; top: 60%; width: 50%; }
-  .hero-bgfx.hero-bgfx--x-pattern > span:nth-child(4) { left: -6%; top: 70%; width: 45%; }
-}
+.hero-bgfx .hero-bgfx__flow img { display: block; width: 100%; height: auto; max-width: none; object-fit: fill; } /* .hero__bg img(높이 100%)보다 우선 */
+.hero-bgfx .hero-bgfx__flow img + img { transform: scaleY(-1); }
+@keyframes hero-fx-x-flow { from { transform: translate(-50%, 0); } to { transform: translate(-50%, -50%); } }
+@media (max-width: 767px) { .hero-bgfx__flow { width: calc(100% - 32px); } }
 
 /* MO — 세로 화면: 선셋 빛줄기는 더 길고 가파르게(위쪽까지 닿게) */
 @media (max-width: 767px) {
@@ -289,5 +256,5 @@
 @keyframes hero-fx-sweep-c-mo { from { transform: rotate(36deg); } to { transform: rotate(58deg); } }
 /* 동작 줄이기 설정이면 멈춰요 */
 @media (prefers-reduced-motion: reduce) {
-  .hero-bgfx, .hero-bgfx::before, .hero-bgfx > span { animation: none !important; }
+  .hero-bgfx, .hero-bgfx::before, .hero-bgfx > span, .hero-bgfx__flow { animation: none !important; }
 }

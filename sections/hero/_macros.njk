@@ -2,7 +2,9 @@
 
 {# 미디어 한 개 — m: { kind: image|video, src, poster? } | { kind: css, preset } (CSS 배경 프리셋, _backgrounds.css) #}
 {% macro mediaEl(m, cls="") %}
-{% if m.kind == "css" %}
+{% if m.kind == "css" and m.preset == "x-pattern" %}
+<div class="hero-bgfx hero-bgfx--x-pattern{% if cls %} {{ cls }}{% endif %}"><div class="hero-bgfx__flow"><img src="assets/hero/bgfx/x-pattern-strip.png" alt=""><img src="assets/hero/bgfx/x-pattern-strip.png" alt=""></div></div>
+{% elif m.kind == "css" %}
 <div class="hero-bgfx hero-bgfx--{{ m.preset }}{% if cls %} {{ cls }}{% endif %}"><span></span><span></span><span></span><span></span></div>
 {% elif m.kind == "video" %}
 <video{% if cls %} class="{{ cls }}"{% endif %} src="{{ m.src }}"{% if m.poster %} poster="{{ m.poster }}"{% endif %} autoplay muted loop playsinline></video>

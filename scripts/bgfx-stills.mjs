@@ -21,9 +21,16 @@ fs.mkdirSync(tmp, { recursive: true });
 let sips = true;
 for (const p of presets) {
   const html = path.join(tmp, `${p.key}.html`);
+  // 이미지를 쓰는 프리셋(x-pattern)은 매크로와 같은 마크업 — 이미지는 임시 폴더에 복사해 상대 경로로
+  let inner = '<span></span><span></span><span></span><span></span>';
+  if (p.image) {
+    const name = path.basename(p.image);
+    fs.copyFileSync(path.join(ROOT, p.image), path.join(tmp, name));
+    inner = `<div class="hero-bgfx__flow"><img src="${name}" alt=""><img src="${name}" alt=""></div>`;
+  }
   fs.writeFileSync(html, `<!doctype html><meta charset="utf-8"><style>${css}\nhtml,body{margin:0;overflow:hidden}
-.hero-bgfx,.hero-bgfx>span{animation-delay:-6s!important;animation-play-state:paused!important}</style>
-<div style="position:relative;width:1920px;height:1080px;overflow:hidden"><div class="hero-bgfx hero-bgfx--${p.key}"><span></span><span></span><span></span><span></span></div></div>`);
+.hero-bgfx,.hero-bgfx>span,.hero-bgfx__flow{animation-delay:-6s!important;animation-play-state:paused!important}</style>
+<div style="position:relative;width:1920px;height:1080px;overflow:hidden"><div class="hero-bgfx hero-bgfx--${p.key}">${inner}</div></div>`);
   const png = path.join(tmp, `${p.key}.png`);
   if (chrome) execFileSync(chrome, ['--headless=new', '--disable-gpu', '--hide-scrollbars', `--screenshot=${png}`, '--window-size=1920,1080', pathToFileURL(html).href], { stdio: 'ignore' });
   else { // Chrome 이 없는 macOS — WKWebView(scripts/webshot.swift)로 찍고(레티나 2배) 1920×1080 으로 줄여요

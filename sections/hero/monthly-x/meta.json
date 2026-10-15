@@ -104,7 +104,7 @@
       "extract": false,
       "optional": true,
       "label": "배경",
-      "hint": "기본은 Figma X 패턴 이미지 · 이미지·mp4·CSS 배경(「X 패턴」 등)으로 바꿀 수 있어요. MO 를 비우면 PC 것을 써요"
+      "hint": "기본은 CSS 배경 「X 패턴 흐름」(Figma X 패턴이 아주 천천히 위로 흘러요) · 다른 CSS 배경이나 이미지·mp4 로 바꿀 수 있어요(멈춘 패턴 이미지 monthly-x-bg.jpg 도 남겨 뒀어요). MO 를 비우면 PC 것을 써요"
     }
   }
 }

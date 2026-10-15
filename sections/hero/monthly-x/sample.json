@@ -30,12 +30,8 @@
   "mark": true,
   "background": {
     "pc": {
-      "kind": "image",
-      "src": "assets/hero/monthly-x-bg.jpg"
-    },
-    "mo": {
-      "kind": "image",
-      "src": "assets/hero/monthly-x-bg-mo.jpg"
+      "kind": "css",
+      "preset": "x-pattern"
     }
   }
 }

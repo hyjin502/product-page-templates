@@ -63,9 +63,10 @@
     },
     {
       "key": "x-pattern",
-      "label": "X 패턴",
+      "label": "X 패턴 흐름",
       "motion": true,
-      "swatch": "linear-gradient(45deg, transparent 42%, rgba(255,255,255,.35) 42% 58%, transparent 58%) 30% 40% / 40% 70% no-repeat, linear-gradient(-45deg, transparent 42%, rgba(255,255,255,.35) 42% 58%, transparent 58%) 30% 40% / 40% 70% no-repeat, linear-gradient(45deg, transparent 42%, rgba(255,255,255,.2) 42% 58%, transparent 58%) 85% 90% / 30% 50% no-repeat, linear-gradient(-45deg, transparent 42%, rgba(255,255,255,.2) 42% 58%, transparent 58%) 85% 90% / 30% 50% no-repeat, #000"
+      "swatch": "linear-gradient(45deg, transparent 44%, rgba(255,255,255,.22) 44% 56%, transparent 56%) 50% 30% / 40% 45% no-repeat, linear-gradient(-45deg, transparent 44%, rgba(255,255,255,.22) 44% 56%, transparent 56%) 50% 30% / 40% 45% no-repeat, repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 6px, transparent 6px 12px) 50% 85% / 40% 30% no-repeat, #000",
+      "image": "assets/hero/bgfx/x-pattern-strip.png"
     }
   ]
 }
