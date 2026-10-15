@@ -48,7 +48,7 @@ for (const sec of reg.catalog.sections) {
   const frame = frameOf(sec.key);
   if (!frame) { unmatched.push(`${sec.key}: 같은 이름의 프레임이 없어요`); continue; }
   changes.push({ file: 'sections/sections.json', old: sec.figmaSet, new: frame.id, what: `${sec.key} 섹션 프레임` });
-  const metas = reg.variants.filter((v) => v.section === sec.key && !v.figmaFrame); // figmaFrame = 세트 밖 프레임 시안(노드는 손으로 관리)
+  const metas = reg.variants.filter((v) => v.section === sec.key && !v.figmaFrame && !v.figmaStandalone); // 세트 밖 프레임(figmaFrame)·단독 컴포넌트(figmaStandalone)는 노드를 손으로 관리
   const isFeature = sec.key === 'feature';
   const keyOf = (v) => (isFeature ? v.id.slice(`${sec.key}-grid-`.length) : v.layout);
 

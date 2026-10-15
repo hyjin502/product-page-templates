@@ -241,10 +241,39 @@ footer { color: var(--ink-3); font-size: 13px; text-align: center; margin-top: 3
       </ol>
       <h3>② 파일 받기</h3>
       <ol class="steps">
-        <li><b>페이지 전체</b><p>조합기 → <b>Figma용으로 받기</b> → <code>제목.figma.json</code></p></li>
+        <li><b>페이지 전체</b><p>조합기 → <b>Figma용으로 받기</b> → <code>제목.figma.json</code> (<a href="#compose-figma">아래 자세히</a>)</p></li>
         <li><b>히어로 하나만</b><p>히어로 편집기 → <b>Figma용으로 받기</b> → <code>hero-스타일.figma.json</code></p></li>
       </ol>
       <p>편집기에서 올린 이미지·영상도 이 파일 안에 함께 담겨요. 샘플 이미지는 플러그인이 저장소에서 직접 받아요(인터넷 연결 필요).</p>
+
+      <h3 id="compose-figma">조합기 「Figma용으로 받기」 자세히</h3>
+      <p>조합기에서 만든 <b>페이지 전체</b>를 Figma 로 옮기는 버튼이에요. 순서는 이렇게 해요.</p>
+      <ol class="steps">
+        <li><b>페이지 제목 정하기</b><p>조합기 맨 위 <b>페이지 제목</b>이 파일 이름(<code>제목.figma.json</code>)과 Figma 프레임 이름(<code>제목 — PC</code> · <code>제목 — MO</code>)이 돼요. 예: 「AI LABS 상품페이지」.</p></li>
+        <li><b>섹션 순서·종류 확정</b><p>행 순서가 그대로 Figma 에서 위→아래 순서가 돼요. 종류(썸네일)도 고른 그대로 들어가요. 미리보기에서 한 번 훑어보고 받으세요.</p></li>
+        <li><b>히어로를 편집기 내용으로</b><p>hero 행의 <b>내용</b>이 「히어로 편집기」면 편집기에서 바꾼 문구·버튼·색·배경이, 「샘플」이면 Figma 시안 그대로 들어가요. 편집기에서 직접 올린 이미지·영상은 파일 안에 함께 담겨요.</p></li>
+        <li><b>버튼 누르기</b><p>왼쪽 아래 <b>Figma용으로 받기</b> → 잠깐 뒤 파일이 내려받아져요(올린 영상이 크면 몇 초 걸려요). 이 파일 하나만 디자이너에게 주거나 Figma 플러그인에 넣으면 돼요.</p></li>
+      </ol>
+      <table>
+        <thead><tr><th>파일에 들어가는 것</th><th>설명</th></tr></thead>
+        <tbody>
+          <tr><td>섹션 목록</td><td>조합기 행 순서대로 섹션 종류(variant)와 문구·이미지 내용. page.json 과 같은 내용이에요</td></tr>
+          <tr><td>히어로 편집 내용</td><td>「히어로 편집기」로 둔 hero 행의 문구(MO 문구 포함) · 글자색 · 뱃지 · 버튼(색·라인·모서리·아이콘) · 배경</td></tr>
+          <tr><td>올린 파일</td><td>편집기에서 직접 올린 이미지·영상(파일 안에 함께 담겨요 — 저장소 샘플 이미지는 담지 않고 플러그인이 받아요)</td></tr>
+          <tr><td>테마</td><td>페이지·섹션 <b>라이트/다크</b> — Figma 에서도 섹션 인스턴스의 HDS <b>Theme 변수 모드</b>를 light/dark 로 바꿔 그대로 보여줘요(히어로는 시안 색 그대로). 다크 페이지는 프레임 바탕도 어둡게.</td></tr>
+          <tr><td>그대로 기록만</td><td>카드 수·한 줄 개수, 섹션 옵션(compact 등) — 파일에는 들어가지만 Figma 에는 아직 반영하지 않고 「확인할 것」에 알려줘요</td></tr>
+        </tbody>
+      </table>
+      <table style="margin-top:12px">
+        <thead><tr><th>page.json 받기와 차이</th><th>언제 쓰나요</th></tr></thead>
+        <tbody>
+          <tr><td>Figma용으로 받기</td><td>디자이너가 <b>Figma 에서 이어서 다듬을 때</b>. 올린 파일까지 한 파일에 담겨요</td></tr>
+          <tr><td>page.json 받기</td><td><b>HTML 을 만들 때</b>(Claude·개발자·<code>npm run build</code>). 올린 파일은 따로 함께 내려받아져요</td></tr>
+        </tbody>
+      </table>
+      <p class="note note--ok"><b>섹션마다 결과가 달라요</b><b>hero</b> 는 문구·버튼·색·배경까지 거의 다 바뀐 채로 들어가요. <b>나머지 섹션</b>은 원본 컴포넌트가 그대로 들어가고 문구·이미지는 일부만 바뀌어요(Figma 레이어 이름 정리가 끝나면 늘어나요). Figma 에 <b>MO 시안이 없는 섹션</b>(예: split-stats)은 MO 프레임에서 빠지고 「확인할 것」에 적혀요.</p>
+      <p class="note note--warn"><b>다시 받을 때</b>플러그인은 실행할 때마다 <b>새 프레임</b>을 만들어요(이전 결과를 덮어쓰지 않아요). 조합을 고친 뒤 다시 받아 넣고, 필요 없는 예전 프레임은 지워 주세요.</p>
+
       <h3>③ Figma 에서 만들기</h3>
       <ol class="steps">
         <li><b>원본 파일 열기</b><p><b>「상품페이지 템플릿 시스템」</b> 파일을 열어요. 다른 파일에서 쓰려면 원본이 팀 라이브러리로 게시돼 있고 그 파일에서 라이브러리를 켜야 해요.</p></li>
@@ -255,8 +284,8 @@ footer { color: var(--ink-3); font-size: 13px; text-align: center; margin-top: 3
       <table>
         <thead><tr><th>들어가는 것</th><th>아직 안 되는 것</th></tr></thead>
         <tbody>
-          <tr><td style="white-space:normal;font-weight:400">섹션 순서대로 원본 컴포넌트 인스턴스 · 문구(MO 문구 포함) · 글자색 · 버튼 문구·색·라인·모서리·아이콘 켜짐 · 뱃지 색·테두리·모서리 · 바꾼 배경·이미지(샘플과 같으면 Figma 원본 이미지를 둬요)</td>
-              <td style="white-space:normal">TB 화면(Figma 에 TB 시안이 없어요) · 움직이는 CSS 배경(멈춘 화면 한 장으로) · mp4(요금제에 따라) · Figma 보다 많은 버튼·항목 · 섹션 옵션·테마 · 월간휴넷·월간X 는 컴포넌트가 아닌 프레임이라 원본 파일에서만 · hero 외 섹션은 문구·이미지가 일부만</td></tr>
+          <tr><td style="white-space:normal;font-weight:400">섹션 순서대로 원본 컴포넌트 인스턴스 · 라이트/다크 테마 · 문구(MO 문구 포함) · 글자색 · 버튼 문구·색·라인·모서리·아이콘 켜짐 · 뱃지 색·테두리·모서리 · 바꾼 배경·이미지(샘플과 같으면 Figma 원본 이미지를 둬요)</td>
+              <td style="white-space:normal">TB 화면(Figma 에 TB 시안이 없어요) · 움직이는 CSS 배경(멈춘 화면 한 장으로) · mp4(요금제에 따라) · Figma 보다 많은 버튼·항목 · 섹션 옵션(compact 등) · 월간휴넷·월간X 는 컴포넌트가 아닌 프레임이라 원본 파일에서만 · hero 외 섹션은 문구·이미지가 일부만</td></tr>
         </tbody>
       </table>
       <p class="note note--warn"><b>「준비 중…」에서 멈춰요</b>Figma 안에서 연 게 아니라 브라우저에서 <code>ui.html</code> 을 연 경우예요. 위 ③-2 처럼 Figma 메뉴에서 여세요. 그 밖의 오류는 <kbd>Plugins</kbd> → <kbd>Development</kbd> → <kbd>Show/Hide console</kbd> 의 빨간 글을 캡처해 주세요.</p>

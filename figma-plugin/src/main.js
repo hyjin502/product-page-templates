@@ -120,6 +120,7 @@ function plan(root, v, content, dev, warn) {
       const has = Object.prototype.hasOwnProperty.call(content, k);
       const val = content[k];
       const label = where + k;
+      const diff = !same(val, sample && sample[k]); // 샘플 그대로면 Figma 원본이 이미 맞아요 → 못 찾아도 알리지 않아요
       if (DECOR[k]) {
         if (val == null || val === '' || val === kind.default) continue;
         const d = DECOR[k];
@@ -139,12 +140,12 @@ function plan(root, v, content, dev, warn) {
         if (s.figmaProp) { // 인스턴스 속성 (버튼 문구 등)
           const inst = s.names ? target(node, s, 'INSTANCE') : node;
           const i = inst && (inst.type === 'INSTANCE' ? inst : findAll(inst, (n) => n.type === 'INSTANCE')[0]);
-          if (!i) { warn(label + ': 인스턴스를 못 찾았어요'); continue; }
+          if (!i) { if (diff) warn(label + ': 인스턴스를 못 찾았어요'); continue; }
           if (val != null && val !== '') ops.push({ op: 'prop', node: i, key: s.figmaProp, value: norm(val) });
           continue;
         }
         const t = textOf(target(node, s, 'TEXT'));
-        if (!t) { if (has && val) warn(label + ': 문구 레이어를 못 찾았어요'); continue; }
+        if (!t) { if (has && val && diff) warn(label + ': 문구 레이어를 못 찾았어요'); continue; }
         const str = val && typeof val === 'object' ? (dev === 'mo' ? (val.mo ?? val.pc) : (val.pc ?? val.mo)) : val;
         if (str == null || str === '') { if (kind.optional) ops.push({ op: 'hide', node: t }); continue; }
         ops.push({ op: 'show', node: t }, { op: 'text', node: t, value: norm(str) });
@@ -170,7 +171,7 @@ function plan(root, v, content, dev, warn) {
       if (kind.type === 'list') {
         if (!Array.isArray(val) || !names(s).length) continue;
         ALL = true; const items = listItems(node, s); ALL = false;
-        if (!items.length) { warn(label + ': 목록 항목(' + names(s).join('|') + ')을 못 찾았어요'); continue; }
+        if (!items.length) { if (diff) warn(label + ': 목록 항목(' + names(s).join('|') + ')을 못 찾았어요'); continue; }
         items.forEach((it, i) => {
           if (i >= val.length) { ops.push({ op: 'hide', node: it }); return; }
           ops.push({ op: 'show', node: it });
@@ -265,7 +266,53 @@ async function componentOf(id) {
   }
   if (local && local.type === 'COMPONENT' && local.key === c.key) return local;
   try { return await figma.importComponentByKeyAsync(c.key); }
-  catch (e) { throw new Error('원본 컴포넌트를 불러오지 못했어요. 원본 파일(상품페이지 템플릿 시스템)에서 실행하거나, 원본을 팀 라이브러리로 게시한 뒤 이 파일에서 켜 주세요.'); }
+  catch (e) { throw new Error('라이브러리에서 불러오지 못했어요(' + id + ' · ' + String(e && e.message || e).slice(0, 80) + ') — 원본이 팀 라이브러리로 게시됐는지, 이 파일에서 라이브러리를 켰는지 확인해 주세요'); }
+}
+
+/* ---------- 글꼴 — 인스턴스 안 글자가 쓰는 글꼴을 미리 불러와요(문구 바꾸기·배치 전에) */
+const loadedFonts = new Set();
+async function loadFonts(node, warn) {
+  const want = new Map();
+  for (const t of node.findAllWithCriteria({ types: ['TEXT'] })) {
+    let fonts;
+    try { fonts = t.characters.length ? t.getRangeAllFontNames(0, t.characters.length) : [t.fontName]; } catch (e) { continue; }
+    for (const f of fonts) if (f && f !== figma.mixed) want.set(f.family + '|' + f.style, f);
+  }
+  for (const [k, f] of want) {
+    if (loadedFonts.has(k)) continue;
+    try { await figma.loadFontAsync(f); loadedFonts.add(k); }
+    catch (e) { loadedFonts.add(k); warn('글꼴 ' + f.family + ' ' + f.style + ' 이(가) 이 컴퓨터에 없어 그 글자는 바꾸지 못할 수 있어요'); }
+  }
+}
+
+/* ---------- 테마 — 인스턴스 안에서 쓰는 색 변수로 HDS 「Theme」 컬렉션을 찾아 그 모드(light/dark)로 고정해요 */
+let themeColl = null;
+async function findThemeCollection(node) {
+  if (themeColl) return themeColl;
+  const nodes = node.findAll((x) => 'fills' in x && Array.isArray(x.fills));
+  nodes.unshift(node);
+  for (const x of nodes) {
+    for (const prop of ['fills', 'strokes']) {
+      if (!(prop in x) || !Array.isArray(x[prop])) continue;
+      for (const p of x[prop]) {
+        const b = p.boundVariables && p.boundVariables.color;
+        if (!b) continue;
+        const v = await figma.variables.getVariableByIdAsync(b.id).catch(() => null);
+        if (!v) continue;
+        const c = await figma.variables.getVariableCollectionByIdAsync(v.variableCollectionId).catch(() => null);
+        if (c && c.modes.some((m) => /dark/i.test(m.name)) && c.modes.some((m) => /light/i.test(m.name))) { themeColl = c; return c; }
+      }
+    }
+  }
+  return null;
+}
+async function setThemeMode(inst, mode, warn) {
+  const c = await findThemeCollection(inst);
+  if (!c) { if (mode === 'dark') warn('색이 Theme 변수에 묶여 있지 않아 다크로 바꾸지 못했어요'); return; }
+  const m = c.modes.find((x) => x.name.toLowerCase() === mode) || c.modes.find((x) => new RegExp(mode, 'i').test(x.name));
+  if (!m) return;
+  try { inst.setExplicitVariableModeForCollection(c, m.modeId); }
+  catch (e) { warn('테마(' + mode + ')를 바꾸지 못했어요: ' + String(e && e.message || e).slice(0, 60)); }
 }
 
 /* ---------- 페이지 만들기 */
@@ -273,18 +320,20 @@ const progress = (text) => { if (typeof __html__ !== 'undefined') figma.ui.postM
 async function build(page, images, devices) {
   const warns = [];
   const made = [];
+  let failed = 0;
   let x = Math.max(0, ...figma.currentPage.children.map((n) => n.x + n.width)) + 200;
   const y = figma.currentPage.children.length ? Math.min(...figma.currentPage.children.map((n) => n.y)) : 0;
-  if (page.theme === 'dark') warns.push('페이지 다크 테마는 아직 Figma 에 반영하지 않아요 (시안 기본 색으로 만들어요)');
+  const pageTheme = page.theme === 'dark' ? 'dark' : 'light';
   for (const dev of devices) {
     const frame = figma.createFrame();
     frame.name = (page.title || '상품페이지') + ' — ' + dev.toUpperCase();
-    frame.layoutMode = 'VERTICAL';
-    frame.primaryAxisSizingMode = 'AUTO';
-    frame.counterAxisSizingMode = 'FIXED';
-    frame.counterAxisAlignItems = 'CENTER';
-    frame.resize(dev === 'pc' ? 1920 : 375, 100);
-    frame.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }];
+    // 오토레이아웃 프레임에 넣으면 Figma 가 글꼴을 다시 재요 — 다른 파일에선 글꼴이 안 불러와져 있어 실패해서,
+    // 일반 프레임에 위→아래로 직접 쌓아요(섹션 인스턴스 안의 오토레이아웃은 그대로)
+    const W = dev === 'pc' ? 1920 : 375;
+    let yCursor = 0;
+    frame.resize(W, 100);
+    // 다크 페이지면 바탕도 어둡게(사이트 bg-surface 다크 #1b1c1e)
+    frame.fills = [{ type: 'SOLID', color: pageTheme === 'dark' ? { r: 27 / 255, g: 28 / 255, b: 30 / 255 } : { r: 1, g: 1, b: 1 } }];
     frame.x = x; frame.y = y;
     figma.currentPage.appendChild(frame);
     let count = 0;
@@ -296,17 +345,30 @@ async function build(page, images, devices) {
       if (!v) { warns.push(tag + ': 모르는 variant 예요'); continue; }
       const id = v.figma[dev];
       if (!id) { warns.push(tag + ': Figma 에 ' + dev.toUpperCase() + ' 시안이 없어서 건너뛰었어요'); continue; }
-      const comp = await componentOf(id);
+      let comp;
+      try { comp = await componentOf(id); }
+      catch (e) { warns.push(tag + ': ' + (e && e.message || e)); failed++; continue; } // 한 섹션이 안 돼도 나머지는 계속 만들어요
       const inst = comp.createInstance();
       inst.name = sec.variant;
       // 프레임 밖에서 값을 다 넣고 마지막에 넣어요 — 큰 오토레이아웃 프레임이 글자 하나 바뀔 때마다 다시 계산되지 않게
       inst.x = x; inst.y = y - inst.height - 400;
       const warn = (m) => warns.push(tag + ' · ' + m);
       if (sec.options && sec.options.length) warn('옵션(' + sec.options.join(', ') + ')은 아직 Figma 에 반영하지 않아요');
-      if (sec.theme) warn('섹션 테마(' + sec.theme + ')는 아직 Figma 에 반영하지 않아요');
-      const ops = plan(inst, v, sec.content || v.sample, dev, warn);
+      // 테마 — 섹션 색이 HDS Theme 변수(light/dark)에 묶여 있어서 인스턴스의 변수 모드만 바꿔요.
+      // hero 는 시안 고정 색이라 늘 light, 나머지는 섹션 테마 → 없으면 페이지 테마
+      const mode = sec.variant.startsWith('hero-') ? 'light' : (sec.theme || pageTheme);
+      if (mode === 'dark' || pageTheme === 'dark') await setThemeMode(inst, mode, warn);
+      await loadFonts(inst, warn);
+      // MO 레이어 구조가 PC 와 달라 매핑을 PC 로만 맞춘 섹션(extractFrom: pc)은 MO 문구를 건드리지 않아요
+      const moSkip = dev === 'mo' && v.extractFrom === 'pc';
+      if (moSkip && !same(sec.content || v.sample, v.sample)) warn('MO 는 레이어 구조가 PC 와 달라 문구를 바꾸지 않았어요(Figma 원본 그대로)');
+      const ops = moSkip ? [] : plan(inst, v, sec.content || v.sample, dev, warn);
       await run(ops, images, warn);
       frame.appendChild(inst);
+      inst.x = Math.round((W - inst.width) / 2);
+      inst.y = yCursor;
+      yCursor += inst.height;
+      frame.resize(W, Math.max(100, yCursor));
       count++;
     }
     made.push(frame);
@@ -315,6 +377,7 @@ async function build(page, images, devices) {
   }
   const live = made.filter((f) => !f.removed);
   if (live.length) { figma.currentPage.selection = live; figma.viewport.scrollAndZoomIntoView(live); }
+  if (!live.length && failed) throw new Error('원본 컴포넌트를 하나도 불러오지 못했어요. 원본 파일(상품페이지 템플릿 시스템)에서 실행하거나, 원본을 팀 라이브러리로 게시한 뒤 이 파일의 Assets → 📖 에서 라이브러리를 켜 주세요.\n' + warns.slice(0, 3).join('\n'));
   return { frames: live.map((f) => f.name), warns };
 }
 

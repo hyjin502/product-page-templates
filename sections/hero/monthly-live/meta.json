@@ -5,11 +5,10 @@
   "order": 12,
   "when": "월간휴넷 LIVE 같은 라이브 행사 — 로고·타이틀 아래 큰 비주얼에 일정·연사 사진을 얹어요",
   "figma": {
-    "pc": "537:36633",
-    "mo": "537:40224",
+    "pc": "580:6017",
+    "mo": "580:6028",
     "tb": null
   },
-  "figmaFrame": true,
   "body": 980,
   "editor": true,
   "thumb": "assets/hero/thumbs/monthly-live.jpg",

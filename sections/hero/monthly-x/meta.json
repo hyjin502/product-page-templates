@@ -5,11 +5,10 @@
   "order": 13,
   "when": "월간X 같은 오프라인 행사·해커톤 — 검정 패턴 위 타이틀과 티켓 모양 카드(사진 + 일정·장소)",
   "figma": {
-    "pc": "550:41282",
-    "mo": "550:41355",
+    "pc": "580:6029",
+    "mo": "580:6030",
     "tb": null
   },
-  "figmaFrame": true,
   "body": 980,
   "editor": true,
   "thumb": "assets/hero/thumbs/monthly-x.jpg",

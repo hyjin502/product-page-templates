@@ -17,7 +17,7 @@
 - **`상품페이지 템플릿 시스템` 파일 · Section Design System 페이지** (fileKey `dxhWkGXnev5U2Q1nLISR3h`, page `0:1`) — `sections/sections.json` 에 있다. 2026-10-13 사용자가 이 파일을 공식 원본으로 정했다(이 계정으로 읽기 가능).
   - 예전 원본 `[UI] 커피 정수기`(S3cLq…, Page 18 → Page 19 `6249:*`)는 더 쓰지 않는다. 이 계정은 그 파일 권한이 없다.
   - 섹션 프레임·심볼 구성이 바뀌면 `scripts/figma-relink.mjs` 로 다시 맞춘다. 스크립트 머리말의 DUMP 를 use_figma 로 `0:1` 에서 실행해 `pages/_verify/figma-page.json` 에 저장 → `--dry` 로 확인 → 적용. 이름으로 맞추고, hero 는 줄(PC 왼쪽 열 위→아래 = meta.order, MO = 같은 줄의 375 폭)로 맞춘다.
-  - hero 는 세트 `469:32313` 의 11종이다(이름이 같은 예전 세트 `1:1710` 은 쓰지 않는다 — relink 는 심볼이 더 많은 세트를 고른다). PC·MO 짝은 이렇다.
+  - hero 는 세트 `469:32313` 의 11종이다(예전 세트 `1:1710` 은 2026-10-15 `_hero-old (사용 안 함)` 으로 이름을 바꿔 게시에서 뺐다). PC·MO 짝은 이렇다.
     | variant | PC | MO |
     |---|---|---|
     | media-badge | 469:32452 | 476:32991 |
@@ -31,15 +31,15 @@
     | split-photo | 469:32762 | (없음) |
     | media-left | 469:32412 | (없음) |
     | media-left-bottom | 517:33408 | 550:41490 |
-    | monthly-live (월간휴넷) | 537:36633 | 537:40224 |
-    | monthly-x (월간X) | 550:41282 | 550:41355 |
-    - variant 이름이 서로 겹친다(대부분 `layout=center-inline`) → Figma 세트 오류. 479:33142·479:33359 는 MO 인데 `device=pc` 로 붙어 있다. 디자이너에게 `style=<variant>` 속성 추가를 요청할 것.
+    | monthly-live (월간휴넷) | 580:6017 | 580:6028 |
+    | monthly-x (월간X) | 580:6029 | 580:6030 |
+    - **variant 이름 = 저장소 layout** (2026-10-15 사용자 요청으로 Claude 가 Figma 이름만 고침): `device=pc|mo, layout=<meta.layout>` (예 `device=pc, layout=media-badge`). 예전엔 대부분 `layout=center-inline` 으로 겹쳐 세트 오류 → 라이브러리 게시에서 빠졌었다(Invalid assets). 479:33142·479:33359 의 잘못된 `device=pc` 도 `mo` 로 고쳤다. 노드 ID·key 는 그대로.
     - 아래쪽 4종 중 split-stats · split-photo · media-left 는 **MO 시안이 없다**(media-left-bottom 은 2026-10-14 MO 550:41490 추가 — 검정+큐브 20% 배경 `media-left-bottom-bg-mo.jpg`, 문구 묶음 아래쪽 · 버튼은 글자 폭) → MO·TB 는 코드 기본값(`_shared.css` 의 `.hero--left` 규칙: 문구 → 비주얼 순서로 쌓기, 왼쪽 정렬). 517:33408 은 x 가 108 로 8px 어긋나 있다(relink 는 40px 까지 같은 열로 본다).
     - 4종은 `.hero--left` + `.hero__split`(왼쪽 `.hero__content` · 오른쪽 `.hero__visual`) 공통 틀을 쓰고 variant 는 변수만 정한다. split-stats 의 수치는 `stats` 목록(value · unit · label, 추출 안 함 — Figma 레이어 이름이 숫자·문구라서). split-photo·media-left-bottom 은 Figma 문구 묶음이 768 프레임을 넘쳐서(846 · 829) 위아래 여백을 줄여 768 에 맞췄다(타이틀·버튼 위치는 Figma 그대로).
     - media-left-bottom 배경은 Figma 의 검정 + 큐브 이미지 20% 를 한 장(`media-left-bottom-bg.jpg`)으로 구웠다.
-    - **monthly-live(월간휴넷 LIVE)** 는 hero 세트 밖의 **프레임**(컴포넌트 아님)이다 → meta `figmaFrame: true`. relink 는 건너뛰고(노드는 손으로), Figma 플러그인은 원본 파일에서만 프레임을 복제(clone)한다. 위쪽 어두운 띠만 배경이고 아래는 흰 바탕. 띠는 고정 높이가 아니라 그리드 줄로 비주얼에 묶여 비주얼 아래 `--overlap`(PC 206 · TB 160 · MO 32) 위에서 끝난다(= Figma 628 · 437). `.hero__body` 는 `display: contents`, MO 는 `.hero__stage` 도 contents. 배경 띠 기본값은 CSS 프리셋 `live-glow`(사용자 요청, Figma 배경 이미지 색을 참고 — 이미지 `monthly-hunet-bg*.jpg` 는 남겨 둠). 메인 비주얼·연사 사진은 Figma 렌더를 구웠다(`assets/hero/monthly-hunet-*`). 로고(`monthly-hunet-logo.svg`, 두 SVG 합침)·공유 아이콘(`assets/icons/share.svg`)·YouTube 로고는 Figma 에셋.
+    - **monthly-live(월간휴넷 LIVE)** · **monthly-x(월간X)** 는 2026-10-15 디자이너가 **컴포넌트**로 바꿔 hero 세트(469:32313, 이제 23개)에 넣었다(이름 `device=pc|mo, layout=monthly-live|monthly-x`). 예전 프레임 노드(537:36633 등)는 없어졌다. relink 는 이름(layout)으로 맞춘다. (meta `figmaFrame` · `figmaStandalone` 은 세트 밖 시안용으로 남겨 둔 기능) 위쪽 어두운 띠만 배경이고 아래는 흰 바탕. 띠는 고정 높이가 아니라 그리드 줄로 비주얼에 묶여 비주얼 아래 `--overlap`(PC 206 · TB 160 · MO 32) 위에서 끝난다(= Figma 628 · 437). `.hero__body` 는 `display: contents`, MO 는 `.hero__stage` 도 contents. 배경 띠 기본값은 CSS 프리셋 `live-glow`(사용자 요청, Figma 배경 이미지 색을 참고 — 이미지 `monthly-hunet-bg*.jpg` 는 남겨 둠). 메인 비주얼·연사 사진은 Figma 렌더를 구웠다(`assets/hero/monthly-hunet-*`). 로고(`monthly-hunet-logo.svg`, 두 SVG 합침)·공유 아이콘(`assets/icons/share.svg`)·YouTube 로고는 Figma 에셋.
       - PC·MO 가 다르다: 상단 문구·버튼은 MO 에만(PC 에선 숨김), 연사 사진·YouTube 로고는 PC 에만. 일정은 PC 비주얼 위 왼쪽 아래(흰 글자), MO 는 비주얼 아래(검정 글자, 채널은 괄호). 상단 문구 PC 비움 = `{ pc: "", mo }` (편집기도 PC 를 비우고 MO 만 쓰면 이렇게 낸다). 연사 사진은 `speaker1~3`(`pcOnly`, 최대 3장 · 오른쪽 정렬 · 미리보기 클릭 교체 `[data-pick]`). 메인 비주얼 샘플은 사용자 요청으로 PC·MO 모두 Figma PC 비주얼(`monthly-hunet-visual.jpg`, 렌더 1배 980 — 2배 원본이 오면 바꾼다). Figma MO 의 노트북 크롭 사진은 쓰지 않는다. 프레임 채우기가 꺼져 있어(Figma 화면의 회색은 캔버스색) 아래 바탕은 흰색으로 뒀다.
-    - **monthly-x(월간X)** 도 세트 밖 **프레임**(`figmaFrame`). 검정 바탕 + Figma X 패턴(`Asset 2` 를 -90° 돌려 12% — PC 가운데 980 폭 창, MO 전체 · `monthly-x-bg(-mo).jpg` 로 구움)이 기본(움직임 없음 — 사용자 결정). CSS 프리셋 `x-pattern` 은 편집기 선택지로만 · 타이틀 · 티켓 카드(사진 + 파란 #1927ec 정보 칸, 토큰 아님 — `cardColor`(버튼 색 팔레트, 비우면 시안 색)로 정보 칸·사진 위아래 그라디언트를 함께 바꾸고 글자는 그 색의 `on`). 사진 위 파란 빛(hard-light 50%)·아래 그라디언트·이음선 점선은 CSS 라 사진을 바꿔도 그대로, 이음선 양 끝 반원 홈은 mask 로 뚫어 배경이 비쳐요(PC 18 · MO 10.7). X 장식 `monthly-x-mark.svg`, 로고 `monthly-x-logo.svg`, 아이콘 `clock-16`·`map-pin-16`. 티켓 정보는 `details` 목록(icon clock|pin|none · label · value · sub).
+    - **monthly-x(월간X)**: 검정 바탕 + Figma X 패턴(`Asset 2` 를 -90° 돌려 12% — PC 가운데 980 폭 창, MO 전체 · `monthly-x-bg(-mo).jpg` 로 구움)이 기본(움직임 없음 — 사용자 결정). CSS 프리셋 `x-pattern` 은 편집기 선택지로만 · 타이틀 · 티켓 카드(사진 + 파란 #1927ec 정보 칸, 토큰 아님 — `cardColor`(버튼 색 팔레트, 비우면 시안 색)로 정보 칸·사진 위아래 그라디언트를 함께 바꾸고 글자는 그 색의 `on`). 사진 위 파란 빛(hard-light 50%)·아래 그라디언트·이음선 점선은 CSS 라 사진을 바꿔도 그대로, 이음선 양 끝 반원 홈은 mask 로 뚫어 배경이 비쳐요(PC 18 · MO 10.7). X 장식 `monthly-x-mark.svg`, 로고 `monthly-x-logo.svg`, 아이콘 `clock-16`·`map-pin-16`. 티켓 정보는 `details` 목록(icon clock|pin|none · label · value · sub).
       - Figma 확인 요청: 일정 요일이 PC (화) · MO (목)으로 다르다(2026-12-31 은 목요일). 레이어 이름이 문구라 바뀐다(상단 문구 레이어가 「AI X HRD = AI칼리지」→ 문구로 바뀜) → `eyebrow`·`title`·`date`·`live`·`channel`·`speaker` 표준 이름 요청. MO 버튼 아래 여백은 Figma 0 → 코드 40(제안값).
 - 원본 파일을 옮기면 `sections/sections.json` 의 `figma.fileKey`·`fileName`·`page` 와 각 `meta.json` 의 노드 ID 를 새 파일 기준으로 바꾼다(노드는 relink, 파일 정보는 손으로).
 - Figma MCP(claude.ai Figma 커넥터 또는 figma MCP)가 연결돼 있어야 한다. `use_figma` 전에는 `figma:figma-use` 스킬, `get_design_context` 전에는 `figma:figma-design-to-code` 스킬을 로드한다.
@@ -76,7 +76,7 @@
   - 샘플은 Figma 원문 그대로 두되, 규칙을 넘는 원문(29729 서브타이틀 33자)은 같은 문구를 줄로 나눠 맞춘다.
   - 버튼 색은 HDS 에서만 → product-shot 두 번째 버튼의 Figma 색 `#272840`(토큰 아님)은 가장 가까운 `interaction/button-neutral`(#292a2d) 로 뒀다.
   - 뱃지 모양(흰 바탕 · 파란 바탕 · 빨간 테두리)과 타이틀 그라디언트는 시안 고정이고, 문구만 바꾼다.
-- Figma 파일은 **읽기만** 한다. 수정이 필요하면 디자이너에게 요청 목록으로 전달한다.
+- Figma 파일은 **읽기만** 한다. 수정이 필요하면 디자이너에게 요청 목록으로 전달한다. (예외: 사용자가 직접 요청한 경우만 — 2026-10-15 컴포넌트 이름 정리)
 
 ## 구조
 ```
@@ -156,6 +156,6 @@ scripts/                                build · validate · preview · shot · 
 - 추출 검증에서 차이가 난 6건(설명 가능한 차이): feature compact 옵션 문구, detail-slide 슬라이드 수, faq·notice 유의사항 줄바꿈(Figma 원문 수정 필요)
 - 추출하지 않는 슬롯(sample 유지): compare-vs-spec 행(Figma 가 열 단위 구조), inquiry 폼 그룹, plan-comparison 셀 태그. pricing-receipt·sticky-cta·inquiry 는 MO 를 추출하지 않음(`extractFrom: "pc"`)
 - 디자이너 레이어 이름 정리 요청: 문구가 레이어 이름인 곳, 같은 이름이 겹치는 곳, `Frame 2147…`·`Group 51` 같은 의미 없는 이름. 정리되면 meta 의 `*`/`nth` 우회 규칙을 표준 이름으로 바꾼다
-- Figma 오타: countdown `MUNUTES`. 빈 레이어: awards-stats `Group 14`. problem `check` 의 MO(537:41167)가 `layout=image-list` 로 잘못 붙어 있다(→ relink 가 image-list MO 와 헷갈릴 수 있어 이름 수정 요청). check 의 PC 타이틀·항목 텍스트 레이어 이름이 다른 문구(「오직 월간휴넷에서만 공개합니다」·「마이크로소프트의 <업무동향지표 202…」) → `title`·`text` 로 정리 요청
+- Figma 오타: countdown `MUNUTES`. 빈 레이어: awards-stats `Group 14`. problem `check` 의 MO(537:41167) 이름은 `device=mo, layout=check` 로 고쳤다(2026-10-15). check 의 PC 타이틀·항목 텍스트 레이어 이름이 다른 문구(「오직 월간휴넷에서만 공개합니다」·「마이크로소프트의 <업무동향지표 202…」) → `title`·`text` 로 정리 요청
 - compare 2종·pricing plan-comparison 의 TB/MO 배치는 Figma 에 없어서 제안안이다
 - 실제 디자이너 조합 프레임으로 `figma-to-page` E2E (인스턴스 덮어쓰기·이미지 교체 반영 확인)
