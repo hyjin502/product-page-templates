@@ -513,7 +513,7 @@ function figmaHelp() {
           <li>새 버전이 나오면 새 zip 의 파일 3개를 <b>같은 폴더에 덮어쓰기</b>만 하면 돼요(다시 Import 안 해도 돼요).</li>
         </ul></li>
       <li><b>파일 받기</b>
-        <ul><li>조합을 마치고 <b>Figma용으로 받기</b> → <code>제목.figma.json</code>. 히어로 편집기에서 올린 이미지·영상도 이 파일에 함께 담겨요.</li></ul></li>
+        <ul><li>페이지 전체: 조합기 <b>Figma용으로 받기</b> → <code>제목.figma.json</code></li><li>히어로 하나만: 히어로 편집기 <b>Figma용으로 받기</b> → <code>hero-스타일.figma.json</code></li><li>편집기에서 올린 이미지·영상도 이 파일에 함께 담겨요.</li></ul></li>
       <li><b>Figma 에서 만들기</b>
         <ul>
           <li>원본 파일 <b>「상품페이지 템플릿 시스템」</b>을 열어요.</li>
@@ -553,12 +553,11 @@ function figmaHelp() {
 }
 
 /** Figma 플러그인용 — page.json + 히어로 편집기에서 올린 파일(data URL). 저장소 이미지는 플러그인이 GitHub 원본 주소에서 받아요 */
-async function figmaBundle() {
-  const page = JSON.parse(pageJson());
+async function figmaBundle(page = JSON.parse(pageJson()), editorRows = state.compose.rows.map((r, i) => (rowUsesEditor(r) ? { i, variant: r.variant } : null)).filter(Boolean)) {
   const out = {};
   const toDataUrl = (blob) => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(blob); });
-  for (const [i, r] of state.compose.rows.entries()) {
-    if (!rowUsesEditor(r)) continue;
+  for (const { i, variant } of editorRows) {
+    const r = { variant };
     const v = byId[r.variant];
     const e = heroEditOf(r.variant);
     const content = page.sections[i].content;
@@ -1031,6 +1030,7 @@ function renderHero() {
     <button type="button" class="btn-ui" data-hed-act="copy">page.json 복사</button>
     <button type="button" class="btn-ui" data-hed-act="reset">샘플로 되돌리기</button>
     <button type="button" class="btn-ui" data-hed-act="to-compose">조합기에서 보기</button>
+    <button type="button" class="btn-ui" data-hed-act="figma" title="이 히어로 하나를 Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
   </div>
   <p class="compose__hint">받은 page.json 과 배경 파일을 <code>pages/</code> 에 같이 넣고 <code>npm run build</code> → <code>dist/pages/이름/</code></p>
   </div>
@@ -1270,6 +1270,13 @@ heroEl.addEventListener('click', (ev) => {
   if (ha.dataset.hedAct === 'download') {
     download(`hero-${vname(v)}.page.json`, new Blob([json], { type: 'application/json' }));
     downloadMedia(v, e); // 올린 배경 파일도 page.json 이 가리키는 이름으로 함께 받아요
+    return;
+  }
+  if (ha.dataset.hedAct === 'figma') {
+    ha.disabled = true;
+    figmaBundle(heroPage(), [{ i: 0, variant: v.id }])
+      .then((out) => download(`hero-${vname(v)}.figma.json`, new Blob([out], { type: 'application/json' })))
+      .finally(() => { ha.disabled = false; });
     return;
   }
   if (ha.dataset.hedAct === 'to-compose') {
