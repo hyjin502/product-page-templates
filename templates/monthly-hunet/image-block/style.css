@@ -2,14 +2,14 @@
    본문 폭은 가운데 860 · 위아래 120 을 고르면 다른 섹션처럼 띄워요 */
 .mh-image { display: flex; flex-direction: column; align-items: center; background: var(--bg-surface); }
 /* 제목(선택) — 왼쪽 정렬 · 최대 2줄 · 본문 폭(860)에 맞춰요. 제목↔이미지 60 (MO 32)
-   제목이 있는데 「여백 없음」이면 위 120 만 둬서 앞 섹션에 붙지 않게 해요 (제안값) */
+   제목이 있는데 「여백 없음」이어도 위 120(MO 40)을 둬서 앞 섹션과 띄워요 (사용자 요청) */
 /* 제목 묶음(제목 + 서브타이틀) ↔ 이미지 PC 60 · MO 32 · 제목↔서브타이틀 12 (사용자 요청) */
 .mh-image__head { width: var(--body, 860px); max-width: 100%; margin-bottom: 60px; display: flex; flex-direction: column; gap: 12px; text-align: left; }
 .mh-image .mh-image__title { margin: 0; text-align: left; }
 .mh-image__sub { margin: 0; font-size: 18px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100); }
 .mh-image--titled:not(.mh-image--space) { padding-top: 120px; }
 .mh-image--space { padding: 120px var(--container-pad); }
-.mh-image--body:not(.mh-image--space) { padding: 0 var(--container-pad); }
+.mh-image--body:not(.mh-image--space) { padding-left: var(--container-pad); padding-right: var(--container-pad); } /* 위아래는 건드리지 않아요 — 제목 위 120 · 버튼 아래 60 이 살아 있게 */
 .mh-image__link { display: block; width: 100%; }
 .mh-image--body .mh-image__link, .mh-image--body > .mh-image__pic, .mh-image--body > .mh-image__empty { width: var(--body, 860px); max-width: 100%; }
 .mh-image__pic { display: block; width: 100%; }
@@ -28,7 +28,7 @@
 .mh-image--body .mh-image__empty { height: 400px; border-radius: 8px; }
 
 @media (max-width: 767px) {
-  .mh-image--space { padding: 64px 16px; } /* 제안값 */
+  .mh-image--space { padding: 40px 16px; } /* MO 는 다른 섹션처럼 위아래 40 */
   .mh-image__empty { height: 240px; }
   .mh-image__btns { width: 100%; margin-top: 24px; } /* MO — 버튼이 칸을 나눠 채워요 (제안값) */
   .mh-image--full:not(.mh-image--space) .mh-image__btns { padding: 0 16px; }
