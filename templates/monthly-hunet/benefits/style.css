@@ -1,4 +1,4 @@
-/* PC — Figma 624:8208 · 회색 바탕(bg-page — 위 신청서와 이어져요) · 본문 860 · 위 40 · 아래 120 · 머리↔카드 40 · 카드 410 두 개(양 끝)
+/* PC — Figma 637:3978 · 회색 바탕(bg-page — 위 신청서와 이어져요) · 본문 860 · 위 40 · 아래 120 · 머리↔카드 40 · 카드 410 두 개(양 끝)
    이미지 칸 410×200 회색(#e9ecef — Figma 값, 토큰 아님) · 뱃지 55×51 빨강(red/700) 오른쪽 위 */
 .mh-benefits { display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px var(--container-pad) 120px; background: var(--bg-page); color: var(--t-100); }
 .mh-benefits > * { width: var(--body, 860px); max-width: 100%; }
@@ -16,7 +16,7 @@
 .mh-benefits__desc { margin: 0; font-size: 16px; line-height: 1.6; color: var(--t-80); }
 
 @media (min-width: 768px) and (max-width: 1279px) { .mh-benefits__list { grid-template-columns: repeat(2, minmax(0, 410px)); column-gap: 24px; } }
-/* MO — Figma 633:3313 · 위아래 40 · 제목 24 · 카드 세로로(사이 56) · 이미지 칸 150(bg-faint) · 카드 제목 20 · 설명 14 */
+/* MO — Figma 637:4122 · 위아래 40 · 제목 24 · 카드 세로로(사이 56) · 이미지 칸 150(bg-faint) · 카드 제목 20 · 설명 14 */
 @media (max-width: 767px) {
   .mh-benefits { padding: 40px 16px; }
   .mh-benefits .mh-h { font-size: 24px; }

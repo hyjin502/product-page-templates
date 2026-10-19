@@ -8,7 +8,7 @@
 .mh-btn--dark { border-color: transparent; background: var(--t-100); color: var(--white-100, #fff); }
 .mh-btn svg { flex: none; width: 16px; height: 16px; }
 
-/* PC — Figma 600:7912 · 본문 980 · 위아래 120 · 제목↔카드 60 · 3열 · 간격 16 */
+/* PC — Figma 637:3667 · 본문 980 · 위아래 120 · 제목↔카드 60 · 3열 · 간격 16 */
 .mh-persona { display: flex; justify-content: center; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
 .mh-persona__body { width: var(--body, 980px); max-width: 100%; display: flex; flex-direction: column; gap: 60px; }
 .mh-persona__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
@@ -22,7 +22,7 @@
 .mh-persona--tinted .mh-persona__card { background: var(--bg-surface); }
 
 @media (min-width: 768px) and (max-width: 1279px) { .mh-persona { padding: 96px var(--container-pad); } .mh-persona__card { padding: 24px; } }
-/* MO — Figma 600:7911 · 위아래 80 · 제목 28 · 제목↔카드 46 · 2열 · 사이 8 · 카드 안쪽 20 · 아바타 위 · 설명 15 (3열·2열 공통) */
+/* MO — Figma 637:3763 · 위아래 80 · 제목 28 · 제목↔카드 46 · 2열 · 사이 8 · 카드 안쪽 20 · 아바타 위 · 설명 15 (3열·2열 공통) */
 @media (max-width: 767px) {
   .mh-persona { padding: 80px 16px; }
   .mh-persona__body { gap: 46px; }

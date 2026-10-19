@@ -1,4 +1,4 @@
-/* PC — Figma 600:7667 · 본문 860 · 위아래 120 · 제목↔목록 60 · 항목 사이 8 */
+/* PC — Figma 637:3611 · 본문 860 · 위아래 120 · 제목↔목록 60 · 항목 사이 8 */
 .mh-check { display: flex; justify-content: center; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
 .mh-check__body { width: var(--body, 860px); max-width: 100%; display: flex; flex-direction: column; gap: 60px; }
 .mh-check__list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
@@ -9,7 +9,7 @@
 .mh-check--tinted .mh-check__item { background: var(--bg-surface); }
 
 @media (min-width: 768px) and (max-width: 1279px) { .mh-check { padding: 96px var(--container-pad); } .mh-check__body { gap: 48px; } }
-/* MO — Figma 600:7695 · 위아래 72 · 제목 28 · 제목↔목록 48 · 항목 안쪽 16/20 · 글자 16 regular(줄바꿈) */
+/* MO — Figma 637:3639 · 위아래 72 · 제목 28 · 제목↔목록 48 · 항목 안쪽 16/20 · 글자 16 regular(줄바꿈) */
 @media (max-width: 767px) {
   .mh-check { padding: 72px 16px; }
   .mh-check__body { gap: 48px; }

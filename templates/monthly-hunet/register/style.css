@@ -1,4 +1,4 @@
-/* PC — Figma 624:8146 · 회색 바탕(bg-page) · 본문 860 · 위 120 · 아래 40 · 머리↔폼 40 · 폼 안 40
+/* PC — Figma 637:3924 · 회색 바탕(bg-page) · 본문 860 · 위 120 · 아래 40 · 머리↔폼 40 · 폼 안 40
    입력칸 2열: 이름 칸 100 + 입력 300×50(흰 바탕 · 둥근 8) · 줄 사이 10 */
 .mh-register { display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 120px var(--container-pad) 40px; background: var(--bg-page); color: var(--t-100); }
 .mh-register > * { width: var(--body, 860px); max-width: 100%; }

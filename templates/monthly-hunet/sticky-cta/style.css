@@ -1,4 +1,4 @@
-/* PC — Figma 624:10289 · 폭 980 · 아래 16 · 흰 바(둥근 8 · 안쪽 14/24 · 그림자 drop shadow/300)
+/* PC — Figma 637:4107 · 폭 980 · 아래 16 · 흰 바(둥근 8 · 안쪽 14/24 · 그림자 drop shadow/300)
    페이지 맨 끝에 두면 스크롤하는 동안 화면 아래에 붙어 있어요 (sections/sticky-cta 와 같은 방식) */
 .mh-sticky { position: sticky; bottom: 0; z-index: 10; display: flex; justify-content: center; padding: 0 var(--container-pad) 16px; pointer-events: none; }
 .mh-sticky__bar { pointer-events: auto; width: var(--body, 980px); max-width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -13,7 +13,7 @@
   font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; }
 .mh-sticky__btn--dark { min-width: 111px; background: var(--gray-1600); color: var(--static-white); }
 
-/* MO — Figma 633:3339 · 화면 폭 흰 판(위 둥근 8 · 위로 그림자) · 위 문구 2줄 · 아래 회색 칸(남은 날) + 빨간 버튼 하나(마지막 버튼)
+/* MO — Figma 637:4276 · 화면 폭 흰 판(위 둥근 8 · 위로 그림자) · 위 문구 2줄 · 아래 회색 칸(남은 날) + 빨간 버튼 하나(마지막 버튼)
    PC 의 첫 번째 버튼은 MO 에서 숨겨요(Figma MO 는 버튼 하나) */
 .mh-sticky__dmo { margin: 0; }
 @media (max-width: 767px) {

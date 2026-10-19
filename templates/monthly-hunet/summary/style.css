@@ -1,4 +1,4 @@
-/* PC — Figma 600:7654 (1920 × 655) · 본문 800 · 위 64 · 아래 120 · 제목↔문단 40 */
+/* PC — Figma 637:3603 (1920 × 655) · 본문 800 · 위 64 · 아래 120 · 제목↔문단 40 */
 .mh-summary { display: flex; justify-content: center; padding: 64px var(--container-pad) 120px; background: var(--bg-surface); color: var(--t-100); letter-spacing: var(--tracking-tighter); }
 .mh-summary__body { width: var(--body, 800px); max-width: 100%; display: flex; flex-direction: column; gap: 40px; }
 .mh-summary__title { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.4; }
@@ -7,7 +7,7 @@
 
 /* TB — 코드 기본값(제안값) */
 @media (min-width: 768px) and (max-width: 1279px) { .mh-summary { padding: 56px var(--container-pad) 96px; } }
-/* MO — Figma 600:7665 · 위 40 · 아래 80 · 제목 20 · 문단 16 · 사이 12 · 제목↔문단 24 */
+/* MO — Figma 637:3395 · 위 40 · 아래 80 · 제목 20 · 문단 16 · 사이 12 · 제목↔문단 24 */
 @media (max-width: 767px) {
   .mh-summary { padding: 40px 16px 80px; }
   .mh-summary__body { gap: 24px; }
