@@ -813,3 +813,16 @@ body.is-dev .flink__label::after { content: none; }
 .tpl-extra__btns { display: flex; gap: 2px; padding-right: 6px; }
 .hed-rad--icons .chip { display: inline-grid; place-items: center; width: 36px; height: 32px; padding: 0; }
 .hed-rad--icons .chip svg { width: 20px; height: 20px; }
+/* 프로필 사진에서 고르기 */
+.hed-prof { grid-column: 1 / -1; margin-top: 6px; } /* 미디어 칸(썸네일 | 정보 2칸) 안에서도 전체 폭 */
+.hed-prof summary { cursor: pointer; font-size: 12px; color: var(--accent); }
+.hed-prof__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 8px; } /* 3열 */
+.hed-prof__b { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); color: var(--ink-2); font: 10px/1.3 var(--font-ui); cursor: pointer; }
+.hed-prof__b:hover { border-color: var(--accent); }
+.hed-prof__b img { width: 100%; aspect-ratio: 1; border-radius: 4px; object-fit: cover; background: var(--stage); }
+.hed-prof__b span { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+/* 이미지 위치·크기 (focus) */
+.hed-focus { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; padding: 8px 10px; border: 1px dashed var(--rule); border-radius: 6px; }
+.hed-focus__row { display: grid; grid-template-columns: 52px minmax(0, 1fr) 40px auto; align-items: center; gap: 8px; font-size: 12px; }
+.hed-focus__row input[type="range"] { width: 100%; accent-color: var(--accent); }
+.hed-focus__z { font: 11px var(--font-mono); color: var(--ink-3); text-align: right; }

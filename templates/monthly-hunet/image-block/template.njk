@@ -1,6 +1,18 @@
+{% from "hero/_macros.njk" import btnIcon %}
 {% set pc = image.pc if image else null %}{% set mo = image.mo if image else null %}{% set m = pc or mo %}
 {% set bg = bgColor | hdsBg %}
-<section class="mh-image mh-image--{{ width or 'body' }}{% if space == 'section' %} mh-image--space{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
+{% set tl = title | lines %}{% set sl = subtitle | lines %}
+<section class="mh-image mh-image--{{ width or 'body' }}{% if space == 'section' %} mh-image--space{% endif %}{% if tl.length or sl.length %} mh-image--titled{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
+{% if tl.length or sl.length %}
+  <div class="mh-image__head">
+{% if tl.length %}
+    <h2 class="mh-h mh-image__title">{{ title | rt }}</h2>
+{% endif %}
+{% if sl.length %}
+    <p class="mh-image__sub">{{ subtitle | rt }}</p>
+{% endif %}
+  </div>
+{% endif %}
 {% if m and m.src %}
 {% if href %}<a class="mh-image__link" href="{{ href }}">{% endif %}
 {% if m.kind == 'video' %}
@@ -16,5 +28,16 @@
 {% if href %}</a>{% endif %}
 {% else %}
   <div class="mh-image__empty"><img src="assets/ph-visual.svg" alt="" width="157" height="157"></div>
+{% endif %}
+{% if ctas.length %}
+  <div class="mh-image__btns">
+{% for c in ctas %}
+{% if c.style == "outline" %}
+    <a class="mh-hbtn mh-hbtn--outline" href="{{ c.href or '#' }}" style="--btn-r: {{ c.radius | hdsRadius }}{% if c.line %}; --btn-line: {{ c.line | hdsLine }}{% endif %}">{{ c.label }}{{ btnIcon(c) }}</a>
+{% else %}
+    <a class="mh-hbtn{% if c.color == 'transparent' %} mh-hbtn--clear{% endif %}" href="{{ c.href or '#' }}" style="--btn-bg: {{ c.color | hdsColor }}; --btn-fg: {{ c.color | hdsOn }}; --btn-r: {{ c.radius | hdsRadius }}{% if c.line %}; --btn-line: {{ c.line | hdsLine }}{% endif %}">{{ c.label }}{{ btnIcon(c) }}</a>
+{% endif %}
+{% endfor %}
+  </div>
 {% endif %}
 </section>

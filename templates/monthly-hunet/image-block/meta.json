@@ -12,6 +12,22 @@
   },
   "body": 860,
   "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "optional": true,
+      "note": "왼쪽 정렬 · 최대 2줄 · 비우면 제목 없이 이미지만"
+    },
+    "subtitle": {
+      "type": "richtext",
+      "extract": false,
+      "label": "서브타이틀",
+      "maxLines": 3,
+      "optional": true,
+      "note": "제목 아래 · 18 regular · 최대 3줄"
+    },
     "image": {
       "type": "media",
       "optional": true,
@@ -31,8 +47,79 @@
       "type": "url",
       "optional": true,
       "extract": false,
-      "label": "링크",
+      "label": "이미지 링크",
       "note": "비우면 링크 없음"
+    },
+    "ctas": {
+      "type": "list",
+      "extract": false,
+      "min": 0,
+      "max": 2,
+      "label": "버튼",
+      "note": "HDS 버튼 lg(56) · 이미지 아래 가운데 · 비우면 버튼 없음",
+      "item": {
+        "label": {
+          "type": "text",
+          "label": "버튼 문구",
+          "maxChars": 20
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "fill",
+            "outline"
+          ],
+          "labels": {
+            "fill": "채움",
+            "outline": "테두리"
+          },
+          "default": "fill",
+          "label": "모양"
+        },
+        "color": {
+          "type": "color",
+          "default": "blue/700",
+          "label": "배경색",
+          "hideWhen": {
+            "style": "outline"
+          },
+          "note": "기본 blue/700 = HDS primary"
+        },
+        "line": {
+          "type": "color",
+          "palette": "line",
+          "optional": true,
+          "label": "라인",
+          "note": "HDS line 색 · 테두리형은 테두리 색 · 비우면 기본"
+        },
+        "radius": {
+          "type": "radius",
+          "default": "md",
+          "label": "모서리",
+          "note": "HDS lg 기본 md(12)"
+        },
+        "icon": {
+          "type": "enum",
+          "values": [
+            "none",
+            "chevron-right",
+            "arrow-right",
+            "plus"
+          ],
+          "labels": {
+            "none": "없음",
+            "chevron-right": "› chevron-right",
+            "arrow-right": "→ arrow-right",
+            "plus": "+ plus"
+          },
+          "default": "none",
+          "label": "오른쪽 아이콘"
+        }
+      }
     },
     "width": {
       "type": "enum",

@@ -1,0 +1,83 @@
+{
+ "$comment": "자주 쓰는 프로필 사진(정사각) — Figma 「상품페이지 템플릿 시스템」 dxhWkGXnev5U2Q1nLISR3h · Profile 633:3341 의 「비율=정사각」. 편집기에서 슬롯 spec 에 profiles: true 인 사진 칸(히어로 연사 · 아젠다 사진)에 고르기로 나와요. 새 사람은 이 목록에 한 줄 + 300×300 jpg.",
+ "profiles": [
+  {
+   "key": "p01",
+   "name": "조영탁 사장",
+   "src": "assets/profiles/p01.jpg",
+   "figma": "633:3344"
+  },
+  {
+   "key": "p02",
+   "name": "임선예 팀장",
+   "src": "assets/profiles/p02.jpg",
+   "figma": "633:3348"
+  },
+  {
+   "key": "p03",
+   "name": "홍정민 소장",
+   "src": "assets/profiles/p03.jpg",
+   "figma": "633:3356"
+  },
+  {
+   "key": "p04",
+   "name": "변재명 팀장",
+   "src": "assets/profiles/p04.jpg",
+   "figma": "633:3360"
+  },
+  {
+   "key": "p05",
+   "name": "김두희 책임",
+   "src": "assets/profiles/p05.jpg",
+   "figma": "633:3366"
+  },
+  {
+   "key": "p06",
+   "name": "김현수",
+   "src": "assets/profiles/p06.jpg",
+   "figma": "633:3368"
+  },
+  {
+   "key": "p07",
+   "name": "신혜림",
+   "src": "assets/profiles/p07.jpg",
+   "figma": "633:3370"
+  },
+  {
+   "key": "p08",
+   "name": "유형석",
+   "src": "assets/profiles/p08.jpg",
+   "figma": "633:3372"
+  },
+  {
+   "key": "p09",
+   "name": "김예원",
+   "src": "assets/profiles/p09.jpg",
+   "figma": "633:3374"
+  },
+  {
+   "key": "p10",
+   "name": "이재길",
+   "src": "assets/profiles/p10.jpg",
+   "figma": "633:3376"
+  },
+  {
+   "key": "p11",
+   "name": "김승곤",
+   "src": "assets/profiles/p11.jpg",
+   "figma": "633:3378"
+  },
+  {
+   "key": "p12",
+   "name": "손송민",
+   "src": "assets/profiles/p12.jpg",
+   "figma": "633:3380"
+  },
+  {
+   "key": "p13",
+   "name": "심현정",
+   "src": "assets/profiles/p13.jpg",
+   "figma": "633:3382"
+  }
+ ]
+}

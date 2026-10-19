@@ -13,6 +13,10 @@
 {% endif %}
 {% endmacro %}
 
+{# 이미지 위치·크기 — vis.pos = { pc: { dx, dy, z }, mo?: { dx, dy, z } } (dx·dy = 칸 크기 대비 이동 %, -100~100 · z = 확대 1~3). 슬롯 spec focus: true 일 때 편집기에서 끌어 맞춰요.
+   감싸는 요소에 CSS 변수로 넣고(--px · --py · --pz, MO 는 -mo), 모양은 _shared.css 의 [data-focus] 규칙이 맡아요 #}
+{% macro focusVars(vis) %}{% set p = vis.pos if vis else null %}{% if p and p.pc and p.pc.dx != null %}--px: {{ p.pc.dx }}%; --py: {{ p.pc.dy }}%; --pz: {{ p.pc.z or 1 }};{% endif %}{% if p and p.mo and p.mo.dx != null %} --px-mo: {{ p.mo.dx }}%; --py-mo: {{ p.mo.dy }}%; --pz-mo: {{ p.mo.z or 1 }};{% endif %}{% endmacro %}
+
 {# 배경 — bg: { pc: {…}, mo?: {…} }. 한쪽만 있으면 양쪽에 같은 것을 써요.
    이미지 두 장은 <picture>(MO 는 <source media>), 영상이 섞이면 PC·MO 요소를 따로 두고 .only-pc / .only-mo 로 나눠요 #}
 {% macro bgMedia(bg, cls="hero__bg") %}

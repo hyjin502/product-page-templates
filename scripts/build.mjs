@@ -74,6 +74,8 @@ function buildLibrary(reg, env, baseCss) {
     baseCss,
     hds: HDS,
     bgPresets: BG_PRESETS,
+    // 자주 쓰는 프로필 사진 — 편집기 사진 칸(spec profiles: true)에서 골라요
+    profiles: fs.existsSync(path.join(ROOT, 'assets/profiles/profiles.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/profiles/profiles.json'), 'utf8')).profiles : [],
     icons: editor.icons,
     pagerJs: fs.readFileSync(PAGER_JS_PATH, 'utf8'),
     fontLink: FONT_LINK,

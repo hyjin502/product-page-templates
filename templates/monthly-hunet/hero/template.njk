@@ -1,4 +1,4 @@
-{% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans, btns %}
+{% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans, btns, focusVars %}
 {% set lg = (logo.pc or logo.mo) if logo else null %}
 {% set ebPc = eyebrow | lines('pc') %}{% set ebMo = eyebrow | lines('mo') %}
 {% set dtPc = date | lines('pc') %}{% set dtMo = date | lines('mo') %}
@@ -22,7 +22,7 @@
       <h1 class="hero__title">{{ lineSpans(title) }}</h1>
     </div>
     <div class="hero__stage">
-      <div class="hero__visual{% if visualShade %} hero__visual--shade{% endif %}">{{ visualMedia(visual) }}</div>
+      <div class="hero__visual{% if visualShade %} hero__visual--shade{% endif %}" data-focus="visual"{% set fv = focusVars(visual) | trim %}{% if fv %} style="{{ fv }}"{% endif %}>{{ visualMedia(visual) }}</div>
       <div class="hero__info">
 {% if dtPc.length or dtMo.length %}
         <p class="hero__date">{{ lineSpans(date) }}</p>

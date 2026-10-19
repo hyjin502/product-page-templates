@@ -58,8 +58,9 @@
       "type": "media",
       "extract": false,
       "label": "메인 비주얼",
-      "hint": "PC 980×580 · MO 343×203 둥근 모서리 · 이미지 또는 mp4 · 미리보기의 이미지를 클릭해도 바꿀 수 있어요",
-      "figmaLayer": "Main"
+      "hint": "PC 980×580 · MO 343×203 둥근 모서리 · 이미지 또는 mp4 · 미리보기에서 이미지를 끌면 따라 움직여요(PC·MO 따로) · 확대해서 칸을 채워요 · 클릭하면 파일을 바꿔요",
+      "figmaLayer": "Main",
+      "focus": true
     },
     "visualShade": {
       "type": "toggle",
@@ -107,7 +108,8 @@
       "extract": false,
       "label": "연사 사진 1",
       "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
-      "pcOnly": true
+      "pcOnly": true,
+      "profiles": true
     },
     "speaker2": {
       "type": "media",
@@ -115,7 +117,8 @@
       "extract": false,
       "label": "연사 사진 2",
       "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
-      "pcOnly": true
+      "pcOnly": true,
+      "profiles": true
     },
     "speaker3": {
       "type": "media",
@@ -123,7 +126,8 @@
       "extract": false,
       "label": "연사 사진 3",
       "pcOnly": true,
-      "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요"
+      "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
+      "profiles": true
     },
     "ctas": {
       "type": "list",

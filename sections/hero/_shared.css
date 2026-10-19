@@ -124,3 +124,11 @@
   .hero__stats { gap: 16px 32px; }
   .hero__stat-num { height: 34px; font-size: 36px; }
 }
+
+/* 이미지 위치·크기 (슬롯 focus: true) — 칸 안에서 이미지를 옮기고(translate, 칸 크기 대비 %) 키워요(scale). MO 는 -mo 값(없으면 PC 값)
+   옮긴 만큼 칸 가장자리가 비면 그 칸의 바탕색이 보여요 — 확대해서 채워요 */
+[data-focus] { overflow: hidden; }
+[data-focus] img, [data-focus] video { transform: translate(var(--px, 0%), var(--py, 0%)) scale(var(--pz, 1)); transform-origin: 50% 50%; -webkit-user-drag: none; user-select: none; }
+@media (max-width: 767px) {
+  [data-focus] img, [data-focus] video { transform: translate(var(--px-mo, var(--px, 0%)), var(--py-mo, var(--py, 0%))) scale(var(--pz-mo, var(--pz, 1))); }
+}

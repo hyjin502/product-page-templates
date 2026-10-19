@@ -67,7 +67,8 @@
           "type": "image",
           "label": "사진",
           "hint": "150×150",
-          "optional": true
+          "optional": true,
+          "profiles": true
         },
         "org": {
           "type": "text",

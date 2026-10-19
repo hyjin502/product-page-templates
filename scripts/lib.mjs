@@ -179,7 +179,15 @@ function validateValue(s, v, where, errors) {
     case 'media':
       // 배경 — { pc: { kind, src, alt?, poster? } | { kind: "css", preset }, mo?: 같은 모양 } · mo 가 없으면 PC 것을 써요
       if (typeof v !== 'object' || Array.isArray(v)) { errors.push(`${where}: { pc, mo } 여야 해요`); break; }
-      for (const k of Object.keys(v)) if (!['pc', 'mo'].includes(k)) errors.push(`${where}: 알 수 없는 키 "${k}" (pc, mo)`);
+      for (const k of Object.keys(v)) if (!['pc', 'mo', 'pos'].includes(k)) errors.push(`${where}: 알 수 없는 키 "${k}" (pc, mo, pos)`);
+      // pos = 이미지 위치·크기 { pc: { dx, dy, z }, mo? } — dx·dy -100~100(칸 대비 이동 %), z 1~3 (슬롯 focus: true)
+      if (v.pos != null) {
+        if (!s.focus) errors.push(`${where}.pos: 이 슬롯은 위치 조정을 쓰지 않아요`);
+        for (const [d, q] of Object.entries(v.pos || {})) {
+          const ok = ['pc', 'mo'].includes(d) && q && [q.dx, q.dy].every((n) => typeof n === 'number' && n >= -100 && n <= 100) && (q.z == null || (typeof q.z === 'number' && q.z >= 1 && q.z <= 3));
+          if (!ok) errors.push(`${where}.pos.${d}: { dx: -100~100, dy: -100~100, z: 1~3 } 이어야 해요`);
+        }
+      }
       checkMediaItem(v.pc, `${where}.pc`, errors, s);
       checkMediaItem(v.mo, `${where}.mo`, errors, s);
       break;

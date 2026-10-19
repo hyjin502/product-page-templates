@@ -757,7 +757,10 @@ function editFrom(v, content) {
       const mo = RC.textLines(val, 'mo');
       if (s.mo && mo.join('\n') !== e[k].join('\n')) (e['@mo'] ||= {})[k] = mo;
     } else if (s.type === 'list') e[k] = (val || []).map((it) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(vv)])));
-    else if (s.type === 'media') e[k] = { pc: (val && val.pc) || null, mo: (val && val.mo) || null, moSame: !(val && val.mo) };
+    else if (s.type === 'media') {
+      e[k] = { pc: (val && val.pc) || null, mo: (val && val.mo) || null, moSame: !(val && val.mo) };
+      if (s.focus && val && val.pos) { e[k].pos = JSON.parse(JSON.stringify(val.pos)); if (e[k].pos.mo) e[k].pos.moOwn = true; } // 이미지 위치·크기 (MO 값이 있으면 「MO 따로」)
+    }
     else if (s.type === 'toggle') e[k] = !!val;
     else e[k] = val && typeof val === 'object' ? blank(val.pc) : blank(val);
   }
@@ -851,6 +854,13 @@ function contentFrom(v, e, forExport, pre) {
       const pc = mediaOut(val.pc, k, 'pc', forExport, pre);
       const mo = val.moSame ? null : mediaOut(val.mo, k, 'mo', forExport, pre);
       if (pc || mo) c[k] = Object.assign({}, pc ? { pc } : {}, mo ? { mo } : {});
+      // 이미지 위치·크기 — 제자리(0·0 · 1배)가 아닌 기기만 내보내요
+      if (c[k] && s.focus && val.pos) {
+        const pos = {};
+        // MO 는 「MO 위치 따로 맞추기」를 켰을 때만 따로 내보내요 — 아니면 PC 값을 MO 도 그대로 써요
+        for (const d of val.pos.moOwn ? ['pc', 'mo'] : ['pc']) { const q = val.pos[d]; if (q && q.dx != null && (d === 'mo' || q.dx || q.dy || (q.z || 1) !== 1)) pos[d] = { dx: q.dx, dy: q.dy, z: q.z || 1 }; }
+        if (Object.keys(pos).length) c[k].pos = pos;
+      }
     } else if (s.type === 'toggle') c[k] = !!val;
     else if (String(blank(val)).trim()) c[k] = String(val).trim();
   }
@@ -996,6 +1006,12 @@ function toggleBox(path, s, cur) {
 }
 /** hideWhen: { style: "outline" } — 같은 항목의 다른 값이 맞으면 숨겨요 (테두리형이면 배경색 숨김) */
 const hiddenBy = (s, item) => !!(s.hideWhen && item && Object.entries(s.hideWhen).every(([hk, hv]) => item[hk] === hv));
+/** 자주 쓰는 프로필 사진에서 고르기 (spec profiles: true) — assets/profiles/profiles.json */
+function profilePicker(path) {
+  const list = REG.profiles || [];
+  if (!list.length) return '';
+  return `<details class="hed-prof"><summary>프로필 사진에서 고르기 <span class="hed-f__opt">${list.length}명</span></summary><div class="hed-prof__grid">${list.map((p) => `<button type="button" class="hed-prof__b" ${attrs({ ...path, 'data-act': 'profile', 'data-src': p.src, 'data-name': p.name, title: p.name })}><img src="${esc(new URL(p.src, assetBase).href)}" alt="" loading="lazy"><span>${esc(p.name)}</span></button>`).join('')}</div></details>`;
+}
 /** 목록 항목 안의 이미지 — 썸네일 · 파일 선택 · 지우기 · 되돌리기(샘플과 다르면) */
 function imageItem(path, s, val, label, smp) {
   const src = val ? (val.file ? blobUrls[val.file] : val.src) : '';
@@ -1003,7 +1019,7 @@ function imageItem(path, s, val, label, smp) {
   return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || '이미지')}${s.hint ? ` <span class="hed-f__opt">${esc(s.hint)}</span>` : ''}</span><div class="hed-img">
   <span class="hed-img__thumb">${src ? `<img src="${esc(src)}" alt="">` : val ? '파일을 다시<br>골라 주세요' : '없음'}</span>
   <div class="hed-media__btns"><button type="button" class="btn-ui" ${attrs({ ...path, 'data-act': 'pick', 'aria-label': `${label} 파일 선택` })}>파일 선택</button>${val ? `<button type="button" class="btn-ui" ${attrs({ ...path, 'data-act': 'clear' })}>지우기</button>` : ''}${restore ? `<button type="button" class="btn-ui" ${attrs({ ...path, 'data-act': 'restore', title: 'Figma 샘플로 되돌려요' })}>되돌리기</button>` : ''}</div>
-</div></div>`;
+</div>${s.profiles ? profilePicker(path) : ''}</div>`;
 }
 function itemField(k, i, kk, s, val, n, item, smpItem) {
   const path = { 'data-f': k, 'data-i': i, 'data-k': kk };
@@ -1060,7 +1076,7 @@ function bgPresetChips(k, dev, ref) {
   <div class="hed-bgfx__list">${(REG.bgPresets || []).map((p) => `<button type="button" class="hed-bgfx__b" ${attrs({ 'data-act': 'bg-preset', 'data-f': k, 'data-dev': dev, 'data-preset': p.key, 'aria-pressed': String(!!ref && ref.kind === 'css' && ref.preset === p.key), title: p.label + (p.motion ? ' · 천천히 움직여요' : '') })}><span class="hed-bgfx__sw${p.motion ? ' is-motion' : ''}" style="background:${esc(p.swatch)}"></span><span class="hed-bgfx__name">${esc(p.label)}</span></button>`).join('')}</div></div>`;
 }
 /** sample = 그 칸의 샘플 값 — 지금 값과 다르면(지웠거나 바꿨으면) 「되돌리기」로 샘플로 돌려요 */
-function mediaBox(k, dev, ref, title, css, sample) {
+function mediaBox(k, dev, ref, title, css, sample, profiles) {
   const restore = sample && JSON.stringify(sample) !== JSON.stringify(ref || null);
   return `<div class="hed-media">
   <div class="hed-media__thumb">${mediaThumb(ref)}</div>
@@ -1071,12 +1087,30 @@ function mediaBox(k, dev, ref, title, css, sample) {
     <input type="url" class="hed-media__url" ${attrs({ 'data-f': k, 'data-dev': dev, 'data-k': 'url', placeholder: '또는 이미지·mp4 주소 붙여넣기', 'aria-label': `${title} 주소` })}>
   </div>
   ${css ? bgPresetChips(k, dev, ref) : ''}
+  ${profiles ? profilePicker({ 'data-f': k, 'data-dev': dev }) : ''}
 </div>`;
 }
 /** smp = 샘플 편집 값의 그 칸 ({ pc, mo }) — 「되돌리기」용. single = PC·MO 같은 파일 하나(MO 따로 없음) */
+/** 이미지 위치·크기 (spec focus: true) — PC·MO 따로 확대 막대 + 「가운데로」. 위치는 미리보기에서 이미지를 끌어 옮겨요 */
+function focusControls(k, m) {
+  const row = (dev, title) => {
+    const q0 = m.pos && m.pos[dev];
+    const q = q0 && q0.dx != null ? q0 : { dx: 0, dy: 0, z: (q0 && q0.z) || 1 };
+    const moved = !!(q.dx || q.dy || (q.z || 1) !== 1);
+    return `<div class="hed-focus__row"><b>${title}</b><input type="range" min="100" max="300" step="5" value="${Math.round((q.z || 1) * 100)}" ${attrs({ 'data-focus-z': '', 'data-f': k, 'data-dev': dev, 'aria-label': `${title} 확대` })}><span class="hed-focus__z">${Math.round((q.z || 1) * 100)}%</span><button type="button" class="btn-ui" ${attrs({ 'data-act': 'focus-reset', 'data-f': k, 'data-dev': dev, disabled: !moved })}>가운데로</button></div>`;
+  };
+  const own = !!(m.pos && m.pos.moOwn);
+  return `<div class="hed-focus"><span class="hed-sub__label">위치 · 크기 <span class="hed-f__opt">미리보기에서 이미지를 끌어 옮겨요${own ? ' (지금 보는 기기 기준)' : ' · PC 에서 맞춘 대로 MO 도 같아요'}</span></span>${row('pc', own ? 'PC · TB' : 'PC · MO')}
+  <label class="hed-check"><input type="checkbox" ${attrs({ 'data-focus-mo': '', 'data-f': k, checked: own })}> MO 위치 따로 맞추기</label>${own ? row('mo', 'MO') : ''}</div>`;
+}
 function mediaField(k, s, m, smp = {}) {
   const css = !!s.cssPresets;
-  if (s.pcOnly) return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 · PC·TB 에만 보여요')}${mediaBox(k, 'pc', m.pc, 'PC · TB', css, smp.pc)}</div>`;
+  if (s.focus) return mediaFieldBase(k, s, m, smp).replace(/<\/div>$/, `${focusControls(k, m)}</div>`);
+  return mediaFieldBase(k, s, m, smp);
+}
+function mediaFieldBase(k, s, m, smp = {}) {
+  const css = !!s.cssPresets;
+  if (s.pcOnly) return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 · PC·TB 에만 보여요')}${mediaBox(k, 'pc', m.pc, 'PC · TB', css, smp.pc, s.profiles)}</div>`;
   if (s.single) return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 · PC·TB·MO 같은 파일')}${mediaBox(k, 'pc', m.pc, 'PC · MO', css, smp.pc)}</div>`;
   return `<div class="hed-f">${fieldHead(s, s.hint || (css ? '이미지 · mp4 · CSS 배경 · PC 것은 TB 에도 쓰여요' : '이미지 또는 mp4 · PC 것은 TB 에도 쓰여요'))}
   ${mediaBox(k, 'pc', m.pc, 'PC · TB', css, smp.pc)}
@@ -1239,9 +1273,72 @@ function measureHero() {
 /* ---------- 미리보기에서 이미지 바꾸기 — 섹션 안 비주얼(visual 슬롯)을 클릭하면 파일 선택이 열려요
    안내 말풍선은 ::before 를 써요 (::after 는 비주얼 하단 그라데이션 등이 써요) */
 const PICK_AREAS = { image: '.mh-image__pic, .mh-image__empty', visual: '.hero__visual', speaker1: '[data-pick="speaker1"]', speaker2: '[data-pick="speaker2"]', speaker3: '[data-pick="speaker3"]' };
-function attachPreviewPick(doc, el = heroEl, variantAt = () => byId[heroState().variant], edit = heroEdit) {
+/* 이미지 위치 끌어 옮기기 — [data-focus="슬롯"] 안에서 3px 넘게 끌면 이미지가 마우스를 그대로 따라와요(그때는 클릭 = 파일 선택을 막아요), 그냥 누르면 파일 선택.
+   지금 보는 기기가 MO 면 MO 위치(-mo)를, 아니면 PC 위치를 바꿔요. 끄는 동안은 CSS 변수만 바꾸고(한 프레임에 한 번), 놓을 때 편집 값에 저장해요.
+   브라우저 기본 이미지 끌기(dragstart)는 막아요 — 그게 끌기를 중간에 끊었어요 */
+function attachFocusDrag(doc, variantAt, edit, update, redraw) {
+  const win = doc.defaultView;
+  let drag = null;
+  let raf = 0;
+  doc.addEventListener('dragstart', (ev) => { if (ev.target.closest && ev.target.closest('[data-focus]')) ev.preventDefault(); });
+  doc.addEventListener('pointerdown', (ev) => {
+    const box = ev.target.closest('[data-focus]');
+    if (!box || ev.button !== 0) return;
+    const v = variantAt(box);
+    const f = box.dataset.focus;
+    if (!v || !v.slots[f] || !RC.specOf(v.slots[f]).focus || !box.querySelector('img, video')) return;
+    ev.preventDefault(); // 글자 선택·이미지 끌기 시작을 막아요 (클릭은 그대로 와요)
+    const m = edit(v)[f];
+    const dev = win.innerWidth <= 767 && m.pos && m.pos.moOwn ? 'mo' : 'pc'; // MO 따로가 아니면 MO 화면에서 끌어도 PC 값(= MO 도 같음)
+    const c0 = m.pos && m.pos[dev];
+    const cur = c0 && c0.dx != null ? c0 : { dx: 0, dy: 0, z: (c0 && c0.z) || 1 };
+    const r = box.getBoundingClientRect();
+    drag = { box, v, f, dev, id: ev.pointerId, x0: ev.clientX, y0: ev.clientY, w: r.width || 1, h: r.height || 1, q: { dx: cur.dx, dy: cur.dy, z: cur.z || 1 }, start: { dx: cur.dx, dy: cur.dy }, moved: false };
+    try { box.setPointerCapture(ev.pointerId); } catch (err) {}
+  });
+  const paint = () => {
+    raf = 0;
+    if (!drag) return;
+    const sfx = drag.dev === 'mo' ? '-mo' : '';
+    drag.box.style.setProperty('--px' + sfx, drag.q.dx + '%');
+    drag.box.style.setProperty('--py' + sfx, drag.q.dy + '%');
+    drag.box.style.setProperty('--pz' + sfx, String(drag.q.z));
+  };
+  doc.addEventListener('pointermove', (ev) => {
+    if (!drag || ev.pointerId !== drag.id) return;
+    const dx = ev.clientX - drag.x0, dy = ev.clientY - drag.y0;
+    if (!drag.moved && Math.hypot(dx, dy) < 3) return;
+    if (!drag.moved) { drag.moved = true; drag.box.style.cursor = 'grabbing'; doc.documentElement.style.cursor = 'grabbing'; }
+    // 마우스가 움직인 만큼 그대로 (칸 크기 대비 %) — 화면 배율과 상관없이 손을 따라와요
+    const clamp = (n) => Math.round(Math.max(-100, Math.min(100, n)) * 10) / 10;
+    drag.q.dx = clamp(drag.start.dx + (dx / drag.w) * 100);
+    drag.q.dy = clamp(drag.start.dy + (dy / drag.h) * 100);
+    if (!raf) raf = win.requestAnimationFrame(paint);
+  });
+  const end = (ev) => {
+    if (!drag || (ev && ev.pointerId != null && ev.pointerId !== drag.id)) return;
+    const d = drag;
+    drag = null;
+    if (raf) { win.cancelAnimationFrame(raf); raf = 0; }
+    d.box.style.cursor = ''; doc.documentElement.style.cursor = '';
+    try { d.box.releasePointerCapture(d.id); } catch (err) {}
+    if (!d.moved) return;
+    const sfx = d.dev === 'mo' ? '-mo' : '';
+    d.box.style.setProperty('--px' + sfx, d.q.dx + '%'); d.box.style.setProperty('--py' + sfx, d.q.dy + '%'); d.box.style.setProperty('--pz' + sfx, String(d.q.z));
+    const m = edit(d.v)[d.f];
+    (m.pos ||= {})[d.dev] = { ...d.q };
+    doc.__focusDragged = Date.now(); // 바로 뒤 click(파일 선택)을 막아요
+    update(d.v);
+    redraw(d.v);
+  };
+  doc.addEventListener('pointerup', end);
+  doc.addEventListener('pointercancel', end);
+  win.addEventListener('blur', () => end());
+}
+function attachPreviewPick(doc, el = heroEl, variantAt = () => byId[heroState().variant], edit = heroEdit, update = heroUpdate, redraw = () => redrawForm()) {
   if (!doc || doc.__hedPick) return;
   doc.__hedPick = true;
+  attachFocusDrag(doc, variantAt, edit, update, redraw);
   const st = doc.createElement('style');
   // 목록 항목 이미지(월간휴넷 카드 사진 등)는 템플릿이 감싼 요소에 data-pick-item="목록:번호:필드" 를 붙여요
   // 선택자에 쉼표(여러 개)가 있으면 하나씩 나눠서 규칙을 만들어요 — 묶은 채로 쓰면 :hover::before 가 마지막 선택자에만 붙고
@@ -1250,6 +1347,7 @@ function attachPreviewPick(doc, el = heroEl, variantAt = () => byId[heroState().
     + '[data-pick-item]:hover::before{content:"클릭해서 바꾸기";top:8px;padding:4px 8px;font-size:12px}'; // 작은 사진(아바타 72)에도 맞게
   doc.head.appendChild(st);
   doc.addEventListener('click', (ev) => {
+    if (doc.__focusDragged && Date.now() - doc.__focusDragged < 400) return; // 끌어 옮긴 직후의 클릭은 파일 선택이 아니에요
     const v = variantAt(ev.target);
     if (!v) return;
     const it = ev.target.closest('[data-pick-item]');
@@ -1366,6 +1464,18 @@ function bindEditorForm(ctx) {
   });
   el.addEventListener('input', (ev) => {
     const t = ev.target;
+    if (t.matches('[data-focus-z]')) {
+      const v = ctx.variantOf(t);
+      if (!v) return;
+      const m = ctx.edit(v)[t.dataset.f];
+      const pos = (m.pos ||= {});
+      const q = (pos[t.dataset.dev] = Object.assign({ dx: 0, dy: 0, z: 1 }, pos[t.dataset.dev] && pos[t.dataset.dev].dx != null ? pos[t.dataset.dev] : {}));
+      q.z = Math.round(+t.value) / 100;
+      const lab = t.parentElement.querySelector('.hed-focus__z'); if (lab) lab.textContent = `${t.value}%`;
+      const rb = t.parentElement.querySelector('[data-act="focus-reset"]'); if (rb) rb.disabled = false;
+      ctx.update(v);
+      return;
+    }
     if (!t.matches('input[type="text"][data-f], input[type="url"][data-f][data-i], textarea[data-f][data-i]')) return;
     const v = ctx.variantOf(t);
     if (!v) return;
@@ -1398,7 +1508,10 @@ function bindEditorForm(ctx) {
       blobUrls[key] = URL.createObjectURL(file);
       idb.put(key, file);
       if (i != null) { const old = e[f][i][k]; e[f][i][k] = { file: key, name: file.name, ...(old && old.alt ? { alt: old.alt } : {}) }; } // 목록 항목 이미지
-      else e[f][dev] = { kind: file.type.startsWith('video/') ? 'video' : 'image', file: key, name: file.name };
+      else {
+        e[f][dev] = { kind: file.type.startsWith('video/') ? 'video' : 'image', file: key, name: file.name };
+        if (e[f].pos) { delete e[f].pos[dev]; if (dev === 'pc' && e[f].moSame) delete e[f].pos.mo; } // 새 파일은 가운데부터
+      }
       t.value = '';
       ctx.redraw(v); ctx.update(v);
       return;
@@ -1406,6 +1519,14 @@ function bindEditorForm(ctx) {
     const v = ctx.variantOf(t);
     if (!v) return;
     const e = ctx.edit(v);
+    if (t.matches('[data-focus-mo]')) {
+      // 켜면 지금 PC 위치를 MO 에 복사해서 시작, 끄면 MO 값을 지우고 PC 를 따라가요
+      const m = e[t.dataset.f];
+      const pos = (m.pos ||= {});
+      pos.moOwn = t.checked;
+      if (t.checked) pos.mo = pos.pc && pos.pc.dx != null ? { ...pos.pc } : { dx: 0, dy: 0, z: 1 }; else delete pos.mo;
+      ctx.redraw(v); ctx.update(v); return;
+    }
     if (t.matches('[data-k="moSame"]')) { e[t.dataset.f].moSame = t.checked; ctx.redraw(v); ctx.update(v); return; }
     if (t.matches('[data-mo-sep]')) {
       const k = t.dataset.moSep;
@@ -1438,6 +1559,18 @@ function bindEditorForm(ctx) {
       case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, blank(vv)]))); break;
       case 'del-item': e[p.f].splice(p.i, 1); break;
       case 'clear': if (p.i != null) e[p.f][p.i][p.k] = null; else e[p.f][p.dev] = null; break;
+      case 'focus-reset': if (e[p.f].pos) delete e[p.f].pos[p.dev]; break;
+      case 'profile': {
+        // 자주 쓰는 프로필 사진 — 이미지 칸에 넣고, 같은 항목에 이름 칸이 비어 있거나 샘플 자리 문구면 이름도 채워요
+        const ref = { src: hit.dataset.src, alt: hit.dataset.name };
+        if (p.i != null) {
+          const it = e[p.f][p.i];
+          it[p.k] = ref;
+          const sItem = s.item || {};
+          if (sItem.name && (!String(it.name || '').trim() || /^이름\s*직급$/.test(String(it.name).trim()))) it.name = hit.dataset.name;
+        } else e[p.f][p.dev] = { kind: 'image', ...ref };
+        break;
+      }
       case 'restore': {
         const smp = editFrom(v, v.sample)[p.f];
         if (p.i != null) e[p.f][p.i][p.k] = (smp && smp[p.i] && smp[p.i][p.k]) || null;
@@ -1636,8 +1769,8 @@ function renderTpl() {
     try {
       const doc = iframe.contentDocument;
       const secOf = (el) => { const sec = el.closest('[data-tpl-sec]'); return sec ? byId[sec.dataset.tplSec] : null; };
-      attachPreviewPick(doc, tplEl, secOf, tplEdit);
-      doc.addEventListener('click', (ev) => { const v = secOf(ev.target); if (v) tplOpen(v.id, true); });
+      attachPreviewPick(doc, tplEl, secOf, tplEdit, tplUpdate, (v) => { const f = tplEl.querySelector(`[data-vid="${v.id}"] [data-hed-form]`); if (f) f.innerHTML = heroForm(v, tplEdit(v)); });
+      doc.addEventListener('click', (ev) => { if (doc.__focusDragged && Date.now() - doc.__focusDragged < 400) return; const v = secOf(ev.target); if (v) tplOpen(v.id, true); });
     } catch (err) {}
   }, { zoomable: true });
   const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
