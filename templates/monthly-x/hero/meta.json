@@ -1,17 +1,19 @@
 {
-  "id": "hero-monthly-x",
-  "section": "hero",
-  "layout": "monthly-x",
-  "order": 13,
+  "id": "monthly-x-hero",
+  "section": "monthly-x",
+  "layout": "hero",
+  "label": "히어로",
+  "order": 1,
   "when": "월간X 같은 오프라인 행사·해커톤 — 검정 패턴 위 타이틀과 티켓 모양 카드(사진 + 일정·장소)",
+  "uses": [
+    "hero"
+  ],
   "figma": {
     "pc": "580:6029",
     "mo": "580:6030",
     "tb": null
   },
   "body": 980,
-  "editor": true,
-  "thumb": "assets/hero/thumbs/monthly-x.jpg",
   "slots": {
     "logo": {
       "type": "media",
