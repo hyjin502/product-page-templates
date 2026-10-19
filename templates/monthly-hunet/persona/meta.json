@@ -17,9 +17,10 @@
       "palette": "bg",
       "free": true,
       "optional": true,
+      "default": "#f7f7f8",
       "extract": false,
       "label": "배경색",
-      "note": "원하는 색 · 불투명도 · 스포이드 — 기본은 시안(흰 바탕)"
+      "note": "원하는 색 · 불투명도 · 스포이드 — 기본은 회색 bg-page #F7F7F8 (사용자 결정 · Figma 는 흰 바탕)"
     },
     "titleColor": {
       "type": "enum",

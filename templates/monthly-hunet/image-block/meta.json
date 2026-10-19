@@ -1,4 +1,5 @@
 {
+  "sampleVersion": 3,
   "id": "monthly-hunet-image-block",
   "section": "monthly-hunet",
   "layout": "image-block",

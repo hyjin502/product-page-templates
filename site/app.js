@@ -784,6 +784,28 @@ function fixStaleAssets(v, e) {
   const fresh = editFrom(v, v.sample);
   // 나중에 생긴 슬롯(예: 하단 그라데이션 켜기)은 샘플 값으로 채워요 — 없으면 꺼진 것처럼 보여요
   for (const k of Object.keys(v.slots)) if (!(k in e)) e[k] = fresh[k];
+  // meta.sampleVersion — 샘플 기본값을 바꾼 variant(예: 이미지 섹션에 서브타이틀·버튼 기본)는 예전 편집 값의 빈 칸을 한 번만 새 기본값으로 채워요.
+  // 그 뒤에 사용자가 지운 칸은 그대로 둬요 (@sv 로 기록)
+  if (v.sampleVersion && (e['@sv'] || 1) < v.sampleVersion) {
+    const isEmpty = (x) => x == null || x === '' || (Array.isArray(x) && x.every((l) => typeof l === 'string' ? !l.trim() : false) ) || (Array.isArray(x) && !x.length);
+    for (const k of Object.keys(v.slots)) if (isEmpty(e[k]) && !isEmpty(fresh[k])) e[k] = JSON.parse(JSON.stringify(fresh[k]));
+    // meta.formerImages — 예전 샘플 사진을 그대로 쓰던 목록 항목 사진은 새 샘플 사진으로 (직접 바꾼 사진은 그대로)
+    const former = new Set(v.formerImages || []);
+    if (former.size) for (const [k, raw] of Object.entries(v.slots)) {
+      const sp = RC.specOf(raw);
+      if (sp.type !== 'list' || !Array.isArray(e[k]) || !Array.isArray(fresh[k])) continue;
+      e[k].forEach((it, i) => {
+        const nu = fresh[k][i];
+        if (!nu) return;
+        for (const [kk, val] of Object.entries(it || {})) {
+          if (val && typeof val === 'object' && former.has(val.src) && nu[kk]) it[kk] = JSON.parse(JSON.stringify(nu[kk]));
+          else if (typeof val === 'string' && (v.formerTexts || []).includes(val.trim()) && nu[kk]) it[kk] = nu[kk]; // 예전 자리 문구(예: 이름 직급)
+          else if ((val == null || val === '') && typeof nu[kk] === 'string' && nu[kk]) it[kk] = nu[kk]; // 새로 생긴 기본 문구
+        }
+      });
+    }
+    e['@sv'] = v.sampleVersion;
+  }
   const base = e['@base'];
   const next = {};
   for (const [k, raw] of Object.entries(v.slots)) {
@@ -978,9 +1000,14 @@ function colorPicker(path, cur, label) {
 function colorField(k, s, cur) {
   if (s.free) {
     const base = s.optional && s.default == null;
+    if (!cur && s.default != null) cur = s.default; // 비어 있으면 기본값이 보이는 색이에요 (예전 편집 값 포함)
     const c = cpHex(cur);
     const now = c ? `<code>#${c.hex.toUpperCase()}${c.a < 100 ? ` · ${c.a}%` : ''}</code>` : base ? '기본 (시안 그대로)' : '';
-    return `<div class="hed-f">${fieldHead(s, s.note)}<div class="cp-head"><span class="hed-sub__label" data-cp-now>${now}</span>${base ? `<button type="button" class="chip" data-f="${k}" data-val="" aria-pressed="${String(!c)}">기본</button>` : ''}</div>${colorPicker({ 'data-f': k }, cur, s.label)}</div>`;
+    // 「기본」 — 기본값이 없으면 비우기(시안 그대로), 있으면 그 색으로 (예: 추천 대상 #F7F7F8)
+    const defC = s.default != null ? cpHex(s.default) : null;
+    const chip = base ? `<button type="button" class="chip" data-f="${k}" data-val="" aria-pressed="${String(!c)}">기본</button>`
+      : defC ? `<button type="button" class="chip" data-f="${k}" data-val="${esc(s.default)}" aria-pressed="${String(!!c && c.hex === defC.hex && c.a === defC.a)}" title="#${defC.hex.toUpperCase()}">기본</button>` : '';
+    return `<div class="hed-f">${fieldHead(s, s.note)}<div class="cp-head"><span class="hed-sub__label" data-cp-now>${now}</span>${chip}</div>${colorPicker({ 'data-f': k }, cur, s.label)}</div>`;
   }
   const list = paletteList(s.palette);
   const c = s.palette ? list.find((x) => x.key === cur) : HDS_COLOR[cur];

@@ -8,11 +8,11 @@
       "subtitle": "AX시대 L&D변화부터 핵심 아젠다·콘텐츠까지",
       "desc": "2027년 기업교육은 무엇이 달라지고, 우리 직원에게는 어떤 역량과 교육이 필요할까요?\nL&D 핵심 변화와 교육 아젠다를 짚어보고,\nAI·AX, 리더십, 직무·비즈니스 등 교육계획에 꼭 필요한 핵심 콘텐츠와 APL 솔루션을 제안합니다.",
       "image": {
-        "src": "assets/monthly-hunet/agenda-1.png",
-        "alt": ""
+        "src": "assets/profiles/p01.jpg",
+        "alt": "조영탁 사장"
       },
       "org": "회사명 팀명",
-      "name": "이름 직급"
+      "name": "조영탁 사장"
     },
     {
       "label": "Session 2.",
@@ -21,20 +21,21 @@
       "subtitle": "인재키움훈련·법정교육부터 AI 학습 플랫폼까지",
       "desc": "교육계획의 완성은 ‘실행’에 있습니다.정부지원제도로 교육비 부담을 낮추는 방법부터 매년 챙겨야 할 법정·필수교육, 그리고 콘텐츠·교육 설계·운영·개인별 학습 경험을 하나로 연결하는 LABS까지 소개합니다.2027년 교육계획을 우리 조직에 어떻게 적용하고 운영할지, 실행의 방법을 확인해보세요.",
       "image": {
-        "src": "assets/monthly-hunet/agenda-2.png",
-        "alt": ""
+        "src": "assets/profiles/p02.jpg",
+        "alt": "임선예 팀장"
       },
       "org": "회사명 팀명",
-      "name": "이름 직급"
+      "name": "임선예 팀장"
     },
     {
       "label": "Session 3.",
       "time": "15:20 ~ 15:30 (10분)",
       "heading": "2027 교육계획 및 휴넷 교육·솔루션 관련 실시간 질의응답",
       "image": {
-        "src": "assets/monthly-hunet/agenda-3.png",
-        "alt": ""
-      }
+        "src": "assets/profiles/p03.jpg",
+        "alt": "홍정민 소장"
+      },
+      "name": "홍정민 소장"
     }
   ]
 }

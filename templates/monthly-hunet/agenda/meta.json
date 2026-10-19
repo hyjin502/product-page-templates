@@ -1,4 +1,13 @@
 {
+  "sampleVersion": 3,
+  "formerImages": [
+    "assets/monthly-hunet/agenda-1.png",
+    "assets/monthly-hunet/agenda-2.png",
+    "assets/monthly-hunet/agenda-3.png"
+  ],
+  "formerTexts": [
+    "이름 직급"
+  ],
   "id": "monthly-hunet-agenda",
   "section": "monthly-hunet",
   "layout": "agenda",

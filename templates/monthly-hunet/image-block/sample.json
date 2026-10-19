@@ -1,1 +1,24 @@
-{}
+{
+  "title": "타이틀을 입력하세요",
+  "subtitle": "서브타이틀을 입력하세요",
+  "width": "body",
+  "space": "none",
+  "ctas": [
+    {
+      "label": "버튼 문구",
+      "href": "#",
+      "style": "fill",
+      "color": "blue/700",
+      "radius": "md",
+      "icon": "none"
+    },
+    {
+      "label": "버튼 문구",
+      "href": "#",
+      "style": "outline",
+      "color": "blue/700",
+      "radius": "md",
+      "icon": "none"
+    }
+  ]
+}
