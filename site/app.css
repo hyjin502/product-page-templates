@@ -826,3 +826,6 @@ body.is-dev .flink__label::after { content: none; }
 .hed-focus__row { display: grid; grid-template-columns: 52px minmax(0, 1fr) 40px auto; align-items: center; gap: 8px; font-size: 12px; }
 .hed-focus__row input[type="range"] { width: 100%; accent-color: var(--accent); }
 .hed-focus__z { font: 11px var(--font-mono); color: var(--ink-3); text-align: right; }
+/* 하단 고정 바 미리보기 (페이지 템플릿 편집기) — 바깥 문서에 fixed 로 띄워 스크롤해도 끊기지 않아요 */
+.tpl-dock { position: fixed; z-index: 4; overflow: hidden; pointer-events: none; }
+.tpl-dock iframe { display: block; border: 0; transform-origin: 0 0; background: transparent; pointer-events: auto; }

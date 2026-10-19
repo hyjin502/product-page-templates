@@ -1756,6 +1756,63 @@ function tplExtraBlock(t, r) {
 </section>`;
 }
 const redrawTplList = (t) => { const box = tplEl.querySelector('.tpl-secs'); if (box) box.innerHTML = tplRows(t).map((r) => tplBlock(t, r)).join(''); };
+/* 하단 고정 바 미리보기 — 편집기 iframe 은 페이지 전체 높이로 그려서 position: sticky 가 끝에만 보여요.
+   그래서 하단 고정 바(stage: "sticky")는 본문 iframe 에서 빼고, 바깥 문서에 position: fixed 로 띄운 작은 iframe(.tpl-dock)에 그려요.
+   미리보기가 화면 아래까지 이어지는 동안은 위치가 바뀌지 않아서 스크롤해도 끊기지 않아요(실제 페이지처럼).
+   배율 · 창 크기 · 미리보기 끝(페이지 끝에서는 미리보기 아래 끝에 붙어요)은 그때만 다시 맞춰요 */
+function stickyDock(frame, mainIframe, html, css, js, onClick) {
+  const dock = document.createElement('div');
+  dock.className = 'tpl-dock';
+  dock.innerHTML = '<iframe title="하단 고정 바 미리보기" scrolling="no"></iframe>';
+  document.body.appendChild(dock);
+  const ifr = dock.querySelector('iframe');
+  ifr.srcdoc = srcdoc(html, css + '\nhtml,body{background:transparent!important;margin:0;overflow:hidden}.mh-sticky,.sticky-cta{position:static!important}', js, null);
+  let barH = 0;
+  const place = () => {
+    if (!frame.isConnected) { off(); return; }
+    const w = DEVICE_W[state.device];
+    const s = (mainIframe.getBoundingClientRect().width / (mainIframe.offsetWidth || w)) || 1;
+    const r = frame.getBoundingClientRect();
+    let bottom = window.innerHeight;
+    for (let el = frame.parentElement; el; el = el.parentElement) {
+      const o = getComputedStyle(el);
+      if (/(auto|scroll|hidden|clip)/.test(o.overflowY)) bottom = Math.min(bottom, el.getBoundingClientRect().bottom);
+    }
+    bottom = Math.min(bottom, r.bottom); // 페이지 끝까지 내리면 미리보기 아래 끝에 붙어요
+    const h = Math.round(barH * s);
+    const hidden = !barH || frame.offsetParent === null || bottom - h < Math.max(r.top, 0) - 1;
+    dock.style.visibility = hidden ? 'hidden' : ''; // display:none 이면 안쪽 iframe 이 그려지지 않아 높이를 못 재요
+    ifr.style.width = w + 'px';
+    ifr.style.height = barH + 'px';
+    ifr.style.transform = `scale(${s})`;
+    Object.assign(dock.style, { left: r.left + 'px', top: (bottom - h) + 'px', width: r.width + 'px', height: h + 'px' });
+  };
+  let raf = 0;
+  const soon = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; place(); }); };
+  ifr.addEventListener('load', () => {
+    try {
+      const d = ifr.contentDocument;
+      // 바 높이 = 바 요소의 높이 (body 는 overflow:hidden 이라 scrollHeight 가 0 이에요)
+      const measure = () => { const el = d.querySelector('.mh-sticky, .sticky-cta') || d.body.firstElementChild; barH = el ? Math.ceil(el.getBoundingClientRect().height) : 0; };
+      measure();
+      new ResizeObserver(() => { measure(); soon(); }).observe(d.documentElement);
+      d.addEventListener('click', (ev) => { ev.preventDefault(); onClick && onClick(); });
+    } catch (err) {}
+    place();
+  });
+  const ro = new ResizeObserver(soon);
+  ro.observe(frame);
+  window.addEventListener('scroll', soon, true);
+  window.addEventListener('resize', soon);
+  function off() { window.removeEventListener('scroll', soon, true); window.removeEventListener('resize', soon); ro.disconnect(); dock.remove(); }
+  return {
+    off,
+    place: soon,
+    /** 편집 값이 바뀌면 바 내용만 다시 그려요 */
+    set(newHtml) { try { const d = ifr.contentDocument; const b = d.body; const g = b.querySelector('.__guide'); b.innerHTML = newHtml; if (g) b.appendChild(g); const el = d.querySelector('.mh-sticky, .sticky-cta'); if (el) barH = Math.ceil(el.getBoundingClientRect().height); } catch (err) {} soon(); },
+  };
+}
+let tplSticky = null;
 let tplFit = null;
 let tplLoaded = false;
 function renderTpl() {
@@ -1802,8 +1859,13 @@ function renderTpl() {
   }, { zoomable: true });
   const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
   const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+  // 하단 고정 바는 본문에서 빼고 화면 아래에 띄운 작은 미리보기로 (stickyDock)
+  const bars = vs.filter((v) => v.stage === 'sticky');
+  const body = vs.filter((v) => v.stage !== 'sticky');
+  if (tplSticky) { tplSticky.off(); tplSticky = null; }
   Promise.all(vs.flatMap((v) => mediaKeys(tplEdit(v))).map(loadBlob)).then(() => {
-    iframe.srcdoc = srcdoc(vs.map(tplSecHtml).join('\n'), css, js, null);
+    iframe.srcdoc = srcdoc(body.map(tplSecHtml).join('\n'), css, js, null);
+    if (bars.length) tplSticky = stickyDock(tplEl.querySelector('.v__frame'), iframe, bars.map(tplSecHtml).join('\n'), css, js, () => tplOpen(bars[0].id, true));
   });
 }
 /** 섹션 입력칸 펴기·접기 (scroll = 펴고 그 칸으로 이동) */
@@ -1828,6 +1890,7 @@ function tplUpdate(v) {
     const iframe = tplEl.querySelector('iframe');
     let doc = null;
     try { doc = iframe.contentDocument; } catch (err) {}
+    if (v.stage === 'sticky') { if (tplSticky) tplSticky.set(tplSecHtml(v)); return; } // 하단 고정 바는 띄운 미리보기에서
     const cur = tplLoaded && doc && doc.querySelector(`[data-tpl-sec="${v.id}"]`);
     if (!cur) return;
     // 바뀐 자식만 바꿔요 (배경 영상이 계속 재생돼요)
@@ -1838,6 +1901,7 @@ function tplUpdate(v) {
     const shell = (el) => el.cloneNode(false).outerHTML;
     if (shell(cur) !== shell(next) || cur.children.length !== next.children.length) cur.replaceWith(next);
     else [...next.children].forEach((n, i) => { const c = cur.children[i]; if (c.outerHTML !== n.outerHTML) c.replaceWith(n); });
+    tplSticky && tplSticky.place();
   }, 100);
 }
 function tplPage(key) {
@@ -2015,6 +2079,7 @@ function applyGlobal() {
   composeEl.hidden = state.mode !== 'compose';
   heroEl.hidden = state.mode !== 'hero';
   tplEl.hidden = !tplKey();
+  if (!tplKey() && tplSticky) { tplSticky.off(); tplSticky = null; } // 다른 화면으로 가면 띄운 하단 바를 치워요
   const top = document.getElementById('top');
   document.documentElement.style.setProperty('--top-h', top.offsetHeight + 'px');
 }
