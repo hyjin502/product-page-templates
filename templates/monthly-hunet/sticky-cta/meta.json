@@ -39,6 +39,14 @@
       "maxChars": 6,
       "optional": true
     },
+    "ddayMo": {
+      "type": "text",
+      "extract": false,
+      "label": "MO 남은 날 칸",
+      "maxChars": 8,
+      "optional": true,
+      "note": "MO 는 버튼 왼쪽 회색 칸 하나 (예: D-2) · 비우면 PC 「남은 날」"
+    },
     "after": {
       "type": "text",
       "extract": false,

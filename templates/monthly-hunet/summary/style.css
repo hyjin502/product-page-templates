@@ -4,3 +4,13 @@
 .mh-summary__title { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.4; }
 .mh-summary__text { display: flex; flex-direction: column; gap: 16px; font-size: 18px; line-height: 1.6; color: var(--t-60); }
 .mh-summary__text p { margin: 0; }
+
+/* TB — 코드 기본값(제안값) */
+@media (min-width: 768px) and (max-width: 1279px) { .mh-summary { padding: 56px var(--container-pad) 96px; } }
+/* MO — Figma 600:7665 · 위 40 · 아래 80 · 제목 20 · 문단 16 · 사이 12 · 제목↔문단 24 */
+@media (max-width: 767px) {
+  .mh-summary { padding: 40px 16px 80px; }
+  .mh-summary__body { gap: 24px; }
+  .mh-summary__title { font-size: 20px; }
+  .mh-summary__text { gap: 12px; font-size: 16px; letter-spacing: var(--tracking-tight); }
+}

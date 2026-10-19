@@ -10,14 +10,14 @@
     "mo": null,
     "tb": null
   },
-  "body": 980,
+  "body": 860,
   "slots": {
     "image": {
       "type": "media",
       "optional": true,
       "extract": false,
       "label": "이미지",
-      "hint": "PC 는 1920 폭(또는 본문 폭) 이미지 · MO 는 375 폭 · MO 를 비우면 PC 것을 써요 · 미리보기를 클릭해도 바꿀 수 있어요"
+      "hint": "PC 는 본문 폭 860(또는 화면 가득 1920) 이미지 · MO 는 375 폭 · MO 를 비우면 PC 것을 써요 · 미리보기를 클릭해도 바꿀 수 있어요"
     },
     "alt": {
       "type": "text",
@@ -37,16 +37,17 @@
     "width": {
       "type": "enum",
       "values": [
-        "full",
-        "body"
+        "body",
+        "full"
       ],
       "labels": {
-        "full": "화면 가득",
-        "body": "본문 폭(980)"
+        "body": "본문 폭(860)",
+        "full": "화면 가득"
       },
-      "default": "full",
+      "default": "body",
       "extract": false,
-      "label": "폭"
+      "label": "폭",
+      "note": "기본은 본문 폭 860 (사용자 결정)"
     },
     "space": {
       "type": "enum",
@@ -70,7 +71,7 @@
       "optional": true,
       "extract": false,
       "label": "배경색",
-      "note": "본문 폭·여백이 있을 때 이미지 바깥 색 · 기본은 흰 바탕"
+      "note": "이미지 바깥(양옆·위아래) 색 · 기본은 흰 바탕"
     }
   }
 }

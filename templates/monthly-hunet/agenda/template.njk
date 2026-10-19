@@ -3,13 +3,20 @@
 {% for s in sessions %}
 {% set short = not s.subtitle and not s.desc %}
   <article class="mh-agenda__session{% if short %} mh-agenda__session--short{% endif %}">
+{% if s.label or s.time %}
+    <div class="mh-agenda__top">
 {% if s.label %}
-    <p class="mh-agenda__label"{% if labelColor %} style="color: {{ labelColor | hdsColor }}"{% endif %}>{{ s.label }}</p>
+      <p class="mh-agenda__label"{% if labelColor %} style="color: {{ labelColor | hdsColor }}"{% endif %}>{{ s.label }}</p>
+{% endif %}
+{% if s.time %}
+      <p class="mh-agenda__time only-mo">{{ s.time }}</p>
+{% endif %}
+    </div>
 {% endif %}
     <div class="mh-agenda__row">
       <div class="mh-agenda__text">
 {% if s.time %}
-        <p class="mh-agenda__time">{{ s.time }}</p>
+        <p class="mh-agenda__time only-pc">{{ s.time }}</p>
 {% endif %}
 {% if s.heading or s.subtitle %}
         <div class="mh-agenda__heads">

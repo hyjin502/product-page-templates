@@ -1244,7 +1244,9 @@ function attachPreviewPick(doc, el = heroEl, variantAt = () => byId[heroState().
   doc.__hedPick = true;
   const st = doc.createElement('style');
   // 목록 항목 이미지(월간휴넷 카드 사진 등)는 템플릿이 감싼 요소에 data-pick-item="목록:번호:필드" 를 붙여요
-  st.textContent = [...Object.values(PICK_AREAS), '[data-pick-item]'].map((sel) => `${sel}{position:relative;cursor:pointer}${sel}:hover{outline:3px dashed #3a50c9;outline-offset:-3px}${sel}:hover::before{content:"클릭해서 이미지·영상 바꾸기";position:absolute;top:16px;left:50%;right:auto;bottom:auto;width:auto;height:auto;transform:translateX(-50%);z-index:5;padding:6px 12px;border-radius:6px;background:#3a50c9;color:#fff;font:600 14px/1.4 system-ui,sans-serif;white-space:nowrap;pointer-events:none}`).join('')
+  // 선택자에 쉼표(여러 개)가 있으면 하나씩 나눠서 규칙을 만들어요 — 묶은 채로 쓰면 :hover::before 가 마지막 선택자에만 붙고
+  // 앞 선택자(.mh-image__pic)에는 말풍선 스타일(absolute · 파란 바탕)이 그대로 붙어 이미지가 페이지 위로 떠요
+  st.textContent = [...Object.values(PICK_AREAS).flatMap((x) => x.split(',').map((y) => y.trim())), '[data-pick-item]'].map((sel) => `${sel}{position:relative;cursor:pointer}${sel}:hover{outline:3px dashed #3a50c9;outline-offset:-3px}${sel}:hover::before{content:"클릭해서 이미지·영상 바꾸기";position:absolute;top:16px;left:50%;right:auto;bottom:auto;width:auto;height:auto;transform:translateX(-50%);z-index:5;padding:6px 12px;border-radius:6px;background:#3a50c9;color:#fff;font:600 14px/1.4 system-ui,sans-serif;white-space:nowrap;pointer-events:none}`).join('')
     + '[data-pick-item]:hover::before{content:"클릭해서 바꾸기";top:8px;padding:4px 8px;font-size:12px}'; // 작은 사진(아바타 72)에도 맞게
   doc.head.appendChild(st);
   doc.addEventListener('click', (ev) => {

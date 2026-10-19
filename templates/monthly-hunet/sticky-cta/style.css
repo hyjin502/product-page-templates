@@ -12,3 +12,18 @@
 .mh-sticky__btn { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 20px; border-radius: 8px; background: var(--bg-faint); color: var(--t-100);
   font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; }
 .mh-sticky__btn--dark { min-width: 111px; background: var(--gray-1600); color: var(--static-white); }
+
+/* MO — Figma 633:3339 · 화면 폭 흰 판(위 둥근 8 · 위로 그림자) · 위 문구 2줄 · 아래 회색 칸(남은 날) + 빨간 버튼 하나(마지막 버튼)
+   PC 의 첫 번째 버튼은 MO 에서 숨겨요(Figma MO 는 버튼 하나) */
+.mh-sticky__dmo { margin: 0; }
+@media (max-width: 767px) {
+  .mh-sticky { padding: 0; }
+  .mh-sticky__bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 16px; border-radius: 8px 8px 0 0; box-shadow: 0 -6px 9px rgba(0, 0, 0, 0.08); }
+  .mh-sticky__title { white-space: normal; overflow: visible; }
+  .mh-sticky__right { gap: 8px; }
+  .mh-sticky__dmo { flex: none; width: 100px; height: 48px; display: grid; place-items: center; border-radius: 4px; background: var(--bg-ghost);
+    color: var(--error); font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .mh-sticky__btns { flex: 1; }
+  .mh-sticky__btn:not(:last-child) { display: none; }
+  .mh-sticky__btn--dark { flex: 1; border-radius: 4px; background: var(--error); }
+}

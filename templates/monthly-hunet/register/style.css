@@ -24,3 +24,12 @@
 .mh-register__agree input:checked { border-color: #212529; background: #212529 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.2 6.7 11 12 5.5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat; }
 .mh-register__agree a { font-size: 14px; color: var(--t-60); text-decoration: underline; }
 .mh-register__btns { display: flex; gap: 8px; }
+
+/* TB — 2열 입력칸이 좁아지면 입력칸 폭이 따라 줄어요(제안값) */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .mh-register { padding-top: 96px; }
+  .mh-register__fields { grid-template-columns: repeat(2, minmax(0, 400px)); column-gap: 24px; }
+  .mh-register__field input { flex: 1; width: auto; min-width: 0; }
+}
+/* MO — 신청서는 모바일에서 보이지 않아요 (사용자 결정 2026-10-19 · Figma MO 시안 없음) */
+@media (max-width: 767px) { .mh-register { display: none; } }

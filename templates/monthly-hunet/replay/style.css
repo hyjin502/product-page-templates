@@ -12,3 +12,18 @@
 .mh-replay__title { font-size: 18px; font-weight: 700; line-height: 28px; }
 .mh-replay__desc { font-size: 16px; line-height: 25px; color: var(--t-80); }
 .mh-replay__date { margin-top: 4px; font-size: 14px; line-height: 22px; color: var(--t-60); } /* 글 묶음↔기간 8 */
+
+@media (min-width: 768px) and (max-width: 1279px) { .mh-replay { padding: 96px var(--container-pad); } .mh-replay__list { grid-template-columns: repeat(2, minmax(0, 410px)); column-gap: 24px; } }
+/* MO — Figma 633:3314 · 위아래 40 · 제목 24/34 · 2열(167 · 사이 9 · 줄 사이 30) · 썸네일 둥근 6 · 제목 14/22 · 설명 12 · 기간 12/18 */
+@media (max-width: 767px) {
+  .mh-replay { gap: 29px; padding: 40px 16px; }
+  .mh-replay .mh-h { font-size: 24px; line-height: 34px; letter-spacing: -0.2px; }
+  .mh-replay__lead { line-height: 25px; letter-spacing: -0.2px; }
+  .mh-replay__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 9px; }
+  .mh-replay__item { gap: 16px; }
+  .mh-replay__thumb, .mh-replay__thumb img { border-radius: 6px; }
+  .mh-replay__thumb img { aspect-ratio: 168 / 89; }
+  .mh-replay__title { font-size: 14px; line-height: 22px; }
+  .mh-replay__desc { font-size: 12px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .mh-replay__date { font-size: 12px; line-height: 18px; }
+}

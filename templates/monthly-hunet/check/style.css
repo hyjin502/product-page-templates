@@ -7,3 +7,12 @@
 .mh-check__item svg { flex: none; width: 24px; height: 24px; color: var(--mh-check-icon, var(--error)); } /* 아이콘 색 = iconColor(HDS 700번, 기본 red/700) */
 /* 배경색을 고르면(흰색 말고) 항목은 흰 바탕으로 — 회색 항목이 배경에 묻히지 않게 (제안값) */
 .mh-check--tinted .mh-check__item { background: var(--bg-surface); }
+
+@media (min-width: 768px) and (max-width: 1279px) { .mh-check { padding: 96px var(--container-pad); } .mh-check__body { gap: 48px; } }
+/* MO — Figma 600:7695 · 위아래 72 · 제목 28 · 제목↔목록 48 · 항목 안쪽 16/20 · 글자 16 regular(줄바꿈) */
+@media (max-width: 767px) {
+  .mh-check { padding: 72px 16px; }
+  .mh-check__body { gap: 48px; }
+  .mh-check .mh-h { font-size: 28px; }
+  .mh-check__item { padding: 16px 20px; font-size: 16px; font-weight: 400; }
+}

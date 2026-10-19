@@ -20,3 +20,15 @@
 .mh-persona__name { font-size: 18px; font-weight: 700; }
 /* 배경색을 고르면(흰 바탕 말고) 카드를 흰 바탕으로 (제안값) */
 .mh-persona--tinted .mh-persona__card { background: var(--bg-surface); }
+
+@media (min-width: 768px) and (max-width: 1279px) { .mh-persona { padding: 96px var(--container-pad); } .mh-persona__card { padding: 24px; } }
+/* MO — Figma 600:7911 · 위아래 80 · 제목 28 · 제목↔카드 46 · 2열 · 사이 8 · 카드 안쪽 20 · 아바타 위 · 설명 15 (3열·2열 공통) */
+@media (max-width: 767px) {
+  .mh-persona { padding: 80px 16px; }
+  .mh-persona__body { gap: 46px; }
+  .mh-persona .mh-h { font-size: 28px; }
+  .mh-persona__grid, .mh-persona--2col .mh-persona__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .mh-persona__card { flex-direction: column; align-items: flex-start; padding: 20px; }
+  .mh-persona__desc { font-size: 15px; }
+  .mh-persona__desc br { display: none; } /* 카드가 좁아서 PC 줄바꿈 대신 자연스럽게 감싸요 (Figma MO 는 줄바꿈 위치가 PC 와 달라요) */
+}

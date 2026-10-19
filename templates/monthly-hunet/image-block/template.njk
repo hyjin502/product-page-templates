@@ -1,6 +1,6 @@
 {% set pc = image.pc if image else null %}{% set mo = image.mo if image else null %}{% set m = pc or mo %}
 {% set bg = bgColor | hdsBg %}
-<section class="mh-image mh-image--{{ width or 'full' }}{% if space == 'section' %} mh-image--space{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
+<section class="mh-image mh-image--{{ width or 'body' }}{% if space == 'section' %} mh-image--space{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
 {% if m and m.src %}
 {% if href %}<a class="mh-image__link" href="{{ href }}">{% endif %}
 {% if m.kind == 'video' %}

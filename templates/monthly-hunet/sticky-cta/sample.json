@@ -4,6 +4,7 @@
   "before": "마감까지",
   "count": "10일",
   "after": "남음",
+  "ddayMo": "D-2",
   "ctas": [
     {
       "label": "기업교육문의",
