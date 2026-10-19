@@ -1,2 +1,3 @@
-/* PC — Figma 629:2900 · 3열 카드(persona)와 같고 2열만 달라요 (공통 모양은 _shared.css) */
+/* PC — Figma 629:2900 · 3열 카드(persona)와 같고 2열 · 본문 860 만 달라요 (공통 모양은 _shared.css) */
 .mh-persona--2col .mh-persona__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mh-persona--2col .mh-persona__body { width: var(--body, 860px); } /* 본문 860 (사용자 요청 2026-10-19 — Figma 는 980) */

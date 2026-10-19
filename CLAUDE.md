@@ -153,7 +153,7 @@ scripts/                                build · validate · preview · shot · 
 - 빌드: `dist/templates/<key>/index.html`(샘플로 조립) · 결과 확인 `npm run shot -- templates/monthly-hunet`.
 - 편집기: `site/app.js` 「페이지 템플릿 편집기」 — 섹션마다 펼침 폼(히어로 편집기와 같은 `heroForm` · `bindEditorForm`), 미리보기는 전체 페이지(섹션 루트에 `data-tpl-sec`, 바뀐 섹션만 다시 그림). 저장 `state.tpl[key].edits[variant]`. 내보내는 파일 이름 앞에는 layout(`hero-bg-pc.jpg`). 줄 넘김 경고(`MEASURE`)는 아직 히어로 편집기만.
 - 문구는 전부 슬롯으로 만든다(템플릿에 하드코딩 문구 0개 — 전체 편집이 목적). pager 섹션은 아직 편집기 미리보기에 `--per-*` 를 붙이지 않는다(필요하면 `withPager`).
-- 섹션(PC, 2026-10-19): hero(599:7320) · summary(600:7654) · check(600:7667) · persona(600:7912, 3열) · persona-2col(629:2900, 2열 — persona 템플릿을 include 하고 `cols = 2`, 카드 CSS 는 `_shared.css`) · agenda(600:7963) · register(624:8146) · benefits(624:8208) · replay(624:10250) · sticky-cta(624:10289). 클래스는 `mh-<layout>__*`, 공통(`_shared.css`)은 섹션 제목 `.mh-h` · 알약 버튼 `.mh-btn`. MO·TB 규칙은 아직 없다(다음 작업).
+- 섹션(PC, 2026-10-19): hero(599:7320) · summary(600:7654) · check(600:7667) · persona(600:7912, 3열) · persona-2col(629:2900, 2열 · 본문 860(사용자 요청, Figma 는 980) — persona 템플릿을 include 하고 `cols = 2`, 카드 CSS 는 `_shared.css`) · agenda(600:7963) · register(624:8146) · benefits(624:8208) · replay(624:10250) · sticky-cta(624:10289). 클래스는 `mh-<layout>__*`, 공통(`_shared.css`)은 섹션 제목 `.mh-h` · 알약 버튼 `.mh-btn`. MO·TB 규칙은 아직 없다(다음 작업).
   - 이미지(`assets/monthly-hunet/`)는 Figma 렌더 1배(아바타 144 · 연사 150 · 썸네일 410)라 2배 원본이 오면 바꾼다. 혜택 이미지는 회색 칸(#e9ecef, Figma 값) 가운데에 놓는다(Figma 는 약간 왼쪽).
   - 굵은 일부 문구(신청서·혜택 설명 뒤)는 `highlight` 슬롯으로 따로 받는다(richtext 에 굵게 표기가 없어서).
   - 텍스트 매핑(figmaLayer)은 아직 없다 → Figma 플러그인으로 보내면 문구가 샘플 그대로다.
