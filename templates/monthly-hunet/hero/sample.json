@@ -18,6 +18,7 @@
       "src": "assets/hero/monthly-hunet-visual.jpg"
     }
   },
+  "visualShade": true,
   "date": {
     "pc": "2026. 12. 31. (화) 오후 2시",
     "mo": "2026. 12. 31. (목) 오후 2시"

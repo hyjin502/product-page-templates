@@ -16,13 +16,14 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 const state = { mode: 'library', view: 'designer', device: 'pc', cat: 'hero', open: null, compose: null, hero: null, wide: false };
 try {
   const s = JSON.parse(localStorage.getItem('tpl-site') || '{}');
-  if (['library', 'compose', 'hero'].includes(s.mode)) state.mode = s.mode;
+  if (['library', 'compose', 'hero'].includes(s.mode) || (String(s.mode).startsWith('tpl:') && (REG.templates || []).some((t) => 'tpl:' + t.key === s.mode))) state.mode = s.mode;
   if (['designer', 'dev'].includes(s.view)) state.view = s.view;
   if (DEVICE_W[s.device]) state.device = s.device;
   if (secByKey[s.cat]) state.cat = s.cat;
   if (Array.isArray(s.open)) state.open = s.open.filter((k) => secByKey[k]);
   if (s.compose && Array.isArray(s.compose.rows)) state.compose = s.compose;
   if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
+  if (s.tpl && typeof s.tpl === 'object') state.tpl = s.tpl;
   if (Number.isFinite(s.panelW)) state.panelW = s.panelW;
   if (s.zoom === 'fit' || [0.25, 0.5, 0.75, 1].includes(s.zoom)) state.zoom = s.zoom;
 } catch (e) {}
@@ -45,12 +46,12 @@ const zoomBar = () => `<div class="zoom" role="group" aria-label="미리보기 �
 const clampPanel = (w) => Math.round(Math.max(PANEL_W.min, Math.min(w, window.innerWidth - PANEL_W.previewMin)));
 function syncPanel() {
   const w = clampPanel(state.panelW || PANEL_W.def);
-  [composeEl, heroEl].forEach((el) => el.style.setProperty('--panel-w', w + 'px'));
+  [composeEl, heroEl, tplEl].forEach((el) => el.style.setProperty('--panel-w', w + 'px'));
   document.querySelectorAll('[data-split]').forEach((h) => { h.setAttribute('aria-valuenow', String(w)); h.setAttribute('aria-valuemin', String(PANEL_W.min)); h.setAttribute('aria-valuemax', String(clampPanel(9999))); });
 }
 function syncZoom() {
   document.querySelectorAll('[data-zoom]').forEach((b) => b.setAttribute('aria-pressed', String(String(state.zoom || 'fit') === b.dataset.zoom)));
-  composeFit && composeFit(); heroFit && heroFit();
+  composeFit && composeFit(); heroFit && heroFit(); tplFit && tplFit();
 }
 
 /* 조합기 variant 썸네일 — hero 는 Figma 렌더(meta.thumb), 나머지는 샘플을 1920 폭으로 그려 가운데 1280(본문)만 줄여 보여 줘요(항상 지금 코드 그대로).
@@ -482,7 +483,10 @@ function rowSrcControls(r) {
 /** 편집 값 안의 올린 파일 키 */
 function mediaKeys(e) {
   const keys = [];
-  for (const m of Object.values(e || {})) if (m && typeof m === 'object' && 'moSame' in m) for (const ref of [m.pc, m.mo]) if (ref && ref.file) keys.push(ref.file);
+  for (const m of Object.values(e || {})) {
+    if (Array.isArray(m)) { for (const it of m) for (const x of Object.values(it || {})) if (x && typeof x === 'object' && x.file) keys.push(x.file); } // 목록 항목 이미지
+    else if (m && typeof m === 'object' && 'moSame' in m) for (const ref of [m.pc, m.mo]) if (ref && ref.file) keys.push(ref.file);
+  }
   return keys;
 }
 function rowPager(r) {
@@ -553,13 +557,13 @@ function figmaHelp() {
 }
 
 /** Figma 플러그인용 — page.json + 히어로 편집기에서 올린 파일(data URL). 저장소 이미지는 플러그인이 GitHub 원본 주소에서 받아요 */
-async function figmaBundle(page = JSON.parse(pageJson()), editorRows = state.compose.rows.map((r, i) => (rowUsesEditor(r) ? { i, variant: r.variant } : null)).filter(Boolean)) {
+async function figmaBundle(page = JSON.parse(pageJson()), editorRows = state.compose.rows.map((r, i) => (rowUsesEditor(r) ? { i, variant: r.variant } : null)).filter(Boolean), editOf = heroEditOf, preOf = () => 'hero') {
   const out = {};
   const toDataUrl = (blob) => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(blob); });
   for (const { i, variant } of editorRows) {
     const r = { variant };
     const v = byId[r.variant];
-    const e = heroEditOf(r.variant);
+    const e = editOf(r.variant);
     const content = page.sections[i].content;
     for (const [k, raw] of Object.entries(v.slots)) {
       if (RC.specOf(raw).type !== 'media' || !e[k]) continue;
@@ -569,12 +573,21 @@ async function figmaBundle(page = JSON.parse(pageJson()), editorRows = state.com
         await loadBlob(ref.file);
         if (!files[ref.file]) continue;
         // 같은 이름(hero-bg-pc.jpg)이 hero 여러 행에서 겹치지 않게 variant 를 앞에 붙여요
-        const name = exportName(k, dev, ref);
+        const name = exportName(k, dev, ref, preOf(v));
         const key = `upload/${r.variant}/${name}`;
         out[key] = await toDataUrl(files[ref.file]);
         const m = content[k] && content[k][dev];
         if (m && m.src === name) m.src = key;
       }
+    }
+    // 목록 항목 이미지 (월간휴넷 카드 사진 등)
+    for (const { k, i, kk, ref } of listUploads(v, e)) {
+      await loadBlob(ref.file);
+      if (!files[ref.file]) continue;
+      const name = itemImageName(preOf(v), k, i, kk, ref);
+      const key = `upload/${r.variant}/${name}`;
+      out[key] = await toDataUrl(files[ref.file]);
+      for (const it of content[k] || []) if (it[kk] && it[kk].src === name) it[kk].src = key;
     }
   }
   return JSON.stringify({ format: 'tpl-figma/1', ...page, files: out }) + '\n';
@@ -710,6 +723,8 @@ const EDITORS = REG.variants.filter((v) => v.editor);
 const RC = window.RenderCore;
 const HDS_COLOR = Object.fromEntries(REG.hds.colors.map((c) => [c.key, c]));
 for (const [old, k] of Object.entries(REG.hds.aliases || {})) if (HDS_COLOR[k]) HDS_COLOR[old] = HDS_COLOR[k]; // 예전 키 → 새 키
+/** 색 팔레트 — 슬롯 palette: text(글자) · line(선) · bg(섹션 배경) · 700(원색 700번 13색) · 없으면 버튼 색 */
+const paletteList = (p) => (p === 'text' ? REG.hds.text : p === 'line' ? REG.hds.line : p === 'bg' ? REG.hds.bg : p === '700' ? REG.hds.colors.filter((c) => c.key.endsWith('/700')) : REG.hds.colors) || [];
 const HDS_RADIUS = Object.fromEntries(REG.hds.radius.map((r) => [r.key, r]));
 // 줄 넘김을 재는 요소 — hero variant 들이 함께 쓰는 클래스
 const MEASURE = [['eyebrow', '.hero__badge'], ['title', '.hero__title'], ['description', '.hero__desc']];
@@ -764,6 +779,8 @@ function fixStaleAssets(v, e) {
   // 예전 버튼 화살표(arrow: true/false) → 오른쪽 아이콘(icon: chevron-right / none)
   if (Array.isArray(e.ctas)) for (const it of e.ctas) if (it && 'arrow' in it) { if (!it.icon || it.icon === 'none') it.icon = it.arrow === true || it.arrow === 'true' ? 'chevron-right' : 'none'; delete it.arrow; }
   const fresh = editFrom(v, v.sample);
+  // 나중에 생긴 슬롯(예: 하단 그라데이션 켜기)은 샘플 값으로 채워요 — 없으면 꺼진 것처럼 보여요
+  for (const k of Object.keys(v.slots)) if (!(k in e)) e[k] = fresh[k];
   const base = e['@base'];
   const next = {};
   for (const [k, raw] of Object.entries(v.slots)) {
@@ -783,19 +800,31 @@ function fixStaleAssets(v, e) {
   e['@base'] = next;
 }
 const extOf = (ref) => { const m = /\.([a-z0-9]+)$/i.exec(ref.name || ''); return (m ? m[1] : ref.kind === 'video' ? 'mp4' : 'jpg').toLowerCase(); };
-const exportName = (slot, dev, ref) => `hero-${slot === 'background' ? 'bg' : slot}-${dev}.${extOf(ref)}`;
+const exportName = (slot, dev, ref, pre = 'hero') => `${pre}-${slot === 'background' ? 'bg' : slot}-${dev}.${extOf(ref)}`;
 const blobUrls = {};
 /** 미디어 참조 → content 값. 미리보기는 blob: 주소, 내보내기는 page.json 옆에 둘 파일 이름 */
-function mediaOut(ref, slot, dev, forExport) {
+function mediaOut(ref, slot, dev, forExport, pre) {
   if (!ref) return null;
   if (ref.kind === 'css') return ref.preset ? { kind: 'css', preset: ref.preset } : null;
   if (ref.file) {
-    if (forExport) return { kind: ref.kind, src: exportName(slot, dev, ref) };
+    if (forExport) return { kind: ref.kind, src: exportName(slot, dev, ref, pre) };
     return blobUrls[ref.file] ? { kind: ref.kind, src: blobUrls[ref.file] } : null;
   }
   return ref.src ? { kind: ref.kind, src: ref.src } : null;
 }
-function contentFrom(v, e, forExport) {
+/** 목록 항목 이미지의 내보내기 파일 이름 — 예) persona-cards-2.png (항목 필드가 image 가 아니면 이름도 붙여요) */
+const itemImageName = (pre = 'hero', k, i, kk, ref) => `${pre}-${k}-${i + 1}${kk === 'image' ? '' : '-' + kk}.${extOf(ref)}`;
+/** 편집 값 안의 목록 항목 이미지 중 올린 파일 — [{ k, i, kk, ref }] */
+function listUploads(v, e) {
+  const out = [];
+  for (const [k, raw] of Object.entries(v.slots)) {
+    const s = RC.specOf(raw);
+    if (s.type !== 'list' || !Array.isArray(e[k])) continue;
+    e[k].forEach((it, i) => { for (const [kk, ref] of Object.entries(it || {})) if (ref && ref.file && RC.specOf((s.item || {})[kk]).type === 'image') out.push({ k, i, kk, ref }); });
+  }
+  return out;
+}
+function contentFrom(v, e, forExport, pre) {
   const c = {};
   for (const [k, raw] of Object.entries(v.slots)) {
     const s = RC.specOf(raw);
@@ -807,13 +836,20 @@ function contentFrom(v, e, forExport) {
       if (m && m !== t) c[k] = { pc: t, mo: m }; // PC 를 비우고 MO 만 쓰면 PC 에는 안 보여요 (pc: '')
       else if (t) c[k] = t;
     } else if (s.type === 'list') {
-      // 문구가 빈 버튼은 빼요
-      const items = (val || []).filter((it) => !(s.item && s.item.label) || String(it.label || '').trim())
-        .map((it) => Object.fromEntries(Object.entries(it).filter(([, vv]) => vv !== '' && vv != null).map(([kk, vv]) => [kk, typeof vv === 'string' ? vv.trim() : vv])));
+      // 문구가 빈 버튼은 빼요. 항목 이미지는 올린 파일이면 미리보기 blob: 주소 · 내보내기 파일 이름으로
+      const itemOut = (kk, vv, i) => {
+        if (vv && typeof vv === 'object' && vv.file && RC.specOf((s.item || {})[kk]).type === 'image') {
+          const src = forExport ? itemImageName(pre, k, i, kk, vv) : blobUrls[vv.file];
+          return src ? { src, ...(vv.alt ? { alt: vv.alt } : {}) } : null;
+        }
+        return typeof vv === 'string' ? vv.trim() : vv;
+      };
+      const items = (val || []).map((it, i) => [it, i]).filter(([it]) => !(s.item && s.item.label) || String(it.label || '').trim())
+        .map(([it, i]) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, itemOut(kk, vv, i)]).filter(([, vv]) => vv !== '' && vv != null)));
       if (items.length) c[k] = items;
     } else if (s.type === 'media') {
-      const pc = mediaOut(val.pc, k, 'pc', forExport);
-      const mo = val.moSame ? null : mediaOut(val.mo, k, 'mo', forExport);
+      const pc = mediaOut(val.pc, k, 'pc', forExport, pre);
+      const mo = val.moSame ? null : mediaOut(val.mo, k, 'mo', forExport, pre);
       if (pc || mo) c[k] = Object.assign({}, pc ? { pc } : {}, mo ? { mo } : {});
     } else if (s.type === 'toggle') c[k] = !!val;
     else if (String(blank(val)).trim()) c[k] = String(val).trim();
@@ -887,7 +923,7 @@ function linesField(k, s, ls, moLs) {
 function swatches(path, cur, label, palette, opt = {}) {
   if (!palette && REG.hds.aliases && REG.hds.aliases[cur]) cur = REG.hds.aliases[cur]; // 예전 키로 저장된 값
   // palette "text" = HDS typography 글자색(반투명 포함 → 체크무늬 위에 보여요), 없으면 버튼 색
-  const list = palette === 'text' ? REG.hds.text || [] : palette === 'line' ? REG.hds.line || [] : REG.hds.colors;
+  const list = paletteList(palette);
   // 라인처럼 비울 수 있는 색은 맨 앞에 「없음」
   // opt.base = 맨 앞 「기본」(비우면 시안 그대로), opt.noneValue = 맨 뒤 「없음」(그 값으로 빼기)
   const none = palette === 'line' && !opt.base ? `<button type="button" class="hed-sw__b hed-sw__b--none" ${attrs({ ...path, 'data-val': '', title: '없음', 'aria-label': '없음', 'aria-pressed': String(!cur) })}></button>` : '';
@@ -896,8 +932,47 @@ function swatches(path, cur, label, palette, opt = {}) {
   return `<div class="hed-sw${palette === 'text' ? ' hed-sw--text' : ''}" role="group" aria-label="${esc(label)}">${base}${none}${off}${list.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.value || c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
 }
 /** 타이틀·서브 색 같은 최상위 색 슬롯 — 지금 고른 토큰 이름을 함께 보여요 */
+/* ---------- 자유 색 고르기 (color 슬롯 free: true) — Figma 색 패널처럼 채도·밝기 사각형 · 색상 · 불투명도 · 스포이드 · HEX·% 입력
+   값은 '#rrggbb'(불투명) 또는 '#rrggbbaa'. 비우면 시안 그대로(「기본」) */
+const cpHex = (v) => { const m = /^#?([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(String(v || '')); return m ? { hex: m[1].toLowerCase(), a: m[2] ? Math.round(parseInt(m[2], 16) / 2.55) : 100 } : null; };
+const cpRgb = (hex) => [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+const cpToHex = (rgb) => rgb.map((x) => Math.round(Math.max(0, Math.min(255, x))).toString(16).padStart(2, '0')).join('');
+function cpHsv(hex) {
+  const [r, g, b] = cpRgb(hex).map((x) => x / 255);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return { h: (h * 60 + 360) % 360, s: mx ? d / mx : 0, v: mx };
+}
+function cpFromHsv({ h, s, v }) {
+  const f = (n) => { const k = (n + h / 60) % 6; return v - v * s * Math.max(0, Math.min(k, 4 - k, 1)); };
+  return cpToHex([f(5), f(3), f(1)].map((x) => x * 255));
+}
+const cpValue = (hex, a) => '#' + hex + (a >= 100 ? '' : Math.round(Math.max(0, a) * 2.55).toString(16).padStart(2, '0'));
+const EYE_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6.5 3 3M4 20l1-4 9.5-9.5a2.1 2.1 0 0 1 3 3L8 19l-4 1Z"/><path d="m13 5 6 6"/></svg>';
+function colorPicker(path, cur, label) {
+  const c = cpHex(cur) || { hex: 'ffffff', a: 100 };
+  const hsv = cpHsv(c.hex);
+  return `<div class="cp" data-cp ${attrs({ ...path, 'data-h': Math.round(hsv.h) })} role="group" aria-label="${esc(label)}">
+  <div class="cp__sv" data-cp-sv style="--h:${Math.round(hsv.h)}"><span class="cp__dot" style="left:${(hsv.s * 100).toFixed(1)}%;top:${((1 - hsv.v) * 100).toFixed(1)}%"></span></div>
+  <div class="cp__row">
+    ${window.EyeDropper ? `<button type="button" class="cp__eye" data-cp-eye title="스포이드 — 화면에서 색 찍기" aria-label="스포이드">${EYE_ICON}</button>` : ''}
+    <div class="cp__bars">
+      <div class="cp__hue" data-cp-hue><span class="cp__knob" style="left:${(hsv.h / 3.6).toFixed(1)}%"></span></div>
+      <div class="cp__alpha" data-cp-alpha style="--c:#${c.hex}"><span class="cp__knob" style="left:${c.a}%"></span></div>
+    </div>
+  </div>
+  <div class="cp__inputs"><span class="cp__mode">Hex</span><input type="text" data-cp-hex value="${c.hex.toUpperCase()}" maxlength="7" spellcheck="false" aria-label="${esc(label)} HEX"><input type="number" data-cp-a value="${c.a}" min="0" max="100" aria-label="${esc(label)} 불투명도"><span class="cp__pct">%</span></div>
+</div>`;
+}
 function colorField(k, s, cur) {
-  const list = s.palette === 'text' ? REG.hds.text || [] : s.palette === 'line' ? REG.hds.line || [] : REG.hds.colors;
+  if (s.free) {
+    const base = s.optional && s.default == null;
+    const c = cpHex(cur);
+    const now = c ? `<code>#${c.hex.toUpperCase()}${c.a < 100 ? ` · ${c.a}%` : ''}</code>` : base ? '기본 (시안 그대로)' : '';
+    return `<div class="hed-f">${fieldHead(s, s.note)}<div class="cp-head"><span class="hed-sub__label" data-cp-now>${now}</span>${base ? `<button type="button" class="chip" data-f="${k}" data-val="" aria-pressed="${String(!c)}">기본</button>` : ''}</div>${colorPicker({ 'data-f': k }, cur, s.label)}</div>`;
+  }
+  const list = paletteList(s.palette);
   const c = s.palette ? list.find((x) => x.key === cur) : HDS_COLOR[cur];
   const base = s.optional && s.default == null; // 기본값이 없으면 「기본」 = 시안 그대로
   const now = c ? `<code>${esc(c.token)}</code> ${esc(c.label)}` : cur && cur === s.noneValue ? '없음' : base ? '기본 (시안 그대로)' : '';
@@ -919,13 +994,28 @@ function toggleBox(path, s, cur) {
 }
 /** hideWhen: { style: "outline" } — 같은 항목의 다른 값이 맞으면 숨겨요 (테두리형이면 배경색 숨김) */
 const hiddenBy = (s, item) => !!(s.hideWhen && item && Object.entries(s.hideWhen).every(([hk, hv]) => item[hk] === hv));
-function itemField(k, i, kk, s, val, n, item) {
+/** 목록 항목 안의 이미지 — 썸네일 · 파일 선택 · 지우기 · 되돌리기(샘플과 다르면) */
+function imageItem(path, s, val, label, smp) {
+  const src = val ? (val.file ? blobUrls[val.file] : val.src) : '';
+  const restore = smp && JSON.stringify(smp) !== JSON.stringify(val || null);
+  return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || '이미지')}${s.hint ? ` <span class="hed-f__opt">${esc(s.hint)}</span>` : ''}</span><div class="hed-img">
+  <span class="hed-img__thumb">${src ? `<img src="${esc(src)}" alt="">` : val ? '파일을 다시<br>골라 주세요' : '없음'}</span>
+  <div class="hed-media__btns"><button type="button" class="btn-ui" ${attrs({ ...path, 'data-act': 'pick', 'aria-label': `${label} 파일 선택` })}>파일 선택</button>${val ? `<button type="button" class="btn-ui" ${attrs({ ...path, 'data-act': 'clear' })}>지우기</button>` : ''}${restore ? `<button type="button" class="btn-ui" ${attrs({ ...path, 'data-act': 'restore', title: 'Figma 샘플로 되돌려요' })}>되돌리기</button>` : ''}</div>
+</div></div>`;
+}
+function itemField(k, i, kk, s, val, n, item, smpItem) {
   const path = { 'data-f': k, 'data-i': i, 'data-k': kk };
   const label = `${n} ${s.label || kk}`;
   if (hiddenBy(s, item)) return '';
+  if (s.type === 'image') return imageItem(path, s, val, label, smpItem && smpItem[kk]);
+  if (s.type === 'richtext') {
+    // 여러 줄 문구 — 엔터로 줄을 나눠요 (그대로 줄바꿈돼요)
+    const t = String(val == null ? '' : val);
+    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)}${s.note ? ` <span class="hed-f__opt">${esc(s.note)}</span>` : ''}</span><div class="hed-in hed-in--area"><textarea ${attrs({ ...path, rows: Math.min(8, Math.max(2, t.split('\n').length)), 'aria-label': label })}>${esc(t)}</textarea></div></div>`;
+  }
   if (s.type === 'toggle') return `<div class="hed-sub">${toggleBox(path, s, val)}</div>`;
   if (s.type === 'color') {
-    const list = s.palette === 'line' ? REG.hds.line || [] : s.palette === 'text' ? REG.hds.text || [] : REG.hds.colors;
+    const list = paletteList(s.palette);
     const c = s.palette ? list.find((x) => x.key === val) : HDS_COLOR[val];
     return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <code>${c ? esc(c.token) : s.palette === 'line' ? '없음' : ''}</code></span>${swatches(path, val, label, s.palette)}</div>`;
   }
@@ -937,12 +1027,12 @@ function itemField(k, i, kk, s, val, n, item) {
   const ph = s.type === 'url' ? 'https://… (비우면 #)' : '';
   return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)}</span><div class="hed-in"><input type="${s.type === 'url' ? 'url' : 'text'}" ${attrs({ ...path, value: val, maxlength: s.maxChars || null, placeholder: ph || null, 'aria-label': label })}>${s.type === 'url' ? '' : cnt(val, s.maxChars)}</div></div>`;
 }
-function listField(k, s, items) {
+function listField(k, s, items, smpItems = []) {
   const max = s.max ?? 99;
   const one = s.label || '항목';
   return `<div class="hed-f">${fieldHead(s, `최대 ${max}개`)}
   ${items.map((it, i) => `<div class="hed-item"><div class="hed-item__head"><b>${esc(one)} ${i + 1}</b>${items.length > (s.min ?? 0) ? `<button type="button" class="icon-btn" data-act="del-item" data-f="${k}" data-i="${i}" aria-label="${esc(one)} ${i + 1} 빼기">✕</button>` : ''}</div>
-    ${Object.entries(s.item || {}).map(([kk, raw]) => itemField(k, i, kk, RC.specOf(raw), it[kk], `${one} ${i + 1}`, it)).join('')}
+    ${Object.entries(s.item || {}).map(([kk, raw]) => itemField(k, i, kk, RC.specOf(raw), it[kk], `${one} ${i + 1}`, it, smpItems[i])).join('')}
     ${s.item && s.item.label && !String(it.label || '').trim() ? '<p class="hed-hint">문구를 넣으면 버튼이 보여요</p>' : ''}
   </div>`).join('')}
   ${items.length < max ? `<button type="button" class="hed-add" data-act="add-item" data-f="${k}">+ ${esc(one)} 추가</button>` : ''}
@@ -967,33 +1057,38 @@ function bgPresetChips(k, dev, ref) {
   return `<div class="hed-bgfx" role="group" aria-label="CSS 배경"><span class="hed-sub__label">또는 CSS 배경 <span class="hed-f__opt">이미지·영상 없이 코드로 그려요</span></span>
   <div class="hed-bgfx__list">${(REG.bgPresets || []).map((p) => `<button type="button" class="hed-bgfx__b" ${attrs({ 'data-act': 'bg-preset', 'data-f': k, 'data-dev': dev, 'data-preset': p.key, 'aria-pressed': String(!!ref && ref.kind === 'css' && ref.preset === p.key), title: p.label + (p.motion ? ' · 천천히 움직여요' : '') })}><span class="hed-bgfx__sw${p.motion ? ' is-motion' : ''}" style="background:${esc(p.swatch)}"></span><span class="hed-bgfx__name">${esc(p.label)}</span></button>`).join('')}</div></div>`;
 }
-function mediaBox(k, dev, ref, title, css) {
+/** sample = 그 칸의 샘플 값 — 지금 값과 다르면(지웠거나 바꿨으면) 「되돌리기」로 샘플로 돌려요 */
+function mediaBox(k, dev, ref, title, css, sample) {
+  const restore = sample && JSON.stringify(sample) !== JSON.stringify(ref || null);
   return `<div class="hed-media">
   <div class="hed-media__thumb">${mediaThumb(ref)}</div>
   <div class="hed-media__info">
     <b>${title}${ref ? ` <span class="hed-media__kind">${ref.kind === 'css' ? 'CSS 배경' : ref.kind === 'video' ? '영상' : '이미지'}</span>` : ''}</b>
     <span class="hed-media__name" title="${esc(mediaName(ref))}">${esc(mediaName(ref))}</span>
-    <div class="hed-media__btns"><button type="button" class="btn-ui" data-act="pick" data-f="${k}" data-dev="${dev}">파일 선택</button>${ref ? `<button type="button" class="btn-ui" data-act="clear" data-f="${k}" data-dev="${dev}">지우기</button>` : ''}</div>
+    <div class="hed-media__btns"><button type="button" class="btn-ui" data-act="pick" data-f="${k}" data-dev="${dev}">파일 선택</button>${ref ? `<button type="button" class="btn-ui" data-act="clear" data-f="${k}" data-dev="${dev}">지우기</button>` : ''}${restore ? `<button type="button" class="btn-ui" data-act="restore" data-f="${k}" data-dev="${dev}" title="Figma 샘플로 되돌려요">되돌리기</button>` : ''}</div>
     <input type="url" class="hed-media__url" ${attrs({ 'data-f': k, 'data-dev': dev, 'data-k': 'url', placeholder: '또는 이미지·mp4 주소 붙여넣기', 'aria-label': `${title} 주소` })}>
   </div>
   ${css ? bgPresetChips(k, dev, ref) : ''}
 </div>`;
 }
-function mediaField(k, s, m) {
+/** smp = 샘플 편집 값의 그 칸 ({ pc, mo }) — 「되돌리기」용. single = PC·MO 같은 파일 하나(MO 따로 없음) */
+function mediaField(k, s, m, smp = {}) {
   const css = !!s.cssPresets;
-  if (s.pcOnly) return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 · PC·TB 에만 보여요')}${mediaBox(k, 'pc', m.pc, 'PC · TB', css)}</div>`;
+  if (s.pcOnly) return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 · PC·TB 에만 보여요')}${mediaBox(k, 'pc', m.pc, 'PC · TB', css, smp.pc)}</div>`;
+  if (s.single) return `<div class="hed-f">${fieldHead(s, s.hint || '이미지 · PC·TB·MO 같은 파일')}${mediaBox(k, 'pc', m.pc, 'PC · MO', css, smp.pc)}</div>`;
   return `<div class="hed-f">${fieldHead(s, s.hint || (css ? '이미지 · mp4 · CSS 배경 · PC 것은 TB 에도 쓰여요' : '이미지 또는 mp4 · PC 것은 TB 에도 쓰여요'))}
-  ${mediaBox(k, 'pc', m.pc, 'PC · TB', css)}
+  ${mediaBox(k, 'pc', m.pc, 'PC · TB', css, smp.pc)}
   <label class="hed-check"><input type="checkbox" data-f="${k}" data-k="moSame"${m.moSame ? ' checked' : ''}> MO 도 PC ${esc(s.label || '')} 그대로 쓰기</label>
-  ${m.moSame ? '' : mediaBox(k, 'mo', m.mo, 'MO', css)}
+  ${m.moSame ? '' : mediaBox(k, 'mo', m.mo, 'MO', css, smp.mo)}
 </div>`;
 }
 function heroForm(v, e) {
+  const smp = editFrom(v, v.sample);
   return Object.entries(v.slots).map(([k, raw]) => {
     const s = RC.specOf(raw);
     if (s.type === 'richtext') return linesField(k, s, e[k], e['@mo'] && e['@mo'][k]);
-    if (s.type === 'list') return listField(k, s, e[k]);
-    if (s.type === 'media') return mediaField(k, s, e[k]);
+    if (s.type === 'list') return listField(k, s, e[k], smp[k] || []);
+    if (s.type === 'media') return mediaField(k, s, e[k], smp[k] || {});
     if (s.type === 'color') return colorField(k, s, e[k]);
     if (s.type === 'radius') return radiusField(k, s, e[k]);
     if (s.type === 'enum') return `<div class="hed-f">${fieldHead(s, s.note)}${enumChips({ 'data-f': k }, s, e[k], s.label)}</div>`;
@@ -1139,21 +1234,31 @@ function measureHero() {
     : `<b>${dev}</b> · 줄 넘김 없음 <span class="hed-warn__tip">다른 기기는 위쪽 PC·TB·MO 로 확인</span>`;
 }
 
-/* ---------- 미리보기에서 이미지 바꾸기 — 섹션 안 비주얼(visual 슬롯)을 클릭하면 파일 선택이 열려요 */
+/* ---------- 미리보기에서 이미지 바꾸기 — 섹션 안 비주얼(visual 슬롯)을 클릭하면 파일 선택이 열려요
+   안내 말풍선은 ::before 를 써요 (::after 는 비주얼 하단 그라데이션 등이 써요) */
 const PICK_AREAS = { visual: '.hero__visual', speaker1: '[data-pick="speaker1"]', speaker2: '[data-pick="speaker2"]', speaker3: '[data-pick="speaker3"]' };
-function attachPreviewPick(doc) {
+function attachPreviewPick(doc, el = heroEl, variantAt = () => byId[heroState().variant], edit = heroEdit) {
   if (!doc || doc.__hedPick) return;
   doc.__hedPick = true;
   const st = doc.createElement('style');
-  st.textContent = Object.values(PICK_AREAS).map((sel) => `${sel}{position:relative;cursor:pointer}${sel}:hover{outline:3px dashed #3a50c9;outline-offset:-3px}${sel}:hover::after{content:"클릭해서 이미지·영상 바꾸기";position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:5;padding:6px 12px;border-radius:6px;background:#3a50c9;color:#fff;font:600 14px/1.4 system-ui,sans-serif;white-space:nowrap;pointer-events:none}`).join('');
+  // 목록 항목 이미지(월간휴넷 카드 사진 등)는 템플릿이 감싼 요소에 data-pick-item="목록:번호:필드" 를 붙여요
+  st.textContent = [...Object.values(PICK_AREAS), '[data-pick-item]'].map((sel) => `${sel}{position:relative;cursor:pointer}${sel}:hover{outline:3px dashed #3a50c9;outline-offset:-3px}${sel}:hover::before{content:"클릭해서 이미지·영상 바꾸기";position:absolute;top:16px;left:50%;right:auto;bottom:auto;width:auto;height:auto;transform:translateX(-50%);z-index:5;padding:6px 12px;border-radius:6px;background:#3a50c9;color:#fff;font:600 14px/1.4 system-ui,sans-serif;white-space:nowrap;pointer-events:none}`).join('')
+    + '[data-pick-item]:hover::before{content:"클릭해서 바꾸기";top:8px;padding:4px 8px;font-size:12px}'; // 작은 사진(아바타 72)에도 맞게
   doc.head.appendChild(st);
   doc.addEventListener('click', (ev) => {
-    const v = byId[heroState().variant];
+    const v = variantAt(ev.target);
+    if (!v) return;
+    const it = ev.target.closest('[data-pick-item]');
+    if (it) {
+      const [f, i, k] = it.dataset.pickItem.split(':');
+      if (v.slots[f] && Array.isArray(edit(v)[f]) && edit(v)[f][+i]) { pickTarget = { f, i: +i, k, vid: v.id }; el.querySelector('[data-hed-file]').click(); }
+      return;
+    }
     for (const [f, sel] of Object.entries(PICK_AREAS)) {
       if (!ev.target.closest(sel) || !v.slots[f]) continue;
-      const m = heroEdit(v)[f];
-      pickTarget = { f, dev: state.device === 'mo' && m && !m.moSame && !RC.specOf(v.slots[f]).pcOnly ? 'mo' : 'pc' };
-      heroEl.querySelector('[data-hed-file]').click();
+      const m = edit(v)[f];
+      pickTarget = { f, vid: v.id, dev: state.device === 'mo' && m && !m.moSame && !RC.specOf(v.slots[f]).pcOnly ? 'mo' : 'pc' };
+      el.querySelector('[data-hed-file]').click();
       return;
     }
   });
@@ -1165,15 +1270,16 @@ function heroPage() {
   return { title: `${vname(v)} 히어로 시안`, theme: 'light', sections: [{ variant: v.id, content: contentFrom(v, heroEdit(v), true) }] };
 }
 /** 편집 값 안의 올린 파일을 page.json 이 가리키는 이름으로 내려받아요 */
-function downloadMedia(v, e) {
+function downloadMedia(v, e, pre) {
   for (const [k, raw] of Object.entries(v.slots)) {
     if (RC.specOf(raw).type !== 'media' || !e[k]) continue;
     for (const dev of ['pc', 'mo']) {
       const ref = e[k][dev];
       if (dev === 'mo' && e[k].moSame) continue;
-      if (ref && ref.file && files[ref.file]) download(exportName(k, dev, ref), files[ref.file]);
+      if (ref && ref.file && files[ref.file]) download(exportName(k, dev, ref, pre), files[ref.file]);
     }
   }
+  for (const { k, i, kk, ref } of listUploads(v, e)) if (files[ref.file]) download(itemImageName(pre, k, i, kk, ref), files[ref.file]);
 }
 function download(name, blob) {
   const a = document.createElement('a');
@@ -1185,84 +1291,168 @@ function download(name, blob) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-/* ---------- 이벤트 */
+/* ---------- 이벤트 — 폼 입력은 히어로 편집기 · 페이지 템플릿 편집기가 함께 써요
+   ctx = { el, variantOf(target) → variant, edit(v) → 편집 값, redraw(v) 폼 다시 그리기, update(v) 미리보기 갱신 } */
 let pickTarget = null;
 const at = (el) => ({ f: el.dataset.f, i: el.dataset.i != null ? +el.dataset.i : null, k: el.dataset.k, line: el.dataset.line != null ? +el.dataset.line : null, dev: el.dataset.dev });
-heroEl.addEventListener('input', (ev) => {
-  const t = ev.target;
-  if (!t.matches('input[type="text"][data-f], input[type="url"][data-f][data-i]')) return;
-  const v = byId[heroState().variant];
-  const e = heroEdit(v);
-  const p = at(t);
-  if (p.line != null && p.dev === 'mo') e['@mo'][p.f][p.line] = t.value;
-  else if (p.line != null) e[p.f][p.line] = t.value;
-  else if (p.i != null) e[p.f][p.i][p.k] = t.value;
-  else e[p.f] = t.value;
-  const c = t.parentElement.querySelector('[data-cnt]');
-  if (c) {
-    const max = +c.dataset.cnt || 0;
-    const n = RC.charCount(t.value);
-    c.textContent = max ? `${n}/${max}` : `${n}자`;
-    c.className = 'hed-cnt' + (max && n > max ? ' is-over' : max && n === max ? ' is-full' : '');
-  }
-  heroUpdate();
-});
-heroEl.addEventListener('change', (ev) => {
-  const t = ev.target;
-  const v = byId[heroState().variant];
-  const e = heroEdit(v);
-  if (t.matches('[data-k="moSame"]')) { e[t.dataset.f].moSame = t.checked; redrawForm(); heroUpdate(); return; }
-  if (t.matches('[data-mo-sep]')) {
-    const k = t.dataset.moSep;
-    if (t.checked) (e['@mo'] ||= {})[k] = [...(e[k] || [])];
-    else if (e['@mo']) delete e['@mo'][k];
-    redrawForm(); heroUpdate(); return;
-  }
-  if (t.matches('[data-toggle]')) { const p = at(t); if (p.i != null) e[p.f][p.i][p.k] = t.checked; else e[p.f] = t.checked; heroUpdate(); return; }
-  if (t.matches('select[data-f][data-i]')) { const p = at(t); e[p.f][p.i][p.k] = t.value; heroUpdate(); return; }
-  if (t.matches('.hed-media__url')) {
-    const url = t.value.trim();
-    if (!url) return;
+function bindEditorForm(ctx) {
+  const { el } = ctx;
+  // 자유 색 고르기 — 끄는 동안은 폼을 다시 그리지 않고 값·점 위치만 바꿔요
+  const cpSet = (cp, hex, a, hsv) => {
+    const v = ctx.variantOf(cp);
+    if (!v) return;
+    const e = ctx.edit(v);
+    const p = at(cp);
+    const val = cpValue(hex, a);
+    if (p.i != null) e[p.f][p.i][p.k] = val; else e[p.f] = val;
+    const h = hsv ? hsv.h : cpHsv(hex).h;
+    const sv = hsv || cpHsv(hex);
+    cp.dataset.h = String(Math.round(h));
+    cp.querySelector('[data-cp-sv]').style.setProperty('--h', String(Math.round(h)));
+    Object.assign(cp.querySelector('.cp__dot').style, { left: (sv.s * 100).toFixed(1) + '%', top: ((1 - sv.v) * 100).toFixed(1) + '%' });
+    cp.querySelector('[data-cp-hue] .cp__knob').style.left = (h / 3.6).toFixed(1) + '%';
+    cp.querySelector('[data-cp-alpha]').style.setProperty('--c', '#' + hex);
+    cp.querySelector('[data-cp-alpha] .cp__knob').style.left = a + '%';
+    const hx = cp.querySelector('[data-cp-hex]'); if (document.activeElement !== hx) hx.value = hex.toUpperCase();
+    const ai = cp.querySelector('[data-cp-a]'); if (document.activeElement !== ai) ai.value = String(a);
+    const now = cp.closest('.hed-f') && cp.closest('.hed-f').querySelector('[data-cp-now]');
+    if (now) now.innerHTML = `<code>#${hex.toUpperCase()}${a < 100 ? ` · ${a}%` : ''}</code>`;
+    const bt = cp.closest('.hed-f') && cp.closest('.hed-f').querySelector('.cp-head [data-val=""]');
+    if (bt) bt.setAttribute('aria-pressed', 'false');
+    ctx.update(v);
+  };
+  const cpCur = (cp) => {
+    const hx = cp.querySelector('[data-cp-hex]').value.replace('#', '');
+    const c = cpHex(hx) || { hex: 'ffffff', a: 100 };
+    return { hex: c.hex, a: Math.max(0, Math.min(100, +cp.querySelector('[data-cp-a]').value || 0)) };
+  };
+  el.addEventListener('pointerdown', (ev) => {
+    const area = ev.target.closest('[data-cp-sv], [data-cp-hue], [data-cp-alpha]');
+    if (!area || ev.button !== 0) return;
+    ev.preventDefault();
+    const cp = area.closest('[data-cp]');
+    const move = (e2) => {
+      const r = area.getBoundingClientRect();
+      const x = Math.max(0, Math.min(1, (e2.clientX - r.left) / r.width));
+      const y = Math.max(0, Math.min(1, (e2.clientY - r.top) / r.height));
+      const cur = cpCur(cp);
+      const hsv = cpHsv(cur.hex);
+      hsv.h = +cp.dataset.h || hsv.h; // 회색·흰색에서도 고른 색상을 기억해요
+      if (area.matches('[data-cp-sv]')) { hsv.s = x; hsv.v = 1 - y; cpSet(cp, cpFromHsv(hsv), cur.a, hsv); }
+      else if (area.matches('[data-cp-hue]')) { hsv.h = x * 360; cpSet(cp, cpFromHsv(hsv), cur.a, hsv); }
+      else cpSet(cp, cur.hex, Math.round(x * 100), { ...hsv });
+    };
+    move(ev);
+    try { area.setPointerCapture(ev.pointerId); } catch (err) {}
+    const up = () => { area.removeEventListener('pointermove', move); area.removeEventListener('pointerup', up); area.removeEventListener('pointercancel', up); };
+    area.addEventListener('pointermove', move); area.addEventListener('pointerup', up); area.addEventListener('pointercancel', up);
+  });
+  el.addEventListener('input', (ev) => {
+    const t = ev.target;
+    if (!t.matches('[data-cp-hex], [data-cp-a]')) return;
+    const cp = t.closest('[data-cp]');
+    const c = cpHex(cp.querySelector('[data-cp-hex]').value.trim().replace('#', ''));
+    if (!c) return; // 6자리가 될 때까지 기다려요
+    cpSet(cp, c.hex, cpCur(cp).a);
+  });
+  el.addEventListener('click', async (ev) => {
+    const eye = ev.target.closest('[data-cp-eye]');
+    if (!eye || !window.EyeDropper) return;
+    try { const r = await new window.EyeDropper().open(); const c = cpHex(r.sRGBHex); const cp = eye.closest('[data-cp]'); if (c) cpSet(cp, c.hex, cpCur(cp).a); } catch (err) {} // Esc 로 취소
+  });
+  el.addEventListener('input', (ev) => {
+    const t = ev.target;
+    if (!t.matches('input[type="text"][data-f], input[type="url"][data-f][data-i], textarea[data-f][data-i]')) return;
+    const v = ctx.variantOf(t);
+    if (!v) return;
+    const e = ctx.edit(v);
     const p = at(t);
-    e[p.f][p.dev] = { kind: /\.(mp4|webm|mov)(\?|#|$)/i.test(url) ? 'video' : 'image', src: url };
-    redrawForm(); heroUpdate(); return;
-  }
-  if (t.matches('[data-hed-file]') && t.files && t.files[0] && pickTarget) {
-    const file = t.files[0];
-    const { f, dev } = pickTarget;
-    const key = `${v.id}:${f}:${dev}`;
-    if (blobUrls[key]) URL.revokeObjectURL(blobUrls[key]);
-    files[key] = file;
-    blobUrls[key] = URL.createObjectURL(file);
-    idb.put(key, file);
-    e[f][dev] = { kind: file.type.startsWith('video/') ? 'video' : 'image', file: key, name: file.name };
-    t.value = '';
-    redrawForm(); heroUpdate();
-  }
-});
+    if (p.line != null && p.dev === 'mo') e['@mo'][p.f][p.line] = t.value;
+    else if (p.line != null) e[p.f][p.line] = t.value;
+    else if (p.i != null) e[p.f][p.i][p.k] = t.value;
+    else e[p.f] = t.value;
+    const c = t.parentElement.querySelector('[data-cnt]');
+    if (c) {
+      const max = +c.dataset.cnt || 0;
+      const n = RC.charCount(t.value);
+      c.textContent = max ? `${n}/${max}` : `${n}자`;
+      c.className = 'hed-cnt' + (max && n > max ? ' is-over' : max && n === max ? ' is-full' : '');
+    }
+    ctx.update(v);
+  });
+  el.addEventListener('change', (ev) => {
+    const t = ev.target;
+    if (t.matches('[data-hed-file]')) {
+      if (!t.files || !t.files[0] || !pickTarget) return;
+      const v = byId[pickTarget.vid];
+      const e = ctx.edit(v);
+      const file = t.files[0];
+      const { f, dev, i, k } = pickTarget;
+      const key = i != null ? `${v.id}:${f}:${i}:${k}` : `${v.id}:${f}:${dev}`;
+      if (blobUrls[key]) URL.revokeObjectURL(blobUrls[key]);
+      files[key] = file;
+      blobUrls[key] = URL.createObjectURL(file);
+      idb.put(key, file);
+      if (i != null) { const old = e[f][i][k]; e[f][i][k] = { file: key, name: file.name, ...(old && old.alt ? { alt: old.alt } : {}) }; } // 목록 항목 이미지
+      else e[f][dev] = { kind: file.type.startsWith('video/') ? 'video' : 'image', file: key, name: file.name };
+      t.value = '';
+      ctx.redraw(v); ctx.update(v);
+      return;
+    }
+    const v = ctx.variantOf(t);
+    if (!v) return;
+    const e = ctx.edit(v);
+    if (t.matches('[data-k="moSame"]')) { e[t.dataset.f].moSame = t.checked; ctx.redraw(v); ctx.update(v); return; }
+    if (t.matches('[data-mo-sep]')) {
+      const k = t.dataset.moSep;
+      if (t.checked) (e['@mo'] ||= {})[k] = [...(e[k] || [])];
+      else if (e['@mo']) delete e['@mo'][k];
+      ctx.redraw(v); ctx.update(v); return;
+    }
+    if (t.matches('[data-toggle]')) { const p = at(t); if (p.i != null) e[p.f][p.i][p.k] = t.checked; else e[p.f] = t.checked; ctx.update(v); return; }
+    if (t.matches('select[data-f][data-i]')) { const p = at(t); e[p.f][p.i][p.k] = t.value; ctx.update(v); return; }
+    if (t.matches('.hed-media__url')) {
+      const url = t.value.trim();
+      if (!url) return;
+      const p = at(t);
+      e[p.f][p.dev] = { kind: /\.(mp4|webm|mov)(\?|#|$)/i.test(url) ? 'video' : 'image', src: url };
+      ctx.redraw(v); ctx.update(v);
+    }
+  });
+  el.addEventListener('click', (ev) => {
+    const hit = ev.target.closest('[data-val], [data-act]');
+    if (!hit) return;
+    const v = ctx.variantOf(hit);
+    if (!v) return;
+    const e = ctx.edit(v);
+    const p = at(hit);
+    if (hit.matches('[data-val]')) { if (p.i != null) e[p.f][p.i][p.k] = hit.dataset.val; else e[p.f] = hit.dataset.val; ctx.redraw(v); ctx.update(v); return; }
+    const s = RC.specOf(v.slots[p.f]);
+    switch (hit.dataset.act) {
+      case 'add-line': { const ls = p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]; if (ls.length === 0) ls.push(''); ls.push(''); break; }
+      case 'del-line': (p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]).splice(p.line, 1); break;
+      case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, blank(vv)]))); break;
+      case 'del-item': e[p.f].splice(p.i, 1); break;
+      case 'clear': if (p.i != null) e[p.f][p.i][p.k] = null; else e[p.f][p.dev] = null; break;
+      case 'restore': {
+        const smp = editFrom(v, v.sample)[p.f];
+        if (p.i != null) e[p.f][p.i][p.k] = (smp && smp[p.i] && smp[p.i][p.k]) || null;
+        else e[p.f][p.dev] = (smp || {})[p.dev] || null;
+        break;
+      }
+      case 'bg-preset': e[p.f][p.dev] = { kind: 'css', preset: hit.dataset.preset }; break;
+      case 'pick': pickTarget = { ...p, vid: v.id }; el.querySelector('[data-hed-file]').click(); return;
+      default: return;
+    }
+    ctx.redraw(v); ctx.update(v);
+  });
+}
+bindEditorForm({ el: heroEl, variantOf: () => byId[heroState().variant], edit: heroEdit, redraw: redrawForm, update: heroUpdate });
 heroEl.addEventListener('click', (ev) => {
   const v = byId[heroState().variant];
   const e = heroEdit(v);
   const sv = ev.target.closest('[data-hed-variant]');
   if (sv) { heroState().variant = sv.dataset.hedVariant; save(); renderHero(); return; }
-  const val = ev.target.closest('[data-val]');
-  if (val) { const p = at(val); if (p.i != null) e[p.f][p.i][p.k] = val.dataset.val; else e[p.f] = val.dataset.val; redrawForm(); heroUpdate(); return; }
-  const act = ev.target.closest('[data-act]');
-  if (act) {
-    const p = at(act);
-    const s = RC.specOf(v.slots[p.f]);
-    switch (act.dataset.act) {
-      case 'add-line': { const ls = p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]; if (ls.length === 0) ls.push(''); ls.push(''); break; }
-      case 'del-line': (p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]).splice(p.line, 1); break;
-      case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, blank(vv)]))); break;
-      case 'del-item': e[p.f].splice(p.i, 1); break;
-      case 'clear': e[p.f][p.dev] = null; break;
-      case 'bg-preset': e[p.f][p.dev] = { kind: 'css', preset: act.dataset.preset }; break;
-      case 'pick': pickTarget = p; heroEl.querySelector('[data-hed-file]').click(); return;
-      default: return;
-    }
-    redrawForm(); heroUpdate(); return;
-  }
   const ha = ev.target.closest('[data-hed-act]');
   if (!ha) return;
   const json = JSON.stringify(heroPage(), null, 2) + '\n';
@@ -1290,6 +1480,197 @@ heroEl.addEventListener('click', (ev) => {
   if (ha.dataset.hedAct === 'reset' && confirm('입력한 내용을 지우고 Figma 샘플로 되돌릴까요?')) {
     heroState().edits[v.id] = editFrom(v, v.sample);
     save(); renderHero();
+  }
+});
+
+/* ---------------------------------------------------------------- 페이지 템플릿 편집기 (templates/ — 월간휴넷 등)
+   템플릿의 모든 섹션 슬롯으로 폼을 만들어 전체 문구를 편집해요. 폼·렌더·저장 방식은 히어로 편집기와 같아요.
+   편집 값: state.tpl[템플릿].edits[variant] (올린 파일은 같은 IndexedDB). 내보내는 파일 이름 앞에는 섹션 이름(layout)을 붙여요 */
+const TEMPLATES = REG.templates || [];
+const tplByKey = Object.fromEntries(TEMPLATES.map((t) => [t.key, t]));
+const tplEl = document.getElementById('tpl-editor');
+const tplKey = () => (String(state.mode).startsWith('tpl:') ? state.mode.slice(4) : null);
+function tplState(key) {
+  state.tpl ||= {};
+  const t = (state.tpl[key] ||= {});
+  t.edits ||= {};
+  t.open ||= [];
+  t.pick ||= {};
+  t.off ||= [];
+  return t;
+}
+function tplEdit(v) {
+  const ts = tplState(v.section);
+  if (!ts.edits[v.id]) ts.edits[v.id] = editFrom(v, v.sample);
+  else fixStaleAssets(v, ts.edits[v.id]);
+  return ts.edits[v.id];
+}
+const tplEditOf = (id) => tplEdit(byId[id]);
+const tplSecHtml = (v) => heroHtmlOrError(v, tplEdit(v)).replace(/^(\s*)<([a-z][\w-]*)/, `$1<$2 data-tpl-sec="${v.id}"`);
+/* 자리(row) — 섹션 하나, 또는 여럿 중 하나를 고르는 자리(template.json 의 pick). 자리마다 넣기·빼기를 해요
+   state.tpl[key].pick[자리] = 고른 variant · off = 뺀 자리 목록 (자리 키 = 그 자리 variant id 를 | 로 이은 것) */
+const rowKey = (r) => r.ids.join('|');
+const rowPick = (t, r) => { const p = tplState(t.key).pick[rowKey(r)]; return r.ids.includes(p) ? p : r.ids[0]; };
+const rowOn = (t, r) => !tplState(t.key).off.includes(rowKey(r));
+const tplRows = (t) => t.rows || t.variants.map((id) => ({ ids: [id] }));
+const rowOf = (t, id) => tplRows(t).find((r) => r.ids.includes(id));
+/** 페이지에 들어가는 섹션 — 넣은 자리의 고른 섹션만, 순서대로 */
+const tplVisible = (t) => tplRows(t).filter((r) => rowOn(t, r)).map((r) => rowPick(t, r));
+function tplBlock(t, r) {
+  const id = rowPick(t, r);
+  const v = byId[id];
+  const on = rowOn(t, r);
+  const open = on && tplState(t.key).open.includes(id);
+  const key = rowKey(r);
+  return `<section class="tpl-sec${open ? ' is-open' : ''}${on ? '' : ' is-off'}" data-vid="${id}" data-row="${esc(key)}">
+  <div class="tpl-sec__bar">
+    <label class="tpl-sec__on" title="${on ? '페이지에서 빼기' : '페이지에 넣기'}"><input type="checkbox" data-tpl-on="${esc(key)}"${on ? ' checked' : ''} aria-label="${esc(r.label || v.label || v.layout)} 넣기"></label>
+    <button type="button" class="tpl-sec__head" data-tpl-toggle="${id}" aria-expanded="${open}"${on ? '' : ' disabled'}><span class="tpl-sec__caret" aria-hidden="true">${open ? '▾' : '▸'}</span><span class="tpl-sec__name">${esc(r.label || v.label || v.layout)}</span><span class="tpl-sec__layout">${on ? esc(v.layout) : '빠짐'}</span></button>
+  </div>
+  ${r.ids.length > 1 && on ? `<div class="tpl-sec__pick" role="group" aria-label="${esc(r.label || '')} 고르기">${r.ids.map((x) => `<button type="button" class="chip" data-tpl-pick="${esc(key)}" data-id="${x}" aria-pressed="${String(x === id)}">${esc(byId[x].label || byId[x].layout)}</button>`).join('')}</div>` : ''}
+  ${open ? `<div class="hed-form" data-hed-form>${heroForm(v, tplEdit(v))}</div>` : ''}
+</section>`;
+}
+let tplFit = null;
+let tplLoaded = false;
+function renderTpl() {
+  const t = tplByKey[tplKey()];
+  if (!t) return;
+  const vs = tplVisible(t).map((id) => byId[id]);
+  const rows = tplRows(t);
+  const todo = (t.order || []).filter((l) => !vs.some((v) => v.layout === l));
+  const keep = tplEl.querySelector('.compose__scroll')?.scrollTop || 0;
+  tplEl.innerHTML = `<aside class="compose__side">${SPLIT}
+  <div class="compose__scroll">
+  <div class="hed-intro"><h2>${esc(t.title)}</h2><p>섹션을 펼쳐 문구·이미지를 바꿔요. 미리보기에서 섹션을 누르면 그 입력칸이 열려요.</p></div>
+  <div class="rows__bar"><span>섹션 ${vs.length}/${rows.length}개</span><button type="button" class="btn-ui" data-tpl-fold="1">모두 접기</button><button type="button" class="btn-ui" data-tpl-fold="0">모두 펴기</button></div>
+  <div class="tpl-secs">${rows.map((r) => tplBlock(t, r)).join('')}</div>
+  ${todo.length ? `<p class="compose__hint">준비 중: ${todo.map(esc).join(' · ')}</p>` : ''}
+  </div>
+  <div class="compose__foot">
+  <div class="compose__actions">
+    <button type="button" class="btn-ui btn-ui--primary" data-tpl-act="download">page.json 받기</button>
+    <button type="button" class="btn-ui" data-tpl-act="copy">page.json 복사</button>
+    <button type="button" class="btn-ui" data-tpl-act="figma" title="Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
+    <button type="button" class="btn-ui" data-tpl-act="reset">샘플로 되돌리기</button>
+  </div>
+  <p class="compose__hint">받은 page.json 과 올린 파일을 <code>pages/</code> 에 같이 넣고 <code>npm run build</code> → <code>dist/pages/이름/</code> · <a href="${esc(t.figmaSet)}" target="_blank" rel="noopener">Figma 원본</a></p>
+  </div>
+  <input type="file" accept="image/*,video/mp4" hidden data-hed-file>
+</aside>
+<div class="compose__stage">
+  <div class="stage-bar">${zoomBar()}</div>
+  <div class="v__frame"><iframe title="${esc(t.title)} 미리보기"></iframe><span class="v__scale"></span></div>
+</div>`;
+  tplEl.querySelector('.compose__scroll').scrollTop = keep;
+  syncPanel();
+  const iframe = tplEl.querySelector('iframe');
+  tplLoaded = false;
+  tplFit = mountPreview(tplEl.querySelector('.compose__stage'), tplEl.querySelector('.v__frame'), iframe, tplEl.querySelector('.v__scale'), () => {
+    tplLoaded = true;
+    try {
+      const doc = iframe.contentDocument;
+      const secOf = (el) => { const sec = el.closest('[data-tpl-sec]'); return sec ? byId[sec.dataset.tplSec] : null; };
+      attachPreviewPick(doc, tplEl, secOf, tplEdit);
+      doc.addEventListener('click', (ev) => { const v = secOf(ev.target); if (v) tplOpen(v.id, true); });
+    } catch (err) {}
+  }, { zoomable: true });
+  const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
+  const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+  Promise.all(vs.flatMap((v) => mediaKeys(tplEdit(v))).map(loadBlob)).then(() => {
+    iframe.srcdoc = srcdoc(vs.map(tplSecHtml).join('\n'), css, js, null);
+  });
+}
+/** 섹션 입력칸 펴기·접기 (scroll = 펴고 그 칸으로 이동) */
+function tplOpen(id, scroll) {
+  const v = byId[id];
+  const t = tplByKey[v.section];
+  const r = rowOf(t, id);
+  const ts = tplState(v.section);
+  const open = ts.open.includes(id);
+  if (scroll && open) { tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
+  ts.open = open ? ts.open.filter((x) => x !== id) : [...ts.open, id];
+  save();
+  const el = tplEl.querySelector(`[data-vid="${id}"]`);
+  if (!el || !r) return;
+  el.outerHTML = tplBlock(t, r);
+  if (scroll) tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+const tplTimers = {};
+function tplUpdate(v) {
+  clearTimeout(tplTimers[v.id]);
+  tplTimers[v.id] = setTimeout(() => {
+    save();
+    const iframe = tplEl.querySelector('iframe');
+    let doc = null;
+    try { doc = iframe.contentDocument; } catch (err) {}
+    const cur = tplLoaded && doc && doc.querySelector(`[data-tpl-sec="${v.id}"]`);
+    if (!cur) return;
+    // 바뀐 자식만 바꿔요 (배경 영상이 계속 재생돼요)
+    const tpl = doc.createElement('template');
+    tpl.innerHTML = tplSecHtml(v);
+    const next = tpl.content.firstElementChild;
+    if (!next) return;
+    const shell = (el) => el.cloneNode(false).outerHTML;
+    if (shell(cur) !== shell(next) || cur.children.length !== next.children.length) cur.replaceWith(next);
+    else [...next.children].forEach((n, i) => { const c = cur.children[i]; if (c.outerHTML !== n.outerHTML) c.replaceWith(n); });
+  }, 100);
+}
+function tplPage(key) {
+  const t = tplByKey[key];
+  return { title: t.title, theme: 'light', sections: tplVisible(t).map((id) => ({ variant: id, content: contentFrom(byId[id], tplEditOf(id), true, byId[id].layout) })) };
+}
+// 섹션 넣기·빼기 (체크 끄면 페이지·page.json 에서 빠져요 — 입력한 내용은 그대로 남아요)
+tplEl.addEventListener('change', (ev) => {
+  const cb = ev.target.closest('[data-tpl-on]');
+  if (!cb) return;
+  const ts = tplState(tplKey());
+  const k = cb.dataset.tplOn;
+  ts.off = cb.checked ? ts.off.filter((x) => x !== k) : [...new Set([...ts.off, k])];
+  save(); renderTpl();
+});
+bindEditorForm({
+  el: tplEl,
+  variantOf: (t) => { const b = t.closest('[data-vid]'); return b ? byId[b.dataset.vid] : null; },
+  edit: tplEdit,
+  redraw: (v) => { const f = tplEl.querySelector(`[data-vid="${v.id}"] [data-hed-form]`); if (f) f.innerHTML = heroForm(v, tplEdit(v)); },
+  update: tplUpdate,
+});
+tplEl.addEventListener('click', (ev) => {
+  const key = tplKey();
+  const t = tplByKey[key];
+  if (!t) return;
+  const tg = ev.target.closest('[data-tpl-toggle]');
+  if (tg) { tplOpen(tg.dataset.tplToggle); return; }
+  const fd = ev.target.closest('[data-tpl-fold]');
+  if (fd) { tplState(key).open = fd.dataset.tplFold === '1' ? [] : tplVisible(t); save(); tplEl.querySelector('.tpl-secs').innerHTML = tplRows(t).map((r) => tplBlock(t, r)).join(''); return; }
+  // 자리에서 섹션 고르기 (예: 추천 대상 — 체크 / 카드) → 그 섹션 입력칸을 열고 미리보기를 다시 그려요
+  const pk = ev.target.closest('[data-tpl-pick]');
+  if (pk) {
+    const ts = tplState(key);
+    ts.pick[pk.dataset.tplPick] = pk.dataset.id;
+    if (!ts.open.includes(pk.dataset.id)) ts.open.push(pk.dataset.id);
+    save(); renderTpl(); return;
+  }
+  const ta = ev.target.closest('[data-tpl-act]');
+  if (!ta) return;
+  const json = JSON.stringify(tplPage(key), null, 2) + '\n';
+  if (ta.dataset.tplAct === 'copy') return copyText(json, ta);
+  if (ta.dataset.tplAct === 'download') {
+    download(`${key}.page.json`, new Blob([json], { type: 'application/json' }));
+    for (const id of tplVisible(t)) downloadMedia(byId[id], tplEditOf(id), byId[id].layout);
+    return;
+  }
+  if (ta.dataset.tplAct === 'figma') {
+    ta.disabled = true;
+    figmaBundle(tplPage(key), tplVisible(t).map((variant, i) => ({ i, variant })), tplEditOf, (v) => v.layout)
+      .then((out) => download(`${key}.figma.json`, new Blob([out], { type: 'application/json' })))
+      .finally(() => { ta.disabled = false; });
+    return;
+  }
+  if (ta.dataset.tplAct === 'reset' && confirm(`${t.title} — 입력한 내용을 모두 지우고 Figma 샘플로 되돌릴까요?`)) {
+    tplState(key).edits = {};
+    save(); renderTpl();
   }
 });
 
@@ -1331,7 +1712,7 @@ document.addEventListener('click', (e) => {
   const vw = e.target.closest('[data-view]');
   if (vw) { state.view = vw.dataset.view; applyGlobal(); cards.forEach((c) => c.links()); save(); if (state.mode === 'library') renderCat(); return; }
   const dv = e.target.closest('[data-device]');
-  if (dv) { state.device = dv.dataset.device; applyGlobal(); cards.forEach((c) => { c.apply(); c.fit(); }); composeFit && composeFit(); heroFit && heroFit(); if (state.mode === 'hero') measureSoon(); save(); }
+  if (dv) { state.device = dv.dataset.device; applyGlobal(); cards.forEach((c) => { c.apply(); c.fit(); }); composeFit && composeFit(); heroFit && heroFit(); tplFit && tplFit(); if (state.mode === 'hero') measureSoon(); save(); }
 });
 
 /* 패널 폭 드래그 — 조합기·히어로 편집기 공통 (끄는 동안 미리보기 iframe 이 마우스를 가로채지 않게 막아요) */
@@ -1372,23 +1753,30 @@ function applyGlobal() {
   document.querySelector('[data-view-seg]').hidden = state.mode !== 'library';
   composeEl.hidden = state.mode !== 'compose';
   heroEl.hidden = state.mode !== 'hero';
+  tplEl.hidden = !tplKey();
   const top = document.getElementById('top');
   document.documentElement.style.setProperty('--top-h', top.offsetHeight + 'px');
 }
 
 function applyAll() {
   applyGlobal();
-  if (state.mode === 'library') { renderSide(); renderCat(); } else if (state.mode === 'compose') { renderCompose(); } else { renderHero(); }
+  if (state.mode === 'library') { renderSide(); renderCat(); } else if (state.mode === 'compose') { renderCompose(); } else if (tplKey()) { renderTpl(); } else { renderHero(); }
   // 히어로 편집기는 #hero-editor 주소로 바로 열려요 (기획자에게 링크 전달용)
+  // 페이지 템플릿 편집기는 #tpl-<템플릿> (예: #tpl-monthly-hunet)
   if (state.mode === 'hero') history.replaceState(null, '', '#hero-editor');
-  else if (location.hash === '#hero-editor') history.replaceState(null, '', '#' + state.cat);
+  else if (tplKey()) history.replaceState(null, '', '#tpl-' + tplKey());
+  else if (location.hash === '#hero-editor' || location.hash.startsWith('#tpl-')) history.replaceState(null, '', '#' + state.cat);
   save();
 }
+
+// 페이지 템플릿 탭 — 히어로 편집기 다음에 템플릿마다 하나씩
+document.querySelector('.seg--mode').insertAdjacentHTML('beforeend', TEMPLATES.map((t) => `<button type="button" role="tab" data-mode="tpl:${esc(t.key)}" aria-selected="false">${esc(t.title)}</button>`).join(''));
 
 // #hero 또는 #hero-media-badge 로 바로 열기, #hero-editor 는 히어로 편집기
 const h = decodeURIComponent(location.hash.slice(1));
 let jumpTo = null;
 if (h === 'hero-editor') state.mode = 'hero';
+else if (h.startsWith('tpl-') && tplByKey[h.slice(4)]) state.mode = 'tpl:' + h.slice(4);
 else if (secByKey[h]) state.cat = h;
 else if (byId[h]) { state.cat = byId[h].section; state.mode = 'library'; jumpTo = h; }
 if (!isOpen(state.cat)) state.open.push(state.cat);

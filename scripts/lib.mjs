@@ -7,6 +7,8 @@ import nunjucks from 'nunjucks';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const SECTIONS_DIR = path.join(ROOT, 'sections');
+/** 페이지 템플릿(월간휴넷 등) — templates/<key>/template.json + 섹션 폴더(variant 와 같은 4개 파일) */
+export const TEMPLATES_DIR = path.join(ROOT, 'templates');
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 
@@ -26,6 +28,24 @@ const readIf = (p) => (fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '');
 
 /* ---------------------------------------------------------------- registry */
 
+function loadVariant(vdir, root, variants, loadErrors) {
+  if (!fs.existsSync(path.join(vdir, 'meta.json'))) return;
+  try {
+    const meta = readJson(path.join(vdir, 'meta.json'));
+    variants.push({
+      ...meta,
+      dir: vdir,
+      templatePath: path.relative(root, path.join(vdir, 'template.njk')),
+      template: fs.readFileSync(path.join(vdir, 'template.njk'), 'utf8'),
+      css: readIf(path.join(vdir, 'style.css')),
+      js: readIf(path.join(vdir, 'script.js')),
+      sample: readJson(path.join(vdir, 'sample.json')),
+    });
+  } catch (e) {
+    loadErrors.push(`${path.relative(ROOT, vdir)}: ${e.message}`);
+  }
+}
+
 export function loadRegistry() {
   const catalog = readJson(path.join(SECTIONS_DIR, 'sections.json'));
   const variants = [];
@@ -35,31 +55,37 @@ export function loadRegistry() {
     sec.sharedCss = [readIf(path.join(dir, '_shared.css')), readIf(path.join(dir, '_backgrounds.css'))].filter(Boolean).join('\n');
     sec.variants = [];
     if (!fs.existsSync(dir)) continue;
-    for (const name of fs.readdirSync(dir).sort()) {
-      const vdir = path.join(dir, name);
-      if (!fs.existsSync(path.join(vdir, 'meta.json'))) continue;
-      try {
-        const meta = readJson(path.join(vdir, 'meta.json'));
-        variants.push({
-          ...meta,
-          dir: vdir,
-          templatePath: path.relative(SECTIONS_DIR, path.join(vdir, 'template.njk')),
-          template: fs.readFileSync(path.join(vdir, 'template.njk'), 'utf8'),
-          css: readIf(path.join(vdir, 'style.css')),
-          js: readIf(path.join(vdir, 'script.js')),
-          sample: readJson(path.join(vdir, 'sample.json')),
-        });
-      } catch (e) {
-        loadErrors.push(`${path.relative(ROOT, vdir)}: ${e.message}`);
-      }
-    }
+    for (const name of fs.readdirSync(dir).sort()) loadVariant(path.join(dir, name), SECTIONS_DIR, variants, loadErrors);
     const mine = variants.filter((v) => v.section === sec.key).sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
     sec.variants = mine.map((v) => v.id);
   }
   variants.sort((a, b) => catalog.sections.findIndex((s) => s.key === a.section) - catalog.sections.findIndex((s) => s.key === b.section) || (a.order ?? 99) - (b.order ?? 99));
+  // 페이지 템플릿 — 라이브러리·조합기 목록(catalog.sections)에는 넣지 않고, 렌더·검증·CSS 는 섹션과 같이 써요
+  const templates = [];
+  if (fs.existsSync(TEMPLATES_DIR)) {
+    for (const key of fs.readdirSync(TEMPLATES_DIR).sort()) {
+      const dir = path.join(TEMPLATES_DIR, key);
+      if (!fs.existsSync(path.join(dir, 'template.json'))) continue;
+      const t = readJson(path.join(dir, 'template.json'));
+      const before = variants.length;
+      for (const name of fs.readdirSync(dir).sort()) loadVariant(path.join(dir, name), TEMPLATES_DIR, variants, loadErrors);
+      const mine = variants.slice(before);
+      for (const v of mine) if (v.section !== t.key) loadErrors.push(`templates/${key}/${v.layout}: meta.section 은 "${t.key}" 여야 해요`);
+      // order 에 있는 섹션만, 그 순서로 (아직 만들지 않은 섹션은 건너뛰어요)
+      // 항목이 { label, pick: [layout…] } 면 그중 하나를 고르는 자리 — rows[i].ids, 기본은 첫 번째
+      const idOf = (l) => mine.find((v) => v.layout === l)?.id;
+      t.rows = (t.order || []).map((o) => (typeof o === 'string' ? { ids: [idOf(o)] } : { label: o.label, ids: (o.pick || []).map(idOf) }))
+        .map((r) => ({ ...r, ids: r.ids.filter(Boolean) })).filter((r) => r.ids.length);
+      t.variants = t.rows.flatMap((r) => r.ids);
+      t.defaults = t.rows.map((r) => r.ids[0]); // 샘플 페이지 = 자리마다 첫 번째
+      t.sharedCss = readIf(path.join(dir, '_shared.css'));
+      t.template = true;
+      templates.push(t);
+    }
+  }
   const byId = Object.fromEntries(variants.map((v) => [v.id, v]));
-  const sectionByKey = Object.fromEntries(catalog.sections.map((s) => [s.key, s]));
-  return { catalog, variants, byId, sectionByKey, loadErrors };
+  const sectionByKey = Object.fromEntries([...catalog.sections, ...templates].map((s) => [s.key, s]));
+  return { catalog, variants, byId, sectionByKey, templates, loadErrors };
 }
 
 /* ---------------------------------------------------------------- figma links */
@@ -136,10 +162,12 @@ function validateValue(s, v, where, errors) {
     case 'color': {
       // palette: "text" = HDS typography 글자색(tokens/hds.json text), 없으면 버튼 색(colors)
       // palette: "line" = HDS line 색(tokens/hds.json line). 버튼 색은 예전 키(aliases)도 받아요
-      const pal = s.palette === 'text' ? HDS_IDX.text : s.palette === 'line' ? HDS_IDX.line : HDS_IDX.colors;
+      const pal = s.palette === 'text' ? HDS_IDX.text : s.palette === 'line' ? HDS_IDX.line : s.palette === 'bg' ? HDS_IDX.bg
+        : s.palette === '700' ? Object.fromEntries(HDS.colors.filter((c) => c.key.endsWith('/700')).map((c) => [c.key, c])) : HDS_IDX.colors;
       const shown = s.palette ? Object.keys(pal) : HDS.colors.map((c) => c.key);
       if (s.noneValue && v === s.noneValue) break; // 예: 뱃지 테두리 "none" = 빼기
-      if (!pal[v]) errors.push(`${where}: HDS ${s.palette === 'text' ? '글자색' : s.palette === 'line' ? '선 색' : '색'} 키예요 (가능: ${shown.join(', ')} / 현재 "${v}")`);
+      if (s.free && /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(String(v))) break; // 자유 색 — #rrggbb(aa)
+      if (!pal[v]) errors.push(`${where}: HDS ${s.palette === 'text' ? '글자색' : s.palette === 'line' ? '선 색' : s.palette === 'bg' ? '배경색' : '색'} 키예요 (가능: ${shown.join(', ')} / 현재 "${v}")`);
       break;
     }
     case 'radius':
@@ -205,7 +233,7 @@ export function validatePage(reg, page, where = 'page') {
 /* ---------------------------------------------------------------- render */
 
 export function createEnv() {
-  const env = new nunjucks.Environment(new nunjucks.FileSystemLoader(SECTIONS_DIR, { noCache: true }), {
+  const env = new nunjucks.Environment(new nunjucks.FileSystemLoader([SECTIONS_DIR, TEMPLATES_DIR], { noCache: true }), {
     autoescape: true, trimBlocks: true, lstripBlocks: true,
   });
   return core.addFilters(env, {
@@ -268,8 +296,11 @@ export function cssFor(reg, variantIds) {
   for (const id of variantIds) {
     const v = reg.byId[id];
     if (!v || seenVar.has(id)) continue;
-    const sec = reg.sectionByKey[v.section];
-    if (sec?.sharedCss && !seenSec.has(sec.key)) { parts.push(`/* ${sec.key} — 공통 */\n${sec.sharedCss.trim()}`); seenSec.add(sec.key); }
+    // meta.uses = 함께 쓰는 섹션 공통 CSS (템플릿의 hero 가 sections/hero 의 공통 틀을 쓰는 것처럼)
+    for (const key of [...(v.uses || []), v.section]) {
+      const sec = reg.sectionByKey[key];
+      if (sec?.sharedCss && !seenSec.has(sec.key)) { parts.push(`/* ${sec.key} — 공통 */\n${sec.sharedCss.trim()}`); seenSec.add(sec.key); }
+    }
     parts.push(`/* ${v.id} */\n${v.css.trim()}`);
     seenVar.add(id);
   }

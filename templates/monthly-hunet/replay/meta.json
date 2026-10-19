@@ -1,0 +1,75 @@
+{
+  "id": "monthly-hunet-replay",
+  "section": "monthly-hunet",
+  "layout": "replay",
+  "label": "다시보기",
+  "order": 8,
+  "when": "지난 라이브 다시보기 — 썸네일 카드 2열 + 전체 목록 버튼",
+  "figma": {
+    "pc": "624:10250",
+    "mo": null,
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 1
+    },
+    "subtitle": {
+      "type": "richtext",
+      "extract": false,
+      "label": "설명",
+      "maxLines": 3
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "다시보기",
+      "min": 0,
+      "max": 8,
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "썸네일",
+          "hint": "410×217"
+        },
+        "title": {
+          "type": "richtext",
+          "label": "제목",
+          "note": "엔터로 줄바꿈"
+        },
+        "desc": {
+          "type": "text",
+          "extract": false,
+          "label": "설명",
+          "maxChars": 80
+        },
+        "date": {
+          "type": "text",
+          "extract": false,
+          "label": "기간",
+          "maxChars": 30
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        }
+      }
+    },
+    "more": {
+      "type": "text",
+      "extract": false,
+      "label": "아래 버튼 문구",
+      "maxChars": 14,
+      "optional": true
+    },
+    "moreHref": {
+      "type": "url",
+      "label": "아래 버튼 링크",
+      "optional": true
+    }
+  }
+}

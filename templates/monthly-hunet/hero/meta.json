@@ -1,24 +1,27 @@
 {
-  "id": "hero-monthly-live",
-  "section": "hero",
-  "layout": "monthly-live",
-  "order": 12,
+  "id": "monthly-hunet-hero",
+  "section": "monthly-hunet",
+  "layout": "hero",
+  "label": "히어로",
+  "order": 1,
   "when": "월간휴넷 LIVE 같은 라이브 행사 — 로고·타이틀 아래 큰 비주얼에 일정·연사 사진을 얹어요",
+  "uses": [
+    "hero"
+  ],
   "figma": {
-    "pc": "580:6017",
-    "mo": "580:6028",
+    "pc": "599:7320",
+    "mo": "599:7343",
     "tb": null
   },
   "body": 980,
-  "editor": true,
-  "thumb": "assets/hero/thumbs/monthly-live.jpg",
   "slots": {
     "logo": {
       "type": "media",
       "extract": false,
       "optional": true,
       "label": "로고",
-      "hint": "왼쪽 위 로고 · 흰색 로고(SVG·PNG)를 권해요. 비우면 로고 없음"
+      "hint": "왼쪽 위 로고 · PC·MO 같은 파일이에요 · 흰색 로고(SVG·PNG)를 권해요. 지우면 로고 없음 · 「되돌리기」로 원래 로고",
+      "single": true
     },
     "share": {
       "type": "toggle",
@@ -57,6 +60,13 @@
       "label": "메인 비주얼",
       "hint": "PC 980×580 · MO 343×203 둥근 모서리 · 이미지 또는 mp4 · 미리보기의 이미지를 클릭해도 바꿀 수 있어요",
       "figmaLayer": "Main"
+    },
+    "visualShade": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "메인 비주얼 하단 그라데이션 (PC)",
+      "note": "Figma 시안처럼 비주얼 아래쪽을 어둡게 — 위에 얹은 일정 글자가 잘 보여요"
     },
     "date": {
       "type": "richtext",

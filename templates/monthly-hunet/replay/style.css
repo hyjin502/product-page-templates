@@ -1,0 +1,14 @@
+/* PC — Figma 624:10250 · 본문 860 · 위아래 120 · 머리·목록·버튼 사이 40 · 카드 410 두 열(양 끝) · 줄 사이 40
+   썸네일 410×217 둥근 8 · 제목 18/28 · 설명 16/25 · 기간 14/22 (Figma 고정 줄높이) */
+.mh-replay { display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
+.mh-replay > :not(.mh-replay__more) { width: var(--body, 860px); max-width: 100%; }
+.mh-replay__head { display: flex; flex-direction: column; gap: 16px; }
+.mh-replay__lead { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-replay__list { display: grid; grid-template-columns: repeat(2, 410px); justify-content: space-between; row-gap: 40px; margin: 0; padding: 0; list-style: none; }
+.mh-replay__item { display: flex; flex-direction: column; gap: 24px; color: inherit; text-decoration: none; }
+.mh-replay__thumb { display: block; border-radius: 8px; }
+.mh-replay__thumb img { display: block; width: 100%; aspect-ratio: 410 / 217; border-radius: 8px; object-fit: cover; background: #050507; }
+.mh-replay__text { display: flex; flex-direction: column; gap: 4px; letter-spacing: -0.2px; }
+.mh-replay__title { font-size: 18px; font-weight: 700; line-height: 28px; }
+.mh-replay__desc { font-size: 16px; line-height: 25px; color: var(--t-80); }
+.mh-replay__date { margin-top: 4px; font-size: 14px; line-height: 22px; color: var(--t-60); } /* 글 묶음↔기간 8 */

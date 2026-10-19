@@ -1,0 +1,26 @@
+<section class="mh-benefits">
+  <div class="mh-benefits__head">
+    <h2 class="mh-h">{{ title | rt }}</h2>
+    <p class="mh-benefits__lead">{{ subtitle | rt }}{% if highlight %} <b>{{ highlight | rt }}</b>{% endif %}</p>
+  </div>
+  <ul class="mh-benefits__list">
+{% for it in items %}
+    <li class="mh-benefits__item">
+      <div class="mh-benefits__visual" data-pick-item="items:{{ loop.index0 }}:image">
+{% if it.image and it.image.src %}
+        <img src="{{ it.image.src }}" alt="{{ it.image.alt or '' }}">
+{% endif %}
+{% if it.badge %}
+        <span class="mh-benefits__badge">{{ it.badge | rt }}</span>
+{% endif %}
+      </div>
+      <div class="mh-benefits__text">
+        <h3 class="mh-benefits__title">{{ it.title }}</h3>
+{% if it.desc %}
+        <p class="mh-benefits__desc">{{ it.desc | rt }}</p>
+{% endif %}
+      </div>
+    </li>
+{% endfor %}
+  </ul>
+</section>

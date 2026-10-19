@@ -1,0 +1,16 @@
+{% set bg = bgColor | hdsBg %}{% set tinted = bg and (bg | lower) not in ['#ffffff', '#ffffffff'] %}
+<section class="mh-persona{% if tinted %} mh-persona--tinted{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
+  <div class="mh-persona__body">
+    <h2 class="mh-h mh-h--center{% if titleColor == 'white' %} mh-h--white{% endif %}">{{ title | rt }}</h2>
+    <ul class="mh-persona__grid">
+{% for c in cards %}
+      <li class="mh-persona__card">
+{% if c.image and c.image.src %}
+        <span class="mh-persona__avatar" data-pick-item="cards:{{ loop.index0 }}:image"><img src="{{ c.image.src }}" alt="{{ c.image.alt or '' }}" width="72" height="72"></span>
+{% endif %}
+        <p class="mh-persona__text">{% if c.desc %}<span class="mh-persona__desc">{{ c.desc | rt }}</span>{% endif %}<b class="mh-persona__name">{{ c.name }}</b></p>
+      </li>
+{% endfor %}
+    </ul>
+  </div>
+</section>

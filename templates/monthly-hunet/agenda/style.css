@@ -1,0 +1,22 @@
+/* PC — Figma 600:7963 · 본문 860 · 위아래 120 · 제목·세션 사이 16
+   세션: 회색 바탕(bg-page) · 둥근 12 · 안쪽 32 · 이름↔내용 32 / 내용: 글(최소 300) + 사진 칸(최소 200, 높이 221) */
+.mh-agenda { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
+.mh-agenda > * { width: var(--body, 860px); max-width: 100%; }
+.mh-agenda__session { display: flex; flex-direction: column; gap: 32px; padding: 32px; border-radius: 12px; background: var(--bg-page); }
+.mh-agenda__label { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--brand); }
+.mh-agenda__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; }
+.mh-agenda__session--short .mh-agenda__row { gap: 0 32px; justify-content: flex-start; }
+.mh-agenda__text { flex: 1 0 0; min-width: 300px; display: flex; flex-direction: column; gap: 12px; }
+.mh-agenda__time { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-agenda__heads { display: flex; flex-direction: column; gap: 2px; }
+.mh-agenda__heading { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mh-agenda__session--short .mh-agenda__heading { font-size: 20px; } /* Figma Session 3 — 소제목·설명이 없는 세션 */
+.mh-agenda__subtitle { margin: 0; font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-agenda__desc { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
+.mh-agenda__profile { flex: none; min-width: 200px; margin: 0; display: flex; flex-direction: column; align-items: flex-end; }
+.mh-agenda__session:not(.mh-agenda__session--short) .mh-agenda__profile { min-height: 221px; }
+.mh-agenda__photo { display: block; border-radius: 9.6px; }
+.mh-agenda__profile img { display: block; width: 150px; height: 150px; border-radius: 9.6px; object-fit: cover; background: #dee2e6; }
+.mh-agenda__profile figcaption { width: 150px; margin-top: 12px; display: flex; flex-direction: column; text-align: center; font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-agenda__profile figcaption b { font-weight: 700; }
+.mh-agenda__session--short .mh-agenda__profile { margin-left: auto; }

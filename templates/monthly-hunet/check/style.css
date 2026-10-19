@@ -1,0 +1,9 @@
+/* PC — Figma 600:7667 · 본문 860 · 위아래 120 · 제목↔목록 60 · 항목 사이 8 */
+.mh-check { display: flex; justify-content: center; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
+.mh-check__body { width: var(--body, 860px); max-width: 100%; display: flex; flex-direction: column; gap: 60px; }
+.mh-check__list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.mh-check__item { display: flex; align-items: center; gap: 8px; padding: 16px 40px; border-radius: 8px; background: var(--bg-page);
+  font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-check__item svg { flex: none; width: 24px; height: 24px; color: var(--error); }
+/* 배경색을 고르면(흰색 말고) 항목은 흰 바탕으로 — 회색 항목이 배경에 묻히지 않게 (제안값) */
+.mh-check--tinted .mh-check__item { background: var(--bg-surface); }

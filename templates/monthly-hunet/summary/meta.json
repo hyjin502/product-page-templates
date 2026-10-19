@@ -1,0 +1,38 @@
+{
+  "id": "monthly-hunet-summary",
+  "section": "monthly-hunet",
+  "layout": "summary",
+  "label": "소개 글",
+  "order": 2,
+  "when": "행사 소개 — 굵은 제목 두 줄 아래 설명 문단을 이어서 보여줘요",
+  "figma": {
+    "pc": "600:7654",
+    "mo": "600:7665",
+    "tb": null
+  },
+  "body": 800,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 3,
+      "note": "굵게 · 줄마다 한 칸"
+    },
+    "paragraphs": {
+      "type": "list",
+      "extract": false,
+      "label": "문단",
+      "min": 0,
+      "max": 8,
+      "item": {
+        "text": {
+          "type": "richtext",
+          "label": "문단",
+          "note": "엔터로 줄바꿈"
+        }
+      },
+      "note": "문단 사이는 16px 띄워요"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "monthly-hunet-sticky-cta",
+  "section": "monthly-hunet",
+  "layout": "sticky-cta",
+  "label": "하단 고정 바",
+  "order": 9,
+  "when": "화면 아래에 붙는 바 — 행사 이름 · 마감까지 남은 날 · 버튼 2개",
+  "figma": {
+    "pc": "624:10289",
+    "mo": null,
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "title": {
+      "type": "text",
+      "extract": false,
+      "label": "왼쪽 문구",
+      "maxChars": 40
+    },
+    "icon": {
+      "type": "text",
+      "extract": false,
+      "label": "앞 이모지",
+      "maxChars": 2,
+      "optional": true
+    },
+    "before": {
+      "type": "text",
+      "extract": false,
+      "label": "남은 날 앞 문구",
+      "maxChars": 10,
+      "optional": true
+    },
+    "count": {
+      "type": "text",
+      "extract": false,
+      "label": "남은 날 (빨간 칸)",
+      "maxChars": 6,
+      "optional": true
+    },
+    "after": {
+      "type": "text",
+      "extract": false,
+      "label": "남은 날 뒤 문구",
+      "maxChars": 6,
+      "optional": true
+    },
+    "ctas": {
+      "type": "list",
+      "extract": false,
+      "label": "버튼",
+      "min": 0,
+      "max": 2,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "버튼 문구",
+          "maxChars": 10
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        }
+      },
+      "note": "마지막 버튼이 진한 버튼이에요"
+    }
+  },
+  "stage": "sticky"
+}

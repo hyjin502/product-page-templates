@@ -1,0 +1,14 @@
+/* PC — Figma 624:10289 · 폭 980 · 아래 16 · 흰 바(둥근 8 · 안쪽 14/24 · 그림자 drop shadow/300)
+   페이지 맨 끝에 두면 스크롤하는 동안 화면 아래에 붙어 있어요 (sections/sticky-cta 와 같은 방식) */
+.mh-sticky { position: sticky; bottom: 0; z-index: 10; display: flex; justify-content: center; padding: 0 var(--container-pad) 16px; pointer-events: none; }
+.mh-sticky__bar { pointer-events: auto; width: var(--body, 980px); max-width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 24px; border-radius: 8px; background: var(--bg-surface); color: var(--t-100);
+  box-shadow: 0 4px 4px -1px rgba(12, 12, 13, 0.1), 0 4px 4px -1px rgba(12, 12, 13, 0.05); }
+.mh-sticky__title { min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-sticky__right { flex: none; display: flex; align-items: center; gap: 16px; }
+.mh-sticky__dday { margin: 0; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-sticky__chip { display: inline-flex; align-items: center; justify-content: center; min-width: 52px; height: 27px; padding: 2px 12px; border-radius: 4px; line-height: 1; color: var(--error); background: var(--bg-faint); }
+.mh-sticky__btns { display: flex; gap: 8px; }
+.mh-sticky__btn { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 20px; border-radius: 8px; background: var(--bg-faint); color: var(--t-100);
+  font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; }
+.mh-sticky__btn--dark { min-width: 111px; background: var(--gray-1600); color: var(--static-white); }

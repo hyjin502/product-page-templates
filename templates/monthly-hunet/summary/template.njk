@@ -1,0 +1,12 @@
+<section class="mh-summary">
+  <div class="mh-summary__body">
+    <h2 class="mh-summary__title">{{ title | rt }}</h2>
+{% if paragraphs.length %}
+    <div class="mh-summary__text">
+{% for p in paragraphs %}
+      <p>{{ p.text | rt }}</p>
+{% endfor %}
+    </div>
+{% endif %}
+  </div>
+</section>

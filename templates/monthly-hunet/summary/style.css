@@ -1,0 +1,6 @@
+/* PC — Figma 600:7654 (1920 × 655) · 본문 800 · 위 64 · 아래 120 · 제목↔문단 40 */
+.mh-summary { display: flex; justify-content: center; padding: 64px var(--container-pad) 120px; background: var(--bg-surface); color: var(--t-100); letter-spacing: var(--tracking-tighter); }
+.mh-summary__body { width: var(--body, 800px); max-width: 100%; display: flex; flex-direction: column; gap: 40px; }
+.mh-summary__title { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.4; }
+.mh-summary__text { display: flex; flex-direction: column; gap: 16px; font-size: 18px; line-height: 1.6; color: var(--t-60); }
+.mh-summary__text p { margin: 0; }

@@ -31,12 +31,12 @@
     | split-photo | 469:32762 | (없음) |
     | media-left | 469:32412 | (없음) |
     | media-left-bottom | 517:33408 | 550:41490 |
-    | monthly-live (월간휴넷) | 580:6017 | 580:6028 |
     | monthly-x (월간X) | 580:6029 | 580:6030 |
     - **variant 이름 = 저장소 layout** (2026-10-15 사용자 요청으로 Claude 가 Figma 이름만 고침): `device=pc|mo, layout=<meta.layout>` (예 `device=pc, layout=media-badge`). 예전엔 대부분 `layout=center-inline` 으로 겹쳐 세트 오류 → 라이브러리 게시에서 빠졌었다(Invalid assets). 479:33142·479:33359 의 잘못된 `device=pc` 도 `mo` 로 고쳤다. 노드 ID·key 는 그대로.
     - 아래쪽 4종 중 split-stats · split-photo · media-left 는 **MO 시안이 없다**(media-left-bottom 은 2026-10-14 MO 550:41490 추가 — 검정+큐브 20% 배경 `media-left-bottom-bg-mo.jpg`, 문구 묶음 아래쪽 · 버튼은 글자 폭) → MO·TB 는 코드 기본값(`_shared.css` 의 `.hero--left` 규칙: 문구 → 비주얼 순서로 쌓기, 왼쪽 정렬). 517:33408 은 x 가 108 로 8px 어긋나 있다(relink 는 40px 까지 같은 열로 본다).
     - 4종은 `.hero--left` + `.hero__split`(왼쪽 `.hero__content` · 오른쪽 `.hero__visual`) 공통 틀을 쓰고 variant 는 변수만 정한다. split-stats 의 수치는 `stats` 목록(value · unit · label, 추출 안 함 — Figma 레이어 이름이 숫자·문구라서). split-photo·media-left-bottom 은 Figma 문구 묶음이 768 프레임을 넘쳐서(846 · 829) 위아래 여백을 줄여 768 에 맞췄다(타이틀·버튼 위치는 Figma 그대로).
     - media-left-bottom 배경은 Figma 의 검정 + 큐브 이미지 20% 를 한 장(`media-left-bottom-bg.jpg`)으로 구웠다.
+    - **monthly-live(월간휴넷 LIVE)** 는 2026-10-19 사용자 요청으로 hero·히어로 편집기에서 빼서 **월간휴넷 페이지 템플릿**(`templates/monthly-hunet/hero`, 아래 「페이지 템플릿」)으로 옮겼다. 아래 설명(띠·그리드·PC/MO 차이)은 그 hero 에 그대로 해당한다. hero 세트의 580:6017/6028 은 이제 코드와 연결되지 않는다.
     - **monthly-live(월간휴넷 LIVE)** · **monthly-x(월간X)** 는 2026-10-15 디자이너가 **컴포넌트**로 바꿔 hero 세트(469:32313, 이제 23개)에 넣었다(이름 `device=pc|mo, layout=monthly-live|monthly-x`). 예전 프레임 노드(537:36633 등)는 없어졌다. relink 는 이름(layout)으로 맞춘다. (meta `figmaFrame` · `figmaStandalone` 은 세트 밖 시안용으로 남겨 둔 기능) 위쪽 어두운 띠만 배경이고 아래는 흰 바탕. 띠는 고정 높이가 아니라 그리드 줄로 비주얼에 묶여 비주얼 아래 `--overlap`(PC 206 · TB 160 · MO 32) 위에서 끝난다(= Figma 628 · 437). `.hero__body` 는 `display: contents`, MO 는 `.hero__stage` 도 contents. 배경 띠 기본값은 CSS 프리셋 `live-glow`(사용자 요청, Figma 배경 이미지 색을 참고 — 이미지 `monthly-hunet-bg*.jpg` 는 남겨 둠). 메인 비주얼·연사 사진은 Figma 렌더를 구웠다(`assets/hero/monthly-hunet-*`). 로고(`monthly-hunet-logo.svg`, 두 SVG 합침)·공유 아이콘(`assets/icons/share.svg`)·YouTube 로고는 Figma 에셋.
       - PC·MO 가 다르다: 상단 문구·버튼은 MO 에만(PC 에선 숨김), 연사 사진·YouTube 로고는 PC 에만. 일정은 PC 비주얼 위 왼쪽 아래(흰 글자), MO 는 비주얼 아래(검정 글자, 채널은 괄호). 상단 문구 PC 비움 = `{ pc: "", mo }` (편집기도 PC 를 비우고 MO 만 쓰면 이렇게 낸다). 연사 사진은 `speaker1~3`(`pcOnly`, 최대 3장 · 오른쪽 정렬 · 미리보기 클릭 교체 `[data-pick]`). 메인 비주얼 샘플은 사용자 요청으로 PC·MO 모두 Figma PC 비주얼(`monthly-hunet-visual.jpg`, 렌더 1배 980 — 2배 원본이 오면 바꾼다). Figma MO 의 노트북 크롭 사진은 쓰지 않는다. 프레임 채우기가 꺼져 있어(Figma 화면의 회색은 캔버스색) 아래 바탕은 흰색으로 뒀다.
     - **monthly-x(월간X)**: 검정 바탕 + Figma X 패턴(`Asset 2` 를 -90° 돌려 12% — PC 가운데 980 폭 창, MO 전체 · `monthly-x-bg(-mo).jpg` 로 구움)은 남겨 두고, 기본 배경은 CSS 프리셋 `x-pattern`(같은 패턴이 위로 흐름 — 2026-10-15 사용자 결정) · 타이틀 · 티켓 카드(사진 + 파란 #1927ec 정보 칸, 토큰 아님 — `cardColor`(버튼 색 팔레트, 비우면 시안 색)로 정보 칸·사진 위아래 그라디언트를 함께 바꾸고 글자는 그 색의 `on`). 사진 위 파란 빛(hard-light 50%)·아래 그라디언트·이음선 점선은 CSS 라 사진을 바꿔도 그대로, 이음선 양 끝 반원 홈은 mask 로 뚫어 배경이 비쳐요(PC 18 · MO 10.7). X 장식 `monthly-x-mark.svg`, 로고 `monthly-x-logo.svg`, 아이콘 `clock-16`·`map-pin-16`. 티켓 정보는 `details` 목록(icon clock|pin|none · label · value · sub).
@@ -93,6 +93,7 @@ pages/*.page.json                       조립할 페이지 → dist/pages/<name
 pages/_verify/                          추출 검증 결과(Page 18 기준 scan · verify.final) · figma-page.json(링크 재연결용 페이지 덤프)
 site/                                   라이브러리·조합기·히어로 편집기 사이트 셸 (build 가 dist/index.html 로 합침)
 site/render-core.cjs                    렌더 공통(richtext·HDS 필터·기본값 채우기) — 빌드와 편집기(브라우저)가 같은 코드를 쓴다
+templates/<key>/                        페이지 템플릿(월간휴넷) — template.json(제목·Figma 세트·섹션 순서) + 섹션 폴더(variant 와 같은 4개 파일) → dist/templates/<key>/
 figma-plugin/                           조합기 결과 → Figma 인스턴스 조립 플러그인 (src/main.js · ui.html · manifest · components.json, code.js 는 빌드가 만듦)
 scripts/                                build · validate · preview · shot · serve · pack · protect · figma-extract · figma-relink · figma-plugin · bgfx-stills · lib
 .claude/skills/                         add-section-variant · figma-to-page
@@ -120,6 +121,8 @@ scripts/                                build · validate · preview · shot · 
   - `color`: `tokens/hds.json` 색 키(`"blue/700"`), `radius`: HDS Semantic radius 9개 `none(0)|xs(4)|sm(8)|md(12)|lg(16)|xl(20)|2xl(32)|3xl(40)|full(900)`, 둘 다 `default` 로 기본값.
     - `color`(palette 없음) = 버튼 배경 20색: HDS Theme `static/white`·`static/black`, `interaction/button-neutral`·`button-subtle`·`selected_fill`·`overlay-bg`·`overlay-outline`, Atomic 각 색 `/700`(gray·red·red-orange·orange·yellow·lime·green·cyan·sky·blue·violet·purple·pink). 그리고 HDS 토큰이 아닌 `transparent`(투명 바탕, 글자는 hero 글자색 · `.hero-btn--clear` · 라인과 함께 쓴다). `on` = 그 위 글자색(밝기 0.4 미만이면 흰색). 예전 키 `white`·`gray/1000`·`gray/1400` 은 `aliases` 로 같은 값의 새 키를 가리킨다.
     - `color` + `"palette": "line"` = HDS Theme line 4색(`line-layout`·`line-outline`·`line-strong`·`line-heavy`, 라이트 값) + `static/white`(#ffffff, 어두운 배경 위 흰 라인). hero 버튼 항목의 `line`(선택, 비우면 라인 없음) — 채움형은 1px outline, 테두리형은 그 테두리 색(`--outline-line`).
+    - `color` + `"palette": "700"` = 원색 700번 13색(버튼 팔레트에서 `/700` 만 — gray·red·red-orange·orange·yellow·lime·green·cyan·sky·blue·violet·purple·pink). 월간휴넷 아젠다 `labelColor`(세션 이름 색, 기본 blue/700 = 시안 #0066ff), 템플릿은 `hdsColor`.
+    - `color` + `"palette": "bg"` = 섹션 배경색 8개(HDS Theme background `bg-surface`·`bg-page`·`bg-ghost`·`bg-faint` 라이트 값 + 원색 `red`·`green`·`blue`·`violet/200`, `tokens/hds.json` 의 `bg`, 템플릿 필터 `hdsBg`). `free: true` 를 더하면 칩 대신 **자유 색 고르기**(Figma 색 패널처럼 채도·밝기 사각형 · 색상 · 불투명도 · 스포이드(EyeDropper 되는 브라우저) · HEX·%) — 값 `#rrggbb` 또는 `#rrggbbaa`, `hdsBg` 는 #hex 를 그대로 낸다. 월간휴넷 추천 대상(check · persona)은 제목 색 `titleColor`(enum black|white, `.mh-h--white`)과 `bgColor` 가 있고, `bgColor` 가 free — 비우면 시안(흰 바탕, 「기본」), 흰색이 아닌 색이면 항목·카드를 흰 바탕으로(제안값).
     - `color` + `"palette": "text"` = HDS Theme 의 typography 글자색 10개(`black-100`~`black-disabled`, `white-100`~`white-disabled`, 라이트 값 · `tokens/hds.json` 의 `text`). hero 의 `titleColor`·`descColor` 슬롯이 쓰고, 기본값은 variant 의 원래 글자색이다(그래서 샘플 화면은 그대로). 템플릿은 `hdsText` 필터 → 타이틀은 `color`, 서브는 `--hero-desc-color`. gradient-text 는 타이틀이 그라디언트 고정이라 `descColor` 만 있다.
   - **뱃지 꾸미기** `badgeColor`(color, 버튼 팔레트) · `badgeLine`(color palette line, `noneValue: "none"` = 테두리 빼기) · `badgeRadius`(radius): 모두 optional·기본값 없음 → 비우면 variant 시안 그대로(편집기 「기본」 칩). 템플릿은 `badge()` 매크로가 고른 값만 인라인으로 덮어쓴다. 글자형 뱃지(split-stats·media-left-bottom)는 색·테두리가 있으면 `.hero__badge--custom` 으로 여백 8/20.
   - `media`: `{ pc: { kind: "image"|"video", src, alt?, poster? } | { kind: "css", preset }, mo? }`. `hint` 는 편집기 안내 문구.
@@ -130,10 +133,27 @@ scripts/                                build · validate · preview · shot · 
 - 렌더: build 가 편집기 섹션의 `.njk` 를 `nunjucks.precompile` 해서 `nunjucks-slim` 과 함께 `dist/index.html` 에 넣는다. 편집기 미리보기 = `npm run build` 결과 (동일성 확인함).
 - 저장: 문구·선택값은 localStorage(`tpl-site` 의 `hero`), 올린 파일은 IndexedDB(`tpl-hero-editor`). 내보내기는 page.json + 올린 파일(`hero-bg-pc.<확장자>` 이름으로)을 함께 내려받는다.
 - **하단 이미지 크기 `visualFit`**(enum, 기본은 시안 그대로): visual-bottom `crop`(높이 고정·아래 기준 잘림) | `auto`(`.hero--visual-auto`, 세로 = 이미지 비율), product-shot `fit`(가로 1280) | `natural`(`.hero--visual-natural`, 원본 크기·최대 1280). 둘 다 세로는 이미지에 따라 정해진다(crop 만 고정).
+- **미리보기에서 이미지 바꾸기 (목록 항목)**: 템플릿이 사진을 감싼 요소에 `data-pick-item="목록:번호:필드"`(예 `cards:{{ loop.index0 }}:image`)를 붙이면 미리보기에서 마우스를 올려 클릭해 그 항목 이미지를 바꾼다(월간휴넷 persona · agenda · benefits · replay). `<img>` 에는 ::before 가 안 붙어서 span 으로 감싼다. 안내 말풍선은 `::before`(`::after` 는 그라데이션 등이 씀).
 - **미리보기에서 이미지 바꾸기**: `PICK_AREAS`(`visual` → `.hero__visual`)를 편집기 iframe 에서 클릭하면 그 슬롯의 파일 선택이 열린다(MO 보기 + MO 따로면 mo). 새 hero 의 섹션 안 비주얼도 `.hero__visual` 을 쓰면 그대로 된다.
 - **테마**: 조합기 페이지 테마(`state.compose.theme` → page.json `theme`)와 행 테마(`row.theme` → 섹션 `theme: light|dark`, hero 제외). 빌드는 섹션 루트에 `data-theme` 을 붙이고, `tokens/base.css` 의 `[data-theme="light"]` 블록이 다크 페이지 안 라이트 섹션을 되돌린다. 바탕이 없는 섹션은 `:where(section[data-theme])` 가 `--bg-surface`·`--t-100` 을 준다.
 - **조합기 연결**: 조합기 행 `src`(`sample`|`editor`, 없으면 편집 값이 있을 때 editor). editor 행은 `state.hero.edits[variant]` 를 편집기와 같은 렌더러(`heroHtmlOrError`)로 그리고, page.json 은 `contentFrom(…, true)` + 올린 파일(`downloadMedia`)을 함께 낸다. 편집기 「조합기에서 보기」(`to-compose`) = 같은 섹션 행을 지금 variant + `src: editor` 로(없으면 맨 위에 추가).
 - 바로가기: `index.html#hero-editor`. 줄 넘김 경고는 지금 기기 폭의 iframe 에서 `.hero__badge` · `.hero__title` · `.hero__desc` 의 줄 수를 잰다 (hero variant 는 이 클래스를 함께 쓴다).
+
+## 페이지 템플릿 (templates/ — 월간휴넷)
+- 2026-10-19 사용자 결정: 월간휴넷은 섹션 라이브러리와 따로 **전용 폴더** `templates/monthly-hunet/` 에 두고, 사이트 「월간휴넷」 탭(`#tpl-monthly-hunet`)에서 **모든 섹션의 모든 문구를 편집**한다. PC 먼저 만들고 MO 는 나중에.
+- Figma 원본: 세트 `599:7138`(「월간휴넷」). variant 이름 `device=pc|mo, layout=<폴더 이름>`(2026-10-19 사용자 요청으로 Claude 가 정리: hero · summary · check · persona · agenda · register · benefits · replay · sticky-cta. MO 시안은 hero · summary · check · persona · agenda 만). 정리하면서 세트의 `D-day#624:0` boolean 속성을 지웠다(원본 sticky-cta 는 MO 만 그 속성을 쓴다 — 필요하면 다시 만든다).
+- 구조: `template.json`(`key` · `title` · `figmaSet` · `order` = 섹션 폴더 이름 순서, 아직 없는 섹션은 건너뜀) + `<layout>/`(meta · template.njk · style.css · sample.json, `meta.section` = 템플릿 key, `id` = `<key>-<layout>`, `label` = 편집기 표시 이름) + 선택 `_shared.css`.
+  - `meta.uses: ["hero"]` = 다른 섹션의 공통 CSS(`sections/hero/_shared.css` 등)를 함께 쓴다. 템플릿은 `{% from "hero/_macros.njk" … %}` 처럼 sections 매크로를 그대로 import 한다(nunjucks 로더가 sections/ · templates/ 둘 다 본다).
+  - 레지스트리(`loadRegistry`)는 템플릿 variant 를 `byId` 에 넣지만 `catalog.sections` 에는 넣지 않는다 → 라이브러리·조합기 목록에 안 나오고, 렌더·검증·Figma 플러그인(components.json 에 키 있음)은 섹션과 같다.
+- **자리 고르기·넣고 빼기**(2026-10-19 사용자 요청): `order` 항목을 `{ "label": "추천 대상", "pick": ["check", "persona"] }` 로 쓰면 그중 하나를 고르는 자리(기본 첫 번째). 편집기는 자리마다 체크박스로 넣기·빼기, pick 자리는 칩으로 고른다(`state.tpl[key].pick` · `off`, 자리 키 = variant id 를 `|` 로 이은 것). 뺀 자리·고르지 않은 섹션은 미리보기·page.json·Figma용 파일에서 빠지고, 입력한 내용은 남는다. 레지스트리는 `t.rows`(자리) · `t.defaults`(자리마다 첫 번째 = 샘플 페이지).
+- 빌드: `dist/templates/<key>/index.html`(샘플로 조립) · 결과 확인 `npm run shot -- templates/monthly-hunet`.
+- 편집기: `site/app.js` 「페이지 템플릿 편집기」 — 섹션마다 펼침 폼(히어로 편집기와 같은 `heroForm` · `bindEditorForm`), 미리보기는 전체 페이지(섹션 루트에 `data-tpl-sec`, 바뀐 섹션만 다시 그림). 저장 `state.tpl[key].edits[variant]`. 내보내는 파일 이름 앞에는 layout(`hero-bg-pc.jpg`). 줄 넘김 경고(`MEASURE`)는 아직 히어로 편집기만.
+- 문구는 전부 슬롯으로 만든다(템플릿에 하드코딩 문구 0개 — 전체 편집이 목적). pager 섹션은 아직 편집기 미리보기에 `--per-*` 를 붙이지 않는다(필요하면 `withPager`).
+- 섹션(PC, 2026-10-19): hero(599:7320) · summary(600:7654) · check(600:7667) · persona(600:7912) · agenda(600:7963) · register(624:8146) · benefits(624:8208) · replay(624:10250) · sticky-cta(624:10289). 클래스는 `mh-<layout>__*`, 공통(`_shared.css`)은 섹션 제목 `.mh-h` · 알약 버튼 `.mh-btn`. MO·TB 규칙은 아직 없다(다음 작업).
+  - 이미지(`assets/monthly-hunet/`)는 Figma 렌더 1배(아바타 144 · 연사 150 · 썸네일 410)라 2배 원본이 오면 바꾼다. 혜택 이미지는 회색 칸(#e9ecef, Figma 값) 가운데에 놓는다(Figma 는 약간 왼쪽).
+  - 굵은 일부 문구(신청서·혜택 설명 뒤)는 `highlight` 슬롯으로 따로 받는다(richtext 에 굵게 표기가 없어서).
+  - 텍스트 매핑(figmaLayer)은 아직 없다 → Figma 플러그인으로 보내면 문구가 샘플 그대로다.
+- 편집기 폼 확장(히어로 편집기도 같이 씀): 목록 항목의 `richtext` = 여러 줄 입력칸(textarea), `image` = 썸네일 · 파일 선택 · 지우기 · 되돌리기(내보내기 이름 `<layout>-<목록>-<n>.<확장자>`). 미디어 칸은 샘플과 다르면 「되돌리기」. 미디어 슬롯 `single: true` = PC·MO 같은 파일 하나(로고).
 
 ## 조합기 → Figma (플러그인)
 - 조합기 「Figma용으로 받기」 = `.figma.json`(`format: tpl-figma/1`, page.json + `files`: 히어로 편집기에서 올린 파일 data URL, 이름 `upload/<variant>/hero-bg-pc.jpg`).

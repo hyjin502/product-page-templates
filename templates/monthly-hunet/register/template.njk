@@ -1,0 +1,35 @@
+<section class="mh-register">
+  <div class="mh-register__head">
+    <h2 class="mh-h">{{ title | rt }}</h2>
+    <p class="mh-register__lead">{{ subtitle | rt }}{% if highlight %}<br><b>{{ highlight | rt }}</b>{% endif %}</p>
+  </div>
+  <form class="mh-register__form" onsubmit="return false">
+{% if types.length %}
+    <div class="mh-register__types" role="radiogroup" aria-label="{{ typeLabel }}">
+      <span class="mh-register__label">{{ typeLabel }}</span>
+{% for t in types %}
+      <label class="mh-register__radio"><input type="radio" name="mh-type"{% if loop.first %} checked{% endif %}><span>{{ t.label }}</span></label>
+{% endfor %}
+    </div>
+{% endif %}
+    <div class="mh-register__fields">
+{% for f in fields %}
+      <label class="mh-register__field"><span class="mh-register__label">{{ f.label }}</span><input type="text" placeholder="{{ f.placeholder }}"></label>
+{% endfor %}
+    </div>
+    <div class="mh-register__foot">
+      <div class="mh-register__agrees">
+{% for a in agreements %}
+        <label class="mh-register__agree"><input type="checkbox"{% if a.checked %} checked{% endif %}><span>{{ a.label }}</span>{% if a.more %}<a href="#">{{ a.more }}</a>{% endif %}</label>
+{% endfor %}
+      </div>
+{% if ctas.length %}
+      <div class="mh-register__btns">
+{% for c in ctas %}
+        <a class="mh-btn{% if loop.last %} mh-btn--dark{% endif %}" href="{{ c.href or '#' }}">{{ c.label }}{% if loop.last %}{{ 'hds-chevron-right' | icon }}{% endif %}</a>
+{% endfor %}
+      </div>
+{% endif %}
+    </div>
+  </form>
+</section>

@@ -8,7 +8,7 @@ import { createRequire } from 'node:module';
 import nunjucks from 'nunjucks';
 import { buildFigmaPlugin, packFigmaPlugin } from './figma-plugin.mjs';
 import {
-  ROOT, SECTIONS_DIR, BASE_CSS_PATH, PAGER_JS_PATH, RENDER_CORE_PATH, FONT_LINK, HDS, pagerOf, loadRegistry, createEnv, renderVariant, cssFor, figmaUrl,
+  ROOT, SECTIONS_DIR, TEMPLATES_DIR, BASE_CSS_PATH, PAGER_JS_PATH, RENDER_CORE_PATH, FONT_LINK, HDS, pagerOf, loadRegistry, createEnv, renderVariant, cssFor, figmaUrl,
   validateContent, validatePage, BG_PRESETS } from './lib.mjs';
 
 const DIST = path.join(ROOT, 'dist');
@@ -29,20 +29,26 @@ function copyDir(from, to) {
 const posix = (p) => p.split(path.sep).join('/');
 
 function editorBundle(reg, env) {
-  const editors = reg.variants.filter((v) => v.editor);
+  // 편집기 = 히어로 편집기(meta.editor) + 페이지 템플릿(templates/ — 모든 섹션을 편집해요)
+  const editors = reg.variants.filter((v) => v.editor || reg.sectionByKey[v.section]?.template);
   if (!editors.length) return { js: '', icons: {} };
-  // 공통 매크로(_partials) + 편집기 섹션 폴더의 .njk 전부 (섹션 매크로 _macros.njk 포함)
+  // 공통 매크로(_partials) + 편집기 섹션 폴더의 .njk 전부 (섹션 매크로 _macros.njk 포함) — 이름은 로더 기준 경로(섹션은 sections/, 템플릿은 templates/ 아래)
   const files = [];
-  const walk = (dir) => {
+  const walk = (dir, root = SECTIONS_DIR) => {
+    if (!fs.existsSync(dir)) return;
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       const f = path.join(dir, e.name);
-      if (e.isDirectory()) walk(f);
-      else if (e.name.endsWith('.njk')) files.push(path.relative(SECTIONS_DIR, f));
+      if (e.isDirectory()) walk(f, root);
+      else if (e.name.endsWith('.njk')) files.push([root, path.relative(root, f)]);
     }
   };
   walk(path.join(SECTIONS_DIR, '_partials'));
-  for (const sec of new Set(editors.map((v) => v.section))) walk(path.join(SECTIONS_DIR, sec));
-  const sources = files.sort().map((rel) => [posix(rel), fs.readFileSync(path.join(SECTIONS_DIR, rel), 'utf8')]);
+  const secs = new Set(editors.flatMap((v) => [v.section, ...(v.uses || [])]));
+  for (const sec of secs) {
+    if (reg.sectionByKey[sec]?.template) walk(path.join(TEMPLATES_DIR, sec), TEMPLATES_DIR);
+    else walk(path.join(SECTIONS_DIR, sec));
+  }
+  const sources = files.sort((a, b) => a[1].localeCompare(b[1])).map(([root, rel]) => [posix(rel), fs.readFileSync(path.join(root, rel), 'utf8')]);
   const tpl = sources.map(([name, src]) => nunjucks.precompileString(src, { name, env })).join('\n');
   // 템플릿이 쓰는 아이콘만 넣어요 ('chevron-right' | icon)
   const icons = {};
@@ -71,8 +77,9 @@ function buildLibrary(reg, env, baseCss) {
       key: s.key, role: s.role, order: s.order, variants: s.variants,
       figmaSet: figmaUrl(catalog, s.figmaSet), figmaSetDev: figmaUrl(catalog, s.figmaSet, true),
     })),
+    templates: reg.templates.map((t) => ({ key: t.key, title: t.title, variants: t.variants, rows: t.rows, order: t.order, figmaSet: figmaUrl(catalog, t.figmaSet) })),
     variants: reg.variants.map((v) => ({
-      id: v.id, section: v.section, layout: v.layout, when: v.when, body: v.body || 980,
+      id: v.id, section: v.section, layout: v.layout, label: v.label, when: v.when, body: v.body || 980,
       figma: Object.fromEntries(['pc', 'tb', 'mo'].map((d) => [d, v.figma?.[d] ? { url: figmaUrl(catalog, v.figma[d]), dev: figmaUrl(catalog, v.figma[d], true), node: v.figma[d] } : null])),
       slots: v.slots,
       options: Object.fromEntries(Object.entries(v.options || {}).map(([k, o]) => [k, {
@@ -87,6 +94,7 @@ function buildLibrary(reg, env, baseCss) {
       html: renderVariant(env, v, v.sample),
       css: cssFor(reg, [v.id]),
       js: v.js,
+      uses: v.uses || [],
       template: v.template,
       sample: v.sample,
     })),
@@ -168,6 +176,22 @@ function buildPages(reg, env, baseCss) {
   return built;
 }
 
+/** 페이지 템플릿 → dist/templates/<key>/index.html (섹션마다 sample.json 그대로 · 템플릿 순서) */
+function buildTemplates(reg, env, baseCss) {
+  fs.rmSync(path.join(DIST, 'templates'), { recursive: true, force: true });
+  const built = [];
+  for (const t of reg.templates) {
+    if (!t.variants.length) continue;
+    const page = { title: t.title, sections: t.defaults.map((id) => ({ variant: id, content: reg.byId[id].sample })) };
+    const outDir = path.join(DIST, 'templates', t.key);
+    fs.mkdirSync(outDir, { recursive: true });
+    const html = collectAssets(renderPage(reg, env, baseCss, page), path.join(TEMPLATES_DIR, t.key, 'template.json'), outDir);
+    fs.writeFileSync(path.join(outDir, 'index.html'), html);
+    built.push(path.relative(ROOT, path.join(outDir, 'index.html')));
+  }
+  return built;
+}
+
 /* ---------------------------------------------------------------- main */
 
 export function build() {
@@ -181,7 +205,7 @@ export function build() {
   buildLibrary(reg, env, baseCss);
   fs.copyFileSync(path.join(ROOT, 'GUIDE.html'), path.join(DIST, 'guide.html')); // 비개발자용 사용 가이드
   fs.writeFileSync(path.join(DIST, '.nojekyll'), ''); // GitHub Pages 가 _ 로 시작하는 파일을 숨기지 않게
-  const pages = buildPages(reg, env, baseCss);
+  const pages = [...buildPages(reg, env, baseCss), ...buildTemplates(reg, env, baseCss)];
   const plugin = buildFigmaPlugin(reg); // figma-plugin/code.js — 조합기 「Figma용으로 받기」 파일을 Figma 에 조립
   plugin.zip = packFigmaPlugin(DIST); // 사이트에서 받는 dist/figma-plugin.zip
   return { variants: reg.variants.length, pages, plugin };
@@ -205,7 +229,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
   const ok = run();
   if (process.argv.includes('--watch')) {
     let t;
-    for (const d of ['sections', 'tokens', 'site', 'pages', 'assets', 'figma-plugin/src']) {
+    for (const d of ['sections', 'templates', 'tokens', 'site', 'pages', 'assets', 'figma-plugin/src']) {
       fs.watch(path.join(ROOT, d), { recursive: true }, () => { clearTimeout(t); t = setTimeout(run, 120); });
     }
     console.log('변경을 기다리는 중… (Ctrl+C 로 종료)');

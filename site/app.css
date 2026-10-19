@@ -764,3 +764,44 @@ body.is-dev .flink__label::after { content: none; }
 .fhelp kbd { padding: 1px 5px; border: 1px solid var(--rule); border-radius: 4px; font: 11px var(--font-mono); background: var(--stage); }
 .fhelp code { font-size: 12px; }
 .fhelp a { color: var(--accent); }
+
+/* ---------------------------------------------------------------- 페이지 템플릿 편집기 (월간휴넷 등) */
+.tpl-secs { display: flex; flex-direction: column; gap: 6px; }
+.tpl-sec { border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); }
+.tpl-sec.is-open { border-color: var(--accent); }
+.tpl-sec__bar { display: flex; align-items: center; }
+.tpl-sec__on { flex: none; display: grid; place-items: center; padding: 10px 0 10px 12px; cursor: pointer; }
+.tpl-sec__on input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+.tpl-sec.is-off { border-style: dashed; background: transparent; }
+.tpl-sec.is-off .tpl-sec__name { color: var(--ink-3); text-decoration: line-through; }
+.tpl-sec__head:disabled { cursor: default; }
+.tpl-sec__pick { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 10px 40px; }
+.tpl-sec__head { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; padding: 10px 12px; border: 0; background: none; color: var(--ink); font: 600 13px/1.4 var(--font-ui); text-align: left; cursor: pointer; }
+.tpl-sec__caret { width: 12px; color: var(--ink-3); }
+.tpl-sec__name { flex: 1; }
+.tpl-sec__layout { font: 500 11px var(--font-mono); color: var(--ink-3); }
+.tpl-sec > .hed-form { padding: 0 12px 12px; }
+.hed-in--area textarea { flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); color: var(--ink); font: 13px/1.5 var(--font-ui); resize: vertical; }
+.hed-img { display: flex; align-items: center; gap: 10px; }
+.hed-img__thumb { flex: none; display: grid; place-items: center; width: 56px; height: 56px; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; background: var(--stage); color: var(--ink-3); font-size: 10px; text-align: center; line-height: 1.3; }
+.hed-img__thumb img { width: 100%; height: 100%; object-fit: cover; }
+/* 자유 색 고르기 (color free) */
+.cp-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cp { display: flex; flex-direction: column; gap: 10px; padding: 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); }
+.cp__sv { position: relative; height: 150px; border-radius: 6px; cursor: crosshair; touch-action: none;
+  background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, hsl(var(--h, 0) 100% 50%)); }
+.cp__dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,.35), inset 0 0 0 1px rgba(0,0,0,.2); pointer-events: none; }
+.cp__row { display: flex; align-items: center; gap: 10px; }
+.cp__eye { flex: none; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--ink); cursor: pointer; }
+.cp__eye:hover { background: var(--stage); }
+.cp__bars { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.cp__hue, .cp__alpha { position: relative; height: 12px; border-radius: 6px; cursor: pointer; touch-action: none; }
+.cp__hue { background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+.cp__alpha { background: linear-gradient(to right, transparent, var(--c, #fff)), repeating-conic-gradient(#ccc 0 25%, #fff 0 50%) 0 0 / 8px 8px; }
+.cp__knob { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,.35); pointer-events: none; }
+.cp__inputs { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.cp__mode { padding: 0 6px; color: var(--ink-3); }
+.cp__inputs input { min-width: 0; height: 28px; padding: 0 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); color: var(--ink); font: 12px var(--font-mono); }
+.cp__inputs [data-cp-hex] { flex: 1; text-transform: uppercase; }
+.cp__inputs [data-cp-a] { width: 56px; }
+.cp__pct { color: var(--ink-3); }

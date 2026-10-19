@@ -40,6 +40,12 @@
 .hero--monthly-live .hero__visual { position: absolute; inset: 0; cursor: pointer; }
 .hero--monthly-live .hero__visual-media,
 .hero--monthly-live .hero__visual-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* 하단 그라데이션 — Figma 「image 47」 위 그라디언트(53.6% 투명 → 85.8% 검정 80%)를 비주얼 칸(580) 기준으로 옮긴 값.
+   이미지를 바꿔도 그대로 얹혀요 (visualShade 끄면 없음). 일정 글자 아래에 깔려요 */
+.hero--monthly-live .hero__visual--shade::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 60.3%, rgba(0, 0, 0, 0.8) 97.6%);
+}
 .hero--monthly-live .hero__info {
   position: absolute; left: 48px; bottom: 48px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
   text-align: left; pointer-events: none;
@@ -77,6 +83,7 @@
   .hero--monthly-live .hero__logo { width: 58.5px; height: 55px; }
   /* 비주얼·일정이 각자 그리드 줄에 놓여요 (PC 의 겹침 상자를 풀어요) */
   .hero--monthly-live .hero__stage { display: contents; }
+  .hero--monthly-live .hero__visual--shade::after { display: none; } /* MO 는 일정이 비주얼 아래라 그라데이션이 필요 없어요 */
   .hero--monthly-live .hero__visual {
     grid-column: 2; grid-row: 4 / 6; align-self: start; position: relative; inset: auto; aspect-ratio: 343 / 203;
     border-radius: 16px; overflow: hidden; background: #000;

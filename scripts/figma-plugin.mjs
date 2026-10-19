@@ -40,7 +40,7 @@ export function buildFigmaPlugin(reg = loadRegistry()) {
   }
   const data = {
     raw: RAW,
-    hds: { colors: hds.colors, aliases: hds.aliases, radius: hds.radius, text: hds.text, line: hds.line },
+    hds: { colors: hds.colors, aliases: hds.aliases, radius: hds.radius, text: hds.text, line: hds.line, bg: hds.bg },
     components: comps,
     variants,
   };

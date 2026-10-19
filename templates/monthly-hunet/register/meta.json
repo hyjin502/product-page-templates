@@ -1,0 +1,125 @@
+{
+  "id": "monthly-hunet-register",
+  "section": "monthly-hunet",
+  "layout": "register",
+  "label": "신청서",
+  "order": 6,
+  "when": "무료 신청 폼 — 신청 구분 · 입력칸 2열 · 동의 · 버튼",
+  "figma": {
+    "pc": "624:8146",
+    "mo": null,
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 1
+    },
+    "subtitle": {
+      "type": "richtext",
+      "extract": false,
+      "label": "설명",
+      "maxLines": 2
+    },
+    "highlight": {
+      "type": "richtext",
+      "extract": false,
+      "label": "강조 문구 (굵게)",
+      "maxLines": 1,
+      "optional": true
+    },
+    "typeLabel": {
+      "type": "text",
+      "extract": false,
+      "label": "신청 구분 이름",
+      "maxChars": 10
+    },
+    "types": {
+      "type": "list",
+      "extract": false,
+      "label": "신청 구분",
+      "min": 0,
+      "max": 4,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "선택지",
+          "maxChars": 12
+        }
+      },
+      "note": "첫 번째가 선택된 상태로 보여요"
+    },
+    "fields": {
+      "type": "list",
+      "extract": false,
+      "label": "입력칸",
+      "min": 0,
+      "max": 10,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "이름",
+          "maxChars": 8
+        },
+        "placeholder": {
+          "type": "text",
+          "extract": false,
+          "label": "안내 문구",
+          "maxChars": 30
+        }
+      },
+      "note": "2열로 놓여요"
+    },
+    "agreements": {
+      "type": "list",
+      "extract": false,
+      "label": "동의",
+      "min": 0,
+      "max": 4,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "문구",
+          "maxChars": 40
+        },
+        "checked": {
+          "type": "toggle",
+          "label": "체크된 상태로"
+        },
+        "more": {
+          "type": "text",
+          "extract": false,
+          "label": "링크 문구",
+          "maxChars": 10,
+          "optional": true
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "extract": false,
+      "label": "버튼",
+      "min": 0,
+      "max": 2,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "버튼 문구",
+          "maxChars": 14
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        }
+      },
+      "note": "마지막 버튼이 진한 버튼(화살표)이에요"
+    }
+  }
+}

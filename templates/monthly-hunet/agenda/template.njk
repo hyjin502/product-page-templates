@@ -1,0 +1,41 @@
+<section class="mh-agenda">
+  <h2 class="mh-h mh-agenda__title">{{ title | rt }}</h2>
+{% for s in sessions %}
+{% set short = not s.subtitle and not s.desc %}
+  <article class="mh-agenda__session{% if short %} mh-agenda__session--short{% endif %}">
+{% if s.label %}
+    <p class="mh-agenda__label"{% if labelColor %} style="color: {{ labelColor | hdsColor }}"{% endif %}>{{ s.label }}</p>
+{% endif %}
+    <div class="mh-agenda__row">
+      <div class="mh-agenda__text">
+{% if s.time %}
+        <p class="mh-agenda__time">{{ s.time }}</p>
+{% endif %}
+{% if s.heading or s.subtitle %}
+        <div class="mh-agenda__heads">
+{% if s.heading %}
+          <h3 class="mh-agenda__heading">{{ s.heading | rt }}</h3>
+{% endif %}
+{% if s.subtitle %}
+          <p class="mh-agenda__subtitle">{{ s.subtitle }}</p>
+{% endif %}
+        </div>
+{% endif %}
+{% if s.desc %}
+        <p class="mh-agenda__desc">{{ s.desc | rt }}</p>
+{% endif %}
+      </div>
+{% if (s.image and s.image.src) or s.org or s.name %}
+      <figure class="mh-agenda__profile">
+{% if s.image and s.image.src %}
+        <span class="mh-agenda__photo" data-pick-item="sessions:{{ loop.index0 }}:image"><img src="{{ s.image.src }}" alt="{{ s.image.alt or '' }}" width="150" height="150"></span>
+{% endif %}
+{% if s.org or s.name %}
+        <figcaption>{% if s.org %}<span>{{ s.org }}</span>{% endif %}{% if s.name %}<b>{{ s.name }}</b>{% endif %}</figcaption>
+{% endif %}
+      </figure>
+{% endif %}
+    </div>
+  </article>
+{% endfor %}
+</section>

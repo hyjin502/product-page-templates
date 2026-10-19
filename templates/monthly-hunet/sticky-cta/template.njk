@@ -1,0 +1,17 @@
+<div class="mh-sticky">
+  <div class="mh-sticky__bar">
+    <p class="mh-sticky__title">{{ title }}</p>
+    <div class="mh-sticky__right">
+{% if before or count or after %}
+      <p class="mh-sticky__dday">{% if icon %}<span aria-hidden="true">{{ icon }}</span>{% endif %}{% if before %}<span>{{ before }}</span>{% endif %}{% if count %}<span class="mh-sticky__chip">{{ count }}</span>{% endif %}{% if after %}<span>{{ after }}</span>{% endif %}</p>
+{% endif %}
+{% if ctas.length %}
+      <div class="mh-sticky__btns">
+{% for c in ctas %}
+        <a class="mh-sticky__btn{% if loop.last %} mh-sticky__btn--dark{% endif %}" href="{{ c.href or '#' }}">{{ c.label }}</a>
+{% endfor %}
+      </div>
+{% endif %}
+    </div>
+  </div>
+</div>

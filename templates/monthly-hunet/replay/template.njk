@@ -1,0 +1,29 @@
+<section class="mh-replay">
+  <div class="mh-replay__head">
+    <h2 class="mh-h">{{ title | rt }}</h2>
+{% if subtitle %}
+    <p class="mh-replay__lead">{{ subtitle | rt }}</p>
+{% endif %}
+  </div>
+  <ul class="mh-replay__list">
+{% for it in items %}
+    <li><a class="mh-replay__item" href="{{ it.href or '#' }}">
+{% if it.image and it.image.src %}
+      <span class="mh-replay__thumb" data-pick-item="items:{{ loop.index0 }}:image"><img src="{{ it.image.src }}" alt="{{ it.image.alt or '' }}"></span>
+{% endif %}
+      <span class="mh-replay__text">
+        <span class="mh-replay__title">{{ it.title | rt }}</span>
+{% if it.desc %}
+        <span class="mh-replay__desc">{{ it.desc }}</span>
+{% endif %}
+{% if it.date %}
+        <span class="mh-replay__date">{{ it.date }}</span>
+{% endif %}
+      </span>
+    </a></li>
+{% endfor %}
+  </ul>
+{% if more %}
+  <a class="mh-btn mh-btn--line mh-replay__more" href="{{ moreHref or '#' }}">{{ more }}{{ 'hds-chevron-right' | icon }}</a>
+{% endif %}
+</section>

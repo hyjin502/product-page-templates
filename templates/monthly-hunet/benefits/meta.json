@@ -1,0 +1,67 @@
+{
+  "id": "monthly-hunet-benefits",
+  "section": "monthly-hunet",
+  "layout": "benefits",
+  "label": "혜택",
+  "order": 7,
+  "when": "참여 혜택 카드 2개 — 이미지 + 빨간 뱃지 + 제목 · 설명",
+  "figma": {
+    "pc": "624:8208",
+    "mo": null,
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 1
+    },
+    "subtitle": {
+      "type": "richtext",
+      "extract": false,
+      "label": "설명",
+      "maxLines": 2
+    },
+    "highlight": {
+      "type": "richtext",
+      "extract": false,
+      "label": "강조 문구 (설명 뒤에 굵게)",
+      "maxLines": 1,
+      "optional": true
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "혜택",
+      "min": 0,
+      "max": 4,
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "이미지",
+          "hint": "회색 칸(410×200) 가운데에 놓여요 · 배경 없는 PNG 권장"
+        },
+        "badge": {
+          "type": "richtext",
+          "label": "뱃지",
+          "note": "오른쪽 위 빨간 칸 · 2줄 권장",
+          "optional": true
+        },
+        "title": {
+          "type": "text",
+          "extract": false,
+          "label": "제목",
+          "maxChars": 30
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "note": "엔터로 줄바꿈",
+          "optional": true
+        }
+      }
+    }
+  }
+}

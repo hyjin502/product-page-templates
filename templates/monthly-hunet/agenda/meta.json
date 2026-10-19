@@ -1,0 +1,89 @@
+{
+  "id": "monthly-hunet-agenda",
+  "section": "monthly-hunet",
+  "layout": "agenda",
+  "label": "아젠다",
+  "order": 5,
+  "when": "세션별 시간 · 제목 · 소제목 · 설명 + 연사 사진",
+  "figma": {
+    "pc": "600:7963",
+    "mo": "600:8061",
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 1
+    },
+    "labelColor": {
+      "type": "color",
+      "palette": "700",
+      "default": "blue/700",
+      "extract": false,
+      "label": "세션 이름 색",
+      "note": "Session 1. 같은 파란 글자 · HDS 원색 700번"
+    },
+    "sessions": {
+      "type": "list",
+      "extract": false,
+      "label": "세션",
+      "min": 0,
+      "max": 6,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "세션 이름",
+          "maxChars": 20
+        },
+        "time": {
+          "type": "text",
+          "extract": false,
+          "label": "시간",
+          "maxChars": 30
+        },
+        "heading": {
+          "type": "richtext",
+          "label": "세션 제목",
+          "note": "소제목·설명이 없으면 조금 작게(20) 보여요"
+        },
+        "subtitle": {
+          "type": "text",
+          "extract": false,
+          "label": "소제목",
+          "maxChars": 40,
+          "optional": true
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "note": "엔터로 줄바꿈",
+          "optional": true
+        },
+        "image": {
+          "type": "image",
+          "label": "사진",
+          "hint": "150×150",
+          "optional": true
+        },
+        "org": {
+          "type": "text",
+          "extract": false,
+          "label": "소속 (사진 아래)",
+          "maxChars": 20,
+          "optional": true
+        },
+        "name": {
+          "type": "text",
+          "extract": false,
+          "label": "이름 (사진 아래)",
+          "maxChars": 20,
+          "optional": true
+        }
+      }
+    }
+  }
+}

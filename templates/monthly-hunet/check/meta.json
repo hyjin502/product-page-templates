@@ -1,0 +1,61 @@
+{
+  "id": "monthly-hunet-check",
+  "section": "monthly-hunet",
+  "layout": "check",
+  "label": "추천 대상 체크",
+  "order": 3,
+  "when": "「이런 분께 추천합니다」 — 체크 아이콘 한 줄 목록",
+  "figma": {
+    "pc": "600:7667",
+    "mo": "600:7695",
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "extract": false,
+      "label": "배경색",
+      "note": "원하는 색 · 불투명도 · 스포이드 — 기본은 시안(흰 바탕)"
+    },
+    "titleColor": {
+      "type": "enum",
+      "values": [
+        "black",
+        "white"
+      ],
+      "labels": {
+        "black": "검정",
+        "white": "흰색"
+      },
+      "default": "black",
+      "extract": false,
+      "label": "제목 색",
+      "note": "어두운 배경색이면 흰색"
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "항목",
+      "min": 0,
+      "max": 10,
+      "item": {
+        "text": {
+          "type": "text",
+          "extract": false,
+          "label": "문구",
+          "maxChars": 50
+        }
+      }
+    }
+  }
+}

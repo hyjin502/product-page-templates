@@ -22,7 +22,7 @@
       <h1 class="hero__title">{{ lineSpans(title) }}</h1>
     </div>
     <div class="hero__stage">
-      <div class="hero__visual">{{ visualMedia(visual) }}</div>
+      <div class="hero__visual{% if visualShade %} hero__visual--shade{% endif %}">{{ visualMedia(visual) }}</div>
       <div class="hero__info">
 {% if dtPc.length or dtMo.length %}
         <p class="hero__date">{{ lineSpans(date) }}</p>

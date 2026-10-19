@@ -1,0 +1,12 @@
+/* PC — Figma 600:7912 · 본문 980 · 위아래 120 · 제목↔카드 60 · 3열 · 간격 16 */
+.mh-persona { display: flex; justify-content: center; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
+.mh-persona__body { width: var(--body, 980px); max-width: 100%; display: flex; flex-direction: column; gap: 60px; }
+.mh-persona__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.mh-persona__card { display: flex; align-items: center; gap: 16px; padding: 32px; border: 1px solid var(--line-outline); border-radius: 16px; }
+.mh-persona__avatar { flex: none; display: block; width: 72px; height: 72px; border-radius: 50%; }
+.mh-persona__avatar img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.mh-persona__text { flex: 1; min-width: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-persona__desc { font-size: 16px; }
+.mh-persona__name { font-size: 18px; font-weight: 700; }
+/* 배경색을 고르면(흰 바탕 말고) 카드를 흰 바탕으로 (제안값) */
+.mh-persona--tinted .mh-persona__card { background: var(--bg-surface); }
