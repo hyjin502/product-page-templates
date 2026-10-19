@@ -1,0 +1,53 @@
+{
+  "title": "이런 분께 추천합니다",
+  "cards": [
+    {
+      "image": {
+        "src": "assets/monthly-hunet/persona-1.png",
+        "alt": ""
+      },
+      "desc": "2027년 교육계획\n수립을 앞둔",
+      "name": "HRD·교육 담당자"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-hunet/persona-2.png",
+        "alt": ""
+      },
+      "desc": "AI 교육의 다음 단계를\n고민하는",
+      "name": "AI 교육 담당자"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-hunet/persona-3.png",
+        "alt": ""
+      },
+      "desc": "리더십·직무 교육체계를\n새롭게 정비하려는",
+      "name": "인재개발팀"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-hunet/persona-4.png",
+        "alt": ""
+      },
+      "desc": "한정된 예산으로\n교육 효과를 높여야 하는",
+      "name": "HRD·교육 담당자"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-hunet/persona-5.png",
+        "alt": ""
+      },
+      "desc": "상시학습과 환경교육 운영\n효율화를 고민하는",
+      "name": "운영 담당자"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-hunet/persona-6.png",
+        "alt": ""
+      },
+      "desc": "경영진에게 교육 성과를\n증명해야 하는",
+      "name": "HR 리더"
+    }
+  ]
+}

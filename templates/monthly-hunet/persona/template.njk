@@ -1,5 +1,5 @@
 {% set bg = bgColor | hdsBg %}{% set tinted = bg and (bg | lower) not in ['#ffffff', '#ffffffff'] %}
-<section class="mh-persona{% if tinted %} mh-persona--tinted{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
+<section class="mh-persona{% if cols == 2 %} mh-persona--2col{% endif %}{% if tinted %} mh-persona--tinted{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
   <div class="mh-persona__body">
     <h2 class="mh-h mh-h--center{% if titleColor == 'white' %} mh-h--white{% endif %}">{{ title | rt }}</h2>
     <ul class="mh-persona__grid">

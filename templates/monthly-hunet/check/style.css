@@ -4,6 +4,6 @@
 .mh-check__list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .mh-check__item { display: flex; align-items: center; gap: 8px; padding: 16px 40px; border-radius: 8px; background: var(--bg-page);
   font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); }
-.mh-check__item svg { flex: none; width: 24px; height: 24px; color: var(--error); }
+.mh-check__item svg { flex: none; width: 24px; height: 24px; color: var(--mh-check-icon, var(--error)); } /* 아이콘 색 = iconColor(HDS 700번, 기본 red/700) */
 /* 배경색을 고르면(흰색 말고) 항목은 흰 바탕으로 — 회색 항목이 배경에 묻히지 않게 (제안값) */
 .mh-check--tinted .mh-check__item { background: var(--bg-surface); }

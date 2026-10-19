@@ -1,5 +1,5 @@
 {
-  "$comment": "월간휴넷 페이지 템플릿 — 이 폴더의 섹션을 order 순서로 이어 붙인 한 페이지예요. 사이트 「월간휴넷」 탭에서 모든 문구를 편집해요. Figma 원본은 세트 599:7138 (variant 이름 device=pc|mo, layout=<폴더 이름>). order 항목이 { label, pick: [...] } 면 그중 하나를 고르는 자리(첫 번째가 기본). 편집기에서 섹션마다 넣기·빼기를 할 수 있어요.",
+  "$comment": "월간휴넷 페이지 템플릿 — 이 폴더의 섹션을 order 순서로 이어 붙인 한 페이지예요. 사이트 「월간휴넷」 탭에서 모든 문구를 편집해요. Figma 원본은 세트 599:7138 (variant 이름 device=pc|mo, layout=<폴더 이름>). order 항목이 { label, pick: [...] } 면 그중 하나를 고르는 자리(첫 번째가 기본). 편집기에서 섹션마다 넣기·빼기를 할 수 있어요. { label, extra: [...], max } = 그 섹션을 0~max 개 넣는 자리(같은 섹션을 여러 번 — 예: 이번 달 새 디자인 이미지). movable: true 인 자리끼리는 편집기에서 ↑↓ 로 순서를 바꿔요(이웃한 movable 자리끼리만).",
   "key": "monthly-hunet",
   "title": "월간휴넷",
   "figmaSet": "599:7138",
@@ -10,8 +10,18 @@
       "label": "추천 대상",
       "pick": [
         "check",
-        "persona"
-      ]
+        "persona",
+        "persona-2col"
+      ],
+      "movable": true
+    },
+    {
+      "label": "추가 섹션",
+      "extra": [
+        "image-block"
+      ],
+      "max": 3,
+      "movable": true
     },
     "agenda",
     "register",

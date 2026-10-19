@@ -987,7 +987,9 @@ function radiusChips(path, cur, label, base) {
 }
 /** enum — 칩 하나를 고르는 그룹. 표시 이름은 spec.labels */
 function enumChips(path, s, cur, label) {
-  return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${(s.values || []).map((o) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': o, 'aria-pressed': String(String(o) === String(cur)) })}>${esc((s.labels && s.labels[o]) || o)}</button>`).join('')}</div>`;
+  // iconPrefix 가 있으면 아이콘 고르기 — 칩에 그 아이콘을 보여 줘요 (iconDefault = 「default」 값의 아이콘)
+  const ico = (o) => (s.iconPrefix ? REG.icons[o === 'default' && s.iconDefault ? s.iconDefault : s.iconPrefix + o] : '');
+  return `<div class="hed-rad${s.iconPrefix ? ' hed-rad--icons' : ''}" role="group" aria-label="${esc(label)}">${(s.values || []).map((o) => { const name = (s.labels && s.labels[o]) || o; const svg = ico(o); return `<button type="button" class="chip" ${attrs({ ...path, 'data-val': o, 'aria-pressed': String(String(o) === String(cur)), title: svg ? name : null, 'aria-label': svg ? name : null })}>${svg || esc(name)}</button>`; }).join('')}</div>`;
 }
 function toggleBox(path, s, cur) {
   return `<label class="hed-check"><input type="checkbox" ${attrs({ ...path, 'data-toggle': '', checked: !!cur })}> ${esc(s.label || '')}</label>`;
@@ -1236,7 +1238,7 @@ function measureHero() {
 
 /* ---------- 미리보기에서 이미지 바꾸기 — 섹션 안 비주얼(visual 슬롯)을 클릭하면 파일 선택이 열려요
    안내 말풍선은 ::before 를 써요 (::after 는 비주얼 하단 그라데이션 등이 써요) */
-const PICK_AREAS = { visual: '.hero__visual', speaker1: '[data-pick="speaker1"]', speaker2: '[data-pick="speaker2"]', speaker3: '[data-pick="speaker3"]' };
+const PICK_AREAS = { image: '.mh-image__pic, .mh-image__empty', visual: '.hero__visual', speaker1: '[data-pick="speaker1"]', speaker2: '[data-pick="speaker2"]', speaker3: '[data-pick="speaker3"]' };
 function attachPreviewPick(doc, el = heroEl, variantAt = () => byId[heroState().variant], edit = heroEdit) {
   if (!doc || doc.__hedPick) return;
   doc.__hedPick = true;
@@ -1497,6 +1499,8 @@ function tplState(key) {
   t.open ||= [];
   t.pick ||= {};
   t.off ||= [];
+  t.extras ||= {};
+  t.order ||= [];
   return t;
 }
 function tplEdit(v) {
@@ -1507,16 +1511,49 @@ function tplEdit(v) {
 }
 const tplEditOf = (id) => tplEdit(byId[id]);
 const tplSecHtml = (v) => heroHtmlOrError(v, tplEdit(v)).replace(/^(\s*)<([a-z][\w-]*)/, `$1<$2 data-tpl-sec="${v.id}"`);
-/* 자리(row) — 섹션 하나, 또는 여럿 중 하나를 고르는 자리(template.json 의 pick). 자리마다 넣기·빼기를 해요
-   state.tpl[key].pick[자리] = 고른 variant · off = 뺀 자리 목록 (자리 키 = 그 자리 variant id 를 | 로 이은 것) */
-const rowKey = (r) => r.ids.join('|');
+/* 자리(row) — 섹션 하나, 또는 여럿 중 하나를 고르는 자리(template.json 의 pick), 또는 같은 섹션을 0~max 개 넣는 자리(extra). 자리마다 넣기·빼기를 해요
+   state.tpl[key].pick[자리] = 고른 variant · off = 뺀 자리 목록 · extras[자리] = [{ uid, variant }] (자리 키 = variant id 를 | 로 이은 것, extra 는 'extra:' 앞에)
+   extra 섹션은 같은 variant 를 여러 번 넣으려고 byId 에 복제본(id = variant~uid, base = 원래 id)을 만들어 편집 값을 따로 둬요 */
+const rowKey = (r) => (r.extra ? 'extra:' + r.extra.join('|') : r.ids.join('|'));
 const rowPick = (t, r) => { const p = tplState(t.key).pick[rowKey(r)]; return r.ids.includes(p) ? p : r.ids[0]; };
 const rowOn = (t, r) => !tplState(t.key).off.includes(rowKey(r));
-const tplRows = (t) => t.rows || t.variants.map((id) => ({ ids: [id] }));
-const rowOf = (t, id) => tplRows(t).find((r) => r.ids.includes(id));
-/** 페이지에 들어가는 섹션 — 넣은 자리의 고른 섹션만, 순서대로 */
-const tplVisible = (t) => tplRows(t).filter((r) => rowOn(t, r)).map((r) => rowPick(t, r));
+/** 자리 목록 — movable 자리는 편집기에서 바꾼 순서(state.tpl[key].order = 자리 키 목록)대로, 나머지는 template.json 순서 그대로 */
+function tplRows(t) {
+  const base = t.rows || t.variants.map((id) => ({ ids: [id] }));
+  const order = tplState(t.key).order;
+  if (!order || !order.length) return base;
+  const mov = base.filter((r) => r.movable);
+  const rank = (r) => { const i = order.indexOf(rowKey(r)); return i < 0 ? 999 + mov.indexOf(r) : i; };
+  const sorted = [...mov].sort((a, b) => rank(a) - rank(b));
+  let k = 0;
+  return base.map((r) => (r.movable ? sorted[k++] : r));
+}
+/** 자리 순서 바꾸기 버튼 — 위·아래 이웃도 movable 일 때만 켜져요 */
+function rowMoveBtns(t, r) {
+  if (!r.movable) return '';
+  const rows = tplRows(t);
+  const i = rows.indexOf(r);
+  const up = rows[i - 1] && rows[i - 1].movable;
+  const down = rows[i + 1] && rows[i + 1].movable;
+  const key = esc(rowKey(r));
+  return `<span class="tpl-extra__btns"><button type="button" class="icon-btn" data-tpl-row-move="-1" data-row-key="${key}" aria-label="위로 (순서 바꾸기)" title="바로 위 자리와 순서 바꾸기"${up ? '' : ' disabled'}>↑</button><button type="button" class="icon-btn" data-tpl-row-move="1" data-row-key="${key}" aria-label="아래로 (순서 바꾸기)" title="바로 아래 자리와 순서 바꾸기"${down ? '' : ' disabled'}>↓</button></span>`;
+}
+const rowOf = (t, id) => tplRows(t).find((r) => r.ids.includes(id) || (r.extra && rowInsts(t, r).includes(id)));
+/** extra 자리의 섹션들(복제본 id) — 번호(1, 2, 3)는 지금 순서대로 이름·내보내기 파일 이름에 붙여요 */
+function rowInsts(t, r) {
+  const list = (tplState(t.key).extras[rowKey(r)] ||= []);
+  return list.filter((x) => byId[x.variant]).map((x, n) => {
+    const base = byId[x.variant];
+    const id = `${base.id}~${x.uid}`;
+    byId[id] = Object.assign(byId[id] || { ...base }, { id, base: base.id, label: `${base.label || base.layout} ${n + 1}`, pre: `${base.layout}-${n + 1}` });
+    return id;
+  });
+}
+/** 페이지에 들어가는 섹션 — 넣은 자리의 고른 섹션(extra 는 넣은 것 전부)만, 순서대로 */
+const tplVisible = (t) => tplRows(t).filter((r) => rowOn(t, r)).flatMap((r) => (r.extra ? rowInsts(t, r) : [rowPick(t, r)]));
+const formOf = (v, open) => (open ? `<div class="hed-form" data-hed-form>${heroForm(v, tplEdit(v))}</div>` : '');
 function tplBlock(t, r) {
+  if (r.extra) return tplExtraBlock(t, r);
   const id = rowPick(t, r);
   const v = byId[id];
   const on = rowOn(t, r);
@@ -1526,11 +1563,37 @@ function tplBlock(t, r) {
   <div class="tpl-sec__bar">
     <label class="tpl-sec__on" title="${on ? '페이지에서 빼기' : '페이지에 넣기'}"><input type="checkbox" data-tpl-on="${esc(key)}"${on ? ' checked' : ''} aria-label="${esc(r.label || v.label || v.layout)} 넣기"></label>
     <button type="button" class="tpl-sec__head" data-tpl-toggle="${id}" aria-expanded="${open}"${on ? '' : ' disabled'}><span class="tpl-sec__caret" aria-hidden="true">${open ? '▾' : '▸'}</span><span class="tpl-sec__name">${esc(r.label || v.label || v.layout)}</span><span class="tpl-sec__layout">${on ? esc(v.layout) : '빠짐'}</span></button>
+    ${rowMoveBtns(t, r)}
   </div>
   ${r.ids.length > 1 && on ? `<div class="tpl-sec__pick" role="group" aria-label="${esc(r.label || '')} 고르기">${r.ids.map((x) => `<button type="button" class="chip" data-tpl-pick="${esc(key)}" data-id="${x}" aria-pressed="${String(x === id)}">${esc(byId[x].label || byId[x].layout)}</button>`).join('')}</div>` : ''}
-  ${open ? `<div class="hed-form" data-hed-form>${heroForm(v, tplEdit(v))}</div>` : ''}
+  ${formOf(v, open)}
 </section>`;
 }
+/** extra 자리 — 넣은 섹션 목록(↑↓ ✕) + 「+ 추가」 */
+function tplExtraBlock(t, r) {
+  const key = rowKey(r);
+  const on = rowOn(t, r);
+  const ids = rowInsts(t, r);
+  const max = r.max ?? 3;
+  const open = tplState(t.key).open;
+  return `<section class="tpl-sec tpl-extra${on ? '' : ' is-off'}" data-row="${esc(key)}">
+  <div class="tpl-sec__bar">
+    <label class="tpl-sec__on" title="${on ? '페이지에서 빼기' : '페이지에 넣기'}"><input type="checkbox" data-tpl-on="${esc(key)}"${on ? ' checked' : ''} aria-label="${esc(r.label || '추가 섹션')} 넣기"></label>
+    <span class="tpl-sec__head tpl-extra__head"><span class="tpl-sec__name">${esc(r.label || '추가 섹션')}</span><span class="tpl-sec__layout">${on ? `${ids.length}/${max}개` : '빠짐'}</span></span>
+    ${rowMoveBtns(t, r)}
+  </div>
+  ${on ? `<div class="tpl-extra__list">
+    ${ids.map((id, n) => { const v = byId[id]; const o = open.includes(id); return `<div class="tpl-sec tpl-extra__item${o ? ' is-open' : ''}" data-vid="${id}">
+      <div class="tpl-sec__bar"><button type="button" class="tpl-sec__head" data-tpl-toggle="${id}" aria-expanded="${o}"><span class="tpl-sec__caret" aria-hidden="true">${o ? '▾' : '▸'}</span><span class="tpl-sec__name">${esc(v.label)}</span></button>
+        <span class="tpl-extra__btns"><button type="button" class="icon-btn" data-tpl-inst-move="-1" data-row-key="${esc(key)}" data-n="${n}" aria-label="위로"${n === 0 ? ' disabled' : ''}>↑</button><button type="button" class="icon-btn" data-tpl-inst-move="1" data-row-key="${esc(key)}" data-n="${n}" aria-label="아래로"${n === ids.length - 1 ? ' disabled' : ''}>↓</button><button type="button" class="icon-btn" data-tpl-inst-del data-row-key="${esc(key)}" data-n="${n}" aria-label="${esc(v.label)} 빼기">✕</button></span></div>
+      ${formOf(v, o)}
+    </div>`; }).join('')}
+    ${ids.length < max ? r.extra.map((x) => `<button type="button" class="hed-add" data-tpl-add="${esc(key)}" data-variant="${x}">+ ${esc(byId[x].label || byId[x].layout)} 추가</button>`).join('') : `<p class="compose__hint">최대 ${max}개까지 넣을 수 있어요</p>`}
+    ${ids.length ? '' : '<p class="compose__hint">비워 두면 페이지에 아무것도 들어가지 않아요</p>'}
+  </div>` : ''}
+</section>`;
+}
+const redrawTplList = (t) => { const box = tplEl.querySelector('.tpl-secs'); if (box) box.innerHTML = tplRows(t).map((r) => tplBlock(t, r)).join(''); };
 let tplFit = null;
 let tplLoaded = false;
 function renderTpl() {
@@ -1538,12 +1601,12 @@ function renderTpl() {
   if (!t) return;
   const vs = tplVisible(t).map((id) => byId[id]);
   const rows = tplRows(t);
-  const todo = (t.order || []).filter((l) => !vs.some((v) => v.layout === l));
+  const todo = (t.order || []).filter((l) => typeof l === 'string' && !t.variants.some((id) => byId[id].layout === l));
   const keep = tplEl.querySelector('.compose__scroll')?.scrollTop || 0;
   tplEl.innerHTML = `<aside class="compose__side">${SPLIT}
   <div class="compose__scroll">
   <div class="hed-intro"><h2>${esc(t.title)}</h2><p>섹션을 펼쳐 문구·이미지를 바꿔요. 미리보기에서 섹션을 누르면 그 입력칸이 열려요.</p></div>
-  <div class="rows__bar"><span>섹션 ${vs.length}/${rows.length}개</span><button type="button" class="btn-ui" data-tpl-fold="1">모두 접기</button><button type="button" class="btn-ui" data-tpl-fold="0">모두 펴기</button></div>
+  <div class="rows__bar"><span>섹션 ${vs.length}개</span><button type="button" class="btn-ui" data-tpl-fold="1">모두 접기</button><button type="button" class="btn-ui" data-tpl-fold="0">모두 펴기</button></div>
   <div class="tpl-secs">${rows.map((r) => tplBlock(t, r)).join('')}</div>
   ${todo.length ? `<p class="compose__hint">준비 중: ${todo.map(esc).join(' · ')}</p>` : ''}
   </div>
@@ -1591,9 +1654,8 @@ function tplOpen(id, scroll) {
   if (scroll && open) { tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
   ts.open = open ? ts.open.filter((x) => x !== id) : [...ts.open, id];
   save();
-  const el = tplEl.querySelector(`[data-vid="${id}"]`);
-  if (!el || !r) return;
-  el.outerHTML = tplBlock(t, r);
+  if (!r) return;
+  redrawTplList(t);
   if (scroll) tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' });
 }
 const tplTimers = {};
@@ -1618,7 +1680,8 @@ function tplUpdate(v) {
 }
 function tplPage(key) {
   const t = tplByKey[key];
-  return { title: t.title, theme: 'light', sections: tplVisible(t).map((id) => ({ variant: id, content: contentFrom(byId[id], tplEditOf(id), true, byId[id].layout) })) };
+  // extra 복제본은 원래 variant 이름으로 내보내요 · 파일 이름 앞은 layout(복제본은 layout-번호)
+  return { title: t.title, theme: 'light', sections: tplVisible(t).map((id) => ({ variant: byId[id].base || id, content: contentFrom(byId[id], tplEditOf(id), true, byId[id].pre || byId[id].layout) })) };
 }
 // 섹션 넣기·빼기 (체크 끄면 페이지·page.json 에서 빠져요 — 입력한 내용은 그대로 남아요)
 tplEl.addEventListener('change', (ev) => {
@@ -1643,7 +1706,40 @@ tplEl.addEventListener('click', (ev) => {
   const tg = ev.target.closest('[data-tpl-toggle]');
   if (tg) { tplOpen(tg.dataset.tplToggle); return; }
   const fd = ev.target.closest('[data-tpl-fold]');
-  if (fd) { tplState(key).open = fd.dataset.tplFold === '1' ? [] : tplVisible(t); save(); tplEl.querySelector('.tpl-secs').innerHTML = tplRows(t).map((r) => tplBlock(t, r)).join(''); return; }
+  if (fd) { tplState(key).open = fd.dataset.tplFold === '1' ? [] : tplVisible(t); save(); redrawTplList(t); return; }
+  // extra 자리 — 섹션 추가 · 순서 · 빼기 (뺀 섹션의 입력값도 지워요)
+  const ad = ev.target.closest('[data-tpl-add]');
+  if (ad) {
+    const ts = tplState(key);
+    const uid = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    (ts.extras[ad.dataset.tplAdd] ||= []).push({ uid, variant: ad.dataset.variant });
+    ts.open.push(`${ad.dataset.variant}~${uid}`);
+    save(); renderTpl(); return;
+  }
+  // movable 자리 순서 바꾸기 (예: 추천 대상 ↔ 추가 섹션)
+  const rm = ev.target.closest('[data-tpl-row-move]');
+  if (rm) {
+    const ts = tplState(key);
+    const keys = tplRows(t).filter((r) => r.movable).map(rowKey);
+    const i = keys.indexOf(rm.dataset.rowKey);
+    const j = i + +rm.dataset.tplRowMove;
+    if (i >= 0 && j >= 0 && j < keys.length) { [keys[i], keys[j]] = [keys[j], keys[i]]; ts.order = keys; save(); renderTpl(); }
+    return;
+  }
+  const im = ev.target.closest('[data-tpl-inst-move], [data-tpl-inst-del]');
+  if (im) {
+    const ts = tplState(key);
+    const list = ts.extras[im.dataset.rowKey] || [];
+    const n = +im.dataset.n;
+    if (im.matches('[data-tpl-inst-del]')) {
+      const [x] = list.splice(n, 1);
+      if (x) { const id = `${x.variant}~${x.uid}`; delete ts.edits[id]; ts.open = ts.open.filter((o) => o !== id); delete byId[id]; }
+    } else {
+      const m = n + +im.dataset.tplInstMove;
+      if (m >= 0 && m < list.length) [list[n], list[m]] = [list[m], list[n]];
+    }
+    save(); renderTpl(); return;
+  }
   // 자리에서 섹션 고르기 (예: 추천 대상 — 체크 / 카드) → 그 섹션 입력칸을 열고 미리보기를 다시 그려요
   const pk = ev.target.closest('[data-tpl-pick]');
   if (pk) {
@@ -1658,18 +1754,21 @@ tplEl.addEventListener('click', (ev) => {
   if (ta.dataset.tplAct === 'copy') return copyText(json, ta);
   if (ta.dataset.tplAct === 'download') {
     download(`${key}.page.json`, new Blob([json], { type: 'application/json' }));
-    for (const id of tplVisible(t)) downloadMedia(byId[id], tplEditOf(id), byId[id].layout);
+    for (const id of tplVisible(t)) downloadMedia(byId[id], tplEditOf(id), byId[id].pre || byId[id].layout);
     return;
   }
   if (ta.dataset.tplAct === 'figma') {
     ta.disabled = true;
-    figmaBundle(tplPage(key), tplVisible(t).map((variant, i) => ({ i, variant })), tplEditOf, (v) => v.layout)
+    figmaBundle(tplPage(key), tplVisible(t).map((variant, i) => ({ i, variant })), tplEditOf, (v) => v.pre || v.layout)
       .then((out) => download(`${key}.figma.json`, new Blob([out], { type: 'application/json' })))
       .finally(() => { ta.disabled = false; });
     return;
   }
   if (ta.dataset.tplAct === 'reset' && confirm(`${t.title} — 입력한 내용을 모두 지우고 Figma 샘플로 되돌릴까요?`)) {
-    tplState(key).edits = {};
+    const ts = tplState(key);
+    ts.edits = {};
+    ts.extras = {}; // 추가 섹션도 비워요
+    ts.order = []; // 자리 순서도 처음대로
     save(); renderTpl();
   }
 });

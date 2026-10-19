@@ -1,0 +1,72 @@
+{
+  "id": "monthly-hunet-persona-2col",
+  "section": "monthly-hunet",
+  "layout": "persona-2col",
+  "label": "추천 대상 카드 (2열)",
+  "order": 4,
+  "when": "「이런 분께 추천합니다」 — 아바타 + 설명 + 직무 카드 2열",
+  "figma": {
+    "pc": "629:2900",
+    "mo": null,
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "extract": false,
+      "label": "배경색",
+      "note": "원하는 색 · 불투명도 · 스포이드 — 기본은 시안(흰 바탕)"
+    },
+    "titleColor": {
+      "type": "enum",
+      "values": [
+        "black",
+        "white"
+      ],
+      "labels": {
+        "black": "검정",
+        "white": "흰색"
+      },
+      "default": "black",
+      "extract": false,
+      "label": "제목 색",
+      "note": "어두운 배경색이면 흰색"
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2
+    },
+    "cards": {
+      "type": "list",
+      "extract": false,
+      "label": "카드",
+      "min": 0,
+      "max": 9,
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "아바타",
+          "hint": "72×72 원형"
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "note": "엔터로 줄바꿈 · 2줄 권장",
+          "optional": true
+        },
+        "name": {
+          "type": "text",
+          "extract": false,
+          "label": "대상",
+          "maxChars": 16
+        }
+      }
+    }
+  }
+}

@@ -55,6 +55,10 @@ function editorBundle(reg, env) {
   for (const [, src] of sources) {
     for (const m of src.matchAll(/['"]([\w-]+)['"]\s*\|\s*icon/g)) icons[m[1]] = fs.readFileSync(path.join(ROOT, 'assets/icons', `${m[1]}.svg`), 'utf8').trim();
   }
+  // 아이콘을 고르는 enum 슬롯(iconPrefix · iconDefault) — 값마다 아이콘을 넣어요 (편집기 칩에도 그 아이콘을 보여요)
+  const addIcon = (n) => { const f = path.join(ROOT, 'assets/icons', `${n}.svg`); if (n && fs.existsSync(f)) icons[n] = fs.readFileSync(f, 'utf8').trim(); };
+  const walkSlots = (fields) => { for (const raw of Object.values(fields || {})) { if (raw && raw.iconPrefix) { (raw.values || []).forEach((x) => addIcon(raw.iconPrefix + x)); addIcon(raw.iconDefault); } if (raw && raw.item) walkSlots(raw.item); } };
+  for (const v of editors) walkSlots(v.slots);
   const slim = fs.readFileSync(createRequire(import.meta.url).resolve('nunjucks/browser/nunjucks-slim.min.js'), 'utf8').replace(/\/\/# sourceMappingURL=.*$/m, '');
   const js = [slim, fs.readFileSync(RENDER_CORE_PATH, 'utf8'), tpl].join('\n;\n').replace(/<\/script/gi, '<\\/script');
   return { js, icons };

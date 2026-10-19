@@ -805,3 +805,11 @@ body.is-dev .flink__label::after { content: none; }
 .cp__inputs [data-cp-hex] { flex: 1; text-transform: uppercase; }
 .cp__inputs [data-cp-a] { width: 56px; }
 .cp__pct { color: var(--ink-3); }
+/* 추가 섹션 자리 (extra) */
+.tpl-extra { padding-bottom: 4px; }
+.tpl-extra__head { cursor: default; }
+.tpl-extra__list { display: flex; flex-direction: column; gap: 6px; padding: 0 12px 10px 40px; }
+.tpl-extra__item { border-style: solid; }
+.tpl-extra__btns { display: flex; gap: 2px; padding-right: 6px; }
+.hed-rad--icons .chip { display: inline-grid; place-items: center; width: 36px; height: 32px; padding: 0; }
+.hed-rad--icons .chip svg { width: 20px; height: 20px; }

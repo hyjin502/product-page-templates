@@ -1,0 +1,20 @@
+{% set pc = image.pc if image else null %}{% set mo = image.mo if image else null %}{% set m = pc or mo %}
+{% set bg = bgColor | hdsBg %}
+<section class="mh-image mh-image--{{ width or 'full' }}{% if space == 'section' %} mh-image--space{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
+{% if m and m.src %}
+{% if href %}<a class="mh-image__link" href="{{ href }}">{% endif %}
+{% if m.kind == 'video' %}
+  <video class="mh-image__pic" src="{{ m.src }}" autoplay muted loop playsinline{% if alt %} aria-label="{{ alt }}"{% endif %}></video>
+{% else %}
+  <picture class="mh-image__pic">
+{% if pc and mo and mo.src and mo.kind != 'video' %}
+    <source media="(max-width: 767px)" srcset="{{ mo.src }}">
+{% endif %}
+    <img src="{{ m.src }}" alt="{{ alt or '' }}">
+  </picture>
+{% endif %}
+{% if href %}</a>{% endif %}
+{% else %}
+  <div class="mh-image__empty"><img src="assets/ph-visual.svg" alt="" width="157" height="157"></div>
+{% endif %}
+</section>

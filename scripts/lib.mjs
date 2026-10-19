@@ -74,10 +74,13 @@ export function loadRegistry() {
       // order 에 있는 섹션만, 그 순서로 (아직 만들지 않은 섹션은 건너뛰어요)
       // 항목이 { label, pick: [layout…] } 면 그중 하나를 고르는 자리 — rows[i].ids, 기본은 첫 번째
       const idOf = (l) => mine.find((v) => v.layout === l)?.id;
-      t.rows = (t.order || []).map((o) => (typeof o === 'string' ? { ids: [idOf(o)] } : { label: o.label, ids: (o.pick || []).map(idOf) }))
-        .map((r) => ({ ...r, ids: r.ids.filter(Boolean) })).filter((r) => r.ids.length);
-      t.variants = t.rows.flatMap((r) => r.ids);
-      t.defaults = t.rows.map((r) => r.ids[0]); // 샘플 페이지 = 자리마다 첫 번째
+      // { label, extra: [layout…], max } 면 그 섹션을 0~max 개 넣는 자리 — rows[i].extra (샘플 페이지에는 넣지 않아요)
+      t.rows = (t.order || []).map((o) => (typeof o === 'string' ? { ids: [idOf(o)] }
+        : o.extra ? { label: o.label, ids: [], extra: o.extra.map(idOf).filter(Boolean), max: o.max ?? 3 }
+          : { label: o.label, ids: (o.pick || []).map(idOf) }))
+        .map((r, i) => ({ ...r, ids: r.ids.filter(Boolean), ...(typeof t.order[i] === 'object' && t.order[i].movable ? { movable: true } : {}) })).filter((r) => r.ids.length || (r.extra && r.extra.length));
+      t.variants = t.rows.flatMap((r) => [...r.ids, ...(r.extra || [])]);
+      t.defaults = t.rows.map((r) => r.ids[0]).filter(Boolean); // 샘플 페이지 = 자리마다 첫 번째
       t.sharedCss = readIf(path.join(dir, '_shared.css'));
       t.template = true;
       templates.push(t);

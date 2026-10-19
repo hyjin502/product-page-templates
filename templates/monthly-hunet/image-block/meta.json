@@ -1,0 +1,76 @@
+{
+  "id": "monthly-hunet-image-block",
+  "section": "monthly-hunet",
+  "layout": "image-block",
+  "label": "이미지 섹션",
+  "order": 20,
+  "when": "이번 달만 쓰는 새 디자인 — Figma 에서 만든 섹션을 PC·MO 이미지로 넣어요",
+  "figma": {
+    "pc": null,
+    "mo": null,
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "image": {
+      "type": "media",
+      "optional": true,
+      "extract": false,
+      "label": "이미지",
+      "hint": "PC 는 1920 폭(또는 본문 폭) 이미지 · MO 는 375 폭 · MO 를 비우면 PC 것을 써요 · 미리보기를 클릭해도 바꿀 수 있어요"
+    },
+    "alt": {
+      "type": "text",
+      "extract": false,
+      "label": "대체 텍스트",
+      "maxChars": 200,
+      "optional": true,
+      "note": "이미지 안 글자를 적어 두면 검색·화면낭독기가 읽어요"
+    },
+    "href": {
+      "type": "url",
+      "optional": true,
+      "extract": false,
+      "label": "링크",
+      "note": "비우면 링크 없음"
+    },
+    "width": {
+      "type": "enum",
+      "values": [
+        "full",
+        "body"
+      ],
+      "labels": {
+        "full": "화면 가득",
+        "body": "본문 폭(980)"
+      },
+      "default": "full",
+      "extract": false,
+      "label": "폭"
+    },
+    "space": {
+      "type": "enum",
+      "values": [
+        "none",
+        "section"
+      ],
+      "labels": {
+        "none": "여백 없음",
+        "section": "위아래 120"
+      },
+      "default": "none",
+      "extract": false,
+      "label": "위아래 여백",
+      "note": "이미지에 여백까지 들어 있으면 「여백 없음」"
+    },
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "extract": false,
+      "label": "배경색",
+      "note": "본문 폭·여백이 있을 때 이미지 바깥 색 · 기본은 흰 바탕"
+    }
+  }
+}
