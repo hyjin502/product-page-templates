@@ -25,7 +25,8 @@ try {
   if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
   if (s.tpl && typeof s.tpl === 'object') state.tpl = s.tpl;
   if (s.tplBackup && typeof s.tplBackup === 'object') state.tplBackup = s.tplBackup;
-  if (s.myDrafts && typeof s.myDrafts === 'object') state.myDrafts = s.myDrafts; // 내가 저장한 시안 번호 → 수정 열쇠 // 공유 링크를 열기 전 편집 값
+  if (s.myDrafts && typeof s.myDrafts === 'object') state.myDrafts = s.myDrafts; // 내가 저장한 시안 번호 → 수정 열쇠
+  if (typeof s.me === 'string') state.me = s.me; // 회차에 남길 내 이름 (로그인 전 테스트) // 공유 링크를 열기 전 편집 값
   if (Number.isFinite(s.panelW)) state.panelW = s.panelW;
   if (s.zoom === 'fit' || [0.25, 0.5, 0.75, 1].includes(s.zoom)) state.zoom = s.zoom;
 } catch (e) {}
@@ -1842,12 +1843,13 @@ function renderTpl() {
   <div class="compose__scroll">
   <div class="hed-intro"><h2>${esc(t.title)}</h2><p>섹션을 펼쳐 문구·이미지를 바꿔요. 미리보기에서 섹션을 누르면 그 입력칸이 열려요.</p></div>
   <div class="rows__bar"><span>섹션 ${vs.length}개</span><button type="button" class="btn-ui" data-tpl-fold="1">모두 접기</button><button type="button" class="btn-ui" data-tpl-fold="0">모두 펴기</button></div>
+  ${issueBar(t.key)}
   <div class="tpl-secs">${rows.map((r) => tplBlock(t, r)).join('')}</div>
   ${todo.length ? `<p class="compose__hint">준비 중: ${todo.map(esc).join(' · ')}</p>` : ''}
   </div>
   <div class="compose__foot">
   <div class="compose__actions">
-    <button type="button" class="btn-ui btn-ui--primary" data-tpl-act="save" title="이미지까지 저장하고 공유 링크를 복사해요 — 다시 저장하면 같은 링크가 최신 내용으로 바뀌어요">${draftMine(tplState(t.key)) ? '저장하고 링크 복사' : '저장해서 링크 만들기'}</button>
+    ${issueSaveBtn(t.key)}
     <button type="button" class="btn-ui" data-tpl-act="download">page.json 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="copy">page.json 복사</button>
     <button type="button" class="btn-ui" data-tpl-act="figma" title="Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
@@ -1863,6 +1865,8 @@ function renderTpl() {
   <div class="v__frame"><iframe title="${esc(t.title)} 미리보기"></iframe><span class="v__scale"></span></div>
 </div>`;
   tplEl.querySelector('.compose__scroll').scrollTop = keep;
+  tplEl.classList.toggle('is-locked', issueLocked(t.key));
+  if (tplState(t.key).listOpen) fillIssueList(t.key); // 다시 그려도 지난 회차 목록은 이어서 보여요
   markTplCur();
   syncPanel();
   const iframe = tplEl.querySelector('iframe');
@@ -2137,12 +2141,12 @@ async function supaRpc(fn, body) {
   if (!r.ok) throw new Error(`저장소 응답 ${r.status}`);
   return r.json();
 }
-async function supaUpload(file) {
+async function supaUpload(file, bucket = SUPA.bucket) {
   const ext = (/\.([a-z0-9]{2,5})$/i.exec(file.name || '') || [, file.type.startsWith('video/') ? 'mp4' : 'png'])[1].toLowerCase();
   const path = `${crypto.randomUUID()}.${ext}`;
-  const r = await fetch(`${SUPA.url}/storage/v1/object/${SUPA.bucket}/${path}`, { method: 'POST', headers: { apikey: SUPA.key, 'Content-Type': file.type || 'application/octet-stream' }, body: file });
+  const r = await fetch(`${SUPA.url}/storage/v1/object/${bucket}/${path}`, { method: 'POST', headers: { apikey: SUPA.key, 'Content-Type': file.type || 'application/octet-stream' }, body: file });
   if (!r.ok) throw new Error(`파일 올리기 실패 ${r.status} (${file.name})`);
-  return `${SUPA.url}/storage/v1/object/public/${SUPA.bucket}/${path}`;
+  return `${SUPA.url}/storage/v1/object/public/${bucket}/${path}`;
 }
 const draftUrl = (id) => { const u = new URL(location.href); u.hash = 'd-' + id; return u.href; };
 const draftMine = (ts) => !!(ts.draftId && state.myDrafts && state.myDrafts[ts.draftId]);
@@ -2153,14 +2157,14 @@ function draftLine(key) {
   return `<p class="compose__hint tpl-draft">${draftMine(ts) ? '저장된 시안' : '받은 시안 (저장하면 내 시안으로 복사돼요)'} · ${esc(when)} <button type="button" class="btn-ui" data-tpl-act="copylink">링크 복사</button></p>`;
 }
 /** 편집 값 안의 올린 파일(file 키)마다 — 아직 올리지 않았으면 올리고 url 을 적어 둬요 */
-async function uploadRefs(x) {
-  if (Array.isArray(x)) { for (const y of x) await uploadRefs(y); return; }
+async function uploadRefs(x, bucket) {
+  if (Array.isArray(x)) { for (const y of x) await uploadRefs(y, bucket); return; }
   if (!x || typeof x !== 'object') return;
   if (typeof x.file === 'string') {
-    if (!x.url) { await loadBlob(x.file); if (files[x.file]) x.url = await supaUpload(files[x.file]); }
+    if (!x.url) { await loadBlob(x.file); if (files[x.file]) x.url = await supaUpload(files[x.file], bucket); }
     return;
   }
-  for (const y of Object.values(x)) await uploadRefs(y);
+  for (const y of Object.values(x)) await uploadRefs(y, bucket);
 }
 async function saveDraft(key) {
   const ts = tplState(key);
@@ -2191,23 +2195,7 @@ async function openDraft(id) {
     if (!rows.length) { alert('시안을 찾지 못했어요 — 링크를 확인해 주세요.'); return false; }
     const { template: key, data, updated_at } = rows[0];
     if (!tplByKey[key]) return false;
-    const pulls = [];
-    const walk = (x) => {
-      if (Array.isArray(x)) return x.forEach(walk);
-      if (!x || typeof x !== 'object') return;
-      if (typeof x.file === 'string' && x.url) { pulls.push(x); return; }
-      Object.values(x).forEach(walk);
-    };
-    walk(data.edits);
-    await Promise.all(pulls.map(async (ref) => {
-      const r = await fetch(ref.url);
-      if (!r.ok) return;
-      const b = await r.blob();
-      const f = new File([b], ref.name || 'file', { type: b.type });
-      if (blobUrls[ref.file]) { URL.revokeObjectURL(blobUrls[ref.file]); delete blobUrls[ref.file]; }
-      files[ref.file] = f;
-      await idb.put(ref.file, f);
-    }));
+    await pullFiles(data.edits);
     state.tplBackup ||= {};
     const cur = state.tpl && state.tpl[key];
     if (cur && cur.draftId !== id) state.tplBackup[key] = cur; // 지금 편집하던 다른 내용은 남겨 둬요
@@ -2220,6 +2208,284 @@ async function openDraft(id) {
     return false;
   }
 }
+
+/** 편집 값 안의 올린 파일(url 이 있는 것)을 받아 같은 file 키로 IndexedDB 에 넣어요 — 받은 시안 · 회차를 열 때 */
+async function pullFiles(edits) {
+  const pulls = [];
+  const walk = (x) => {
+    if (Array.isArray(x)) return x.forEach(walk);
+    if (!x || typeof x !== 'object') return;
+    if (typeof x.file === 'string' && x.url) { pulls.push(x); return; }
+    Object.values(x).forEach(walk);
+  };
+  walk(edits);
+  await Promise.all(pulls.map(async (ref) => {
+    const r = await fetch(ref.url);
+    if (!r.ok) return;
+    const b = await r.blob();
+    const f = new File([b], ref.name || 'file', { type: b.type });
+    if (blobUrls[ref.file]) { URL.revokeObjectURL(blobUrls[ref.file]); delete blobUrls[ref.file]; }
+    files[ref.file] = f;
+    await idb.put(ref.file, f);
+  }));
+}
+
+/* ---------------------------------------------------------------- 회차 (Supabase issues 표 — 2026-10-20 테스트, 로그인 없음)
+   한 회차(월간휴넷 2026년 11월호) = issues 한 줄: template · period(YYYY-MM) · title · status(draft 작성 중 · review 디자이너 전달 · done 완료)
+   · data(편집 값) · info(행사일 · 신청 마감일 · 게시 주소) · final(완료 때 보관한 HTML · page.json · Figma용 파일 주소) · rev(덮어쓰기 방지) · *_by(편집기에 넣은 이름).
+   편집기는 state.tpl[key].issue 에 지금 회차 정보를 두고, 저장하면 같은 링크(#i-<id>)가 최신 내용이 돼요. 완료하면 잠기고 「다시 열기」로 풀어요.
+   로그인을 붙이면 표 정책만 사내 계정용으로 바꾸고 *_by 는 로그인 이메일로 채워요 */
+const ISS = { bucket: 'issues', status: { draft: '작성 중', review: '디자이너 전달', done: '완료' } };
+const issueUrl = (id) => { const u = new URL(location.href); u.hash = 'i-' + id; return u.href; };
+const issueOf = (key) => tplState(key).issue || null;
+const issueLocked = (key) => { const i = issueOf(key); return !!(i && i.status === 'done'); };
+const ymLabel = (p) => String(p || '').replace('-', '.');
+const whenLabel = (t) => (t ? new Date(t).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '');
+async function sb(path, opt = {}) {
+  const r = await fetch(`${SUPA.url}/rest/v1/${path}`, { ...opt, headers: { apikey: SUPA.key, 'Content-Type': 'application/json', Prefer: 'return=representation', ...(opt.headers || {}) } });
+  if (!r.ok) throw new Error(`저장소 응답 ${r.status}`);
+  return r.status === 204 ? [] : r.json();
+}
+const issueCols = 'id,template,period,title,status,info,final,rev,created_by,updated_by,done_by,created_at,updated_at,done_at';
+const issueMeta = (row) => Object.fromEntries(issueCols.split(',').map((k) => [k, row[k] ?? null]));
+function myName() {
+  if (state.me) return state.me;
+  const n = (prompt('회차에 남길 이름을 입력해 주세요 (예: 홍길동 · 기획)') || '').trim();
+  if (n) { state.me = n; save(); }
+  return n;
+}
+/** 지금 편집 값 → 저장할 data (올린 파일은 issues 파일함에 올리고 url 을 적어요 · 샘플 그대로인 섹션은 빼요) */
+async function issueData(key) {
+  const ts = tplState(key);
+  for (const id of Object.keys(ts.edits)) await uploadRefs(ts.edits[id], ISS.bucket);
+  const edits = {};
+  for (const [id, e] of Object.entries(ts.edits)) {
+    const v = byId[id] || byId[id.split('~')[0]];
+    if (!v) continue;
+    if (JSON.stringify(e) === JSON.stringify(editFrom(v, v.sample))) continue;
+    edits[id] = e;
+  }
+  return { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order };
+}
+/** 회차를 편집기로 — 지금 편집하던 다른 내용은 tplBackup 에 남겨요 */
+async function applyIssue(row) {
+  const key = row.template;
+  if (!tplByKey[key]) return false;
+  const data = row.data || {};
+  await pullFiles(data.edits);
+  state.tplBackup ||= {};
+  const cur = state.tpl && state.tpl[key];
+  if (cur && (!cur.issue || cur.issue.id !== row.id)) state.tplBackup[key] = cur;
+  state.tpl ||= {};
+  state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [], issue: issueMeta(row) };
+  state.mode = 'tpl:' + key;
+  save();
+  return true;
+}
+async function openIssue(id) {
+  try {
+    const rows = await sb(`issues?id=eq.${id}&select=*`, { method: 'GET' });
+    if (!rows.length) { alert('회차를 찾지 못했어요 — 링크를 확인해 주세요.'); return false; }
+    return await applyIssue(rows[0]);
+  } catch (e) { alert('회차를 불러오지 못했어요 — ' + (e && e.message || e)); return false; }
+}
+/** 저장 — rev 가 같을 때만 덮어써요. 그사이 누가 저장했으면 덮어쓸지 · 그 내용을 불러올지 물어요 */
+async function saveIssue(key, patch = {}) {
+  const iss = issueOf(key);
+  const by = myName();
+  if (!by) throw new Error('이름이 필요해요');
+  const body = { data: await issueData(key), title: iss.title, period: iss.period, info: iss.info || {}, updated_by: by, updated_at: new Date().toISOString(), ...patch };
+  let rows = await sb(`issues?id=eq.${iss.id}&rev=eq.${iss.rev}`, { method: 'PATCH', body: JSON.stringify({ ...body, rev: iss.rev + 1 }) });
+  if (!rows.length) {
+    const [latest] = await sb(`issues?id=eq.${iss.id}&select=*`, { method: 'GET' });
+    if (!latest) throw new Error('회차가 없어요');
+    if (!confirm(`그사이 ${latest.updated_by || '다른 사람'}님이 ${whenLabel(latest.updated_at)}에 저장했어요.\n\n확인 = 내 내용으로 덮어쓰기\n취소 = 그 내용 불러오기 (내 내용은 따로 보관)`)) { await applyIssue(latest); renderTpl(); return null; }
+    rows = await sb(`issues?id=eq.${iss.id}&rev=eq.${latest.rev}`, { method: 'PATCH', body: JSON.stringify({ ...body, rev: latest.rev + 1 }) });
+    if (!rows.length) throw new Error('다시 저장해 주세요 (또 바뀌었어요)');
+  }
+  tplState(key).issue = issueMeta(rows[0]);
+  save();
+  return rows[0];
+}
+/** 새 회차 — from: 'current'(지금 편집 내용) · 'sample'(샘플) · 회차 id(그 회차 복사) */
+async function createIssue(key, { period, title, from }) {
+  const by = myName();
+  if (!by) throw new Error('이름이 필요해요');
+  if (from === 'sample') { const ts = tplState(key); state.tplBackup ||= {}; state.tplBackup[key] = JSON.parse(JSON.stringify(ts)); state.tpl[key] = { edits: {}, pick: {}, off: [], extras: {}, order: [], open: [] }; }
+  else if (from && from !== 'current') { const [src] = await sb(`issues?id=eq.${from}&select=*`, { method: 'GET' }); if (src) await applyIssue({ ...src, id: null }); }
+  const ts = tplState(key);
+  const [row] = await sb('issues', { method: 'POST', body: JSON.stringify({ template: key, period, title, status: 'draft', data: await issueData(key), info: {}, created_by: by, updated_by: by }) });
+  ts.issue = issueMeta(row);
+  save();
+  return row;
+}
+/** 완료 — 그때 화면(HTML) · page.json · Figma용 파일을 파일함에 함께 보관해요 (올린 사진은 저장된 주소로 바꿔 넣어요) */
+async function finalFiles(key) {
+  const t = tplByKey[key];
+  const vs = tplVisible(t).map((id) => byId[id]);
+  await Promise.all(vs.flatMap((v) => mediaKeys(tplEdit(v))).map(loadBlob));
+  const urlOf = {};
+  const walk = (x) => { if (Array.isArray(x)) return x.forEach(walk); if (!x || typeof x !== 'object') return; if (typeof x.file === 'string' && x.url && blobUrls[x.file]) { urlOf[blobUrls[x.file]] = x.url; return; } Object.values(x).forEach(walk); };
+  vs.forEach((v) => walk(tplEdit(v)));
+  const swap = (str) => Object.entries(urlOf).reduce((a, [b, u]) => a.split(b).join(u), str);
+  const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
+  const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+  const html = swap(srcdoc(vs.map(tplSecHtml).join('\n'), css, js, null));
+  const page = swap(JSON.stringify({ title: t.title, theme: 'light', sections: vs.map((v) => ({ variant: v.base || v.id, content: contentFrom(v, tplEditOf(v.id), false, v.pre || v.layout) })) }, null, 2));
+  const fig = await figmaBundle(tplPage(key), tplVisible(t).map((variant, i) => ({ i, variant })), tplEditOf, (v) => v.pre || v.layout);
+  const up = (name, text, type) => supaUpload(new File([text], name, { type }), ISS.bucket);
+  return { html: await up('page.html', html, 'text/html'), page: await up('page.json', page, 'application/json'), figma: await up('figma.json', fig, 'application/json'), at: new Date().toISOString() };
+}
+function issueSaveBtn(key) {
+  const iss = issueOf(key);
+  if (!iss) return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="new" title="회차(예: 2026년 11월호)로 저장하고 링크를 만들어요 — 지난 회차에 쌓여요">회차로 저장</button>`;
+  if (iss.status === 'done') return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="copy">링크 복사</button>`;
+  return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="save" title="같은 링크가 최신 내용으로 바뀌어요">저장하고 링크 복사</button>`;
+}
+/** 회차 칸 — 두 줄로 간결하게: ① 연월 · 이름 · 상태(고르기) ② 저장 시각 · 사람 + 작은 글자 버튼(정보 · 지난 회차 · 닫기) */
+function issueBar(key) {
+  const ts = tplState(key);
+  const iss = issueOf(key);
+  const tx = (act, label, on) => `<button type="button" class="iss__tx${on ? ' is-on' : ''}" data-iss-act="${act}">${label}</button>`;
+  const more = (ts.newOpen ? issueNewForm(key) : '') + (ts.listOpen ? `<div class="iss__list" data-iss-listbox><p class="iss__muted">불러오는 중…</p></div>` : '');
+  const fold = `<button type="button" class="iss__fold" data-iss-act="fold" aria-expanded="${String(!ts.issFold)}" title="${ts.issFold ? '펼치기' : '접기'}">${ts.issFold ? '▸' : '▾'}</button>`;
+  if (!iss && ts.issFold) return `<div class="iss is-folded"><div class="iss__row">${fold}<span class="iss__muted">회차 없음</span></div></div>`;
+  if (!iss) return `<div class="iss"><div class="iss__row">${fold}<span class="iss__muted">회차 없음 — 저장하면 회차로 쌓여요</span><span class="iss__links">${tx('list', '지난 회차', ts.listOpen)}${tx('new', '+ 새 회차', ts.newOpen)}</span></div>${more}</div>`;
+  const done = iss.status === 'done';
+  const info = iss.info || {};
+  const dis = done ? ' disabled' : '';
+  const nm = `${key}-${iss.period || ''}`;
+  const head = `<div class="iss__row">${fold}<b>${esc(ymLabel(iss.period))}</b>`;
+  if (ts.issFold) return `<div class="iss iss--${esc(iss.status)} is-folded">${head}<span class="iss__title">${esc(iss.title || '(이름 없음)')}</span><span class="iss__st iss__st--${esc(iss.status)}">${esc(ISS.status[iss.status] || iss.status)}</span></div></div>`;
+  return `<div class="iss iss--${esc(iss.status)}">
+  ${head}<span class="iss__title">${esc(iss.title || '(이름 없음)')}</span>
+    <select class="iss__sel" data-iss-status aria-label="상태">${['draft', 'review', 'done'].map((st) => `<option value="${st}"${iss.status === st ? ' selected' : ''}>${ISS.status[st]}</option>`).join('')}</select></div>
+  <div class="iss__row"><span class="iss__muted">${done ? `${esc(whenLabel(iss.done_at))} 완료 · ${esc(iss.done_by || '')}` : `${esc(whenLabel(iss.updated_at))} 저장 · ${esc(iss.updated_by || '')}`}</span>
+    <span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('list', '지난 회차', ts.listOpen)}${tx('close', '닫기')}</span></div>
+  ${done ? `<p class="iss__lock">🔒 완료 · <button type="button" class="iss__lnk" data-iss-view="${esc(iss.final ? iss.final.html : '')}"${iss.final ? '' : ' disabled'}>화면 보기</button>${iss.final ? ` · <button type="button" class="iss__lnk" data-iss-dl="${esc(iss.final.page)}" data-name="${esc(nm)}.page.json">page.json</button> · <button type="button" class="iss__lnk" data-iss-dl="${esc(iss.final.figma)}" data-name="${esc(nm)}.figma.json">Figma용</button>` : ''} · <button type="button" class="iss__lnk" data-iss-act="reopen">다시 열기</button></p>` : ''}
+  ${ts.infoOpen ? `<div class="iss__grid">
+    <label>연월<input type="month" data-iss-f="period" value="${esc(iss.period || '')}"${dis}></label>
+    <label>회차 이름<input type="text" data-iss-f="title" value="${esc(iss.title || '')}"${dis}></label>
+    <label>행사일<input type="date" data-iss-i="eventDate" value="${esc(info.eventDate || '')}"${dis}></label>
+    <label>신청 마감일<input type="date" data-iss-i="deadline" value="${esc(info.deadline || '')}"${dis}></label>
+    <label class="iss__wide">게시 주소${info.liveUrl ? ` <a href="${esc(info.liveUrl)}" target="_blank" rel="noopener">열기</a>` : ''}<input type="url" data-iss-i="liveUrl" value="${esc(info.liveUrl || '')}" placeholder="https://hrd.hunet.co.kr/…"${dis}></label>
+    <label class="iss__wide">내 이름 (저장 기록용)<input type="text" data-iss-me value="${esc(state.me || '')}" maxlength="20"></label>
+  </div>` : ''}
+  ${more}
+</div>`;
+}
+function issueNewForm(key) {
+  const d = new Date(); d.setMonth(d.getMonth() + 1);
+  const next = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  const list = tplState(key).listCache || [];
+  const from = tplState(key).newFrom || (list[0] ? list[0].id : 'current');
+  return `<div class="iss__new">
+  <div class="iss__grid">
+    <label>연월<input type="month" data-iss-new="period" value="${esc(next)}"></label>
+    <label>회차 이름<input type="text" data-iss-new="title" placeholder="예: AI 리더십 세미나"></label>
+    <label class="iss__wide">시작 내용<select data-iss-new="from">
+      ${list.map((r) => `<option value="${esc(r.id)}"${from === r.id ? ' selected' : ''}>${esc(ymLabel(r.period))} ${esc(r.title || '')} 복사</option>`).join('')}
+      <option value="current"${from === 'current' ? ' selected' : ''}>지금 편집 내용</option>
+      <option value="sample"${from === 'sample' ? ' selected' : ''}>Figma 샘플</option>
+    </select></label>
+  </div>
+  <div class="iss__acts"><button type="button" class="btn-ui btn-ui--primary" data-iss-act="create">만들기</button><button type="button" class="btn-ui" data-iss-act="cancel">취소</button></div>
+</div>`;
+}
+async function issueList(key) {
+  const rows = await sb(`issues?template=eq.${encodeURIComponent(key)}&select=${issueCols}&order=period.desc,updated_at.desc&limit=100`, { method: 'GET' });
+  tplState(key).listCache = rows.map((r) => ({ id: r.id, period: r.period, title: r.title }));
+  return rows;
+}
+/** 지난 회차 — 한 줄씩: 연월 · 이름(누르면 열기) · 상태 · 작은 버튼(링크 · 복사해서 새 회차) */
+async function fillIssueList(key) {
+  const box = tplEl.querySelector('[data-iss-listbox]');
+  if (!box) return;
+  try {
+    const rows = await issueList(key);
+    const cur = issueOf(key);
+    box.innerHTML = `<div class="iss__lhead"><span>지난 회차 ${rows.length}</span><button type="button" class="iss__tx" data-iss-act="list">접기 ▴</button></div>` + (rows.length ? `<ul>${rows.map((r) => `<li class="${cur && cur.id === r.id ? 'is-cur' : ''}">
+      <button type="button" class="iss__item" data-iss-open="${esc(r.id)}" title="열기"><b>${esc(ymLabel(r.period))}</b><span>${esc(r.title || '(이름 없음)')}</span>${cur && cur.id === r.id ? '<em class="iss__now">보는 중</em>' : ''}</button>
+      <span class="iss__st iss__st--${esc(r.status)}">${esc(ISS.status[r.status] || r.status)}</span>
+      <button type="button" class="iss__tx" data-iss-link="${esc(r.id)}" title="링크 복사">링크</button>
+      <button type="button" class="iss__tx" data-iss-from="${esc(r.id)}" title="이 회차를 복사해서 새 회차 시작">복사</button>
+    </li>`).join('')}</ul>` : '<p class="iss__muted">아직 회차가 없어요</p>');
+  } catch (e) { box.innerHTML = `<p class="iss__muted">목록을 불러오지 못했어요 — ${esc(e.message || e)}</p>`; }
+}
+tplEl.addEventListener('input', (ev) => {
+  const key = tplKey();
+  if (!key) return;
+  const me = ev.target.closest('[data-iss-me]');
+  if (me) { state.me = me.value.trim(); save(); return; }
+  const f = ev.target.closest('[data-iss-f], [data-iss-i]');
+  if (f) {
+    const iss = issueOf(key); if (!iss) return;
+    if (f.dataset.issF) iss[f.dataset.issF] = f.value; else (iss.info ||= {})[f.dataset.issI] = f.value;
+    save(); // 서버에는 다음 「저장」 때 함께 나가요
+  }
+});
+// 상태 고르기 — 완료는 저장 + 결과물 보관 후 잠가요, 디자이너 전달은 링크를 복사해요
+tplEl.addEventListener('change', async (ev) => {
+  const sel = ev.target.closest('[data-iss-status]');
+  const key = tplKey();
+  if (!sel || !key) return;
+  const st = sel.value;
+  const prev = issueOf(key).status;
+  sel.disabled = true;
+  try {
+    if (st === 'done') {
+      if (!confirm('완료할까요? 지금 내용을 저장하고 화면 · page.json · Figma용 파일을 함께 보관해요. 완료하면 잠겨요.')) { sel.value = prev; return; }
+      const by = myName();
+      if (!(await saveIssue(key))) return;
+      const final = await finalFiles(key);
+      await saveIssue(key, { status: 'done', done_by: by, done_at: new Date().toISOString(), final });
+    } else {
+      const row = await saveIssue(key, { status: st });
+      if (row && st === 'review') copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || sel);
+    }
+    renderTpl();
+  } catch (e) { sel.value = prev; alert('하지 못했어요 — ' + (e && e.message || e)); }
+  finally { sel.disabled = false; }
+});
+tplEl.addEventListener('click', async (ev) => {
+  const key = tplKey();
+  if (!key) return;
+  const ts = tplState(key);
+  // 보관한 결과물 — 파일함은 html 을 글자(text/plain)로 줘서, 받아서 화면으로 열거나 파일로 내려받아요
+  const fv = ev.target.closest('[data-iss-view], [data-iss-dl]');
+  if (fv) {
+    const r = await fetch(fv.dataset.issView || fv.dataset.issDl);
+    if (!r.ok) return alert('결과물을 불러오지 못했어요');
+    const text = await r.text();
+    if (fv.dataset.issView) { const w = window.open(URL.createObjectURL(new Blob([text], { type: 'text/html' })), '_blank'); if (!w) alert('팝업이 막혔어요 — 팝업을 허용해 주세요'); }
+    else download(fv.dataset.name, new Blob([text], { type: 'application/json' }));
+    return;
+  }
+  const btn = ev.target.closest('[data-iss-act], [data-iss-open], [data-iss-link], [data-iss-from]');
+  if (!btn) return;
+  const busy = async (fn) => { btn.disabled = true; try { await fn(); } catch (e) { alert('하지 못했어요 — ' + (e && e.message || e)); } finally { btn.disabled = false; } };
+  const act = btn.dataset.issAct;
+  if (act === 'fold') { ts.issFold = !ts.issFold; save(); renderTpl(); return; }
+  if (act === 'info') { ts.infoOpen = !ts.infoOpen; save(); renderTpl(); return; }
+  if (act === 'list') { ts.listOpen = !ts.listOpen; if (ts.listOpen) ts.newOpen = false; save(); renderTpl(); return; }
+  if (act === 'new') { ts.newOpen = !ts.newOpen; ts.listOpen = false; ts.newFrom = null; save(); renderTpl(); if (!ts.listCache) issueList(key).then(() => renderTpl()).catch(() => {}); return; }
+  if (act === 'cancel') { ts.newOpen = false; save(); renderTpl(); return; }
+  if (act === 'create') return busy(async () => {
+    const val = (n) => (tplEl.querySelector(`[data-iss-new="${n}"]`) || {}).value || '';
+    const period = val('period');
+    if (!/^\d{4}-\d{2}$/.test(period)) throw new Error('연월을 골라 주세요');
+    const row = await createIssue(key, { period, title: val('title').trim(), from: val('from') });
+    const t2 = tplState(key); t2.newOpen = false; t2.listCache = null; save(); renderTpl();
+    copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || btn);
+  });
+  if (act === 'save') return busy(async () => { const row = await saveIssue(key); if (row) { renderTpl(); copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || btn); } });
+  if (act === 'copy') return copyText(issueUrl(issueOf(key).id), btn);
+  if (act === 'close') { if (!confirm('회차에서 나올까요? 회차는 그대로 남고, 편집기는 지금 내용으로 따로 편집해요.')) return; delete ts.issue; save(); renderTpl(); return; }
+  if (act === 'reopen') return busy(async () => { await saveIssue(key, { status: 'draft' }); renderTpl(); });
+  if (btn.dataset.issOpen) return busy(async () => { if (await openIssue(btn.dataset.issOpen)) { tplState(key).listOpen = true; renderTpl(); fillIssueList(key); } });
+  if (btn.dataset.issLink) return copyText(issueUrl(btn.dataset.issLink), btn);
+  if (btn.dataset.issFrom) { ts.newOpen = true; ts.listOpen = false; ts.newFrom = btn.dataset.issFrom; save(); renderTpl(); tplEl.querySelector('.iss__new')?.scrollIntoView({ block: 'nearest' }); }
+});
 
 /* ---------------------------------------------------------------- shared */
 function copyText(text, btn) {
@@ -2329,7 +2595,8 @@ else if (secByKey[h]) state.cat = h;
 else if (byId[h]) { state.cat = byId[h].section; state.mode = 'library'; jumpTo = h; }
 if (!isOpen(state.cat)) state.open.push(state.cat);
 // #share-<템플릿>=… 공유 링크 — 받은 내용으로 편집기를 열어요 (압축 풀기가 비동기라 그 뒤에 그려요)
-if (/^d-[0-9a-f-]{36}$/.test(h)) openDraft(h.slice(2)).then(() => applyAll());
+if (/^i-[0-9a-f-]{36}$/.test(h)) openIssue(h.slice(2)).then(() => applyAll());
+else if (/^d-[0-9a-f-]{36}$/.test(h)) openDraft(h.slice(2)).then(() => applyAll());
 else if (h.startsWith('share-')) openShare(h).then((ok) => { applyAll(); if (ok) setTimeout(() => alert('공유 받은 시안을 열었어요. 이 브라우저에서 편집하던 내용은 따로 보관해 뒀어요.'), 300); });
 else applyAll();
 if (jumpTo) setTimeout(() => document.getElementById(jumpTo)?.scrollIntoView({ block: 'start' }), 300);

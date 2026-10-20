@@ -830,3 +830,43 @@ body.is-dev .flink__label::after { content: none; }
 /* 하단 고정 바 미리보기 (페이지 템플릿 편집기) — 바깥 문서에 fixed 로 띄워 스크롤해도 끊기지 않아요 */
 .tpl-dock { position: fixed; z-index: 4; overflow: hidden; pointer-events: none; }
 .tpl-dock iframe { display: block; border: 0; transform-origin: 0 0; background: transparent; pointer-events: auto; }
+
+/* ---------------------------------------------------------------- 회차 (페이지 템플릿 편집기 위쪽 — 두 줄로 간결하게) */
+.iss { display: flex; flex-direction: column; gap: 4px; margin: 0 0 10px; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); font-size: 12px; }
+.iss--done { background: var(--accent-soft); }
+.iss__row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.iss__row b { font-size: 13px; }
+.iss__fold { flex: none; width: 16px; padding: 0; border: 0; background: none; color: var(--ink-3); font: 11px/1 var(--font-ui); cursor: pointer; }
+.iss__fold:hover { color: var(--accent); }
+.iss.is-folded { padding: 6px 10px; }
+.iss__lhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; color: var(--ink-3); font-size: 11px; font-weight: 600; }
+.iss__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 600; }
+.iss__muted { flex: 1; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-3); font-size: 11px; }
+.iss__links { flex: none; display: inline-flex; gap: 8px; margin-left: auto; }
+.iss__tx { padding: 0; border: 0; background: none; color: var(--ink-3); font: 500 11px/1.4 var(--font-ui); cursor: pointer; white-space: nowrap; }
+.iss__tx:hover, .iss__tx.is-on { color: var(--accent); }
+.iss__sel { flex: none; padding: 2px 4px; border: 1px solid var(--rule); border-radius: 99px; background: var(--panel); color: var(--ink); font: 600 11px/1.4 var(--font-ui); cursor: pointer; }
+.iss--review .iss__sel { border-color: #f0c36d; background: #fff6e2; color: #8a5a00; }
+.iss--done .iss__sel { border-color: var(--accent); background: var(--accent); color: #fff; }
+.iss__st { flex: none; padding: 1px 7px; border-radius: 99px; background: var(--rule); font-size: 10px; font-weight: 600; white-space: nowrap; }
+.iss__st--review { background: #fff1d6; color: #8a5a00; }
+.iss__st--done { background: var(--accent); color: #fff; }
+.iss__lock { margin: 2px 0 0; font-size: 11px; color: var(--ink-2, var(--ink)); }
+.iss__lnk { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; }
+.iss__lnk:disabled { color: var(--ink-3); text-decoration: none; cursor: default; }
+.iss input, .iss select:not(.iss__sel) { min-width: 0; padding: 4px 6px; border: 1px solid var(--rule); border-radius: 6px; background: var(--panel); color: var(--ink); font: 12px/1.4 var(--font-ui); }
+.iss__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--rule); }
+.iss__grid label { display: flex; flex-direction: column; gap: 2px; color: var(--ink-3); font-size: 11px; }
+.iss__grid a { color: var(--accent); }
+.iss__wide { grid-column: 1 / -1; }
+.iss__new .iss__acts { display: flex; gap: 6px; margin-top: 6px; }
+.iss__list { margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--rule); }
+.iss__list ul { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.iss__list li { display: flex; align-items: center; gap: 8px; padding: 5px 4px; border-radius: 6px; }
+.iss__list li:hover { background: var(--accent-soft); }
+.iss__list li.is-cur { background: var(--panel); } /* 지금 편집기에 열린 회차 — 흰 바탕 + 「보는 중」 */
+.iss__now { flex: none; color: var(--accent); font-size: 10px; font-style: normal; font-weight: 700; }
+.iss__item { flex: 1; min-width: 0; display: flex; gap: 6px; padding: 0; border: 0; background: none; color: var(--ink); font: 12px/1.4 var(--font-ui); text-align: left; cursor: pointer; }
+.iss__item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 완료된 회차 — 입력칸은 잠가요 (회차 칸 · 미리보기 보기는 그대로) */
+#tpl-editor.is-locked .tpl-secs { pointer-events: none; opacity: .55; }
