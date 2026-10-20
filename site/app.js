@@ -1757,7 +1757,7 @@ function tplExtraBlock(t, r) {
   </div>` : ''}
 </section>`;
 }
-const redrawTplList = (t) => { const box = tplEl.querySelector('.tpl-secs'); if (box) box.innerHTML = tplRows(t).map((r) => tplBlock(t, r)).join(''); };
+const redrawTplList = (t) => { const box = tplEl.querySelector('.tpl-secs'); if (box) box.innerHTML = tplRows(t).map((r) => tplBlock(t, r)).join(''); markTplCur(); };
 /* 하단 고정 바 미리보기 — 편집기 iframe 은 페이지 전체 높이로 그려서 position: sticky 가 끝에만 보여요.
    그래서 하단 고정 바(stage: "sticky")는 본문 iframe 에서 빼고, 바깥 문서에 position: fixed 로 띄운 작은 iframe(.tpl-dock)에 그려요.
    미리보기가 화면 아래까지 이어지는 동안은 위치가 바뀌지 않아서 스크롤해도 끊기지 않아요(실제 페이지처럼).
@@ -1849,6 +1849,7 @@ function renderTpl() {
   <div class="v__frame"><iframe title="${esc(t.title)} 미리보기"></iframe><span class="v__scale"></span></div>
 </div>`;
   tplEl.querySelector('.compose__scroll').scrollTop = keep;
+  markTplCur();
   syncPanel();
   const iframe = tplEl.querySelector('iframe');
   tplLoaded = false;
@@ -1872,6 +1873,12 @@ function renderTpl() {
     if (bars.length) tplSticky = stickyDock(tplEl.querySelector('.v__frame'), iframe, bars.map(tplSecHtml).join('\n'), css, js, () => tplOpen(bars[0].id, true));
   });
 }
+/** 지금 보고 있는 섹션 — 미리보기에서 누르거나 펼친 섹션의 왼쪽 칸에 옅은 배경(.is-current)을 깔아 구역을 구분해요 */
+let tplCur = null;
+function markTplCur() {
+  tplEl.querySelectorAll('.tpl-sec.is-current').forEach((el) => el.classList.remove('is-current'));
+  if (tplCur) tplEl.querySelector(`[data-vid="${tplCur}"]`)?.classList.add('is-current');
+}
 /** 섹션 입력칸 펴기·접기 (scroll = 펴고 그 칸으로 이동) */
 function tplOpen(id, scroll) {
   const v = byId[id];
@@ -1879,11 +1886,13 @@ function tplOpen(id, scroll) {
   const r = rowOf(t, id);
   const ts = tplState(v.section);
   const open = ts.open.includes(id);
-  if (scroll && open) { tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
+  if (scroll || !open) tplCur = id; else if (tplCur === id) tplCur = null;
+  if (scroll && open) { markTplCur(); tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
   ts.open = open ? ts.open.filter((x) => x !== id) : [...ts.open, id];
   save();
   if (!r) return;
   redrawTplList(t);
+  markTplCur();
   if (scroll) tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' });
 }
 const tplTimers = {};

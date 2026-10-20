@@ -769,6 +769,7 @@ body.is-dev .flink__label::after { content: none; }
 .tpl-secs { display: flex; flex-direction: column; gap: 6px; }
 .tpl-sec { border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); }
 .tpl-sec.is-open { border-color: var(--accent); }
+.tpl-sec.is-current { background: var(--accent-soft); transition: background-color .25s; } /* 지금 보고 있는 섹션 (미리보기에서 누른 곳) */
 .tpl-sec__bar { display: flex; align-items: center; }
 .tpl-sec__on { flex: none; display: grid; place-items: center; padding: 10px 0 10px 12px; cursor: pointer; }
 .tpl-sec__on input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); cursor: pointer; }
