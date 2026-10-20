@@ -1,0 +1,56 @@
+{
+  "title": "History",
+  "subtitle": "지난 ‘월간 X’는 이렇게 진행되었습니다.",
+  "items": [
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-history-1.png",
+        "alt": ""
+      },
+      "title": "[월간 X] 온보딩 설계 워크숍",
+      "desc": "신입/경력 이직자를 빠르게 우리 회사에 온보딩시키는 방법은? 온보딩 트렌드와 맞춤 설계 방법이 공유될 실습형 워크숍에 교육담당자님을 초대합니다.",
+      "date": "2026-01-29",
+      "href": ""
+    },
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-history-2.png",
+        "alt": ""
+      },
+      "title": "[월간 X] 2026 AI 교육 로드맵 설계 워크숍",
+      "desc": "내년도 AI 교육 예정인 교육담당자님을 위한 3시간 집중 워크숍! AI 교육 트렌드와 사례, 러닝메이커를 활용한 설계 실습으로, 2026년 AI 교육 로드맵을 수립해 보세요.",
+      "date": "2025-11-27",
+      "href": ""
+    },
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-history-3.png",
+        "alt": ""
+      },
+      "title": "[월간 X] Step Up! 승진자 교육 설계",
+      "desc": "설계는 간편하게, 역할 전환은 강력하게! 성과로 이어지는 승진자 교육, ‘월간 X’에서 확인해 보세요.",
+      "date": "2025-10-29",
+      "href": ""
+    },
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-history-4.png",
+        "alt": ""
+      },
+      "title": "[월간 X] AI POWERED WORKSHOP",
+      "desc": "AI와 상호작용으로 완성하는 온보딩 &리더십! 한 차원 높은 교육\n경험해 보세요.",
+      "date": "2025-09-23",
+      "href": ""
+    },
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-history-5.png",
+        "alt": ""
+      },
+      "title": "[월간 X] 러닝메이커로 완성하는 터닝포인트 리더십",
+      "desc": "우리 조직의 미래를 결정하는 리더십 교육! 드래그 앤 드롭으로 손쉽게 우리 조직 맞춤형 리더십 교육을 설계해 보세요.",
+      "date": "2025-08-26",
+      "href": ""
+    }
+  ]
+}

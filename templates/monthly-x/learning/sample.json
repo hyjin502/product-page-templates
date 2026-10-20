@@ -1,0 +1,38 @@
+{
+  "title": "이번 월간 X에서는 **휴넷 MBA**의\nAI Powered Case Study 실습이 진행됩니다.",
+  "showCompare": true,
+  "leftHead": "기존 케이스 스터디 **Pain Point**",
+  "rightHead": "AI Powered 케이스 스터디, 차별화된 학습경험",
+  "rows": [
+    {
+      "pain": "학습자별 이해/관심\n격차 문제",
+      "name": "초개인화 학습",
+      "points": "상황/관심 주제 기반 맞춤 토론 주제 선정\n학습자 수준 기반 질문/피드백"
+    },
+    {
+      "pain": "케이스에 대한\n자기주도적 탐구 어려움",
+      "name": "자기주도적 탐구",
+      "points": "개인별 AI 심층 질문 → 사고 확장 유도\n학습자 답변 기반 논리/패턴 즉시 분석"
+    },
+    {
+      "pain": "케이스 핵심 논점의\n‘협업' 연결 어려움",
+      "name": "실무 적용 자동화",
+      "points": "직무/조직 맥락에 맞춤 적용 제안\n실제 결정 시 필요한 판단 기준 지원"
+    },
+    {
+      "pain": "학습을 구조화/축적해\n지식자산으로 전환 어려움",
+      "name": "인사이트 자산화",
+      "points": "학습 인사이트 자동 구조화\n학습 기록/패턴 → PDF 리포트 제공"
+    }
+  ],
+  "showBanner": true,
+  "banner": {
+    "pc": {
+      "kind": "image",
+      "src": "assets/monthly-x/monthly-x-mba-banner.png",
+      "alt": ""
+    }
+  },
+  "bannerAlt": "7th Upgrade hunet MBA — 업계 최초 AI 경영 신설! AI로 더욱 강력해진 hunet MBA로 우리 기업을 이끌어갈 예비 리더와 핵심 인재를 양성하세요.",
+  "bannerHref": "#"
+}

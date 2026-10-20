@@ -1,0 +1,47 @@
+{
+  "id": "monthly-x-faq",
+  "section": "monthly-x",
+  "layout": "faq",
+  "label": "FAQ",
+  "order": 7,
+  "when": "자주 묻는 질문 — 눌러서 펼치는 질문 목록",
+  "figma": {
+    "pc": "643:4691",
+    "mo": null,
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "title": {
+      "type": "text",
+      "extract": false,
+      "label": "제목",
+      "maxChars": 20
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "질문",
+      "min": 0,
+      "max": 20,
+      "item": {
+        "q": {
+          "type": "text",
+          "extract": false,
+          "label": "질문",
+          "maxChars": 60
+        },
+        "a": {
+          "type": "richtext",
+          "label": "답변",
+          "optional": true,
+          "note": "엔터로 줄바꿈"
+        },
+        "open": {
+          "type": "toggle",
+          "label": "펼친 상태로"
+        }
+      }
+    }
+  }
+}

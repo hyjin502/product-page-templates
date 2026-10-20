@@ -1,0 +1,68 @@
+{
+  "id": "monthly-x-history",
+  "section": "monthly-x",
+  "layout": "history",
+  "label": "지난 월간X",
+  "order": 9,
+  "when": "「History」 — 지난 회차 카드(썸네일 · 제목 · 설명 · 날짜)",
+  "figma": {
+    "pc": "643:4750",
+    "mo": null,
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "title": {
+      "type": "text",
+      "extract": false,
+      "label": "제목",
+      "maxChars": 20
+    },
+    "subtitle": {
+      "type": "text",
+      "extract": false,
+      "label": "설명",
+      "maxChars": 40,
+      "optional": true
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "회차",
+      "min": 0,
+      "max": 12,
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "썸네일",
+          "hint": "410×218 · 둥근 12"
+        },
+        "title": {
+          "type": "text",
+          "extract": false,
+          "label": "제목",
+          "maxChars": 40
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "optional": true
+        },
+        "date": {
+          "type": "text",
+          "extract": false,
+          "label": "날짜",
+          "maxChars": 12,
+          "optional": true
+        },
+        "href": {
+          "type": "url",
+          "optional": true,
+          "extract": false,
+          "label": "링크"
+        }
+      },
+      "note": "카드 사이 30"
+    }
+  }
+}

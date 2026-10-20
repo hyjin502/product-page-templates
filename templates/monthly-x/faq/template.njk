@@ -1,0 +1,15 @@
+<section class="mx-faq">
+  <h2 class="mx-faq__title">{{ title }}</h2>
+{% if items.length %}
+  <div class="mx-faq__list">
+{% for it in items %}
+    <details class="mx-faq__item"{% if it.open %} open{% endif %}>
+      <summary class="mx-faq__q"><span>{{ it.q }}</span>{{ 'hds-chevron-right' | icon }}</summary>
+{% if it.a %}
+      <div class="mx-faq__a">{{ it.a | rt }}</div>
+{% endif %}
+    </details>
+{% endfor %}
+  </div>
+{% endif %}
+</section>

@@ -1,0 +1,144 @@
+{
+  "id": "monthly-x-program",
+  "section": "monthly-x",
+  "layout": "program",
+  "label": "프로그램",
+  "order": 4,
+  "when": "「Program」 — 제목 · 일시·장소 칸 · 시간표(세로 줄 + 점 · 카드: 시간 · 제목 · 세션 이름 · 목록 · 소요 시간) · 안내",
+  "figma": {
+    "pc": "648:5369",
+    "mo": "648:5483",
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "eyebrow": {
+      "type": "text",
+      "extract": false,
+      "label": "작은 제목",
+      "maxChars": 20,
+      "optional": true
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "note": "가운데 정렬 · 굵게",
+      "mo": {
+        "maxLines": 3
+      }
+    },
+    "info": {
+      "type": "list",
+      "extract": false,
+      "label": "일시·장소",
+      "min": 0,
+      "max": 3,
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": [
+            "clock",
+            "pin",
+            "none"
+          ],
+          "labels": {
+            "clock": "시계",
+            "pin": "위치",
+            "none": "없음"
+          },
+          "default": "clock",
+          "label": "아이콘"
+        },
+        "text": {
+          "type": "text",
+          "extract": false,
+          "label": "문구",
+          "maxChars": 30
+        },
+        "sub": {
+          "type": "text",
+          "extract": false,
+          "label": "덧붙임",
+          "maxChars": 10,
+          "optional": true,
+          "note": "예 (3h)"
+        }
+      },
+      "note": "PC 가로 · MO 세로 · 비우면 칸 없음"
+    },
+    "cycle": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "순서대로 강조 (자동)",
+      "note": "위에서부터 1.5초마다 한 줄씩 진한 점 · 회색 카드로 바뀌며 반복 (월간휴넷 세미나 페이지와 같은 효과 · 간격은 사용자 요청으로 1.5초) · 끄면 「강조」 켠 줄만"
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "시간표",
+      "min": 0,
+      "max": 16,
+      "item": {
+        "time": {
+          "type": "text",
+          "extract": false,
+          "label": "시간",
+          "maxChars": 12
+        },
+        "duration": {
+          "type": "text",
+          "extract": false,
+          "label": "소요 시간",
+          "maxChars": 8,
+          "optional": true,
+          "note": "예 (20분)"
+        },
+        "active": {
+          "type": "toggle",
+          "label": "강조 (진한 점 · 회색 카드)",
+          "note": "순서대로 강조가 꺼져 있을 때"
+        },
+        "session": {
+          "type": "text",
+          "extract": false,
+          "label": "세션 이름",
+          "maxChars": 20,
+          "optional": true,
+          "note": "파란 글씨 · 있으면 왼쪽 정렬 카드"
+        },
+        "title": {
+          "type": "richtext",
+          "label": "제목",
+          "note": "엔터로 줄바꿈"
+        },
+        "titleMo": {
+          "type": "richtext",
+          "label": "MO 제목",
+          "optional": true,
+          "note": "MO 에서 다르게 쓸 때만 · 비우면 PC 제목"
+        },
+        "points": {
+          "type": "richtext",
+          "label": "목록",
+          "optional": true,
+          "note": "한 줄에 하나씩 · 점 목록"
+        }
+      },
+      "note": "카드 사이 12"
+    },
+    "notes": {
+      "type": "richtext",
+      "label": "안내",
+      "optional": true,
+      "note": "한 줄에 하나씩 · 작은 회색 글씨"
+    }
+  },
+  "renamedItemFields": {
+    "items": {
+      "label": "session"
+    }
+  }
+}

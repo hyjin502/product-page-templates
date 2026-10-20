@@ -786,6 +786,20 @@ function fixStaleAssets(v, e) {
   const fresh = editFrom(v, v.sample);
   // 나중에 생긴 슬롯(예: 하단 그라데이션 켜기)은 샘플 값으로 채워요 — 없으면 꺼진 것처럼 보여요
   for (const k of Object.keys(v.slots)) if (!(k in e)) e[k] = fresh[k];
+  // 목록 항목 — meta.renamedItemFields(예: 월간X 프로그램 items.label → session)로 예전 필드 이름을 옮기고,
+  // 나중에 생긴 항목 필드(예: titleMo)는 제목이 같은 샘플 항목이 있을 때만 그 값으로 채워요(아니면 빈 칸)
+  for (const [k, raw] of Object.entries(v.slots)) {
+    const sp = RC.specOf(raw);
+    if (sp.type !== 'list' || !sp.item || !Array.isArray(e[k])) continue;
+    const ren = (v.renamedItemFields || {})[k] || {};
+    e[k].forEach((it, i) => {
+      if (!it || typeof it !== 'object') return;
+      for (const [from, to] of Object.entries(ren)) if (from in it && !(to in it)) { it[to] = it[from]; delete it[from]; }
+      const nu = (fresh[k] || []).find((x) => x && 'title' in x && JSON.stringify(x.title) === JSON.stringify(it.title));
+      const same = !!nu;
+      for (const kk of Object.keys(sp.item)) if (!(kk in it)) it[kk] = same && kk in nu ? JSON.parse(JSON.stringify(nu[kk])) : (RC.specOf(sp.item[kk]).type === 'toggle' ? false : '');
+    });
+  }
   // meta.sampleVersion — 샘플 기본값을 바꾼 variant(예: 이미지 섹션에 서브타이틀·버튼 기본)는 예전 편집 값의 빈 칸을 한 번만 새 기본값으로 채워요.
   // 그 뒤에 사용자가 지운 칸은 그대로 둬요 (@sv 로 기록)
   if (v.sampleVersion && (e['@sv'] || 1) < v.sampleVersion) {

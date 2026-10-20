@@ -1,0 +1,92 @@
+{
+  "id": "monthly-x-sticky-cta",
+  "section": "monthly-x",
+  "layout": "sticky-cta",
+  "label": "하단 고정 바",
+  "order": 10,
+  "when": "화면 아래에 붙는 바 — 신청 중(이름 · 남은 날 · 신청 버튼) / 마감(안내 · 문의 버튼)",
+  "figma": {
+    "pc": "643:4893",
+    "mo": null,
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "state": {
+      "type": "enum",
+      "values": [
+        "open",
+        "closed"
+      ],
+      "labels": {
+        "open": "신청 중",
+        "closed": "마감"
+      },
+      "default": "open",
+      "extract": false,
+      "label": "상태"
+    },
+    "title": {
+      "type": "text",
+      "extract": false,
+      "label": "이름 (신청 중)",
+      "maxChars": 60,
+      "hideWhen": {
+        "state": "closed"
+      }
+    },
+    "icon": {
+      "type": "text",
+      "extract": false,
+      "label": "앞 이모지",
+      "maxChars": 2,
+      "optional": true
+    },
+    "count": {
+      "type": "text",
+      "extract": false,
+      "label": "남은 날 (빨간 칸)",
+      "maxChars": 6,
+      "optional": true
+    },
+    "after": {
+      "type": "text",
+      "extract": false,
+      "label": "남은 날 뒤 문구",
+      "maxChars": 6,
+      "optional": true
+    },
+    "cta": {
+      "type": "text",
+      "extract": false,
+      "label": "신청 버튼",
+      "maxChars": 12
+    },
+    "ctaHref": {
+      "type": "url",
+      "optional": true,
+      "extract": false,
+      "label": "신청 버튼 링크"
+    },
+    "closedText": {
+      "type": "text",
+      "extract": false,
+      "label": "마감 안내",
+      "maxChars": 60,
+      "note": "**굵게** 가능"
+    },
+    "closedCta": {
+      "type": "text",
+      "extract": false,
+      "label": "마감 버튼",
+      "maxChars": 12
+    },
+    "closedHref": {
+      "type": "url",
+      "optional": true,
+      "extract": false,
+      "label": "마감 버튼 링크"
+    }
+  },
+  "stage": "sticky"
+}

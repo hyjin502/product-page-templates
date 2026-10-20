@@ -1,0 +1,20 @@
+{% set chk = 'hds-check-circle-solid' | icon %}
+<section class="mx-learning">
+  <h2 class="mx-learning__title">{{ title | rt }}</h2>
+{% if showCompare and rows.length %}
+  <div class="mx-learning__table" role="table" >
+    <div class="mx-learning__lhead" role="columnheader"><span>{{ leftHead | rt }}</span></div>
+    <div class="mx-learning__rhead" role="columnheader">{{ rightHead }}</div>
+{% for r in rows %}
+    <div class="mx-learning__pain" role="cell">{% for l in r.pain | lines %}<p>{% if loop.first %}{{ chk }}{% endif %}<span>{{ l }}</span></p>{% endfor %}</div>
+    <div class="mx-learning__gain" role="cell">
+      <p class="mx-learning__name">{{ r.name }}</p>
+      <ul class="mx-learning__points">{% for p in r.points | lines %}{% if p | trim %}<li>{{ chk }}<span>{{ p }}</span></li>{% endif %}{% endfor %}</ul>
+    </div>
+{% endfor %}
+  </div>
+{% endif %}
+{% if showBanner and banner and banner.pc and banner.pc.src %}
+  <a class="mx-learning__banner" href="{{ bannerHref or '#' }}"><img src="{{ banner.pc.src }}" alt="{{ bannerAlt or banner.pc.alt or '' }}" width="860" height="348"></a>
+{% endif %}
+</section>

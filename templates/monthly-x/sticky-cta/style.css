@@ -1,0 +1,26 @@
+/* PC — Figma 월간X_PC 수강신청플로팅 643:4893(신청 중) · 643:4894(마감) · 폭 980 · 아래 16 · 흰 바(둥근 8 · 14/24 · 높이 76 · 그림자)
+   이름 16 bold · 🚨 + 남은 날 칩(bg-faint · 빨강 14 bold · 둥근 4) + 남음 · 버튼 48 둥근 4(신청 = #212225 진회색, 마감 = #096cde 파랑 · Figma 값)
+   월간휴넷 하단 고정 바와 같은 방식 — 편집기에서는 화면 아래에 띄운 미리보기로 보여요 */
+.mx-sticky { position: sticky; bottom: 0; z-index: 10; display: flex; justify-content: center; padding: 0 var(--container-pad) 16px; pointer-events: none; }
+.mx-sticky__bar { pointer-events: auto; width: var(--body, 980px); max-width: 100%; min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 24px; border-radius: 8px; background: var(--bg-surface); color: var(--t-100);
+  box-shadow: 0 4px 4px -1px rgba(12, 12, 13, 0.1), 0 4px 4px -1px rgba(12, 12, 13, 0.05); }
+.mx-sticky p { margin: 0; }
+.mx-sticky__title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mx-sticky__title--closed { font-weight: 500; }
+.mx-sticky__title--closed b { font-weight: 700; }
+.mx-sticky__right { flex: none; display: flex; align-items: center; gap: 16px; }
+.mx-sticky__dday { display: flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mx-sticky__chip { display: inline-flex; align-items: center; justify-content: center; min-width: 52px; height: 27px; padding: 2px 12px; border-radius: 4px; line-height: 1; color: var(--error); background: var(--bg-faint); }
+.mx-sticky__btn { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 113px; height: 48px; padding: 0 20px; border-radius: 4px; background: #212225; color: var(--static-white);
+  font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; }
+.mx-sticky__btn--blue { background: #096cde; }
+
+/* MO — 제안값(Figma MO 없음) · 화면 폭 판 · 문구 위 · 버튼 아래 전체 폭 */
+@media (max-width: 767px) {
+  .mx-sticky { padding: 0; }
+  .mx-sticky__bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 16px; border-radius: 8px 8px 0 0; box-shadow: 0 -6px 9px rgba(0, 0, 0, 0.08); }
+  .mx-sticky__title { white-space: normal; overflow: visible; font-size: 15px; }
+  .mx-sticky__right { justify-content: space-between; }
+  .mx-sticky__btn { flex: 1; }
+}

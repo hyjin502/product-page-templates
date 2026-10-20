@@ -1,0 +1,58 @@
+<section class="mx-program"{% if cycle %} data-cycle{% endif %}>
+  <div class="mx-program__head">
+{% if eyebrow %}
+    <p class="mx-program__eyebrow">{{ eyebrow }}</p>
+{% endif %}
+    <div class="mx-program__lead">
+      <h2 class="mx-program__title">{{ title | rt }}</h2>
+{% if info.length %}
+      <ul class="mx-program__info">
+{% for f in info %}
+        <li>{% if f.icon == 'clock' %}{{ 'hds-clock' | icon }}{% elif f.icon == 'pin' %}{{ 'hds-marker-pin-02' | icon }}{% endif %}<span>{{ f.text }}</span>{% if f.sub %}<span>{{ f.sub }}</span>{% endif %}</li>
+{% endfor %}
+      </ul>
+{% endif %}
+    </div>
+  </div>
+  <div class="mx-program__body">
+{% if items.length %}
+    <ol class="mx-program__list">
+{% for it in items %}
+      <li class="mx-program__row{% if it.active %} is-active{% endif %}">
+        <span class="mx-program__dot" aria-hidden="true"></span>
+        <div class="mx-program__card{% if it.session or it.points %} mx-program__card--session{% endif %}">
+          <p class="mx-program__time"><span>{{ it.time }}</span>{% if it.duration %}<span class="mx-program__dur">{{ it.duration }}</span>{% endif %}</p>
+          <div class="mx-program__what">
+{% if it.session %}
+            <p class="mx-program__label">{{ it.session }}</p>
+{% endif %}
+{% if it.titleMo %}
+            <p class="mx-program__name only-pc">{{ it.title | rt }}</p>
+            <p class="mx-program__name only-mo">{{ it.titleMo | rt }}</p>
+{% else %}
+            <p class="mx-program__name">{{ it.title | rt }}</p>
+{% endif %}
+{% set pts = it.points | lines %}
+{% if pts.length %}
+            <ul class="mx-program__points">
+{% for p in pts %}{% if p | trim %}
+              <li>{{ p }}</li>
+{% endif %}{% endfor %}
+            </ul>
+{% endif %}
+          </div>
+        </div>
+      </li>
+{% endfor %}
+    </ol>
+{% endif %}
+{% set nl = notes | lines %}
+{% if nl.length %}
+    <div class="mx-program__notes">
+{% for n in nl %}
+      <p>{{ n }}</p>
+{% endfor %}
+    </div>
+{% endif %}
+  </div>
+</section>

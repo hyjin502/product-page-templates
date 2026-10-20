@@ -1,0 +1,63 @@
+/* PC — Figma 648:5369 · 흰 바탕 · 위아래 120 · 머리 ↔ 시간표 60
+   머리: Program 32 bold · 40 · 제목 40 bold · 40 · 일시·장소 칸(line-outline 테두리 · 둥근 20 · 20/40 · 사이 40 · 아이콘 24 + 18 regular)
+   시간표 740: 점 15(흰 바탕 + black-45 테두리, 강조 = #70737c 채움) · 점↔카드 24 · 세로 줄 2px line-outline · 카드 사이 12
+   카드: bg-page · 둥근 20 · 20/32(세션 24/32) · 시간 76 칸(14 medium black-60) | 가운데 제목 18 bold | 소요 시간 76 칸(오른쪽) — 강조 카드는 bg-faint
+   세션 카드: 가운데 묶음 431 · 왼쪽 정렬 · 세션 이름 18 bold blue/700 · 제목 18 bold · 점 목록 18 regular · 사이 8 · 안내 14 black-45 (시간표 ↔ 안내 24) */
+.mx-program { display: flex; flex-direction: column; align-items: center; gap: 60px; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
+.mx-program p { margin: 0; }
+.mx-program__head { display: flex; flex-direction: column; align-items: center; gap: 40px; text-align: center; }
+.mx-program__eyebrow { font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mx-program__lead { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.mx-program__title { margin: 0; font-size: 40px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mx-program__info { display: flex; align-items: center; gap: 40px; margin: 0; padding: 20px 40px; list-style: none; border: 1px solid var(--line-outline); border-radius: 20px; }
+.mx-program__info li { display: flex; align-items: center; gap: 8px; font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); white-space: nowrap; }
+.mx-program__info svg { flex: none; width: 24px; height: 24px; }
+.mx-program__body { display: flex; flex-direction: column; gap: 24px; width: var(--body, 740px); max-width: 100%; }
+.mx-program__list { position: relative; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.mx-program__list::before { content: ""; position: absolute; left: 6.5px; top: 34px; bottom: 34px; width: 2px; background: var(--line-outline); } /* 세로 줄 — 첫 점 ~ 마지막 점 */
+.mx-program__row { position: relative; display: flex; align-items: center; gap: 24px; }
+.mx-program__dot { flex: none; width: 15px; height: 15px; border: 1px solid var(--t-45, rgba(23, 23, 25, 0.45)); border-radius: 50%; background: var(--static-white); }
+.mx-program__row.is-active .mx-program__dot { border-color: var(--btn-subtle); background: var(--btn-subtle); }
+.mx-program__dot, .mx-program__card { transition: background-color .3s, border-color .3s; }
+/* 순서대로 강조(data-cycle) — script.js 가 .is-on 을 한 줄씩 옮겨요. 이때는 「강조」 표시 대신 .is-on 만 */
+.mx-program[data-cycle] .mx-program__row.is-active:not(.is-on) .mx-program__dot { border-color: var(--t-45, rgba(23, 23, 25, 0.45)); background: var(--static-white); }
+.mx-program[data-cycle] .mx-program__row.is-active:not(.is-on) .mx-program__card { background: var(--bg-page); }
+.mx-program[data-cycle] .mx-program__row.is-on .mx-program__dot { border-color: var(--btn-subtle); background: var(--btn-subtle); }
+.mx-program[data-cycle] .mx-program__row.is-on .mx-program__card { background: var(--bg-faint); }
+.mx-program__card { flex: 1; min-width: 0; display: grid; grid-template-columns: 76px 1fr 76px; align-items: center; column-gap: 12px; padding: 20px 32px; border-radius: 20px; background: var(--bg-page); line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mx-program__card--session { padding: 24px 32px; }
+.mx-program__row.is-active .mx-program__card { background: var(--bg-faint); }
+.mx-program__time { display: contents; font-size: 14px; font-weight: 500; color: var(--t-60); }
+.mx-program__time > span:first-child { grid-column: 1; grid-row: 1; }
+.mx-program__dur { grid-column: 3; grid-row: 1; text-align: right; }
+.mx-program__what { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; gap: 8px; text-align: center; }
+.mx-program__card--session .mx-program__what { width: 431px; max-width: 100%; justify-self: center; text-align: left; }
+.mx-program__label { font-size: 18px; font-weight: 700; color: var(--brand); }
+.mx-program__name { font-size: 18px; font-weight: 700; }
+.mx-program__points { margin: 0; padding: 0 0 0 27px; font-size: 18px; list-style: disc; }
+.mx-program__notes { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-45, rgba(23, 23, 25, 0.45)); }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) { .mx-program { padding: 96px var(--container-pad); } .mx-program__title { font-size: 34px; } }
+
+/* MO — Figma 648:5483 · 위아래 80 · 양옆 16 · 머리 ↔ 시간표 40 · Program 24 · 24 · 제목 28 · 16 · 일시·장소 세로(20/24 · 사이 8 · 아이콘 16 + 14)
+   점 9 · 점↔카드 12 · 세로 줄 1px · 카드 세로 가운데(위아래 16 · 사이 4): 시간 + 소요 시간 한 줄(사이 6) → 제목 16 bold · 세션 묶음 294 · 왼쪽 정렬 · 목록 16 */
+@media (max-width: 767px) {
+  .mx-program { gap: 40px; padding: 80px 16px; }
+  .mx-program__head { gap: 24px; }
+  .mx-program__eyebrow { font-size: 24px; }
+  .mx-program__lead { gap: 16px; }
+  .mx-program__title { font-size: 28px; }
+  .mx-program__info { flex-direction: column; align-items: flex-start; gap: 8px; padding: 20px 24px; }
+  .mx-program__info li { font-size: 14px; }
+  .mx-program__info svg { width: 16px; height: 16px; }
+  .mx-program__list::before { left: 4px; width: 1px; }
+  .mx-program__row { gap: 12px; }
+  .mx-program__dot { width: 9px; height: 9px; }
+  .mx-program__card, .mx-program__card--session { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 14px; }
+  .mx-program__time { display: flex; justify-content: center; gap: 6px; }
+  .mx-program__what { gap: 4px; }
+  .mx-program__label, .mx-program__name, .mx-program__points { font-size: 16px; }
+  .mx-program__card--session .mx-program__what { width: 294px; align-self: center; }
+  .mx-program__points { padding-left: 24px; } /* Figma MO 렌더도 보통 굵기 (레이어 속성만 Bold) */
+}

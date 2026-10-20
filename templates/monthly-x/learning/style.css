@@ -1,0 +1,44 @@
+/* PC — Figma 월간X_PC 643:4447 · bg-page · 위아래 120 · 묶음 사이 80 · 본문 860
+   제목 24 medium(굵게 = bold #2d3dff, Figma 값 · 토큰 아님) · 비교표 = 왼쪽 254(회색 머리 #46474c 85 · 줄마다 아래 선 · 회색 체크 + 16 #70737c)
+   + 오른쪽 카드 606(흰 바탕 · blue/700 1px 테두리 · 둥근 20 · 그림자 · 머리 100 그라디언트 #3364ff→#bd5aff 20 bold 흰 글씨 · 줄마다 이름 158 bold + 체크 목록 사이 6)
+   두 열의 줄 높이를 맞추려고 한 그리드로 그리고, 오른쪽 카드 테두리는 ::before 로 2열 전체에 깔아요. 배너는 Figma 렌더 이미지(1배) */
+.mx-learning { display: flex; flex-direction: column; align-items: center; gap: 80px; padding: 120px var(--container-pad); background: var(--bg-page); color: var(--t-100); }
+.mx-learning p { margin: 0; }
+.mx-learning__title { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); text-align: center; }
+.mx-learning__title b { font-weight: 700; color: #2d3dff; }
+.mx-learning__table { position: relative; display: grid; grid-template-columns: 254px 606px; grid-template-rows: 100px; align-items: stretch; max-width: 100%; letter-spacing: var(--tracking-tight); }
+.mx-learning__table::before { content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 254px; border: 1px solid var(--brand); border-radius: 20px; background: var(--static-white); box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.06); }
+.mx-learning__lhead { grid-column: 1; grid-row: 1; align-self: end; display: grid; place-items: center; height: 85px; padding: 0 20px; white-space: nowrap; border-radius: 16px 0 0 0; background: #46474c; color: #f7f7f8; font-size: 16px; font-weight: 500; line-height: 1.6; text-align: center; }
+.mx-learning__lhead b { font-weight: 700; }
+.mx-learning__rhead { grid-column: 2; grid-row: 1; position: relative; display: grid; place-items: center; margin: 1px 1px 0; border-radius: 19px 19px 0 0; background: linear-gradient(90deg, #3364ff, #bd5aff); color: var(--static-white); font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); text-align: center; }
+.mx-learning__pain { grid-column: 1; min-height: 98px; display: flex; flex-direction: column; justify-content: center; padding: 10px 30px; border-bottom: 1px solid var(--line-outline); color: var(--btn-subtle); font-size: 16px; line-height: 1.6; }
+.mx-learning__pain p { display: flex; align-items: center; gap: 4px; padding-left: 22px; }
+.mx-learning__pain p:first-child { padding-left: 0; }
+.mx-learning__gain { grid-column: 2; position: relative; display: flex; gap: 40px; align-items: flex-start; padding: 20px 10px 20px 61px; margin: 0 1px; border-bottom: 1px solid var(--line-outline); font-size: 16px; line-height: 1.6; }
+.mx-learning__gain:last-child { border-bottom: 0; }
+.mx-learning__name { flex: none; width: 158px; font-weight: 700; }
+.mx-learning__points { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.mx-learning__points li { display: flex; align-items: center; gap: 4px; }
+.mx-learning svg { flex: none; width: 18px; height: 18px; }
+.mx-learning__pain svg { color: var(--btn-subtle); }
+.mx-learning__gain svg { color: var(--t-100); }
+.mx-learning__banner { display: block; width: var(--body, 860px); max-width: 100%; border-radius: 20px; overflow: hidden; }
+.mx-learning__banner img { display: block; width: 100%; height: auto; }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) { .mx-learning { padding: 96px var(--container-pad); gap: 64px; } }
+
+/* MO — 제안값(Figma MO 없음) · 비교표는 위아래로(기존 → AI Powered) · 배너는 화면 폭 */
+@media (max-width: 767px) {
+  .mx-learning { gap: 40px; padding: 72px 16px; }
+  .mx-learning__title { font-size: 20px; }
+  .mx-learning__table { display: flex; flex-direction: column; width: 100%; }
+  .mx-learning__table::before { display: none; }
+  .mx-learning__lhead { order: 0; align-self: stretch; height: auto; padding: 14px 16px; border-radius: 16px 16px 0 0; }
+  .mx-learning__pain { order: 1; padding: 12px 16px; background: var(--static-white); }
+  .mx-learning__rhead { order: 2; margin: 24px 0 0; padding: 18px 16px; font-size: 16px; border-radius: 16px 16px 0 0; }
+  .mx-learning__gain { order: 3; flex-direction: column; gap: 6px; margin: 0; padding: 16px; background: var(--static-white); border-inline: 1px solid var(--brand); }
+  .mx-learning__gain:last-child { border-bottom: 1px solid var(--brand); border-radius: 0 0 16px 16px; }
+  .mx-learning__name { width: auto; }
+  .mx-learning__banner { border-radius: 12px; }
+}

@@ -1,0 +1,90 @@
+{
+  "eyebrow": "Program",
+  "title": {
+    "pc": "소프트 스킬, 이제 데이터로 보입니다.\nAI Powered DC Hands-on",
+    "mo": "소프트 스킬,\n이제 데이터로 보입니다.\nAI Powered DC Hands-on"
+  },
+  "info": [
+    {
+      "icon": "clock",
+      "text": "2026. 04. 28. (화) 오후 2시-5시",
+      "sub": "(3h)"
+    },
+    {
+      "icon": "pin",
+      "text": "휴넷캠퍼스",
+      "sub": ""
+    }
+  ],
+  "cycle": true,
+  "items": [
+    {
+      "time": "~14:00",
+      "duration": "",
+      "active": false,
+      "session": "",
+      "title": "참가자 등록 및 네트워킹",
+      "points": ""
+    },
+    {
+      "time": "14:00~14:20",
+      "duration": "(20분)",
+      "active": true,
+      "session": "",
+      "title": "오프닝",
+      "points": ""
+    },
+    {
+      "time": "14:20~14:40",
+      "duration": "(20분)",
+      "active": false,
+      "session": "Session 1",
+      "title": "AI가 바꾸는 L&D의 미래 : AI Powered Learning으로의 전환",
+      "titleMo": "AI가 바꾸는 L&D의 미래: AI Powered Learning으로의 전환",
+      "points": "AI는 L&D를 어떻게 변화시키고 있는가?\n국내 최초! AI Powered DC 소개"
+    },
+    {
+      "time": "14:40~15:00",
+      "duration": "(20분)",
+      "active": false,
+      "session": "",
+      "title": "휴식",
+      "points": ""
+    },
+    {
+      "time": "15:00~15:50",
+      "duration": "(50분)",
+      "active": false,
+      "session": "Session 2-1.",
+      "title": "AI Powered DC Hands-on : AI In-Basket",
+      "titleMo": "AI Powered DC Hands-on: AI In-Basket",
+      "points": "AI 인바스킷 실습\n피드백 리포트 해석"
+    },
+    {
+      "time": "15:50~16:00",
+      "duration": "(10분)",
+      "active": false,
+      "session": "",
+      "title": "휴식",
+      "points": ""
+    },
+    {
+      "time": "16:00~16:50",
+      "duration": "(50분)",
+      "active": false,
+      "session": "Session 2-2.",
+      "title": "AI Powered DC Hands-on : AI Role-Playing",
+      "titleMo": "AI Powered DC Hands-on: AI Role-Playing",
+      "points": "AI 롤플레잉 실습\n피드백 리포트 해석\nWrap-up 및 우수자 시상\nAI Powered DC 활용 실 교육 사례"
+    },
+    {
+      "time": "16:50~17:00",
+      "duration": "(10분)",
+      "active": false,
+      "session": "",
+      "title": "클로징",
+      "points": ""
+    }
+  ],
+  "notes": "※ 실습 참여를 위해 개인 노트북을 지참해 주시기 바랍니다.\n※ 시간은 현장 상황에 따라 달라질 수 있습니다."
+}

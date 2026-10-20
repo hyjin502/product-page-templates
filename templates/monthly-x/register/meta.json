@@ -1,0 +1,96 @@
+{
+  "id": "monthly-x-register",
+  "section": "monthly-x",
+  "layout": "register",
+  "label": "신청하기",
+  "order": 6,
+  "when": "검정 바탕 신청서 — 제목 · 안내 · 입력칸(2열) · 동의 · 버튼 2개",
+  "figma": {
+    "pc": "643:4647",
+    "mo": null,
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "title": {
+      "type": "text",
+      "extract": false,
+      "label": "제목",
+      "maxChars": 30
+    },
+    "desc": {
+      "type": "richtext",
+      "label": "안내",
+      "optional": true,
+      "note": "한 줄에 한 문단 · **굵게** 가능"
+    },
+    "fields": {
+      "type": "list",
+      "extract": false,
+      "label": "입력칸",
+      "min": 0,
+      "max": 10,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "이름",
+          "maxChars": 10
+        },
+        "placeholder": {
+          "type": "text",
+          "extract": false,
+          "label": "안내 문구",
+          "maxChars": 30,
+          "optional": true
+        }
+      },
+      "note": "2열로 채워요"
+    },
+    "consents": {
+      "type": "list",
+      "extract": false,
+      "label": "동의",
+      "min": 0,
+      "max": 4,
+      "item": {
+        "label": {
+          "type": "text",
+          "extract": false,
+          "label": "문구",
+          "maxChars": 50
+        },
+        "checked": {
+          "type": "toggle",
+          "label": "체크된 상태로"
+        },
+        "more": {
+          "type": "text",
+          "extract": false,
+          "label": "링크 문구",
+          "maxChars": 10,
+          "optional": true
+        }
+      }
+    },
+    "secondary": {
+      "type": "text",
+      "extract": false,
+      "label": "왼쪽 버튼",
+      "maxChars": 12,
+      "optional": true
+    },
+    "primary": {
+      "type": "text",
+      "extract": false,
+      "label": "신청 버튼",
+      "maxChars": 12
+    },
+    "primaryHref": {
+      "type": "url",
+      "optional": true,
+      "extract": false,
+      "label": "신청 버튼 링크"
+    }
+  }
+}

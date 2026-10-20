@@ -1,0 +1,32 @@
+<section class="mx-history">
+  <div class="mx-history__head">
+    <h2 class="mx-history__title">{{ title }}</h2>
+{% if subtitle %}
+    <p class="mx-history__sub">{{ subtitle }}</p>
+{% endif %}
+  </div>
+{% if items.length %}
+  <ul class="mx-history__list">
+{% for it in items %}
+    <li class="mx-history__item">
+      <{{ 'a' if it.href else 'div' }} class="mx-history__card"{% if it.href %} href="{{ it.href }}"{% endif %}>
+{% if it.image and it.image.src %}
+        <span class="mx-history__thumb" data-pick-item="items:{{ loop.index0 }}:image"><img src="{{ it.image.src }}" alt="{{ it.image.alt or '' }}" width="410" height="218" loading="lazy"></span>
+{% endif %}
+        <div class="mx-history__text">
+          <div>
+            <p class="mx-history__name">{{ it.title }}</p>
+{% if it.desc %}
+            <p class="mx-history__desc">{{ it.desc | rt }}</p>
+{% endif %}
+          </div>
+{% if it.date %}
+          <p class="mx-history__date">{{ it.date }}</p>
+{% endif %}
+        </div>
+      </{{ 'a' if it.href else 'div' }}>
+    </li>
+{% endfor %}
+  </ul>
+{% endif %}
+</section>

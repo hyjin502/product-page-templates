@@ -1,0 +1,44 @@
+{
+  "id": "monthly-x-about",
+  "section": "monthly-x",
+  "layout": "about",
+  "label": "월간X 소개",
+  "order": 8,
+  "when": "검정 띠 — 월간X 로고 · 한 줄 질문 · 소개 문단",
+  "figma": {
+    "pc": "643:4741",
+    "mo": null,
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "logo": {
+      "type": "media",
+      "single": true,
+      "extract": false,
+      "label": "로고",
+      "hint": "흰색 로고 (svg · png)"
+    },
+    "quote": {
+      "type": "text",
+      "extract": false,
+      "label": "질문",
+      "maxChars": 40
+    },
+    "paragraphs": {
+      "type": "list",
+      "extract": false,
+      "label": "문단",
+      "min": 0,
+      "max": 4,
+      "item": {
+        "text": {
+          "type": "richtext",
+          "label": "문단",
+          "note": "엔터로 줄바꿈"
+        }
+      },
+      "note": "문단 사이 12"
+    }
+  }
+}

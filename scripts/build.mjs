@@ -97,6 +97,7 @@ function buildLibrary(reg, env, baseCss) {
       sampleVersion: v.sampleVersion || null,
       formerImages: v.formerImages || null,
       formerTexts: v.formerTexts || null,
+      renamedItemFields: v.renamedItemFields || null,
       thumb: v.thumb || null,
       tpl: posix(v.templatePath),
       pager: pagerOf(v),

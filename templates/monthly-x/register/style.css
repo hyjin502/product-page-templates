@@ -1,0 +1,39 @@
+/* PC — Figma 월간X_PC 643:4647 · 검정 바탕 · 위아래 120 · 머리 ↔ 신청서 64 · 본문 860
+   제목 32 bold 흰 글씨 · 안내 16 regular(가운데) · 입력칸 2열(이름 칸 102 + 입력 300×50 흰 바탕 둥근 8 · 줄 사이 10) · 신청서 ↔ 아래 40
+   동의: 체크 16(채움 blue) + 16 흰 글씨 + 자세히 보기 14 #70737c 밑줄 · 버튼: 알약 48(회색 #eaebec · 파랑 #096cde Figma 값) 14 bold */
+.mx-register { display: flex; flex-direction: column; align-items: center; gap: 64px; padding: 120px var(--container-pad); background: var(--static-black, #000); color: var(--static-white); }
+.mx-register p { margin: 0; }
+.mx-register__head { display: flex; flex-direction: column; gap: 16px; width: var(--body, 860px); max-width: 100%; text-align: center; }
+.mx-register__title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mx-register__desc { font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mx-register__desc b { font-weight: 700; }
+.mx-register__form { display: flex; flex-direction: column; gap: 40px; width: var(--body, 860px); max-width: 100%; margin: 0; }
+.mx-register__fields { display: grid; grid-template-columns: repeat(2, 402px); justify-content: space-between; row-gap: 10px; }
+.mx-register__field { display: grid; grid-template-columns: 102px 300px; align-items: center; font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mx-register__field input { height: 50px; padding: 0 16px; border: 0; border-radius: 8px; background: var(--static-white); color: var(--t-100); font-family: inherit; font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mx-register__field input::placeholder { color: var(--t-100); }
+.mx-register__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.mx-register__consents { display: flex; flex-direction: column; gap: 8px; }
+.mx-register__consent { display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); cursor: pointer; }
+.mx-register__consent input { flex: none; width: 16px; height: 16px; margin: 0; accent-color: var(--brand); }
+.mx-register__consent a { font-size: 14px; color: var(--btn-subtle); text-decoration: underline; }
+.mx-register__btns { display: flex; gap: 8px; }
+.mx-register__btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border: 1px solid #dbdcdf; border-radius: 32px; background: var(--bg-faint); color: var(--t-100);
+  font-family: inherit; font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; cursor: pointer; }
+.mx-register__btn--primary { border-color: transparent; background: #096cde; color: var(--static-white); } /* Figma #096cde — 토큰 아님 */
+.mx-register__btn svg { width: 16px; height: 16px; }
+
+/* TB — 제안값 · 입력칸 1열 */
+@media (min-width: 768px) and (max-width: 1279px) { .mx-register { padding: 96px var(--container-pad); } }
+@media (max-width: 1023px) { .mx-register__fields { grid-template-columns: 1fr; } .mx-register__field { grid-template-columns: 102px 1fr; } }
+
+/* MO — 제안값(Figma MO 없음) · 이름은 입력칸 위 · 동의 아래 버튼 전체 폭 */
+@media (max-width: 767px) {
+  .mx-register { gap: 40px; padding: 72px 16px; }
+  .mx-register__title { font-size: 24px; }
+  .mx-register__desc { font-size: 14px; }
+  .mx-register__field { grid-template-columns: 1fr; gap: 6px; }
+  .mx-register__foot { flex-direction: column; align-items: stretch; }
+  .mx-register__consent { align-items: flex-start; flex-wrap: wrap; font-size: 14px; }
+  .mx-register__btns > * { flex: 1; }
+}

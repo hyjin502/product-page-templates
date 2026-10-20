@@ -6,6 +6,13 @@
   "order": [
     "hero",
     "summary",
-    "check"
+    "check",
+    "program",
+    "learning",
+    "register",
+    "faq",
+    "about",
+    "history",
+    "sticky-cta"
   ]
 }

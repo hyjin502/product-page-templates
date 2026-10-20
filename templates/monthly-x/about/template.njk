@@ -1,0 +1,15 @@
+<section class="mx-about">
+  <div class="mx-about__body">
+{% if logo and logo.pc and logo.pc.src %}
+    <img class="mx-about__logo" src="{{ logo.pc.src }}" alt="{{ logo.pc.alt or '' }}">
+{% endif %}
+    <div class="mx-about__text">
+{% if quote %}
+      <p class="mx-about__quote">{{ quote }}</p>
+{% endif %}
+{% for p in paragraphs %}
+      <p class="mx-about__p">{{ p.text | rt }}</p>
+{% endfor %}
+    </div>
+  </div>
+</section>

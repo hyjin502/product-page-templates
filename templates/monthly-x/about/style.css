@@ -1,0 +1,18 @@
+/* PC — Figma 월간X_PC 643:4741 · 검정 바탕 · 위아래 80 · 본문 740 양끝 정렬: 로고 165.68×64.2 | 질문 24 bold ↔ 문단 24 · 문단 18 regular 사이 12 */
+.mx-about { display: flex; justify-content: center; padding: 80px var(--container-pad); background: var(--static-black, #000); color: var(--static-white); }
+.mx-about p { margin: 0; }
+.mx-about__body { display: flex; align-items: center; justify-content: space-between; gap: 40px; width: var(--body, 740px); max-width: 100%; }
+.mx-about__logo { flex: none; display: block; width: 165.68px; height: auto; }
+.mx-about__text { display: flex; flex-direction: column; gap: 12px; }
+.mx-about__quote { margin-bottom: 12px !important; font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mx-about__p { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+
+/* MO — 제안값(Figma MO 없음) · 로고 위 · 글은 아래 */
+@media (max-width: 767px) {
+  .mx-about { padding: 64px 16px; }
+  .mx-about__body { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .mx-about__logo { width: 110px; }
+  .mx-about__quote { font-size: 20px; }
+  .mx-about__p { font-size: 15px; }
+  .mx-about__p br { display: none; }
+}

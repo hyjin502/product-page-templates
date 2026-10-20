@@ -1,0 +1,32 @@
+<section class="mx-register">
+  <div class="mx-register__head">
+    <h2 class="mx-register__title">{{ title }}</h2>
+{% if desc %}
+    <div class="mx-register__desc">{% for l in desc | lines %}<p>{{ l | rt }}</p>{% endfor %}</div>
+{% endif %}
+  </div>
+  <form class="mx-register__form" onsubmit="return false">
+{% if fields.length %}
+    <div class="mx-register__fields">
+{% for f in fields %}
+      <label class="mx-register__field"><span>{{ f.label }}</span><input type="text" placeholder="{{ f.placeholder }}"></label>
+{% endfor %}
+    </div>
+{% endif %}
+    <div class="mx-register__foot">
+{% if consents.length %}
+      <div class="mx-register__consents">
+{% for c in consents %}
+        <label class="mx-register__consent"><input type="checkbox"{% if c.checked %} checked{% endif %}><span>{{ c.label }}</span>{% if c.more %}<a href="#">{{ c.more }}</a>{% endif %}</label>
+{% endfor %}
+      </div>
+{% endif %}
+      <div class="mx-register__btns">
+{% if secondary %}
+        <button type="button" class="mx-register__btn">{{ secondary }}</button>
+{% endif %}
+        <a class="mx-register__btn mx-register__btn--primary" href="{{ primaryHref or '#' }}">{{ primary }}{{ 'hds-chevron-right' | icon }}</a>
+      </div>
+    </div>
+  </form>
+</section>

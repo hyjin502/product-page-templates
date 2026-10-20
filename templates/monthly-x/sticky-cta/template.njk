@@ -1,0 +1,16 @@
+<div class="mx-sticky">
+  <div class="mx-sticky__bar">
+{% if state == 'closed' %}
+    <p class="mx-sticky__title mx-sticky__title--closed">{{ closedText | rt }}</p>
+    <a class="mx-sticky__btn mx-sticky__btn--blue" href="{{ closedHref or '#' }}">{{ closedCta }}</a>
+{% else %}
+    <p class="mx-sticky__title">{{ title }}</p>
+    <div class="mx-sticky__right">
+{% if count or after %}
+      <p class="mx-sticky__dday">{% if icon %}<span aria-hidden="true">{{ icon }}</span>{% endif %}{% if count %}<span class="mx-sticky__chip">{{ count }}</span>{% endif %}{% if after %}<span>{{ after }}</span>{% endif %}</p>
+{% endif %}
+      <a class="mx-sticky__btn" href="{{ ctaHref or '#' }}">{{ cta }}</a>
+    </div>
+{% endif %}
+  </div>
+</div>

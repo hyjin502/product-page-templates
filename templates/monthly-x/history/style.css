@@ -1,0 +1,32 @@
+/* PC — Figma 월간X_PC 07_Replay 643:4750 · 흰 바탕 · 위아래 120 · 본문 860 · 머리 ↔ 목록 · 카드 사이 30
+   제목 32 bold · 설명 20 regular(제목 ↔ 설명 16) · 카드: 썸네일 410×218 둥근 12 | 24 | 제목 18 bold · 설명 16(사이 4) · 날짜 14 아래 끝
+   Figma 글자색 #212529 · #4d5358 · #888e94 는 토큰이 아니라 가까운 black-100 · black-80 · black-45 로 */
+.mx-history { display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); }
+.mx-history p { margin: 0; }
+.mx-history__head, .mx-history__list { width: var(--body, 860px); max-width: 100%; }
+.mx-history__head { display: flex; flex-direction: column; gap: 16px; }
+.mx-history__title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mx-history__sub { font-size: 20px; line-height: 1.25; letter-spacing: -0.2px; }
+.mx-history__list { display: flex; flex-direction: column; gap: 30px; margin: 0; padding: 0; list-style: none; }
+.mx-history__card { display: flex; gap: 24px; color: inherit; text-decoration: none; }
+.mx-history__thumb { flex: none; display: block; width: 410px; aspect-ratio: 410 / 218; border-radius: 12px; overflow: hidden; background: var(--bg-faint); }
+.mx-history__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mx-history__text { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; letter-spacing: -0.2px; }
+.mx-history__name { font-size: 18px; font-weight: 700; line-height: 28px; }
+.mx-history__desc { margin-top: 4px !important; font-size: 16px; line-height: 25px; color: var(--t-80); }
+.mx-history__date { font-size: 14px; line-height: 22px; color: var(--t-45, rgba(23, 23, 25, 0.45)); }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) { .mx-history { padding: 96px var(--container-pad); } .mx-history__thumb { width: 46%; } }
+
+/* MO — 제안값(Figma MO 없음) · 썸네일 위 · 글 아래 */
+@media (max-width: 767px) {
+  .mx-history { gap: 24px; padding: 72px 16px; }
+  .mx-history__title { font-size: 24px; }
+  .mx-history__sub { font-size: 16px; }
+  .mx-history__list { gap: 32px; }
+  .mx-history__card { flex-direction: column; gap: 12px; }
+  .mx-history__thumb { width: 100%; }
+  .mx-history__name { font-size: 16px; line-height: 1.5; }
+  .mx-history__desc { font-size: 14px; line-height: 1.6; }
+}
