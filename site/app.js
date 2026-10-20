@@ -24,7 +24,8 @@ try {
   if (s.compose && Array.isArray(s.compose.rows)) state.compose = s.compose;
   if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
   if (s.tpl && typeof s.tpl === 'object') state.tpl = s.tpl;
-  if (s.tplBackup && typeof s.tplBackup === 'object') state.tplBackup = s.tplBackup; // 공유 링크를 열기 전 편집 값
+  if (s.tplBackup && typeof s.tplBackup === 'object') state.tplBackup = s.tplBackup;
+  if (s.myDrafts && typeof s.myDrafts === 'object') state.myDrafts = s.myDrafts; // 내가 저장한 시안 번호 → 수정 열쇠 // 공유 링크를 열기 전 편집 값
   if (Number.isFinite(s.panelW)) state.panelW = s.panelW;
   if (s.zoom === 'fit' || [0.25, 0.5, 0.75, 1].includes(s.zoom)) state.zoom = s.zoom;
 } catch (e) {}
@@ -1832,12 +1833,13 @@ function renderTpl() {
   </div>
   <div class="compose__foot">
   <div class="compose__actions">
-    <button type="button" class="btn-ui btn-ui--primary" data-tpl-act="share" title="지금 편집한 내용을 링크 하나로 — 받은 사람이 열면 이 편집기에 그대로 열려요">공유 링크 복사</button>
+    <button type="button" class="btn-ui btn-ui--primary" data-tpl-act="save" title="이미지까지 저장하고 공유 링크를 복사해요 — 다시 저장하면 같은 링크가 최신 내용으로 바뀌어요">${draftMine(tplState(t.key)) ? '저장하고 링크 복사' : '저장해서 링크 만들기'}</button>
     <button type="button" class="btn-ui" data-tpl-act="download">page.json 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="copy">page.json 복사</button>
     <button type="button" class="btn-ui" data-tpl-act="figma" title="Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="reset">샘플로 되돌리기</button>
   </div>
+  ${draftLine(t.key)}
   <p class="compose__hint">받은 page.json 과 올린 파일을 <code>pages/</code> 에 같이 넣고 <code>npm run build</code> → <code>dist/pages/이름/</code> · <a href="${esc(t.figmaSet)}" target="_blank" rel="noopener">Figma 원본</a></p>
   </div>
   <input type="file" accept="image/*,video/mp4" hidden data-hed-file>
@@ -1978,6 +1980,14 @@ tplEl.addEventListener('click', (ev) => {
   }
   const ta = ev.target.closest('[data-tpl-act]');
   if (!ta) return;
+  if (ta.dataset.tplAct === 'save') {
+    const label = ta.textContent;
+    ta.disabled = true; ta.textContent = '저장하는 중…';
+    saveDraft(key).then((url) => { ta.disabled = false; renderTpl(); const b = tplEl.querySelector('[data-tpl-act="save"]'); if (b) copyText(url, b); })
+      .catch((err) => { ta.disabled = false; ta.textContent = label; alert('저장하지 못했어요 — ' + (err && err.message || err)); });
+    return;
+  }
+  if (ta.dataset.tplAct === 'copylink') return copyText(draftUrl(tplState(key).draftId), ta);
   if (ta.dataset.tplAct === 'share') {
     shareLink(key).then(({ url, dropped }) => {
       copyText(url, ta);
@@ -2064,6 +2074,100 @@ async function openShare(hash) {
     return true;
   } catch (e) {
     alert('공유 링크를 열지 못했어요 — 주소가 잘렸는지 확인해 주세요.');
+    return false;
+  }
+}
+
+/* ---------------------------------------------------------------- 시안 저장 (Supabase — 2026-10-20 테스트)
+   「저장하기」 = 올린 파일을 Storage(drafts 버킷)에 올리고 편집 값을 drafts 표에 저장 → 링크 #d-<시안 번호>.
+   다시 저장하면 같은 번호를 덮어써요(수정 열쇠 edit_key 는 저장한 브라우저의 state.myDrafts 에만). 다른 사람 시안을 열고 저장하면 새 번호로 복사돼요.
+   올린 파일은 편집 값에 { file, name, url } 로 남겨 — 받은 쪽은 url 을 받아 같은 file 키로 IndexedDB 에 넣어요(Figma용 받기·page.json 받기가 그대로 동작) */
+const SUPA = { url: 'https://tswvcorooswpmrtcoymh.supabase.co', key: 'sb_publishable_xxRrZnYPzIMOyVIPGe2VKw_QLCUkvMQ', bucket: 'drafts' }; // 공개 키(웹 페이지용) — secret 키는 넣지 않아요
+async function supaRpc(fn, body) {
+  const r = await fetch(`${SUPA.url}/rest/v1/rpc/${fn}`, { method: 'POST', headers: { apikey: SUPA.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(`저장소 응답 ${r.status}`);
+  return r.json();
+}
+async function supaUpload(file) {
+  const ext = (/\.([a-z0-9]{2,5})$/i.exec(file.name || '') || [, file.type.startsWith('video/') ? 'mp4' : 'png'])[1].toLowerCase();
+  const path = `${crypto.randomUUID()}.${ext}`;
+  const r = await fetch(`${SUPA.url}/storage/v1/object/${SUPA.bucket}/${path}`, { method: 'POST', headers: { apikey: SUPA.key, 'Content-Type': file.type || 'application/octet-stream' }, body: file });
+  if (!r.ok) throw new Error(`파일 올리기 실패 ${r.status} (${file.name})`);
+  return `${SUPA.url}/storage/v1/object/public/${SUPA.bucket}/${path}`;
+}
+const draftUrl = (id) => { const u = new URL(location.href); u.hash = 'd-' + id; return u.href; };
+const draftMine = (ts) => !!(ts.draftId && state.myDrafts && state.myDrafts[ts.draftId]);
+function draftLine(key) {
+  const ts = tplState(key);
+  if (!ts.draftId) return '';
+  const when = ts.draftAt ? new Date(ts.draftAt).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+  return `<p class="compose__hint tpl-draft">${draftMine(ts) ? '저장된 시안' : '받은 시안 (저장하면 내 시안으로 복사돼요)'} · ${esc(when)} <button type="button" class="btn-ui" data-tpl-act="copylink">링크 복사</button></p>`;
+}
+/** 편집 값 안의 올린 파일(file 키)마다 — 아직 올리지 않았으면 올리고 url 을 적어 둬요 */
+async function uploadRefs(x) {
+  if (Array.isArray(x)) { for (const y of x) await uploadRefs(y); return; }
+  if (!x || typeof x !== 'object') return;
+  if (typeof x.file === 'string') {
+    if (!x.url) { await loadBlob(x.file); if (files[x.file]) x.url = await supaUpload(files[x.file]); }
+    return;
+  }
+  for (const y of Object.values(x)) await uploadRefs(y);
+}
+async function saveDraft(key) {
+  const ts = tplState(key);
+  const t = tplByKey[key];
+  for (const id of Object.keys(ts.edits)) await uploadRefs(ts.edits[id]);
+  const edits = {};
+  for (const [id, e] of Object.entries(ts.edits)) {
+    const v = byId[id] || byId[id.split('~')[0]];
+    if (!v) continue;
+    if (JSON.stringify(e) === JSON.stringify(editFrom(v, v.sample))) continue; // 샘플 그대로인 섹션은 빼요
+    edits[id] = e;
+  }
+  const data = { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order };
+  state.myDrafts ||= {};
+  const mine = draftMine(ts);
+  let rows = await supaRpc('draft_save', { p_id: mine ? ts.draftId : null, p_key: mine ? state.myDrafts[ts.draftId] : null, p_template: key, p_title: t.title, p_data: data });
+  if (!rows.length) rows = await supaRpc('draft_save', { p_id: null, p_key: null, p_template: key, p_title: t.title, p_data: data }); // 열쇠가 안 맞으면 새로
+  const { id, edit_key } = rows[0];
+  state.myDrafts[id] = edit_key;
+  ts.draftId = id; ts.draftAt = Date.now();
+  save();
+  return draftUrl(id);
+}
+/** #d-<시안 번호> — 저장소에서 받아 편집기를 열어요. 올린 파일은 url 에서 받아 IndexedDB 에 넣어요 */
+async function openDraft(id) {
+  try {
+    const rows = await supaRpc('draft_get', { p_id: id });
+    if (!rows.length) { alert('시안을 찾지 못했어요 — 링크를 확인해 주세요.'); return false; }
+    const { template: key, data, updated_at } = rows[0];
+    if (!tplByKey[key]) return false;
+    const pulls = [];
+    const walk = (x) => {
+      if (Array.isArray(x)) return x.forEach(walk);
+      if (!x || typeof x !== 'object') return;
+      if (typeof x.file === 'string' && x.url) { pulls.push(x); return; }
+      Object.values(x).forEach(walk);
+    };
+    walk(data.edits);
+    await Promise.all(pulls.map(async (ref) => {
+      const r = await fetch(ref.url);
+      if (!r.ok) return;
+      const b = await r.blob();
+      const f = new File([b], ref.name || 'file', { type: b.type });
+      if (blobUrls[ref.file]) { URL.revokeObjectURL(blobUrls[ref.file]); delete blobUrls[ref.file]; }
+      files[ref.file] = f;
+      await idb.put(ref.file, f);
+    }));
+    state.tplBackup ||= {};
+    const cur = state.tpl && state.tpl[key];
+    if (cur && cur.draftId !== id) state.tplBackup[key] = cur; // 지금 편집하던 다른 내용은 남겨 둬요
+    state.tpl ||= {};
+    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [], draftId: id, draftAt: Date.parse(updated_at) || Date.now() };
+    state.mode = 'tpl:' + key;
+    return true;
+  } catch (e) {
+    alert('시안을 불러오지 못했어요 — ' + (e && e.message || e));
     return false;
   }
 }
@@ -2176,7 +2280,8 @@ else if (secByKey[h]) state.cat = h;
 else if (byId[h]) { state.cat = byId[h].section; state.mode = 'library'; jumpTo = h; }
 if (!isOpen(state.cat)) state.open.push(state.cat);
 // #share-<템플릿>=… 공유 링크 — 받은 내용으로 편집기를 열어요 (압축 풀기가 비동기라 그 뒤에 그려요)
-if (h.startsWith('share-')) openShare(h).then((ok) => { applyAll(); if (ok) setTimeout(() => alert('공유 받은 시안을 열었어요. 이 브라우저에서 편집하던 내용은 따로 보관해 뒀어요.'), 300); });
+if (/^d-[0-9a-f-]{36}$/.test(h)) openDraft(h.slice(2)).then(() => applyAll());
+else if (h.startsWith('share-')) openShare(h).then((ok) => { applyAll(); if (ok) setTimeout(() => alert('공유 받은 시안을 열었어요. 이 브라우저에서 편집하던 내용은 따로 보관해 뒀어요.'), 300); });
 else applyAll();
 if (jumpTo) setTimeout(() => document.getElementById(jumpTo)?.scrollIntoView({ block: 'start' }), 300);
 })();
