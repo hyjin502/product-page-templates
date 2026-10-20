@@ -1879,6 +1879,24 @@ function markTplCur() {
   tplEl.querySelectorAll('.tpl-sec.is-current').forEach((el) => el.classList.remove('is-current'));
   if (tplCur) tplEl.querySelector(`[data-vid="${tplCur}"]`)?.classList.add('is-current');
 }
+/** 왼쪽에서 고른 섹션을 오른쪽 미리보기에서 바로 보이게 — 미리보기를 그 섹션 위치로 옮기고 잠깐 테두리를 보여 줘요 */
+function previewTo(id) {
+  const iframe = tplEl.querySelector('.compose__stage iframe');
+  let sec = null;
+  try { sec = iframe.contentDocument.querySelector(`[data-tpl-sec="${id}"]`); } catch (e) {}
+  if (!sec) { // 하단 고정 바는 바깥에 띄운 미리보기(.tpl-dock)에 있어요 — 그쪽을 깜빡여요
+    const dock = document.querySelector('.tpl-dock');
+    if (dock && byId[id] && byId[id].stage === 'sticky') { dock.animate([{ outline: '3px solid var(--accent)' }, { outline: '3px solid transparent' }], { duration: 1200 }); }
+    return;
+  }
+  const s = (new DOMMatrixReadOnly(getComputedStyle(iframe).transform)).a || 1;
+  const top = iframe.getBoundingClientRect().top + sec.offsetTop * s - 12;
+  let sc = iframe.parentElement;
+  while (sc && sc !== document.body) { const o = getComputedStyle(sc).overflowY; if ((o === 'auto' || o === 'scroll') && sc.scrollHeight > sc.clientHeight) break; sc = sc.parentElement; }
+  if (sc && sc !== document.body) sc.scrollBy({ top: top - sc.getBoundingClientRect().top, behavior: 'smooth' });
+  else window.scrollBy({ top: top - (document.getElementById('top')?.offsetHeight || 0), behavior: 'smooth' });
+  sec.animate([{ outline: `${Math.round(3 / s)}px solid #3a50c9`, outlineOffset: `-${Math.round(3 / s)}px` }, { outline: `${Math.round(3 / s)}px solid transparent`, outlineOffset: `-${Math.round(3 / s)}px` }], { duration: 1400, easing: 'ease-out' });
+}
 /** 섹션 입력칸 펴기·접기 (scroll = 펴고 그 칸으로 이동) */
 function tplOpen(id, scroll) {
   const v = byId[id];
@@ -1938,12 +1956,20 @@ bindEditorForm({
   redraw: (v) => { const f = tplEl.querySelector(`[data-vid="${v.id}"] [data-hed-form]`); if (f) f.innerHTML = heroForm(v, tplEdit(v)); },
   update: tplUpdate,
 });
+// 왼쪽 섹션 칸 안의 입력칸으로 옮겨 가면 그 섹션을 「지금 섹션」으로 — 미리보기도 그 섹션으로 옮겨요(같은 섹션 안에서는 그대로)
+tplEl.addEventListener('focusin', (ev) => {
+  const box = ev.target.closest('.tpl-sec[data-vid]');
+  if (!box || ev.target.closest('[data-tpl-toggle]')) return;
+  const id = box.dataset.vid;
+  if (tplCur === id) return;
+  tplCur = id; markTplCur(); previewTo(id);
+});
 tplEl.addEventListener('click', (ev) => {
   const key = tplKey();
   const t = tplByKey[key];
   if (!t) return;
   const tg = ev.target.closest('[data-tpl-toggle]');
-  if (tg) { tplOpen(tg.dataset.tplToggle); return; }
+  if (tg) { const id = tg.dataset.tplToggle; tplOpen(id); if (tplCur === id) previewTo(id); return; }
   const fd = ev.target.closest('[data-tpl-fold]');
   if (fd) { tplState(key).open = fd.dataset.tplFold === '1' ? [] : tplVisible(t); save(); redrawTplList(t); return; }
   // extra 자리 — 섹션 추가 · 순서 · 빼기 (뺀 섹션의 입력값도 지워요)
