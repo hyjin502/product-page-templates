@@ -191,6 +191,7 @@ scripts/                                build · validate · preview · shot · 
 - **매핑이 Page 18 원문을 그대로 뽑는지 확인** → `figma-extract.mjs scan-components … --verify` → use_figma 실행 → `report` (현재 98건 중 92건 일치)
 - **UI·섹션을 바꾼 뒤에는 반드시 `npm run shot` 으로 결과를 보고** Figma `get_screenshot` 과 비교한다. 사용자는 결과물 확인을 가장 중요하게 여긴다.
 - 라이브러리 사이트는 결과물(미리보기)이 먼저 보이도록 컴팩트하게 유지한다. 설명 문구를 늘리지 않는다.
+- **왼쪽 패널 스타일**(2026-10-21 사용자 요청 — 사내 「휴넷 배너즈」 bannerz-iota.vercel.app 참고): 라이브러리 목록(.side) · 조합기 · 히어로 편집기 · 페이지 템플릿 편집기(.compose__side)는 회색 바탕(--pane-bg #F7F7F8) 위 흰 카드(둥근 12 · 옅은 그림자 · 안쪽 24) · 그룹은 상자 대신 1px 구분선(#EAEBEC) · 제목 16 bold · 입력칸 둥근 8(테두리 #E1E2E4) · 버튼 40(아래 버튼 칸은 36) · 주 버튼 파랑 #0066FF(패널 안에서만 --accent 를 --pane-accent 로). site/app.css 맨 끝 블록. 글꼴은 사이트 전체 Pretendard(site/shell.html 에서 jsdelivr pretendard@1.3.9 를 불러옴 · `--font-mono` 도 Pretendard, 코드 pre/code 만 `--font-code` 고정폭).
 
 ## 알려진 과제 (다음에 할 일 후보)
 - 원본을 상품페이지 템플릿 시스템(dxhWk)으로 옮겼다(2026-10-13, 노드 113건 relink). 샘플·이미지는 아직 예전 원본 기준이라 새 원본과 문구·이미지 차이를 추출 검증으로 확인해야 한다. 예전 히어로 세트 `1:1710` 의 `459:32173` 에 Claude 가 넣은 `bg-media` 레이어(모션 GIF)는 정리 대상.

@@ -870,3 +870,80 @@ body.is-dev .flink__label::after { content: none; }
 .iss__item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* 완료된 회차 — 입력칸은 잠가요 (회차 칸 · 미리보기 보기는 그대로) */
 #tpl-editor.is-locked .tpl-secs { pointer-events: none; opacity: .55; }
+
+/* ---------------------------------------------------------------- 왼쪽 패널 — 배너즈 스타일 (2026-10-21 사용자 요청 · bannerz-iota.vercel.app 참고)
+   회색 바탕(#F7F7F8) 위에 떠 있는 흰 카드: 둥근 12 · 옅은 그림자 · 안쪽 24 · 그룹 사이 1px 구분선(#EAEBEC)
+   제목 16 bold · 칸 이름 14 · 입력칸 둥근 8(테두리 #E1E2E4 · 8/12) · 버튼 높이 40 둥근 8 14 bold · 주 버튼 파랑 #0066FF
+   라이브러리 목록(.side) · 조합기 · 히어로 편집기 · 페이지 템플릿 편집기(.compose__side) 모두 같은 카드 */
+:root { --pane-bg: #f7f7f8; --pane-line: #eaebec; --pane-field: #e1e2e4; --pane-accent: #0066ff; --pane-accent-soft: #ebf3ff;
+  --pane-shadow: 0 1px 2px rgba(23, 23, 25, .06), 0 1px 3px rgba(23, 23, 25, .08); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --pane-bg: #111214; --pane-line: #2b2d32; --pane-field: #33353b; --pane-accent: #6ea2ff; --pane-accent-soft: #1f2a40; --pane-shadow: 0 1px 3px rgba(0, 0, 0, .5); }
+}
+:root[data-theme="dark"] { --pane-bg: #111214; --pane-line: #2b2d32; --pane-field: #33353b; --pane-accent: #6ea2ff; --pane-accent-soft: #1f2a40; --pane-shadow: 0 1px 3px rgba(0, 0, 0, .5); }
+
+.shell, .compose { background: var(--pane-bg); }
+.compose__stage { background: var(--pane-bg); }
+.side, .compose__side { --accent: var(--pane-accent); --accent-soft: var(--pane-accent-soft); --rule: var(--pane-line); letter-spacing: -0.3px; }
+
+/* 카드 */
+@media (min-width: 861px) {
+  .side, .compose__side {
+    margin: 16px 0 16px 16px; border: 0; border-radius: 12px; background: var(--panel); box-shadow: var(--pane-shadow);
+    top: calc(var(--top-h, 44px) + 16px); height: calc(100vh - var(--top-h, 44px) - 32px);
+  }
+}
+@media (max-width: 860px) {
+  .compose__side { margin: 12px; border: 0; border-radius: 12px; box-shadow: var(--pane-shadow); }
+}
+
+/* 라이브러리 섹션 목록 */
+.side { padding: 16px 12px 24px; }
+.side__sec { min-height: 36px; padding: 6px 10px; border-radius: 8px; font-size: 14px; }
+.side__sub a, .side .side__sub a { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
+
+/* 조합기 · 편집기 패널 안 */
+.compose__scroll { padding: 24px; gap: 16px; }
+.hed .compose__scroll { gap: 16px; }
+.compose__foot { margin: 0; padding: 16px 24px 20px; border: 0; border-top: 1px solid var(--pane-line); border-radius: 0 0 12px 12px; box-shadow: none; background: var(--panel); gap: 8px; }
+.compose__side h2, .hed-intro h2 { font-size: 16px; font-weight: 700; line-height: 1.6; }
+.compose__side p, .hed-intro p { font-size: 12px; color: var(--ink-3); }
+.compose__side .btn-ui { min-height: 40px; padding: 0 16px; border-color: var(--pane-field); border-radius: 8px; font-size: 14px; font-weight: 700; }
+.compose__side .btn-ui--primary { border-color: var(--pane-accent); background: var(--pane-accent); color: #fff; }
+.compose__side .hed-media__btns .btn-ui { min-height: 32px; padding: 0 10px; font-size: 12px; }
+.compose__side .rows__bar .btn-ui, .compose__side .iss .btn-ui { min-height: 32px; padding: 0 12px; font-size: 12px; }
+.compose__side input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+.compose__side textarea, .compose__side select:not(.iss__sel) {
+  border: 1px solid var(--pane-field); border-radius: 8px; background: var(--panel); color: var(--ink);
+  font-family: inherit; font-size: 14px; line-height: 1.6;
+}
+.compose__side .hed-in input, .compose__side .hed-in--area textarea, .compose__side .field input, .compose__side .field select { min-height: 40px; padding: 8px 12px; }
+.compose__side input:focus, .compose__side textarea:focus, .compose__side select:focus { border-color: var(--pane-accent); outline: none; }
+
+/* 그룹 = 구분선으로 나눠요 (상자 대신) */
+.hed-form { gap: 0; }
+.hed-f { gap: 8px; padding: 16px 0; border: 0; border-top: 1px solid var(--pane-line); border-radius: 0; background: none; }
+.hed-form > .hed-f:first-child { border-top: 0; padding-top: 4px; }
+.hed-f__label { font-size: 14px; font-weight: 600; }
+.hed-f__note { font-size: 12px; }
+.hed-item { border-color: var(--pane-line); border-radius: 8px; background: var(--pane-bg); }
+.hed-add { border-color: var(--pane-field); }
+
+/* 페이지 템플릿 편집기 — 섹션도 상자 대신 구분선 · 펼친 섹션 이름은 16 bold */
+.tpl-secs { gap: 0; }
+.tpl-sec, .tpl-sec.is-open { border: 0; border-top: 1px solid var(--pane-line); border-radius: 0; background: none; }
+.tpl-secs > .tpl-sec:first-child { border-top: 0; }
+.tpl-sec__head { padding: 12px 8px; font-size: 14px; font-weight: 600; }
+.tpl-sec.is-open > .tpl-sec__bar .tpl-sec__head { font-size: 16px; font-weight: 700; }
+.tpl-sec > .hed-form { padding: 0 8px 8px; }
+.tpl-sec.is-current { border-radius: 8px; background: var(--pane-accent-soft); }
+.tpl-sec.is-current + .tpl-sec { border-top-color: transparent; }
+.tpl-sec.is-off { border-top-style: solid; opacity: .7; }
+.iss { border-color: var(--pane-line); background: var(--pane-bg); }
+.compose__foot .btn-ui { min-height: 36px; padding: 0 12px; font-size: 13px; }
+.compose__foot .compose__actions { gap: 6px; }
+
+/* 글꼴 — 사이트 전체를 Pretendard 로 (2026-10-21 사용자 요청). 섹션 이름 · 변형 이름 등에 쓰던 --font-mono 도 Pretendard,
+   코드(page.json · 슬롯 표 · 개발자 서랍의 pre/code)만 고정폭 글꼴로 남겨요 */
+:root { --font-ui: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', system-ui, sans-serif; --font-code: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; --font-mono: var(--font-ui); }
+pre, code, kbd, samp { font-family: var(--font-code); }
