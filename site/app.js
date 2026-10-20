@@ -24,6 +24,7 @@ try {
   if (s.compose && Array.isArray(s.compose.rows)) state.compose = s.compose;
   if (s.hero && typeof s.hero === 'object' && s.hero.edits) state.hero = s.hero;
   if (s.tpl && typeof s.tpl === 'object') state.tpl = s.tpl;
+  if (s.tplBackup && typeof s.tplBackup === 'object') state.tplBackup = s.tplBackup; // 공유 링크를 열기 전 편집 값
   if (Number.isFinite(s.panelW)) state.panelW = s.panelW;
   if (s.zoom === 'fit' || [0.25, 0.5, 0.75, 1].includes(s.zoom)) state.zoom = s.zoom;
 } catch (e) {}
@@ -1831,7 +1832,8 @@ function renderTpl() {
   </div>
   <div class="compose__foot">
   <div class="compose__actions">
-    <button type="button" class="btn-ui btn-ui--primary" data-tpl-act="download">page.json 받기</button>
+    <button type="button" class="btn-ui btn-ui--primary" data-tpl-act="share" title="지금 편집한 내용을 링크 하나로 — 받은 사람이 열면 이 편집기에 그대로 열려요">공유 링크 복사</button>
+    <button type="button" class="btn-ui" data-tpl-act="download">page.json 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="copy">page.json 복사</button>
     <button type="button" class="btn-ui" data-tpl-act="figma" title="Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="reset">샘플로 되돌리기</button>
@@ -1976,6 +1978,13 @@ tplEl.addEventListener('click', (ev) => {
   }
   const ta = ev.target.closest('[data-tpl-act]');
   if (!ta) return;
+  if (ta.dataset.tplAct === 'share') {
+    shareLink(key).then(({ url, dropped }) => {
+      copyText(url, ta);
+      if (dropped) alert(`공유 링크를 복사했어요.\n\n직접 올린 이미지·영상 ${dropped}개는 링크에 담기지 않아요 — 받는 사람에게는 샘플 이미지로 보여요. 그 파일은 「page.json 받기」로 함께 받아 따로 보내 주세요.`);
+    });
+    return;
+  }
   const json = JSON.stringify(tplPage(key), null, 2) + '\n';
   if (ta.dataset.tplAct === 'copy') return copyText(json, ta);
   if (ta.dataset.tplAct === 'download') {
@@ -1998,6 +2007,66 @@ tplEl.addEventListener('click', (ev) => {
     save(); renderTpl();
   }
 });
+
+/* ---------------------------------------------------------------- 공유 링크 (서버 없이 — 2026-10-20 테스트용)
+   페이지 템플릿 편집 값(state.tpl[key])을 압축해 주소 #share-<key>=<데이터> 에 담아요. 샘플과 같은 섹션은 빼고, 직접 올린 파일(IndexedDB)은 담을 수 없어서 샘플 값으로 바꿔요.
+   받은 쪽은 링크를 열면 지금 편집 값을 tplBackup 에 두고 받은 내용으로 바꿔요 */
+const b64u = {
+  enc: (bytes) => { let b = ''; bytes.forEach((x) => { b += String.fromCharCode(x); }); return btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); },
+  dec: (str) => Uint8Array.from(atob(str.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0)),
+};
+async function zip(text) {
+  const bytes = new TextEncoder().encode(text);
+  if (typeof CompressionStream === 'undefined') return 'j' + b64u.enc(bytes);
+  const out = await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer();
+  return 'z' + b64u.enc(new Uint8Array(out));
+}
+async function unzip(str) {
+  const bytes = b64u.dec(str.slice(1));
+  if (str[0] === 'j') return new TextDecoder().decode(bytes);
+  return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+}
+async function shareLink(key) {
+  const ts = tplState(key);
+  let dropped = 0;
+  const strip = (x, fresh) => {
+    if (Array.isArray(x)) return x.map((y, i) => strip(y, fresh && fresh[i]));
+    if (x && typeof x === 'object') {
+      if (typeof x.file === 'string') { dropped++; return fresh === undefined ? null : JSON.parse(JSON.stringify(fresh)); }
+      return Object.fromEntries(Object.entries(x).map(([k, y]) => [k, strip(y, fresh && fresh[k])]));
+    }
+    return x;
+  };
+  const edits = {};
+  for (const [id, e] of Object.entries(ts.edits)) {
+    const v = byId[id] || byId[id.split('~')[0]];
+    if (!v) continue;
+    const fresh = editFrom(v, v.sample);
+    if (JSON.stringify(e) === JSON.stringify(fresh)) continue; // 샘플 그대로인 섹션은 빼요
+    edits[id] = strip(e, fresh);
+  }
+  const data = { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order };
+  const url = new URL(location.href);
+  url.hash = `share-${key}=${await zip(JSON.stringify(data))}`;
+  return { url: url.href, dropped };
+}
+async function openShare(hash) {
+  const m = /^share-([\w-]+)=(.+)$/.exec(hash);
+  if (!m || !tplByKey[m[1]]) return false;
+  try {
+    const data = JSON.parse(await unzip(m[2]));
+    const key = m[1];
+    state.tplBackup ||= {};
+    if (state.tpl && state.tpl[key]) state.tplBackup[key] = state.tpl[key]; // 지금 편집하던 내용은 남겨 둬요
+    state.tpl ||= {};
+    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [] };
+    state.mode = 'tpl:' + key;
+    return true;
+  } catch (e) {
+    alert('공유 링크를 열지 못했어요 — 주소가 잘렸는지 확인해 주세요.');
+    return false;
+  }
+}
 
 /* ---------------------------------------------------------------- shared */
 function copyText(text, btn) {
@@ -2106,6 +2175,8 @@ else if (h.startsWith('tpl-') && tplByKey[h.slice(4)]) state.mode = 'tpl:' + h.s
 else if (secByKey[h]) state.cat = h;
 else if (byId[h]) { state.cat = byId[h].section; state.mode = 'library'; jumpTo = h; }
 if (!isOpen(state.cat)) state.open.push(state.cat);
-applyAll();
+// #share-<템플릿>=… 공유 링크 — 받은 내용으로 편집기를 열어요 (압축 풀기가 비동기라 그 뒤에 그려요)
+if (h.startsWith('share-')) openShare(h).then((ok) => { applyAll(); if (ok) setTimeout(() => alert('공유 받은 시안을 열었어요. 이 브라우저에서 편집하던 내용은 따로 보관해 뒀어요.'), 300); });
+else applyAll();
 if (jumpTo) setTimeout(() => document.getElementById(jumpTo)?.scrollIntoView({ block: 'start' }), 300);
 })();

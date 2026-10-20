@@ -167,6 +167,7 @@ scripts/                                build · validate · preview · shot · 
   - 이미지(`assets/monthly-hunet/`)는 Figma 렌더 1배(아바타 144 · 연사 150 · 썸네일 410)라 2배 원본이 오면 바꾼다. 혜택 이미지는 회색 칸(#e9ecef, Figma 값) 가운데에 놓는다(Figma 는 약간 왼쪽).
   - 굵은 일부 문구(신청서·혜택 설명 뒤)는 `highlight` 슬롯으로 따로 받는다(richtext 에 굵게 표기가 없어서).
   - 텍스트 매핑(figmaLayer)은 아직 없다 → Figma 플러그인으로 보내면 문구가 샘플 그대로다.
+- **공유 링크**(2026-10-20 테스트 — 기획자·마케터가 파일 없이 디자이너에게 전달): 페이지 템플릿 편집기 「공유 링크 복사」 = `state.tpl[key]`(샘플과 다른 섹션만 · pick · off · extras · order)를 deflate-raw 압축 + base64url 로 주소 `#share-<key>=…` 에 담는다(`shareLink` · `openShare`, site/app.js). 직접 올린 파일(IndexedDB)은 담지 못해 샘플 값으로 바꾸고 개수를 알린다. 받은 쪽은 지금 편집 값을 `state.tplBackup[key]` 에 두고 받은 내용으로 연다(되돌리기 UI 는 아직 없음). 다음 단계 = 저장소(사내 서버 또는 외부 서비스 — 사용자 결정 대기)를 붙여 이미지까지 · Figma 플러그인 코드 입력.
 - 편집기 폼 확장(히어로 편집기도 같이 씀): 목록 항목의 `richtext` = 여러 줄 입력칸(textarea), `image` = 썸네일 · 파일 선택 · 지우기 · 되돌리기(내보내기 이름 `<layout>-<목록>-<n>.<확장자>`). 미디어 칸은 샘플과 다르면 「되돌리기」. 미디어 슬롯 `single: true` = PC·MO 같은 파일 하나(로고).
 
 ## 조합기 → Figma (플러그인)
