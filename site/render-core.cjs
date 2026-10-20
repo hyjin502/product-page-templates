@@ -25,9 +25,11 @@
   /* richtext — 값은 문자열("줄1\n줄2") 또는 { pc, mo }.
      pc·mo 글자가 같고 줄바꿈 위치만 다르면 <br class="only-pc|only-mo"> 로 합쳐요.
      글자가 다르면 <span class="only-pc"> / <span class="only-mo"> 두 벌로 내보내요. */
+  /** **굵게** 표시 → <b> (이스케이프한 뒤에 바꿔요 · 줄을 넘지 않아요) */
+  const bold = (html) => html.replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>');
   function richtext(value) {
     if (value == null || value === '') return '';
-    if (typeof value === 'string') return lines(value).map(esc).join('<br> ');
+    if (typeof value === 'string') return bold(lines(value).map(esc).join('<br> '));
     const pc = value.pc ?? value.mo ?? '';
     const mo = value.mo ?? value.pc ?? '';
     const a = flatten(pc);
@@ -44,7 +46,7 @@
       out += both ? '<br> ' : a.breaks.has(p) ? '<br class="only-pc"> ' : '<br class="only-mo"> ';
       from = p + 1; // 줄 사이 공백 1칸
     }
-    return out + esc(a.flat.slice(from));
+    return bold(out + esc(a.flat.slice(from)));
   }
 
   /** 줄 목록 — { pc, mo } 면 기기(dev)에 맞는 쪽, 한쪽만 있으면 그쪽 (편집기·줄 단위 템플릿용) */

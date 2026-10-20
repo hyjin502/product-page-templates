@@ -1,0 +1,45 @@
+{
+  "bgColor": "#f7f7f8",
+  "title": {
+    "pc": "이런 고민이 있는 분께 추천합니다!",
+    "mo": "이런 고민이 있는 분께\n추천합니다!"
+  },
+  "cards": [
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-check-1.jpg",
+        "alt": ""
+      },
+      "quote": "“AI를 L&D에 접목하고 싶은데, 실제 작동하는 사례를 직접 보고 싶어요.”",
+      "desc": "최신 AI Powered L&D 솔루션을 직접 체험해 보고자하는 교육담당자"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-check-2.jpg",
+        "alt": ""
+      },
+      "quote": "“DC를 운영하고 싶은데, 평가자 확보부터 막막합니다.”",
+      "desc": "복수 평가자 훈련과 일정 조율 부담 없이 DC를 운영하고 싶은 교육담당자"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-check-3.jpg",
+        "alt": ""
+      },
+      "quote": "“DC 운영 비용과 시간 때문에 핵심 직군에만 겨우 적용하고 있어요.”",
+      "desc": "더 많은 구성원에게 평가센터 경험을 확장하고 싶은 교육담당자"
+    },
+    {
+      "image": {
+        "src": "assets/monthly-x/monthly-x-check-4.jpg",
+        "alt": ""
+      },
+      "quote": "“다른 회사에서는 DC를 어떻게 운영하고 있는지 궁금합니다.”",
+      "desc": "L&D 전문가 및 타사 담당자들과 교육 사례, 인사이트를 공유하고자 하는 교육담당자"
+    }
+  ],
+  "showCta": true,
+  "ctaColor": "blue/700",
+  "cta": "20석 한정! 무료 현장 참여 신청하기",
+  "ctaHref": "#"
+}

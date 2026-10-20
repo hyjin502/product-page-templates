@@ -1,0 +1,10 @@
+/* 월간X 공통 — 신청 버튼 (Figma action button: PC 높이 80 · 좌우 64 · 24 bold · 간격 16 · 둥근 12 · blue/700 / MO HDS lg(56) 전체 폭 · 16 bold) */
+.mx-btn { display: inline-flex; align-items: center; justify-content: center; gap: 16px; height: 80px; padding: 0 64px; border-radius: 12px;
+  background: var(--btn-bg, var(--brand)); color: var(--btn-fg, var(--static-white, #fff)); font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); text-decoration: none; white-space: nowrap; }
+.mx-btn svg { flex: none; width: 24px; height: 24px; margin: 0 -7px; }
+.mx-btn--light { box-shadow: inset 0 0 0 1px var(--line-outline); } /* 흰 버튼 — 흰 바탕에서 보이게 (제안값) */
+@media (min-width: 768px) and (max-width: 1279px) { .mx-btn { height: 72px; padding: 0 48px; font-size: 22px; } }
+@media (max-width: 767px) {
+  .mx-btn { width: 100%; height: 56px; padding: 0 24px; gap: 4px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  .mx-btn svg { width: 20px; height: 20px; margin: 0; }
+}

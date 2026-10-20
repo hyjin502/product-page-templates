@@ -1,9 +1,11 @@
 {
-  "$comment": "월간X 페이지 템플릿 — 이 폴더의 섹션을 order 순서로 이어 붙인 한 페이지예요. 사이트 「월간X」 탭에서 모든 문구를 편집해요. 2026-10-19 히어로 편집기의 monthly-x 를 옮겨 시작(히어로부터). Figma 원본은 지금 hero 세트(469:32313)의 월간X 컴포넌트 — 월간X 전용 세트가 생기면 figmaSet 과 meta 노드를 바꿔요.",
+  "$comment": "월간X 페이지 템플릿 — 이 폴더의 섹션을 order 순서로 이어 붙인 한 페이지예요. 사이트 「월간X」 탭에서 모든 문구를 편집해요. 2026-10-19 히어로 편집기의 monthly-x 를 옮겨 시작(히어로부터). Figma 원본은 「월간X」 세트 643:3323 (hero 는 그 세트의 layout=monthly-x 643:3360 / 643:3324).",
   "key": "monthly-x",
   "title": "월간X",
-  "figmaSet": "469:32313",
+  "figmaSet": "643:3323",
   "order": [
-    "hero"
+    "hero",
+    "summary",
+    "check"
   ]
 }

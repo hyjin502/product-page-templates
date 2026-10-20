@@ -1,0 +1,29 @@
+/* PC — Figma 643:5115 · 흰 바탕 · 위아래 120 · 묶음 사이 40 · 가운데 정렬 · 본문 780
+   제목 32 bold · 문단 18 regular(black-80) 사이 20 · 미션 카드 380×2(사이 19 · 안쪽 24 · 사이 16 · blue/100 바탕 · 둥근 14 · 제목 18 bold blue/700 · 설명 16/1.6 black-60 · 빈 줄 하나 뒤 안내 12/1.4 — Figma 643:5108 실측) · 버튼은 _shared.css .mx-btn */
+.mx-summary { display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 120px var(--container-pad); background: var(--bg-surface); color: var(--t-100); text-align: center; }
+.mx-summary > :not(.mx-btn) { width: var(--body, 780px); max-width: 100%; }
+.mx-summary__title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mx-summary__text { display: flex; flex-direction: column; gap: 20px; font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+.mx-summary__text p { margin: 0; }
+.mx-summary__text b { font-weight: 700; }
+.mx-summary__missions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px; margin: 0; padding: 0; list-style: none; text-align: left; }
+.mx-summary__mission { display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 14px; background: var(--blue-100, #f5f9ff); }
+.mx-summary__mission-title { width: 305px; max-width: 100%; margin: 0; font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--brand); text-align: center; }
+.mx-summary__mission-body { display: flex; flex-direction: column; gap: 19.6px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
+.mx-summary__mission-body p { margin: 0; }
+.mx-summary__mission-note { font-size: 12px; line-height: 1.4; letter-spacing: -0.7px; }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) { .mx-summary { padding: 96px var(--container-pad); } }
+
+/* MO — Figma 643:5122 · 위아래 72 · 양옆 16 · 제목 20 · 문단 16 사이 16 · 미션 카드 세로(사이 16 · 안쪽 20 · 제목 왼쪽) */
+@media (max-width: 767px) {
+  .mx-summary { padding: 72px 16px; }
+  .mx-summary__title { font-size: 20px; }
+  .mx-summary__text { gap: 16px; font-size: 16px; }
+  .mx-summary__missions { grid-template-columns: 1fr; gap: 16px; }
+  .mx-summary__mission { padding: 20px; }
+  .mx-summary__mission-title { width: auto; text-align: left; }
+  .mx-summary__mission-body { gap: 16px; font-size: 14px; }
+  .mx-summary__mission-note { line-height: 1.6; letter-spacing: var(--tracking-tight); }
+}

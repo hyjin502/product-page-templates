@@ -1,0 +1,107 @@
+{
+  "id": "monthly-x-summary",
+  "section": "monthly-x",
+  "layout": "summary",
+  "label": "소개 글",
+  "order": 2,
+  "when": "행사 소개 — 가운데 제목 · 본문 문단(굵게 표시) · 실습 미션 카드 2개(PC) · 신청 버튼",
+  "figma": {
+    "pc": "643:5115",
+    "mo": "643:5122",
+    "tb": null
+  },
+  "body": 780,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 3,
+      "note": "가운데 정렬 · 굵게",
+      "mo": {
+        "maxLines": 4
+      }
+    },
+    "paragraphs": {
+      "type": "list",
+      "extract": false,
+      "label": "문단",
+      "min": 0,
+      "max": 8,
+      "item": {
+        "text": {
+          "type": "richtext",
+          "label": "문단",
+          "note": "엔터로 줄바꿈 · **굵게** 로 감싸면 굵은 글씨"
+        },
+        "mo": {
+          "type": "richtext",
+          "label": "MO 문구",
+          "optional": true,
+          "note": "비우면 PC 문구 그대로"
+        }
+      },
+      "note": "문단 사이 PC 20 · MO 16"
+    },
+    "showMissions": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "미션 카드 보이기"
+    },
+    "missions": {
+      "type": "list",
+      "extract": false,
+      "label": "미션 카드",
+      "min": 0,
+      "max": 2,
+      "item": {
+        "title": {
+          "type": "text",
+          "extract": false,
+          "label": "카드 제목",
+          "maxChars": 40
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "note": "엔터로 줄바꿈"
+        },
+        "note": {
+          "type": "richtext",
+          "label": "작은 안내 (*)",
+          "optional": true
+        }
+      },
+      "note": "PC 2열 · MO 세로"
+    },
+    "showCta": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "버튼 보이기"
+    },
+    "ctaColor": {
+      "type": "color",
+      "palette": "cta",
+      "default": "blue/700",
+      "extract": false,
+      "label": "버튼 색",
+      "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리)"
+    },
+    "cta": {
+      "type": "text",
+      "extract": false,
+      "label": "버튼 문구",
+      "maxChars": 30,
+      "optional": true,
+      "note": "PC 80 · MO 56 전체 폭 · 비우면 버튼 없음"
+    },
+    "ctaHref": {
+      "type": "url",
+      "optional": true,
+      "extract": false,
+      "label": "버튼 링크"
+    }
+  }
+}

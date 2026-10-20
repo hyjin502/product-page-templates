@@ -166,7 +166,8 @@ function validateValue(s, v, where, errors) {
       // palette: "text" = HDS typography 글자색(tokens/hds.json text), 없으면 버튼 색(colors)
       // palette: "line" = HDS line 색(tokens/hds.json line). 버튼 색은 예전 키(aliases)도 받아요
       const pal = s.palette === 'text' ? HDS_IDX.text : s.palette === 'line' ? HDS_IDX.line : s.palette === 'bg' ? HDS_IDX.bg
-        : s.palette === '700' ? Object.fromEntries(HDS.colors.filter((c) => c.key.endsWith('/700')).map((c) => [c.key, c])) : HDS_IDX.colors;
+        : s.palette === '700' ? Object.fromEntries(HDS.colors.filter((c) => c.key.endsWith('/700')).map((c) => [c.key, c]))
+        : s.palette === 'cta' ? Object.fromEntries(HDS.colors.filter((c) => c.key.endsWith('/700') || c.key.startsWith('static/')).map((c) => [c.key, c])) : HDS_IDX.colors;
       const shown = s.palette ? Object.keys(pal) : HDS.colors.map((c) => c.key);
       if (s.noneValue && v === s.noneValue) break; // 예: 뱃지 테두리 "none" = 빼기
       if (s.free && /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(String(v))) break; // 자유 색 — #rrggbb(aa)

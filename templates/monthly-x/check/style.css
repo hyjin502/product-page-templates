@@ -1,0 +1,24 @@
+/* PC — Figma 643:5188 · bg-page · 위아래 120 · 묶음 사이 40 · 제목 32 bold
+   카드 780 · 흰 바탕 · 둥근 20 · 안쪽 32/40 · 아바타 64 ↔ 문구 32 · 고민 20 bold · 대상 18 regular(black-80) · 사이 8 · 카드 사이 12 */
+.mx-check { display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 120px var(--container-pad); background: var(--bg-page, #f7f7f8); color: var(--t-100); }
+.mx-check__title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); text-align: center; }
+.mx-check__list { display: flex; flex-direction: column; gap: 12px; width: var(--body, 780px); max-width: 100%; margin: 0; padding: 0; list-style: none; }
+.mx-check__card { display: flex; align-items: center; gap: 32px; padding: 32px 40px; border-radius: 20px; background: var(--static-white, #fff); }
+.mx-check__avatar { flex: none; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: var(--gray-02, #eaebec); }
+.mx-check__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mx-check__text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.mx-check__text p { margin: 0; }
+.mx-check__quote { font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+.mx-check__desc { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) { .mx-check { padding: 96px var(--container-pad); } }
+
+/* MO — Figma 648:5207 · 위아래 72 · 양옆 16 · 제목 28 · 카드 안쪽 24 · 아바타 ↔ 문구 20 · 위쪽 맞춤 · 문구 16 (lh 1.6) */
+@media (max-width: 767px) {
+  .mx-check { padding: 72px 16px; }
+  .mx-check__title { font-size: 28px; }
+  .mx-check__card { align-items: flex-start; gap: 20px; padding: 24px; }
+  .mx-check__text { flex: 1; }
+  .mx-check__quote, .mx-check__desc { font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+}

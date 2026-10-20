@@ -1,0 +1,91 @@
+{
+  "id": "monthly-x-check",
+  "section": "monthly-x",
+  "layout": "check",
+  "label": "고민 추천",
+  "order": 3,
+  "when": "「이런 고민이 있는 분께 추천합니다!」 — 아바타 · 고민 문구 · 대상 카드 목록 + 신청 버튼",
+  "figma": {
+    "pc": "643:5188",
+    "mo": "648:5207",
+    "tb": null
+  },
+  "body": 780,
+  "slots": {
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "default": "#f7f7f8",
+      "extract": false,
+      "label": "배경색",
+      "note": "기본은 Figma 회색 bg-page #F7F7F8"
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "note": "가운데 정렬 · 굵게",
+      "mo": {
+        "maxLines": 3
+      }
+    },
+    "cards": {
+      "type": "list",
+      "extract": false,
+      "label": "카드",
+      "min": 0,
+      "max": 8,
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "아바타",
+          "hint": "64×64 원형",
+          "optional": true,
+          "profiles": true
+        },
+        "quote": {
+          "type": "richtext",
+          "label": "고민 문구",
+          "note": "굵게 · 따옴표까지 그대로"
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "대상",
+          "optional": true
+        }
+      },
+      "note": "카드 사이 12"
+    },
+    "showCta": {
+      "type": "toggle",
+      "default": true,
+      "extract": false,
+      "label": "버튼 보이기"
+    },
+    "ctaColor": {
+      "type": "color",
+      "palette": "cta",
+      "default": "blue/700",
+      "extract": false,
+      "label": "버튼 색",
+      "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리)"
+    },
+    "cta": {
+      "type": "text",
+      "extract": false,
+      "label": "버튼 문구",
+      "maxChars": 30,
+      "optional": true,
+      "note": "PC 80 · MO 56 전체 폭 · 비우면 버튼 없음"
+    },
+    "ctaHref": {
+      "type": "url",
+      "optional": true,
+      "extract": false,
+      "label": "버튼 링크"
+    }
+  }
+}

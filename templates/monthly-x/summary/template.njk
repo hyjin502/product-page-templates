@@ -1,0 +1,35 @@
+<section class="mx-summary">
+  <h2 class="mx-summary__title">{{ title | rt }}</h2>
+{% if paragraphs.length %}
+  <div class="mx-summary__text">
+{% for p in paragraphs %}
+{% if p.mo %}
+    <p class="only-pc">{{ p.text | rt }}</p>
+    <p class="only-mo">{{ p.mo | rt }}</p>
+{% else %}
+    <p>{{ p.text | rt }}</p>
+{% endif %}
+{% endfor %}
+  </div>
+{% endif %}
+{% if showMissions and missions.length %}
+  <ul class="mx-summary__missions">
+{% for m in missions %}
+    <li class="mx-summary__mission">
+      <p class="mx-summary__mission-title">{{ m.title }}</p>
+      <div class="mx-summary__mission-body">
+{% if m.desc %}
+        <p>{{ m.desc | rt }}</p>
+{% endif %}
+{% if m.note %}
+        <p class="mx-summary__mission-note">{{ m.note | rt }}</p>
+{% endif %}
+      </div>
+    </li>
+{% endfor %}
+  </ul>
+{% endif %}
+{% if showCta and cta %}
+  <a class="mx-btn{% if ctaColor == 'static/white' %} mx-btn--light{% endif %}" href="{{ ctaHref or '#' }}"{% if ctaColor %} style="--btn-bg: {{ ctaColor | hdsColor }}; --btn-fg: {{ ctaColor | hdsOn }}"{% endif %}>{{ cta }}{{ 'hds-chevron-right' | icon }}</a>
+{% endif %}
+</section>

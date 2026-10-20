@@ -723,8 +723,8 @@ const EDITORS = REG.variants.filter((v) => v.editor);
 const RC = window.RenderCore;
 const HDS_COLOR = Object.fromEntries(REG.hds.colors.map((c) => [c.key, c]));
 for (const [old, k] of Object.entries(REG.hds.aliases || {})) if (HDS_COLOR[k]) HDS_COLOR[old] = HDS_COLOR[k]; // 예전 키 → 새 키
-/** 색 팔레트 — 슬롯 palette: text(글자) · line(선) · bg(섹션 배경) · 700(원색 700번 13색) · 없으면 버튼 색 */
-const paletteList = (p) => (p === 'text' ? REG.hds.text : p === 'line' ? REG.hds.line : p === 'bg' ? REG.hds.bg : p === '700' ? REG.hds.colors.filter((c) => c.key.endsWith('/700')) : REG.hds.colors) || [];
+/** 색 팔레트 — 슬롯 palette: text(글자) · line(선) · bg(섹션 배경) · 700(원색 700번 13색) · cta(흰색 · 검정 + 700번 13색) · 없으면 버튼 색 */
+const paletteList = (p) => (p === 'text' ? REG.hds.text : p === 'line' ? REG.hds.line : p === 'bg' ? REG.hds.bg : p === '700' ? REG.hds.colors.filter((c) => c.key.endsWith('/700')) : p === 'cta' ? REG.hds.colors.filter((c) => c.key.endsWith('/700') || c.key.startsWith('static/')) : REG.hds.colors) || [];
 const HDS_RADIUS = Object.fromEntries(REG.hds.radius.map((r) => [r.key, r]));
 // 줄 넘김을 재는 요소 — hero variant 들이 함께 쓰는 클래스
 const MEASURE = [['eyebrow', '.hero__badge'], ['title', '.hero__title'], ['description', '.hero__desc']];

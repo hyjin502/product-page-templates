@@ -1,0 +1,26 @@
+{% set bg = bgColor | hdsBg %}
+<section class="mx-check"{% if bg %} style="background: {{ bg }}"{% endif %}>
+{% if title %}
+  <h2 class="mx-check__title">{{ title | rt }}</h2>
+{% endif %}
+{% if cards.length %}
+  <ul class="mx-check__list">
+{% for c in cards %}
+    <li class="mx-check__card">
+{% if c.image and c.image.src %}
+      <span class="mx-check__avatar" data-pick-item="cards:{{ loop.index0 }}:image"><img src="{{ c.image.src }}" alt="{{ c.image.alt or '' }}" width="64" height="64"></span>
+{% endif %}
+      <div class="mx-check__text">
+        <p class="mx-check__quote">{{ c.quote | rt }}</p>
+{% if c.desc %}
+        <p class="mx-check__desc">{{ c.desc | rt }}</p>
+{% endif %}
+      </div>
+    </li>
+{% endfor %}
+  </ul>
+{% endif %}
+{% if showCta and cta %}
+  <a class="mx-btn{% if ctaColor == 'static/white' %} mx-btn--light{% endif %}" href="{{ ctaHref or '#' }}"{% if ctaColor %} style="--btn-bg: {{ ctaColor | hdsColor }}; --btn-fg: {{ ctaColor | hdsOn }}"{% endif %}>{{ cta }}{{ 'hds-chevron-right' | icon }}</a>
+{% endif %}
+</section>
