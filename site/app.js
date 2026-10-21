@@ -413,7 +413,6 @@ function renderCompose() {
     <button type="button" class="btn-ui" data-reset>기본 순서로</button>
   </div>
   <div class="compose__plugin"><button type="button" class="compose__help" data-figma-help>Figma로 가져가는 법</button><span aria-hidden="true">·</span><a href="figma-plugin.zip" download>Figma 플러그인 받기 (처음 한 번)</a></div>
-  <p class="compose__hint"><code>pages/이름.page.json</code>으로 저장 → 내용 수정 → <code>npm run build</code> → <code>dist/pages/이름/index.html</code></p>
   </div>
 </aside>
 <div class="compose__stage">${c.rows.length ? `<div class="stage-bar">${themeBar()}${zoomBar()}</div><div class="v__frame"><iframe title="조합 미리보기"></iframe><span class="v__scale"></span></div>` : '<p class="compose__empty">섹션을 추가하세요</p>'}</div>`;
@@ -1093,7 +1092,7 @@ function listField(k, s, items, smpItems = []) {
   const max = s.max ?? 99;
   const one = s.label || '항목';
   return `<div class="hed-f">${fieldHead(s, `최대 ${max}개`)}
-  ${items.map((it, i) => `<div class="hed-item"><div class="hed-item__head"><b>${esc(one)} ${i + 1}</b>${items.length > (s.min ?? 0) ? `<button type="button" class="icon-btn" data-act="del-item" data-f="${k}" data-i="${i}" aria-label="${esc(one)} ${i + 1} 빼기">✕</button>` : ''}</div>
+  ${items.map((it, i) => `<div class="hed-item${Object.keys(s.item || {}).length === 1 ? ' hed-item--single' : ''}"><div class="hed-item__head"><b>${esc(one)} ${i + 1}</b>${items.length > (s.min ?? 0) ? `<button type="button" class="icon-btn" data-act="del-item" data-f="${k}" data-i="${i}" aria-label="${esc(one)} ${i + 1} 빼기">✕</button>` : ''}</div>
     ${Object.entries(s.item || {}).map(([kk, raw]) => itemField(k, i, kk, RC.specOf(raw), it[kk], `${one} ${i + 1}`, it, smpItems[i])).join('')}
     ${s.item && s.item.label && !String(it.label || '').trim() ? '<p class="hed-hint">문구를 넣으면 버튼이 보여요</p>' : ''}
   </div>`).join('')}
@@ -1189,14 +1188,13 @@ function renderHero() {
   const keep = heroEl.querySelector('.compose__scroll')?.scrollTop || 0;
   heroEl.innerHTML = `<aside class="compose__side">${SPLIT}
   <div class="compose__scroll">
-  <div class="hed-intro"><h2>히어로 편집기</h2><p>스타일을 고르고 문구·배경·버튼을 바꿔 보세요. 미리보기가 실제 결과예요 (기기는 위쪽 PC·TB·MO).</p></div>
+  <div class="hed-intro"><h2>히어로 편집기</h2></div>
   <div class="hed-styles" role="group" aria-label="히어로 스타일">${EDITORS.map((x) => {
     const bg = x.sample.background && x.sample.background.pc;
     const src = x.thumb || (bg && bg.kind === 'image' ? bg.src : '');
     const thumb = src ? ` style="background-image:url('${esc(new URL(src, assetBase).href)}')"` : '';
     return `<button type="button" class="hed-style" data-hed-variant="${x.id}" aria-pressed="${x.id === v.id}" title="${esc(x.when)}"><span class="hed-style__thumb"${thumb}></span><span class="hed-style__name">${esc(vname(x))}</span></button>`;
   }).join('')}</div>
-  <p class="hed-style__when"><b>${esc(vname(v))}</b> ${esc(v.when)}</p>
   <div class="hed-form" data-hed-form>${heroForm(v, e)}</div>
   </div>
   <div class="compose__foot">
@@ -1207,7 +1205,6 @@ function renderHero() {
     <button type="button" class="btn-ui" data-hed-act="to-compose">조합기에서 보기</button>
     <button type="button" class="btn-ui" data-hed-act="figma" title="이 히어로 하나를 Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
   </div>
-  <p class="compose__hint">받은 page.json 과 배경 파일을 <code>pages/</code> 에 같이 넣고 <code>npm run build</code> → <code>dist/pages/이름/</code></p>
   </div>
   <input type="file" accept="image/*,video/mp4" hidden data-hed-file>
 </aside>
@@ -1839,15 +1836,18 @@ function renderTpl() {
   const rows = tplRows(t);
   const todo = (t.order || []).filter((l) => typeof l === 'string' && !t.variants.some((id) => byId[id].layout === l));
   const keep = tplEl.querySelector('.compose__scroll')?.scrollTop || 0;
+  // 처음 들어오면(열린 회차가 없으면) 회차 목록만 보여요 — 회차를 누르거나 새로 만들면 편집 칸이 나와요 (2026-10-21 사용자 요청)
+  const home = !issueOf(t.key);
+  tplEl.classList.toggle('is-home', home);
   tplEl.innerHTML = `<aside class="compose__side">${SPLIT}
   <div class="compose__scroll">
-  <div class="hed-intro"><h2>${esc(t.title)}</h2><p>섹션을 펼쳐 문구·이미지를 바꿔요. 미리보기에서 섹션을 누르면 그 입력칸이 열려요.</p></div>
-  <div class="rows__bar"><span>섹션 ${vs.length}개</span><button type="button" class="btn-ui" data-tpl-fold="1">모두 접기</button><button type="button" class="btn-ui" data-tpl-fold="0">모두 펴기</button></div>
-  ${issueBar(t.key)}
+  ${home ? issueHome(t.key) : `<div class="tpl-head"><div class="hed-intro"><h2>${esc(t.title)}</h2></div>
+  ${issueBar(t.key)}</div>
+  <div class="tpl-edit-head"><b>섹션 편집</b><span>${vs.length}개</span><button type="button" class="btn-ui" data-tpl-fold="1">모두 접기</button><button type="button" class="btn-ui" data-tpl-fold="0">모두 펴기</button></div>
   <div class="tpl-secs">${rows.map((r) => tplBlock(t, r)).join('')}</div>
-  ${todo.length ? `<p class="compose__hint">준비 중: ${todo.map(esc).join(' · ')}</p>` : ''}
+  ${todo.length ? `<p class="compose__hint">준비 중: ${todo.map(esc).join(' · ')}</p>` : ''}`}
   </div>
-  <div class="compose__foot">
+  ${home ? '' : `<div class="compose__foot">
   <div class="compose__actions">
     ${issueSaveBtn(t.key)}
     <button type="button" class="btn-ui" data-tpl-act="download">page.json 받기</button>
@@ -1856,19 +1856,21 @@ function renderTpl() {
     <button type="button" class="btn-ui" data-tpl-act="reset">샘플로 되돌리기</button>
   </div>
   ${draftLine(t.key)}
-  <p class="compose__hint">받은 page.json 과 올린 파일을 <code>pages/</code> 에 같이 넣고 <code>npm run build</code> → <code>dist/pages/이름/</code> · <a href="${esc(t.figmaSet)}" target="_blank" rel="noopener">Figma 원본</a></p>
-  </div>
+  <p class="compose__hint"><a href="${esc(t.figmaSet)}" target="_blank" rel="noopener">Figma 원본</a></p>
+  </div>`}
   <input type="file" accept="image/*,video/mp4" hidden data-hed-file>
 </aside>
-<div class="compose__stage">
+<div class="compose__stage">${home ? `<div class="stage-bar"><p class="tpl-latest" data-tpl-latest>최근 회차를 불러오는 중…</p>${zoomBar()}</div>
+  <div class="v__frame"><iframe title="${esc(t.title)} 최근 회차 미리보기"></iframe><span class="v__scale"></span></div>` : `
   <div class="stage-bar">${zoomBar()}</div>
-  <div class="v__frame"><iframe title="${esc(t.title)} 미리보기"></iframe><span class="v__scale"></span></div>
+  <div class="v__frame"><iframe title="${esc(t.title)} 미리보기"></iframe><span class="v__scale"></span></div>`}
 </div>`;
   tplEl.querySelector('.compose__scroll').scrollTop = keep;
   tplEl.classList.toggle('is-locked', issueLocked(t.key));
-  if (tplState(t.key).listOpen) fillIssueList(t.key); // 다시 그려도 지난 회차 목록은 이어서 보여요
+  if (home || tplState(t.key).listOpen) fillIssueList(t.key); // 처음 화면 · 다시 그려도 지난 회차 목록은 이어서 보여요
   markTplCur();
   syncPanel();
+  if (home) { if (tplSticky) { tplSticky.off(); tplSticky = null; } tplLoaded = false; latestPreview(t); return; } // 처음 화면은 가장 최근에 저장한 회차를 보기 전용으로
   const iframe = tplEl.querySelector('iframe');
   tplLoaded = false;
   tplFit = mountPreview(tplEl.querySelector('.compose__stage'), tplEl.querySelector('.v__frame'), iframe, tplEl.querySelector('.v__scale'), () => {
@@ -1890,6 +1892,41 @@ function renderTpl() {
     iframe.srcdoc = srcdoc(body.map(tplSecHtml).join('\n'), css, js, null);
     if (bars.length) tplSticky = stickyDock(tplEl.querySelector('.v__frame'), iframe, bars.map(tplSecHtml).join('\n'), css, js, () => tplOpen(bars[0].id, true));
   });
+}
+/** 처음 화면 미리보기 — 가장 최근에 저장한 회차(updated_at)를 보기 전용으로 그려요. 지금 편집 값은 건드리지 않아요 */
+async function latestPreview(t) {
+  const key = t.key;
+  const label = tplEl.querySelector('[data-tpl-latest]');
+  const iframe = tplEl.querySelector('.compose__stage iframe');
+  if (!iframe) return;
+  tplFit = mountPreview(tplEl.querySelector('.compose__stage'), tplEl.querySelector('.v__frame'), iframe, tplEl.querySelector('.v__scale'), null, { zoomable: true });
+  let row = null;
+  try { [row] = await sb(`issues?template=eq.${encodeURIComponent(key)}&select=*&order=updated_at.desc&limit=1`, { method: 'GET' }); } catch (e) {}
+  if (tplKey() !== key || issueOf(key) || !iframe.isConnected) return; // 그사이 회차를 열었으면 그만
+  // 올린 파일({ file, url })은 저장된 주소로 바로 보여요 — IndexedDB 에 받지 않아요
+  const toSrc = (x) => {
+    if (Array.isArray(x)) return x.map(toSrc);
+    if (!x || typeof x !== 'object') return x;
+    if (typeof x.file === 'string') return x.url ? { ...(x.kind ? { kind: x.kind } : {}), src: x.url, ...(x.alt ? { alt: x.alt } : {}) } : null;
+    return Object.fromEntries(Object.entries(x).map(([k, v]) => [k, toSrc(v)]));
+  };
+  const data = (row && row.data) || {};
+  const saved = state.tpl[key];
+  let vs = [];
+  let html = '', bars = '';
+  state.tpl[key] = { edits: toSrc(JSON.parse(JSON.stringify(data.edits || {}))), pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [] };
+  try {
+    vs = tplVisible(t).map((id) => byId[id]);
+    html = vs.filter((v) => v.stage !== 'sticky').map(tplSecHtml).join('\n');
+    bars = vs.filter((v) => v.stage === 'sticky').map(tplSecHtml).join('\n');
+  } finally { state.tpl[key] = saved; }
+  const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
+  const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+  if (label) label.innerHTML = row
+    ? `<b>최근 수정</b> ${esc(ymLabel(row.period))} ${esc(row.title || '')} · ${esc(whenLabel(row.updated_at))} · ${esc(row.updated_by || '')} <button type="button" class="iss__lnk" data-iss-open="${esc(row.id)}">이 회차 열기</button>`
+    : '아직 회차가 없어요 — 샘플 화면이에요';
+  iframe.srcdoc = srcdoc(html, css, js, null);
+  if (bars) tplSticky = stickyDock(tplEl.querySelector('.v__frame'), iframe, bars, css, js, () => {});
 }
 /** 지금 보고 있는 섹션 — 미리보기에서 누르거나 펼친 섹션의 왼쪽 칸에 옅은 배경(.is-current)을 깔아 구역을 구분해요 */
 let tplCur = null;
@@ -1933,6 +1970,7 @@ function tplOpen(id, scroll) {
 }
 const tplTimers = {};
 function tplUpdate(v) {
+  tplState(v.section).dirty = true; // 저장하지 않은 수정 — 회차 목록으로 갈 때 물어봐요
   clearTimeout(tplTimers[v.id]);
   tplTimers[v.id] = setTimeout(() => {
     save();
@@ -2238,7 +2276,7 @@ async function pullFiles(edits) {
 const ISS = { bucket: 'issues', status: { draft: '작성 중', review: '디자이너 전달', done: '완료' } };
 const issueUrl = (id) => { const u = new URL(location.href); u.hash = 'i-' + id; return u.href; };
 const issueOf = (key) => tplState(key).issue || null;
-const issueLocked = (key) => { const i = issueOf(key); return !!(i && i.status === 'done'); };
+const issueLocked = () => false; // 상태 · 완료 잠금은 뺐어요 (2026-10-21)
 const ymLabel = (p) => String(p || '').replace('-', '.');
 const whenLabel = (t) => (t ? new Date(t).toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '');
 async function sb(path, opt = {}) {
@@ -2304,6 +2342,7 @@ async function saveIssue(key, patch = {}) {
     if (!rows.length) throw new Error('다시 저장해 주세요 (또 바뀌었어요)');
   }
   tplState(key).issue = issueMeta(rows[0]);
+  tplState(key).dirty = false;
   save();
   return rows[0];
 }
@@ -2339,7 +2378,6 @@ async function finalFiles(key) {
 function issueSaveBtn(key) {
   const iss = issueOf(key);
   if (!iss) return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="new" title="회차(예: 2026년 11월호)로 저장하고 링크를 만들어요 — 지난 회차에 쌓여요">회차로 저장</button>`;
-  if (iss.status === 'done') return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="copy">링크 복사</button>`;
   return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="save" title="같은 링크가 최신 내용으로 바뀌어요">저장하고 링크 복사</button>`;
 }
 /** 회차 칸 — 두 줄로 간결하게: ① 연월 · 이름 · 상태(고르기) ② 저장 시각 · 사람 + 작은 글자 버튼(정보 · 지난 회차 · 닫기) */
@@ -2351,28 +2389,37 @@ function issueBar(key) {
   const fold = `<button type="button" class="iss__fold" data-iss-act="fold" aria-expanded="${String(!ts.issFold)}" title="${ts.issFold ? '펼치기' : '접기'}">${ts.issFold ? '▸' : '▾'}</button>`;
   if (!iss && ts.issFold) return `<div class="iss is-folded"><div class="iss__row">${fold}<span class="iss__muted">회차 없음</span></div></div>`;
   if (!iss) return `<div class="iss"><div class="iss__row">${fold}<span class="iss__muted">회차 없음 — 저장하면 회차로 쌓여요</span><span class="iss__links">${tx('list', '지난 회차', ts.listOpen)}${tx('new', '+ 새 회차', ts.newOpen)}</span></div>${more}</div>`;
-  const done = iss.status === 'done';
-  const info = iss.info || {};
-  const dis = done ? ' disabled' : '';
-  const nm = `${key}-${iss.period || ''}`;
-  const head = `<div class="iss__row">${fold}<b>${esc(ymLabel(iss.period))}</b>`;
-  if (ts.issFold) return `<div class="iss iss--${esc(iss.status)} is-folded">${head}<span class="iss__title">${esc(iss.title || '(이름 없음)')}</span><span class="iss__st iss__st--${esc(iss.status)}">${esc(ISS.status[iss.status] || iss.status)}</span></div></div>`;
-  return `<div class="iss iss--${esc(iss.status)}">
-  ${head}<span class="iss__title">${esc(iss.title || '(이름 없음)')}</span>
-    <select class="iss__sel" data-iss-status aria-label="상태">${['draft', 'review', 'done'].map((st) => `<option value="${st}"${iss.status === st ? ' selected' : ''}>${ISS.status[st]}</option>`).join('')}</select></div>
-  <div class="iss__row"><span class="iss__muted">${done ? `${esc(whenLabel(iss.done_at))} 완료 · ${esc(iss.done_by || '')}` : `${esc(whenLabel(iss.updated_at))} 저장 · ${esc(iss.updated_by || '')}`}</span>
-    <span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('list', '지난 회차', ts.listOpen)}${tx('close', '닫기')}</span></div>
-  ${done ? `<p class="iss__lock">🔒 완료 · <button type="button" class="iss__lnk" data-iss-view="${esc(iss.final ? iss.final.html : '')}"${iss.final ? '' : ' disabled'}>화면 보기</button>${iss.final ? ` · <button type="button" class="iss__lnk" data-iss-dl="${esc(iss.final.page)}" data-name="${esc(nm)}.page.json">page.json</button> · <button type="button" class="iss__lnk" data-iss-dl="${esc(iss.final.figma)}" data-name="${esc(nm)}.figma.json">Figma용</button>` : ''} · <button type="button" class="iss__lnk" data-iss-act="reopen">다시 열기</button></p>` : ''}
+  // 상태(작성 중 · 디자이너 전달 · 완료)는 2026-10-21 사용자 요청으로 화면에서 뺐어요 — 회차는 언제든 고쳐 저장해요
+  const head = `<div class="iss__row">${fold}<b>${esc(ymLabel(iss.period))}</b><span class="iss__title">${esc(iss.title || '(이름 없음)')}</span>`;
+  if (ts.issFold) return `<div class="iss is-folded">${head}</div></div>`;
+  return `<div class="iss">
+  ${head}</div>
+  <div class="iss__row"><span class="iss__muted">${esc(whenLabel(iss.updated_at))} 저장 · ${esc(iss.updated_by || '')}</span>
+    <span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('close', '← 회차 목록')}</span></div>
   ${ts.infoOpen ? `<div class="iss__grid">
-    <label>연월<input type="month" data-iss-f="period" value="${esc(iss.period || '')}"${dis}></label>
-    <label>회차 이름<input type="text" data-iss-f="title" value="${esc(iss.title || '')}"${dis}></label>
-    <label>행사일<input type="date" data-iss-i="eventDate" value="${esc(info.eventDate || '')}"${dis}></label>
-    <label>신청 마감일<input type="date" data-iss-i="deadline" value="${esc(info.deadline || '')}"${dis}></label>
-    <label class="iss__wide">게시 주소${info.liveUrl ? ` <a href="${esc(info.liveUrl)}" target="_blank" rel="noopener">열기</a>` : ''}<input type="url" data-iss-i="liveUrl" value="${esc(info.liveUrl || '')}" placeholder="https://hrd.hunet.co.kr/…"${dis}></label>
+    <label>연월<input type="month" data-iss-f="period" value="${esc(iss.period || '')}"></label>
+    <label>회차 이름<input type="text" data-iss-f="title" value="${esc(iss.title || '')}"></label>
     <label class="iss__wide">내 이름 (저장 기록용)<input type="text" data-iss-me value="${esc(state.me || '')}" maxlength="20"></label>
   </div>` : ''}
   ${more}
 </div>`;
+}
+/** 탭에 들어올 때 처음 화면으로 — 열려 있던 회차를 닫아요. 저장하지 않은 수정이 있으면 그 회차를 그대로 열어 둬요(잃지 않게) */
+function tplToHome() {
+  const key = tplKey();
+  if (!key) return;
+  const ts = tplState(key);
+  if (ts.issue && !ts.dirty) { delete ts.issue; ts.newOpen = false; save(); }
+}
+/** 처음 화면 — 회차 목록 + 「+ 새 회차」 (편집 칸은 회차를 열어야 보여요) */
+function issueHome(key) {
+  const ts = tplState(key);
+  return `<div class="hed-intro"><h2>${esc(tplByKey[key].title)}</h2></div>
+  <div class="iss-home">
+    <div class="iss-home__bar"><b>회차</b><button type="button" class="btn-ui btn-ui--primary" data-iss-act="new">+ 새 회차</button></div>
+    ${ts.newOpen ? issueNewForm(key) : ''}
+    <div class="iss__list iss-home__list" data-iss-listbox><p class="iss__muted">불러오는 중…</p></div>
+  </div>`;
 }
 function issueNewForm(key) {
   const d = new Date(); d.setMonth(d.getMonth() + 1);
@@ -2385,7 +2432,7 @@ function issueNewForm(key) {
     <label>회차 이름<input type="text" data-iss-new="title" placeholder="예: AI 리더십 세미나"></label>
     <label class="iss__wide">시작 내용<select data-iss-new="from">
       ${list.map((r) => `<option value="${esc(r.id)}"${from === r.id ? ' selected' : ''}>${esc(ymLabel(r.period))} ${esc(r.title || '')} 복사</option>`).join('')}
-      <option value="current"${from === 'current' ? ' selected' : ''}>지금 편집 내용</option>
+      <option value="current"${from === 'current' ? ' selected' : ''}>이 브라우저에 남은 편집 내용</option>
       <option value="sample"${from === 'sample' ? ' selected' : ''}>Figma 샘플</option>
     </select></label>
   </div>
@@ -2406,7 +2453,6 @@ async function fillIssueList(key) {
     const cur = issueOf(key);
     box.innerHTML = `<div class="iss__lhead"><span>지난 회차 ${rows.length}</span><button type="button" class="iss__tx" data-iss-act="list">접기 ▴</button></div>` + (rows.length ? `<ul>${rows.map((r) => `<li class="${cur && cur.id === r.id ? 'is-cur' : ''}">
       <button type="button" class="iss__item" data-iss-open="${esc(r.id)}" title="열기"><b>${esc(ymLabel(r.period))}</b><span>${esc(r.title || '(이름 없음)')}</span>${cur && cur.id === r.id ? '<em class="iss__now">보는 중</em>' : ''}</button>
-      <span class="iss__st iss__st--${esc(r.status)}">${esc(ISS.status[r.status] || r.status)}</span>
       <button type="button" class="iss__tx" data-iss-link="${esc(r.id)}" title="링크 복사">링크</button>
       <button type="button" class="iss__tx" data-iss-from="${esc(r.id)}" title="이 회차를 복사해서 새 회차 시작">복사</button>
     </li>`).join('')}</ul>` : '<p class="iss__muted">아직 회차가 없어요</p>');
@@ -2424,29 +2470,7 @@ tplEl.addEventListener('input', (ev) => {
     save(); // 서버에는 다음 「저장」 때 함께 나가요
   }
 });
-// 상태 고르기 — 완료는 저장 + 결과물 보관 후 잠가요, 디자이너 전달은 링크를 복사해요
-tplEl.addEventListener('change', async (ev) => {
-  const sel = ev.target.closest('[data-iss-status]');
-  const key = tplKey();
-  if (!sel || !key) return;
-  const st = sel.value;
-  const prev = issueOf(key).status;
-  sel.disabled = true;
-  try {
-    if (st === 'done') {
-      if (!confirm('완료할까요? 지금 내용을 저장하고 화면 · page.json · Figma용 파일을 함께 보관해요. 완료하면 잠겨요.')) { sel.value = prev; return; }
-      const by = myName();
-      if (!(await saveIssue(key))) return;
-      const final = await finalFiles(key);
-      await saveIssue(key, { status: 'done', done_by: by, done_at: new Date().toISOString(), final });
-    } else {
-      const row = await saveIssue(key, { status: st });
-      if (row && st === 'review') copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || sel);
-    }
-    renderTpl();
-  } catch (e) { sel.value = prev; alert('하지 못했어요 — ' + (e && e.message || e)); }
-  finally { sel.disabled = false; }
-});
+
 tplEl.addEventListener('click', async (ev) => {
   const key = tplKey();
   if (!key) return;
@@ -2480,9 +2504,8 @@ tplEl.addEventListener('click', async (ev) => {
   });
   if (act === 'save') return busy(async () => { const row = await saveIssue(key); if (row) { renderTpl(); copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || btn); } });
   if (act === 'copy') return copyText(issueUrl(issueOf(key).id), btn);
-  if (act === 'close') { if (!confirm('회차에서 나올까요? 회차는 그대로 남고, 편집기는 지금 내용으로 따로 편집해요.')) return; delete ts.issue; save(); renderTpl(); return; }
-  if (act === 'reopen') return busy(async () => { await saveIssue(key, { status: 'draft' }); renderTpl(); });
-  if (btn.dataset.issOpen) return busy(async () => { if (await openIssue(btn.dataset.issOpen)) { tplState(key).listOpen = true; renderTpl(); fillIssueList(key); } });
+  if (act === 'close') { if (ts.dirty && !issueLocked(key) && !confirm('저장하지 않은 수정이 있어요. 저장하지 않고 회차 목록으로 갈까요?')) return; delete ts.issue; ts.dirty = false; ts.newOpen = false; save(); renderTpl(); return; }
+  if (btn.dataset.issOpen) return busy(async () => { if (await openIssue(btn.dataset.issOpen)) { tplState(key).listOpen = false; renderTpl(); } });
   if (btn.dataset.issLink) return copyText(issueUrl(btn.dataset.issLink), btn);
   if (btn.dataset.issFrom) { ts.newOpen = true; ts.listOpen = false; ts.newFrom = btn.dataset.issFrom; save(); renderTpl(); tplEl.querySelector('.iss__new')?.scrollIntoView({ block: 'nearest' }); }
 });
@@ -2519,7 +2542,7 @@ document.addEventListener('click', (e) => {
   const zb = e.target.closest('[data-zoom]');
   if (zb) { const z = zb.dataset.zoom; state.zoom = z === 'fit' ? 'fit' : Number(z); syncZoom(); save(); return; }
   const m = e.target.closest('[data-mode]');
-  if (m) { state.mode = m.dataset.mode; applyAll(); return; }
+  if (m) { state.mode = m.dataset.mode; tplToHome(); applyAll(); return; }
   const oe = e.target.closest('[data-open-editor]');
   if (oe) { heroState().variant = oe.dataset.openEditor; state.mode = 'hero'; applyAll(); window.scrollTo(0, 0); return; }
   const vw = e.target.closest('[data-view]');
@@ -2595,6 +2618,8 @@ else if (secByKey[h]) state.cat = h;
 else if (byId[h]) { state.cat = byId[h].section; state.mode = 'library'; jumpTo = h; }
 if (!isOpen(state.cat)) state.open.push(state.cat);
 // #share-<템플릿>=… 공유 링크 — 받은 내용으로 편집기를 열어요 (압축 풀기가 비동기라 그 뒤에 그려요)
+// 월간휴넷 · 월간X 탭은 들어올 때마다 처음 화면(회차 목록 + 최근 회차 미리보기)부터 — 회차 링크(#i-)로 왔을 때만 바로 편집
+if (!/^i-[0-9a-f-]{36}$/.test(h)) tplToHome();
 if (/^i-[0-9a-f-]{36}$/.test(h)) openIssue(h.slice(2)).then(() => applyAll());
 else if (/^d-[0-9a-f-]{36}$/.test(h)) openDraft(h.slice(2)).then(() => applyAll());
 else if (h.startsWith('share-')) openShare(h).then((ok) => { applyAll(); if (ok) setTimeout(() => alert('공유 받은 시안을 열었어요. 이 브라우저에서 편집하던 내용은 따로 보관해 뒀어요.'), 300); });

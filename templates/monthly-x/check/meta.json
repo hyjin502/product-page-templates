@@ -19,8 +19,7 @@
       "optional": true,
       "default": "#f7f7f8",
       "extract": false,
-      "label": "배경색",
-      "note": "기본은 Figma 회색 bg-page #F7F7F8"
+      "label": "배경색"
     },
     "title": {
       "type": "richtext",

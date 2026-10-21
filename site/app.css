@@ -947,3 +947,35 @@ body.is-dev .flink__label::after { content: none; }
    코드(page.json · 슬롯 표 · 개발자 서랍의 pre/code)만 고정폭 글꼴로 남겨요 */
 :root { --font-ui: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', system-ui, sans-serif; --font-code: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; --font-mono: var(--font-ui); }
 pre, code, kbd, samp { font-family: var(--font-code); }
+
+/* 페이지 템플릿 처음 화면 — 회차 목록만 (2026-10-21) */
+.iss-home { display: flex; flex-direction: column; gap: 12px; }
+.iss-home__bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--pane-line); }
+.iss-home__bar b { font-size: 16px; }
+.iss-home .iss__lhead { display: none; }
+.iss-home__list { margin: 0; padding: 0; border: 0; }
+.iss-home__list li { padding: 10px 8px; border-bottom: 1px solid var(--pane-line); border-radius: 0; }
+.iss-home__list li:hover { border-radius: 8px; }
+.iss-home__list .iss__item { font-size: 14px; }
+.iss-home .iss__new { padding: 12px; border: 1px solid var(--pane-line); border-radius: 8px; background: var(--pane-bg); }
+.tpl-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: calc(100vh - var(--top-h, 44px) - 64px); color: var(--ink-3); font-size: 13px; text-align: center; }
+.tpl-empty b { color: var(--ink-2); font-size: 16px; }
+.tpl-latest { flex: 1; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--ink-3); }
+.tpl-latest b { color: var(--ink); margin-right: 4px; }
+.tpl-latest .iss__lnk { margin-left: 6px; }
+/* 칸이 하나뿐인 목록 항목(예: 추천 대상 체크의 「문구」)은 칸 이름을 빼요 — 「항목 N」 머리로 충분해요 (2026-10-21 사용자 요청) */
+.hed-item--single > .hed-sub > .hed-sub__label { display: none; }
+/* 회차 정보 칸 — 작게 · 칸 폭 안에서 (2026-10-21 깨짐 수정: 패널 입력칸 규칙이 40px · 14px 로 키워 날짜 칸이 넘쳤어요) */
+.iss__grid > label { min-width: 0; }
+.compose__side .iss__grid input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]) {
+  width: 100%; min-width: 0; min-height: 34px; padding: 5px 10px; font-size: 13px; line-height: 1.4;
+}
+.iss__grid label { gap: 4px; font-size: 12px; }
+.iss__fold { width: 18px; font-size: 13px; }
+/* 페이지 템플릿 편집기 — 위쪽(제목 · 회차) ↔ 아래(섹션 편집) 단락 나누기 (2026-10-21 사용자 요청) */
+.tpl-head { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid var(--pane-line); }
+.tpl-head .iss { margin: 0; }
+.tpl-edit-head { display: flex; align-items: center; gap: 6px; padding-top: 4px; }
+.tpl-edit-head b { font-size: 16px; font-weight: 700; }
+.tpl-edit-head span { margin-right: auto; color: var(--ink-3); font-size: 12px; }
+.compose__side .tpl-edit-head .btn-ui { min-height: 32px; padding: 0 12px; font-size: 12px; }
