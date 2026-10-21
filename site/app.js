@@ -10,6 +10,9 @@ const DEVICE_LABEL = { pc: 'PC', tb: 'TB', mo: 'MO' };
 const OPEN_MARK = '<svg class="flink__mark" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const assetBase = new URL('./', document.baseURI).href;
 const vname = (v) => v.id.slice(v.section.length + 1) || v.layout; // grid-default 처럼 섹션 안에서 구분되는 이름
+/** 화면에 보일 이름 — 한글 이름(meta label · sections.json name)이 있으면 그걸로, 없으면 코드 (2026-10-21 · 라이브러리 목록 · 조합기 공통) */
+const vlabel = (v) => v.label || vname(v);
+const slabel = (s) => (s && s.name) || (s && s.key) || '';
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* ---------------------------------------------------------------- state */
@@ -66,7 +69,7 @@ function vThumb(v) {
 }
 /** 행 안의 종류 고르기 — 히어로 편집기 스타일처럼 3열 썸네일 */
 function rowVariants(r, sec) {
-  return `<div class="rows__variants" role="group" aria-label="${esc(sec.key)} 종류">${sec.variants.map((id) => { const x = byId[id]; return `<button type="button" class="hed-style rows__variant" data-pick-variant="${id}" aria-pressed="${String(id === r.variant)}" title="${esc(x.when || '')}">${vThumb(x)}<span class="hed-style__name">${esc(vname(x))}</span></button>`; }).join('')}</div>`;
+  return `<div class="rows__variants" role="group" aria-label="${esc(slabel(sec))} 종류">${sec.variants.map((id) => { const x = byId[id]; return `<button type="button" class="hed-style rows__variant" data-pick-variant="${id}" aria-pressed="${String(id === r.variant)}" title="${esc(x.when || '')}">${vThumb(x)}<span class="hed-style__name">${esc(vlabel(x))}</span></button>`; }).join('')}</div>`;
 }
 const vtObserver = new ResizeObserver((entries) => {
   for (const en of entries) { const w = en.contentRect.width; if (w) en.target.style.setProperty('--vt-s', String(w / 1280)); }
@@ -398,15 +401,15 @@ function renderCompose() {
   <ol class="rows">${c.rows.map((r, i) => {
     const v = byId[r.variant];
     const sec = secByKey[v.section];
-    return `<li data-row="${i}"${r.folded ? ' class="is-folded"' : ''}><div class="rows__main"><span class="rows__sec" data-drag-handle data-fold title="눌러서 접기·펴기 · 끌어서 순서 바꾸기"><span class="rows__grip" aria-hidden="true"></span>${v.section}<span class="rows__cur">${esc(vname(v))}</span></span>
+    return `<li data-row="${i}"${r.folded ? ' class="is-folded"' : ''}><div class="rows__main"><span class="rows__sec" data-drag-handle data-fold title="눌러서 접기·펴기 · 끌어서 순서 바꾸기"><span class="rows__grip" aria-hidden="true"></span>${esc(slabel(sec))}<span class="rows__cur">${esc(vlabel(v))}</span></span>
       <div class="rows__body">${r.folded ? '' : rowVariants(r, sec)}
       ${Object.entries(v.options).map(([k, o]) => `<label class="rows__opt"><input type="checkbox" data-row-opt="${k}"${(r.options || []).includes(k) ? ' checked' : ''}> ${esc(o.label || k)}</label>`).join('')}
       ${v.pager ? `<div class="rows__pg">${pagerControls(v, rowPager(r))}</div>` : ''}
       ${v.editor ? rowSrcControls(r) : rowThemeControls(r)}</div></div>
       <div class="rows__btns"><button type="button" class="icon-btn" data-fold aria-label="${r.folded ? '펴기' : '접기'}" aria-expanded="${String(!r.folded)}">${r.folded ? '▸' : '▾'}</button><button type="button" class="icon-btn" data-move="-1" aria-label="위로"${i === 0 ? ' disabled' : ''}>↑</button><button type="button" class="icon-btn" data-move="1" aria-label="아래로"${i === c.rows.length - 1 ? ' disabled' : ''}>↓</button><button type="button" class="icon-btn" data-remove aria-label="빼기">✕</button></div></li>`;
   }).join('')}</ol>
-  <div class="add"><select data-add aria-label="추가할 섹션">${avail.map((s) => `<option value="${s.variants[0]}">${s.key} — ${esc(s.role)}</option>`).join('')}</select><button type="button" class="btn-ui" data-add-btn>추가</button></div>
-  ${soon.length ? `<p>코드 준비 중: ${soon.join(', ')}</p>` : ''}
+  <div class="add"><select data-add aria-label="추가할 섹션">${avail.map((s) => `<option value="${s.variants[0]}">${esc(slabel(s))} — ${esc(s.role)}</option>`).join('')}</select><button type="button" class="btn-ui" data-add-btn>추가</button></div>
+  ${soon.length ? `<p>코드 준비 중: ${soon.map((k) => esc(slabel(secByKey[k]))).join(', ')}</p>` : ''}
   </div>
   <div class="compose__foot">
   <div class="compose__actions">

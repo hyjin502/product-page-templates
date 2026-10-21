@@ -999,3 +999,5 @@ pre, code, kbd, samp { font-family: var(--font-code); }
 .side__name { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow-wrap: normal; }
 .side__meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
 .side__meta .side__code { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 조합기 — 한글 이름이라 고정폭 글꼴 대신 본문 글꼴 (2026-10-21) */
+.rows__sec, .rows__variant .hed-style__name { font-family: var(--font-ui); letter-spacing: -0.3px; }
