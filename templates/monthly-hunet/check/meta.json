@@ -60,7 +60,6 @@
     "icon": {
       "type": "enum",
       "values": [
-        "default",
         "check-circle-solid",
         "check-circle-line",
         "check-solid",
@@ -73,7 +72,6 @@
         "check-verified-02-line"
       ],
       "labels": {
-        "default": "시안",
         "check-circle-solid": "check-circle (solid)",
         "check-circle-line": "check-circle (line)",
         "check-solid": "check (solid)",
@@ -85,12 +83,11 @@
         "check-verified-02-solid": "check-verified-02 (solid)",
         "check-verified-02-line": "check-verified-02 (line)"
       },
-      "default": "default",
+      "default": "check-circle-solid",
       "iconPrefix": "hds-",
-      "iconDefault": "problem-check-circle",
       "extract": false,
       "label": "아이콘",
-      "note": "🖤 HDS check 아이콘 · 「시안」은 Figma 원래 아이콘"
+      "note": "🖤 HDS check 아이콘"
     },
     "iconColor": {
       "type": "color",
