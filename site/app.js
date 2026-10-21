@@ -1024,7 +1024,7 @@ function colorField(k, s, cur) {
     const base = s.optional && s.default == null;
     if (!cur && s.default != null) cur = s.default; // 비어 있으면 기본값이 보이는 색이에요 (예전 편집 값 포함)
     const c = cpHex(cur);
-    const now = c ? `<code>#${c.hex.toUpperCase()}${c.a < 100 ? ` · ${c.a}%` : ''}</code>` : base ? '기본 (시안 그대로)' : '';
+    const now = c ? `<code>#${c.hex.toUpperCase()}${c.a < 100 ? ` · ${c.a}%` : ''}</code>` : '';
     // 「기본」 — 기본값이 없으면 비우기(시안 그대로), 있으면 그 색으로 (예: 추천 대상 #F7F7F8)
     const defC = s.default != null ? cpHex(s.default) : null;
     const chip = base ? `<button type="button" class="chip" data-f="${k}" data-val="" aria-pressed="${String(!c)}">기본</button>`
@@ -1034,12 +1034,12 @@ function colorField(k, s, cur) {
   const list = paletteList(s.palette);
   const c = s.palette ? list.find((x) => x.key === cur) : HDS_COLOR[cur];
   const base = s.optional && s.default == null; // 기본값이 없으면 「기본」 = 시안 그대로
-  const now = c ? `<code>${esc(c.token)}</code> ${esc(c.label)}` : cur && cur === s.noneValue ? '없음' : base ? '기본 (시안 그대로)' : '';
+  const now = c ? `<code>${esc(c.token)}</code> ${esc(c.label)}` : cur && cur === s.noneValue ? '없음' : '';
   return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label">${now}</span>${swatches({ 'data-f': k }, cur, s.label, s.palette, { base, noneValue: s.noneValue })}</div>`;
 }
 function radiusField(k, s, cur) {
   const r = HDS_RADIUS[cur];
-  return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label">${r ? `<code>${esc(r.token)}</code>` : '기본 (시안 그대로)'}</span>${radiusChips({ 'data-f': k }, cur, s.label, s.optional && s.default == null)}</div>`;
+  return `<div class="hed-f">${fieldHead(s, s.note)}${r ? `<span class="hed-sub__label"><code>${esc(r.token)}</code></span>` : ''}${radiusChips({ 'data-f': k }, cur, s.label, s.optional && s.default == null)}</div>`;
 }
 function radiusChips(path, cur, label, base) {
   return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${base ? `<button type="button" class="chip" ${attrs({ ...path, 'data-val': '', 'aria-pressed': String(!cur) })}>기본</button>` : ''}${REG.hds.radius.map((r) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': r.key, title: r.token, 'aria-pressed': String(r.key === cur) })}><span class="hed-rad__ico" style="border-top-left-radius:${Math.min(r.px, 10)}px"></span>${r.key} <span class="hed-rad__px">${r.px === 900 ? '' : r.px}</span></button>`).join('')}</div>`;
@@ -1744,7 +1744,7 @@ function tplBlock(t, r) {
   return `<section class="tpl-sec${open ? ' is-open' : ''}${on ? '' : ' is-off'}" data-vid="${id}" data-row="${esc(key)}">
   <div class="tpl-sec__bar">
     <label class="tpl-sec__on" title="${on ? '페이지에서 빼기' : '페이지에 넣기'}"><input type="checkbox" data-tpl-on="${esc(key)}"${on ? ' checked' : ''} aria-label="${esc(r.label || v.label || v.layout)} 넣기"></label>
-    <button type="button" class="tpl-sec__head" data-tpl-toggle="${id}" aria-expanded="${open}"${on ? '' : ' disabled'}><span class="tpl-sec__caret" aria-hidden="true">${open ? '▾' : '▸'}</span><span class="tpl-sec__name">${esc(r.label || v.label || v.layout)}</span><span class="tpl-sec__layout">${on ? esc(v.layout) : '빠짐'}</span></button>
+    <button type="button" class="tpl-sec__head" data-tpl-toggle="${id}" aria-expanded="${open}"${on ? '' : ' disabled'}><span class="tpl-sec__caret" aria-hidden="true">${open ? '▾' : '▸'}</span><span class="tpl-sec__name">${esc(r.label || v.label || v.layout)}</span>${on ? '' : '<span class="tpl-sec__layout">빠짐</span>'}</button>
     ${rowMoveBtns(t, r)}
   </div>
   ${r.ids.length > 1 && on ? `<div class="tpl-sec__pick" role="group" aria-label="${esc(r.label || '')} 고르기">${r.ids.map((x) => `<button type="button" class="chip" data-tpl-pick="${esc(key)}" data-id="${x}" aria-pressed="${String(x === id)}">${esc(byId[x].label || byId[x].layout)}</button>`).join('')}</div>` : ''}
@@ -1771,7 +1771,6 @@ function tplExtraBlock(t, r) {
       ${formOf(v, o)}
     </div>`; }).join('')}
     ${ids.length < max ? r.extra.map((x) => `<button type="button" class="hed-add" data-tpl-add="${esc(key)}" data-variant="${x}">+ ${esc(byId[x].label || byId[x].layout)} 추가</button>`).join('') : `<p class="compose__hint">최대 ${max}개까지 넣을 수 있어요</p>`}
-    ${ids.length ? '' : '<p class="compose__hint">비워 두면 페이지에 아무것도 들어가지 않아요</p>'}
   </div>` : ''}
 </section>`;
 }

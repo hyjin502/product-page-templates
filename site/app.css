@@ -1001,3 +1001,5 @@ pre, code, kbd, samp { font-family: var(--font-code); }
 .side__meta .side__code { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* 조합기 — 한글 이름이라 고정폭 글꼴 대신 본문 글꼴 (2026-10-21) */
 .rows__sec, .rows__variant .hed-style__name { font-family: var(--font-ui); letter-spacing: -0.3px; }
+/* 히어로 편집기 — 칸 이름 옆 설명(최대 줄 · 글자 수 안내 등)과 작은 칸 설명은 숨겨요 (2026-10-21 사용자 요청). 「선택」 표시 · 글자 수 세기는 그대로 */
+#hero-editor .hed-f__note, #hero-editor .hed-f__label .hed-f__opt, #hero-editor .hed-sub__label .hed-f__opt, #hero-editor .hed-bgfx .hed-f__opt, #hero-editor .hed-focus .hed-f__opt { display: none; }

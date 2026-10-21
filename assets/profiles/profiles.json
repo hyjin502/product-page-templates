@@ -1,83 +1,77 @@
 {
- "$comment": "자주 쓰는 프로필 사진(정사각) — Figma 「상품페이지 템플릿 시스템」 dxhWkGXnev5U2Q1nLISR3h · 「월간휴넷 템플릿」 페이지의 Profile 637:4284 의 「비율=정사각」. 편집기에서 슬롯 spec 에 profiles: true 인 사진 칸(히어로 연사 · 아젠다 사진)에 고르기로 나와요. 새 사람은 이 목록에 한 줄 + 300×300 jpg.",
- "profiles": [
-  {
-   "key": "p01",
-   "name": "조영탁 사장",
-   "src": "assets/profiles/p01.jpg",
-   "figma": "637:4287"
-  },
-  {
-   "key": "p02",
-   "name": "임선예 팀장",
-   "src": "assets/profiles/p02.jpg",
-   "figma": "637:4291"
-  },
-  {
-   "key": "p03",
-   "name": "홍정민 소장",
-   "src": "assets/profiles/p03.jpg",
-   "figma": "637:4295"
-  },
-  {
-   "key": "p04",
-   "name": "변재명 팀장",
-   "src": "assets/profiles/p04.jpg",
-   "figma": "637:4299"
-  },
-  {
-   "key": "p05",
-   "name": "김두희 책임",
-   "src": "assets/profiles/p05.jpg",
-   "figma": "637:4301"
-  },
-  {
-   "key": "p06",
-   "name": "김현수",
-   "src": "assets/profiles/p06.jpg",
-   "figma": "637:4303"
-  },
-  {
-   "key": "p07",
-   "name": "신혜림",
-   "src": "assets/profiles/p07.jpg",
-   "figma": "637:4305"
-  },
-  {
-   "key": "p08",
-   "name": "유형석",
-   "src": "assets/profiles/p08.jpg",
-   "figma": "637:4307"
-  },
-  {
-   "key": "p09",
-   "name": "김예원",
-   "src": "assets/profiles/p09.jpg",
-   "figma": "637:4309"
-  },
-  {
-   "key": "p10",
-   "name": "이재길",
-   "src": "assets/profiles/p10.jpg",
-   "figma": "637:4311"
-  },
-  {
-   "key": "p11",
-   "name": "김승곤",
-   "src": "assets/profiles/p11.jpg",
-   "figma": "637:4313"
-  },
-  {
-   "key": "p12",
-   "name": "손송민",
-   "src": "assets/profiles/p12.jpg",
-   "figma": "637:4315"
-  },
-  {
-   "key": "p13",
-   "name": "심현정",
-   "src": "assets/profiles/p13.jpg",
-   "figma": "637:4317"
-  }
- ]
+  "$comment": "자주 쓰는 프로필 사진(정사각) — Figma 「상품페이지 템플릿 시스템」 dxhWkGXnev5U2Q1nLISR3h · 「월간휴넷 템플릿」 페이지의 Profile 637:4284 의 「비율=정사각」. 편집기에서 슬롯 spec 에 profiles: true 인 사진 칸(히어로 연사 · 아젠다 사진)에 고르기로 나와요. 새 사람은 이 목록에 한 줄 + 300×300 jpg.",
+  "profiles": [
+    {
+      "key": "p01",
+      "name": "조영탁 사장",
+      "src": "assets/profiles/p01.jpg",
+      "figma": "637:4287"
+    },
+    {
+      "key": "p02",
+      "name": "임선예 팀장",
+      "src": "assets/profiles/p02.jpg",
+      "figma": "637:4291"
+    },
+    {
+      "key": "p03",
+      "name": "홍정민 소장",
+      "src": "assets/profiles/p03.jpg",
+      "figma": "637:4295"
+    },
+    {
+      "key": "p04",
+      "name": "변재명 팀장",
+      "src": "assets/profiles/p04.jpg",
+      "figma": "637:4299"
+    },
+    {
+      "key": "p05",
+      "name": "김두희 책임",
+      "src": "assets/profiles/p05.jpg",
+      "figma": "637:4301"
+    },
+    {
+      "key": "p06",
+      "name": "김현수",
+      "src": "assets/profiles/p06.jpg",
+      "figma": "637:4303"
+    },
+    {
+      "key": "p07",
+      "name": "신혜림",
+      "src": "assets/profiles/p07.jpg",
+      "figma": "637:4305"
+    },
+    {
+      "key": "p08",
+      "name": "유형석",
+      "src": "assets/profiles/p08.jpg",
+      "figma": "637:4307"
+    },
+    {
+      "key": "p09",
+      "name": "김예원",
+      "src": "assets/profiles/p09.jpg",
+      "figma": "637:4309"
+    },
+    {
+      "key": "p10",
+      "name": "이재길",
+      "src": "assets/profiles/p10.jpg",
+      "figma": "637:4311"
+    },
+    {
+      "key": "p11",
+      "name": "김승곤",
+      "src": "assets/profiles/p11.jpg",
+      "figma": "637:4313"
+    },
+    {
+      "key": "p13",
+      "name": "심현정",
+      "src": "assets/profiles/p13.jpg",
+      "figma": "637:4317"
+    }
+  ]
 }
