@@ -45,7 +45,7 @@ function applyComposeTheme() {
   composeEl.querySelectorAll('[data-compose-theme]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.composeTheme === t)));
   try { const d = composeEl.querySelector('.compose__stage iframe').contentDocument; d.documentElement.setAttribute('data-theme', t); } catch (e) {}
 }
-const zoomBar = () => `<div class="zoom" role="group" aria-label="미리보기 배율"><span class="zoom__label">보기</span>${ZOOMS.map(([z, l]) => `<button type="button" class="chip" data-zoom="${z}" aria-pressed="${String(z === (state.zoom || 'fit'))}">${l}</button>`).join('')}</div>`;
+const zoomBar = () => `<div class="zoom" role="group" aria-label="미리보기 배율">${ZOOMS.map(([z, l]) => `<button type="button" class="chip" data-zoom="${z}" aria-pressed="${String(z === (state.zoom || 'fit'))}">${l}</button>`).join('')}</div>`;
 const clampPanel = (w) => Math.round(Math.max(PANEL_W.min, Math.min(w, window.innerWidth - PANEL_W.previewMin)));
 function syncPanel() {
   const w = clampPanel(state.panelW || PANEL_W.def);
@@ -2393,9 +2393,7 @@ function issueBar(key) {
   const head = `<div class="iss__row">${fold}<b>${esc(ymLabel(iss.period))}</b><span class="iss__title">${esc(iss.title || '(이름 없음)')}</span>`;
   if (ts.issFold) return `<div class="iss is-folded">${head}</div></div>`;
   return `<div class="iss">
-  ${head}</div>
-  <div class="iss__row"><span class="iss__muted">${esc(whenLabel(iss.updated_at))} 저장 · ${esc(iss.updated_by || '')}</span>
-    <span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('close', '← 회차 목록')}</span></div>
+  ${head}<span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('close', '← 회차 목록')}</span></div>
   ${ts.infoOpen ? `<div class="iss__grid">
     <label>연월<input type="month" data-iss-f="period" value="${esc(iss.period || '')}"></label>
     <label>회차 이름<input type="text" data-iss-f="title" value="${esc(iss.title || '')}"></label>
@@ -2607,7 +2605,7 @@ function applyAll() {
 }
 
 // 페이지 템플릿 탭 — 히어로 편집기 다음에 템플릿마다 하나씩
-document.querySelector('.seg--mode').insertAdjacentHTML('beforeend', TEMPLATES.map((t) => `<button type="button" role="tab" data-mode="tpl:${esc(t.key)}" aria-selected="false">${esc(t.title)}</button>`).join(''));
+document.querySelector('.seg--pages').insertAdjacentHTML('beforeend', TEMPLATES.map((t) => `<button type="button" role="tab" data-mode="tpl:${esc(t.key)}" aria-selected="false">${esc(t.title)}</button>`).join(''));
 
 // #hero 또는 #hero-media-badge 로 바로 열기, #hero-editor 는 히어로 편집기
 const h = decodeURIComponent(location.hash.slice(1));

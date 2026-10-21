@@ -979,3 +979,7 @@ pre, code, kbd, samp { font-family: var(--font-code); }
 .tpl-edit-head b { font-size: 16px; font-weight: 700; }
 .tpl-edit-head span { margin-right: auto; color: var(--ink-3); font-size: 12px; }
 .compose__side .tpl-edit-head .btn-ui { min-height: 32px; padding: 0 12px; font-size: 12px; }
+/* 위쪽 화면 탭 — 섹션 템플릿(라이브러리 · 조합기 · 히어로 편집기) | 페이지 템플릿(월간휴넷 · 월간X) 두 묶음 (2026-10-21 사용자 요청) */
+.modes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-right: auto; }
+.modes .seg--mode { margin-right: 0; }
+.modes .seg__label { font-size: 11px; font-weight: 600; }
