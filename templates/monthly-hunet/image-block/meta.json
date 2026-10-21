@@ -118,7 +118,8 @@
             "plus": "+ plus"
           },
           "default": "none",
-          "label": "오른쪽 아이콘"
+          "label": "오른쪽 아이콘",
+          "iconPrefix": "hds-"
         }
       }
     },

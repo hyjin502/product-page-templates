@@ -401,7 +401,7 @@ function renderCompose() {
   <ol class="rows">${c.rows.map((r, i) => {
     const v = byId[r.variant];
     const sec = secByKey[v.section];
-    return `<li data-row="${i}"${r.folded ? ' class="is-folded"' : ''}><div class="rows__main"><span class="rows__sec" data-drag-handle data-fold title="눌러서 접기·펴기 · 끌어서 순서 바꾸기"><span class="rows__grip" aria-hidden="true"></span>${esc(slabel(sec))}<span class="rows__cur">${esc(vlabel(v))}</span></span>
+    return `<li data-row="${i}"${r.folded ? ' class="is-folded"' : ''}><div class="rows__main"><span class="rows__sec" data-drag-handle data-fold title="눌러서 접기·펴기 · 끌어서 순서 바꾸기"><span class="rows__grip" aria-hidden="true"></span>${esc(slabel(sec))}</span>
       <div class="rows__body">${r.folded ? '' : rowVariants(r, sec)}
       ${Object.entries(v.options).map(([k, o]) => `<label class="rows__opt"><input type="checkbox" data-row-opt="${k}"${(r.options || []).includes(k) ? ' checked' : ''}> ${esc(o.label || k)}</label>`).join('')}
       ${v.pager ? `<div class="rows__pg">${pagerControls(v, rowPager(r))}</div>` : ''}
