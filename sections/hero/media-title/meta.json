@@ -2,6 +2,7 @@
   "id": "hero-media-title",
   "section": "hero",
   "layout": "media-title",
+  "label": "배경 + 큰 제목",
   "order": 2,
   "when": "배경 사진·영상 위에 큰 메시지 한 줄 — 버튼 없이 분위기로 보여줄 때",
   "figma": {

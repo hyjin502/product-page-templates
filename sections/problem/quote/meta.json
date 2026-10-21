@@ -2,6 +2,7 @@
   "id": "problem-quote",
   "section": "problem",
   "layout": "quote",
+  "label": "후기 카드",
   "order": 2,
   "when": "담당자의 실제 목소리를 아바타·후기 카드로 보여줄 때",
   "figma": {

@@ -2,6 +2,7 @@
   "id": "benefit-detail-slide",
   "section": "benefit",
   "layout": "detail-slide",
+  "label": "상세 슬라이드",
   "order": 5,
   "when": "기능·혜택 여러 개를 번호 · 큰 타이틀 · 설명 · 이미지 한 장씩 넘겨 보여줄 때 (슬라이드)",
   "figma": {

@@ -2,6 +2,7 @@
   "id": "compare-vs-spec",
   "section": "compare",
   "layout": "vs-spec",
+  "label": "항목별 비교표",
   "order": 2,
   "when": "항목(행)별로 기존 방식 vs 우리를 표로 대비할 때 (우리 열 강조)",
   "figma": {

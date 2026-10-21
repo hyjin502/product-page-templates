@@ -2,6 +2,7 @@
   "id": "pricing-single-item",
   "section": "pricing",
   "layout": "single-item",
+  "label": "단일 상품 카드",
   "order": 1,
   "when": "상품 하나의 가격·할부·구성 조건을 카드 한 장으로 보여줄 때",
   "figma": {

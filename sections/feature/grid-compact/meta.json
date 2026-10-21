@@ -3,6 +3,7 @@
   "section": "feature",
   "layout": "grid",
   "style": "compact",
+  "label": "세로 표지",
   "order": 5,
   "when": "리포트·책 표지처럼 세로형 이미지만 나열할 때",
   "figma": {

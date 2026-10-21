@@ -3,6 +3,7 @@
   "section": "feature",
   "layout": "grid",
   "style": "article",
+  "label": "아티클 카드",
   "order": 3,
   "when": "카테고리·요약·더보기 버튼이 있는 아티클 카드를 보여줄 때",
   "figma": {

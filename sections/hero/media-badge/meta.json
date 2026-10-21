@@ -2,6 +2,7 @@
   "id": "hero-media-badge",
   "section": "hero",
   "layout": "media-badge",
+  "label": "배경 + 뱃지",
   "order": 1,
   "when": "배경 이미지·영상 위에 뱃지와 큰 메시지 — 브랜드/프로모션 첫 화면",
   "figma": {

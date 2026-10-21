@@ -2,6 +2,7 @@
   "id": "awards-stats",
   "section": "awards",
   "layout": "stats",
+  "label": "수상 목록 2열",
   "order": 1,
   "when": "수상·인증 내역이 많을 때 — 엠블럼과 설명을 가로 카드 2열로 보여줘요",
   "figma": {

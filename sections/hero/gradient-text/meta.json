@@ -2,6 +2,7 @@
   "id": "hero-gradient-text",
   "section": "hero",
   "layout": "gradient-text",
+  "label": "그라디언트 글자",
   "order": 5,
   "when": "어두운 바탕에 빨간 테두리 뱃지, 줄마다 그라디언트 타이틀 — 강한 프로모션",
   "figma": {

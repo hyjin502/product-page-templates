@@ -2,6 +2,7 @@
   "id": "pricing-receipt",
   "section": "pricing",
   "layout": "receipt",
+  "label": "영수증형",
   "order": 3,
   "when": "도입 비용을 영수증처럼 항목별로 합산하고 실제 부담금을 강조할 때",
   "figma": {

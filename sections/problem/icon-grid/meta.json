@@ -2,6 +2,7 @@
   "id": "problem-icon-grid",
   "section": "problem",
   "layout": "icon-grid",
+  "label": "아이콘 2열",
   "order": 4,
   "when": "콘텐츠·서비스 종류를 짧은 설명과 아이콘으로 2열 그리드에 정리할 때",
   "figma": {

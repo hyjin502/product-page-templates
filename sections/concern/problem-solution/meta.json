@@ -2,6 +2,7 @@
   "id": "concern-problem-solution",
   "section": "concern",
   "layout": "problem-solution",
+  "label": "문제 → 해결",
   "order": 3,
   "when": "문제(Problem)와 해결(Solution)을 한 줄씩 1:1로 짝지어 보여줄 때",
   "figma": {

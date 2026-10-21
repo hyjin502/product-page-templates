@@ -2,6 +2,7 @@
   "id": "pricing-plan-comparison",
   "section": "pricing",
   "layout": "plan-comparison",
+  "label": "요금제 비교표",
   "order": 2,
   "when": "여러 요금제(플랜)의 가격과 제공 항목을 표로 비교할 때",
   "figma": {

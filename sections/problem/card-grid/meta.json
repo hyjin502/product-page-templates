@@ -2,6 +2,7 @@
   "id": "problem-card-grid",
   "section": "problem",
   "layout": "card-grid",
+  "label": "아이콘 카드",
   "order": 1,
   "when": "조직이 겪는 문제를 같은 무게의 아이콘 카드로 나란히 보여줄 때",
   "figma": {

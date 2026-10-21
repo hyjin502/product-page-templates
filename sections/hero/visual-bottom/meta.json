@@ -2,6 +2,7 @@
   "id": "hero-visual-bottom",
   "section": "hero",
   "layout": "visual-bottom",
+  "label": "아래 큰 비주얼",
   "order": 6,
   "when": "큰 브랜드명 아래 넓은 비주얼(이미지·영상) — 제품 UI·영상·큰 비주얼을 강조할 때",
   "figma": {

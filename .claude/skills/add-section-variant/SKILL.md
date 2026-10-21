@@ -23,6 +23,7 @@ sections/<section>/<layout>/
 2. **디자인 읽기**: `figma:figma-design-to-code` 스킬을 로드하고, PC·MO 노드 각각 `get_design_context` + `get_screenshot` 을 가져온다.
 3. **meta.json**
    - `id` = `${section}-${layout}[-${style}]`, `order` = 피그마에서 위→아래 순서
+   - `label` = 라이브러리 목록에 보일 **짧은 한글 이름**(예: 「배경 + 뱃지」 · 「썸네일 3열」 — `when` 설명을 줄여서). 새 섹션이면 `sections/sections.json` 에 `name`(한글 섹션 이름)도 넣는다. 없으면 목록에 영어 코드가 보여요.
    - `figma: { pc, mo, tb: null }`, `body` = PC Body 프레임 폭 (740/860/980/1200)
    - `slots`: 사람이 바꾸는 값만 넣는다. 텍스트 레이어 → `text`(한 줄) / `richtext`(줄바꿈 있음). 반복 카드·버튼 → `list` + `item` 스키마 + `max`. 이미지 → `image`.
    - **MO 전용 대체 배치**(`layout=card-compact`, `style=default-compact` 처럼 MO에만 있는 variant)와 **mode=dark/light** 는 별도 variant가 아니라 `options` 로 넣는다:

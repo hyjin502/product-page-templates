@@ -2,6 +2,7 @@
   "id": "hero-media-left-bottom",
   "section": "hero",
   "layout": "media-left-bottom",
+  "label": "배경 + 왼쪽 아래",
   "order": 11,
   "when": "배경 위 아래쪽 왼쪽에 메시지 + 테두리 버튼 — 배경 비주얼을 크게 보여줄 때",
   "figma": {

@@ -2,6 +2,7 @@
   "id": "compare-vs-simple",
   "section": "compare",
   "layout": "vs-simple",
+  "label": "간단 대비 카드",
   "order": 1,
   "when": "타사 vs 우리를 항목 몇 개로 간단히 대비할 때 (우리 쪽 카드 강조)",
   "figma": {

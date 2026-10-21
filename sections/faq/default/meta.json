@@ -2,6 +2,7 @@
   "id": "faq-default",
   "section": "faq",
   "layout": "default",
+  "label": "펼침 목록",
   "order": 1,
   "when": "자주 묻는 질문을 펼침/접힘 목록으로 보여주고, 아래에 유의사항을 붙일 때",
   "figma": {

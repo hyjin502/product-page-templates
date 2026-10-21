@@ -2,6 +2,7 @@
   "id": "problem-step-split",
   "section": "problem",
   "layout": "step-split",
+  "label": "번호 단계",
   "order": 8,
   "when": "문제 해결 과정을 번호 단계로 풀어 설명할 때 (PC 는 단계 표시가 따라다녀요)",
   "figma": {

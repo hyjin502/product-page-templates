@@ -2,6 +2,7 @@
   "id": "problem-image-grid",
   "section": "problem",
   "layout": "image-grid",
+  "label": "아바타 한 줄",
   "order": 3,
   "when": "역할별 고민을 아바타와 한 줄 문장으로 가볍게 나열할 때",
   "figma": {

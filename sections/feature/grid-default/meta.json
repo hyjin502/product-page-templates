@@ -3,6 +3,7 @@
   "section": "feature",
   "layout": "grid",
   "style": "default",
+  "label": "썸네일 3열",
   "order": 1,
   "when": "아티클·영상 같은 콘텐츠를 썸네일 카드 3열(MO 2열)로 보여줄 때",
   "figma": {

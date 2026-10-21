@@ -2,6 +2,7 @@
   "id": "metrics-default",
   "section": "metrics",
   "layout": "default",
+  "label": "아이콘 + 큰 숫자",
   "order": 1,
   "when": "핵심 성과를 아이콘 + 큰 숫자 3개로 보여줄 때",
   "figma": {

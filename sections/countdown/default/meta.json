@@ -2,6 +2,7 @@
   "id": "countdown-default",
   "section": "countdown",
   "layout": "default",
+  "label": "기본형",
   "order": 1,
   "when": "프로모션 마감까지 남은 시간을 숫자로 가볍게 보여줄 때",
   "figma": {

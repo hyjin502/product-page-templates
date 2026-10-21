@@ -2,6 +2,7 @@
   "id": "utility-link-grid",
   "section": "utility",
   "layout": "link-grid",
+  "label": "바로가기 링크",
   "order": 1,
   "when": "페이지 끝에서 자료 다운로드·일정·신청 같은 바로가기 링크를 모아 보여줄 때",
   "figma": {
@@ -20,7 +21,9 @@
     "title": {
       "type": "richtext",
       "figmaLayer": "title",
-      "aliases": ["숫자로 보는 휴넷 리더십 교육"],
+      "aliases": [
+        "숫자로 보는 휴넷 리더십 교육"
+      ],
       "label": "섹션 제목"
     },
     "subtitle": {
@@ -40,7 +43,9 @@
         "label": {
           "type": "text",
           "figmaLayer": "성희롱 예방교육",
-          "aliases": ["label"],
+          "aliases": [
+            "label"
+          ],
           "label": "링크 문구"
         },
         "href": {
@@ -49,7 +54,11 @@
         },
         "icon": {
           "type": "enum",
-          "values": ["download", "calendar", "arrow"],
+          "values": [
+            "download",
+            "calendar",
+            "arrow"
+          ],
           "label": "오른쪽 아이콘",
           "note": "Figma 아이콘 인스턴스 이름으로 구분: general/download-02 → download, time/alendar → calendar, arrows/chevron-right → arrow (btn 에 아이콘 속성이 없어 추출기는 sample 값을 써요)"
         }

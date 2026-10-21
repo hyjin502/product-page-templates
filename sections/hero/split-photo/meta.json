@@ -2,6 +2,7 @@
   "id": "hero-split-photo",
   "section": "hero",
   "layout": "split-photo",
+  "label": "좌우 나눔 · 사진",
   "order": 9,
   "when": "왼쪽 큰 메시지 + 버튼, 오른쪽에 꽉 찬 사진 — 사람·현장 분위기를 보여줄 때",
   "figma": {

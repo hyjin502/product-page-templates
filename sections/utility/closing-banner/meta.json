@@ -2,6 +2,7 @@
   "id": "utility-closing-banner",
   "section": "utility",
   "layout": "closing-banner",
+  "label": "마무리 배너",
   "order": 2,
   "when": "페이지 마지막에 한 줄 메시지와 버튼으로 행동을 유도할 때",
   "figma": {

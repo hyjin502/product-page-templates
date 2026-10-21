@@ -983,3 +983,19 @@ pre, code, kbd, samp { font-family: var(--font-code); }
 .modes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-right: auto; }
 .modes .seg--mode { margin-right: 0; }
 .modes .seg__label { font-size: 11px; font-weight: 600; }
+/* 라이브러리 목록 — 한글 이름을 크게, 영어 코드는 작게 (2026-10-21 사용자 요청 · 히어로부터: meta.label · sections.json name) · PC/MO 는 줄바꿈 없는 작은 칩 */
+.side__code { margin-left: 4px; font-size: 11px; font-weight: 400; color: var(--ink-3); }
+.side__sub a.has-label { align-items: center; }
+.side__name { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.side__sub a.has-label .side__code { margin: 1px 0 0; font-size: 10px; }
+.side__sub a.is-current .side__code { color: inherit; opacity: .7; }
+.side__mo, .side__sub .side__mo { flex: none; display: inline-flex; gap: 2px; align-self: center; white-space: nowrap; }
+.side__mo i { padding: 0 4px; border-radius: 4px; background: var(--pane-bg); color: var(--ink-3); font: 600 9px/15px var(--font-ui); font-style: normal; letter-spacing: 0; }
+.side__group.is-open { padding-bottom: 6px; }
+.side__group + .side__group { border-top: 1px solid var(--pane-line); padding-top: 6px; margin-top: 6px; }
+/* 이름 한 줄 · 아래 줄에 코드 + 기기 칩 (좁은 목록에서 꺾이지 않게) */
+.side__sub a { align-items: center; }
+.side__sub a.has-label { flex-direction: column; align-items: stretch; gap: 0; }
+.side__name { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow-wrap: normal; }
+.side__meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.side__meta .side__code { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

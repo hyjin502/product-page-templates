@@ -244,9 +244,12 @@ function renderSide() {
     const cur = s.key === state.cat;
     return `<div class="side__group${open ? ' is-open' : ''}${cur ? ' is-cur' : ''}${s.variants.length ? '' : ' is-empty'}">
   <button type="button" class="side__sec" data-toggle="${s.key}" aria-expanded="${open ? 'true' : 'false'}"${cur ? ' aria-current="true"' : ''}>
-    <span class="side__caret" aria-hidden="true"></span><span class="side__key">${s.key}</span><span class="side__role">${s.variants.length ? s.variants.length : '준비 중'}</span>
+    <span class="side__caret" aria-hidden="true"></span><span class="side__key">${s.name ? esc(s.name) : s.key}</span><span class="side__role">${s.variants.length ? s.variants.length : '준비 중'}</span>
   </button>
-  ${open ? `<ul class="side__sub">${s.variants.map((id) => `<li><a href="#${id}" data-nav="${id}"><span>${vname(byId[id])}</span><span class="side__mo">${['pc', 'tb', 'mo'].filter((d) => byId[id].figma[d]).map((d) => DEVICE_LABEL[d]).join('·')}</span></a></li>`).join('')}</ul>` : ''}
+  ${open ? `<ul class="side__sub">${s.variants.map((id) => `<li>${(() => { const v = byId[id]; const dev = ''; // PC/MO 표시는 사용자 요청으로 뺐어요 (2026-10-21)
+    return v.label
+      ? `<a href="#${id}" data-nav="${id}" title="${vname(v)}"><span class="side__name">${esc(v.label)}</span>${dev}</a>`
+      : `<a href="#${id}" data-nav="${id}"><span class="side__name">${vname(v)}</span>${dev}</a>`; })()}</li>`).join('')}</ul>` : ''}
 </div>`;
   }).join('');
 }

@@ -2,6 +2,7 @@
   "id": "hero-split-stats",
   "section": "hero",
   "layout": "split-stats",
+  "label": "좌우 나눔 · 수치",
   "order": 8,
   "when": "왼쪽 메시지 + 핵심 수치 3개, 오른쪽 정사각 사진 — 성과·신뢰를 숫자로 보여줄 때",
   "figma": {

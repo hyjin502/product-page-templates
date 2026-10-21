@@ -2,6 +2,7 @@
   "id": "concern-persona",
   "section": "concern",
   "layout": "persona",
+  "label": "역할별 인물 카드",
   "order": 1,
   "when": "역할(담당자·팀장·학습자 등)마다 다른 고민을 인물 카드로 나란히 보여줄 때",
   "figma": {

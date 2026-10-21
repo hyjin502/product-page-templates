@@ -2,6 +2,7 @@
   "id": "benefit-step",
   "section": "benefit",
   "layout": "step",
+  "label": "기능 상세",
   "order": 4,
   "when": "핵심 기능 하나를 설명 · 체크 포인트 · 이미지로 자세히 보여줄 때",
   "figma": {
@@ -39,13 +40,23 @@
     "points": {
       "type": "list",
       "figmaLayer": "item",
-      "aliases": ["Frame 2147238916", "Frame 2147238917"],
+      "aliases": [
+        "Frame 2147238916",
+        "Frame 2147238917"
+      ],
       "min": 0,
       "max": 4,
       "label": "체크 포인트",
       "item": {
-        "label": { "type": "text", "figmaLayer": "description", "label": "포인트 문구" },
-        "href": { "type": "url", "label": "링크 (있으면 > 화살표와 함께 링크로)" }
+        "label": {
+          "type": "text",
+          "figmaLayer": "description",
+          "label": "포인트 문구"
+        },
+        "href": {
+          "type": "url",
+          "label": "링크 (있으면 > 화살표와 함께 링크로)"
+        }
       }
     },
     "ctas": {
@@ -55,15 +66,29 @@
       "max": 1,
       "label": "버튼 (Figma 기본값은 숨김)",
       "item": {
-        "label": { "type": "text", "figmaProp": "text-name" },
-        "href": { "type": "url" },
-        "style": { "type": "enum", "values": ["neutral", "subtle"], "figmaProp": "type" }
+        "label": {
+          "type": "text",
+          "figmaProp": "text-name"
+        },
+        "href": {
+          "type": "url"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "neutral",
+            "subtle"
+          ],
+          "figmaProp": "type"
+        }
       }
     },
     "image": {
       "type": "image",
       "figmaLayer": "image",
-      "aliases": ["Rectangle 1"],
+      "aliases": [
+        "Rectangle 1"
+      ],
       "optional": true,
       "label": "오른쪽 이미지 (PC 458×300, MO 343×200) — 비우면 회색 박스"
     }

@@ -3,6 +3,7 @@
   "section": "feature",
   "layout": "grid",
   "style": "card",
+  "label": "썸네일 4열",
   "order": 2,
   "when": "썸네일 카드를 4열(MO 2열)로 촘촘하게 보여줄 때",
   "figma": {

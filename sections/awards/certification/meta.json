@@ -2,6 +2,7 @@
   "id": "awards-certification",
   "section": "awards",
   "layout": "certification",
+  "label": "인증 3개 강조",
   "order": 2,
   "when": "대표 인증 3개 안팎을 한 줄로 강조할 때 — 엠블럼 위, 설명 아래 세로 카드",
   "figma": {

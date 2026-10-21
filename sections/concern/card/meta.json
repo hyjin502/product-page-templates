@@ -2,6 +2,7 @@
   "id": "concern-card",
   "section": "concern",
   "layout": "card",
+  "label": "고민 카드 모음",
   "order": 2,
   "when": "실제 담당자들의 고민·후기를 여러 장의 카드 벽으로 쌓아 보여줄 때",
   "figma": {

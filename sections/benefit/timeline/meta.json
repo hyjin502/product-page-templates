@@ -2,6 +2,7 @@
   "id": "benefit-timeline",
   "section": "benefit",
   "layout": "timeline",
+  "label": "타임라인",
   "order": 3,
   "when": "단계·흐름이 있는 가치 3개를 선(타임라인)으로 이어 보여줄 때",
   "figma": {
@@ -32,7 +33,14 @@
     "items": {
       "type": "list",
       "figmaLayer": "item",
-      "aliases": ["1", "2", "3", "Frame 2147238972", "Frame 2147238973", "Frame 2147238974"],
+      "aliases": [
+        "1",
+        "2",
+        "3",
+        "Frame 2147238972",
+        "Frame 2147238973",
+        "Frame 2147238974"
+      ],
       "note": "PC 항목 프레임 이름이 1·2·3, MO 는 Frame 2147238972~4 — 번호(1·2·3 / MO 목록 번호 1.)는 순서대로 자동",
       "min": 2,
       "max": 4,
@@ -41,13 +49,19 @@
         "title": {
           "type": "richtext",
           "figmaLayer": "등급 산정",
-          "aliases": ["title"],
+          "aliases": [
+            "title"
+          ],
           "label": "단계 제목"
         },
         "description": {
           "type": "richtext",
           "figmaLayer": "description",
-          "aliases": ["전년도 매출 기여도로 등급을 확정합니", "담당 HRD 컨설턴트가 개별적으로 등", "멤버십이 부여된 당해 연도 기간 동안"],
+          "aliases": [
+            "전년도 매출 기여도로 등급을 확정합니",
+            "담당 HRD 컨설턴트가 개별적으로 등",
+            "멤버십이 부여된 당해 연도 기간 동안"
+          ],
           "optional": true,
           "label": "단계 설명"
         }

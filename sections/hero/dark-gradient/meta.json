@@ -2,6 +2,7 @@
   "id": "hero-dark-gradient",
   "section": "hero",
   "layout": "dark-gradient",
+  "label": "어두운 그라디언트",
   "order": 4,
   "when": "어두운 그라디언트 바탕에 메시지와 버튼 두 개 — 뱃지 없이 깔끔하게",
   "figma": {

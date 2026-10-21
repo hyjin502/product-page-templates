@@ -2,6 +2,7 @@
   "id": "problem-check",
   "section": "problem",
   "layout": "check",
+  "label": "추천 체크 목록",
   "order": 9,
   "when": "\"이런 분께 추천합니다\"처럼 해당되는 상황을 체크 목록으로 한 줄씩 보여줄 때",
   "figma": {
@@ -20,7 +21,9 @@
     "title": {
       "type": "richtext",
       "figmaLayer": "title",
-      "aliases": ["오직 월간휴넷에서만 공개합니다"],
+      "aliases": [
+        "오직 월간휴넷에서만 공개합니다"
+      ],
       "note": "PC 는 Body 바로 아래 텍스트(레이어 이름이 다른 문구), MO 는 heading-mo/title — PC·MO 문구가 달라요",
       "label": "섹션 타이틀"
     },

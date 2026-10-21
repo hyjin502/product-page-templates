@@ -2,6 +2,7 @@
   "id": "hero-media-left",
   "section": "hero",
   "layout": "media-left",
+  "label": "배경 + 왼쪽 정렬",
   "order": 10,
   "when": "배경 위 왼쪽 정렬 메시지 + 버튼 2개 — 각진 버튼의 단정한 B2B 첫 화면",
   "figma": {

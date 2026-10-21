@@ -2,6 +2,7 @@
   "id": "concern-before-after",
   "section": "concern",
   "layout": "before-after",
+  "label": "전 · 후 비교",
   "order": 4,
   "when": "기존 방식의 한계와 개선된 방식을 두 카드로 나란히 비교할 때",
   "figma": {

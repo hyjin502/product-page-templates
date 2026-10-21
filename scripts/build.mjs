@@ -80,7 +80,7 @@ function buildLibrary(reg, env, baseCss) {
     pagerJs: fs.readFileSync(PAGER_JS_PATH, 'utf8'),
     fontLink: FONT_LINK,
     sections: catalog.sections.map((s) => ({
-      key: s.key, role: s.role, order: s.order, variants: s.variants,
+      key: s.key, name: s.name || null, role: s.role, order: s.order, variants: s.variants,
       figmaSet: figmaUrl(catalog, s.figmaSet), figmaSetDev: figmaUrl(catalog, s.figmaSet, true),
     })),
     templates: reg.templates.map((t) => ({ key: t.key, title: t.title, variants: t.variants, rows: t.rows, order: t.order, figmaSet: figmaUrl(catalog, t.figmaSet) })),
