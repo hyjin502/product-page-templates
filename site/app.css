@@ -1003,3 +1003,18 @@ pre, code, kbd, samp { font-family: var(--font-code); }
 .rows__sec, .rows__variant .hed-style__name { font-family: var(--font-ui); letter-spacing: -0.3px; }
 /* 히어로 편집기 — 칸 이름 옆 설명(최대 줄 · 글자 수 안내 등)과 작은 칸 설명은 숨겨요 (2026-10-21 사용자 요청). 「선택」 표시 · 글자 수 세기는 그대로 */
 #hero-editor .hed-f__note, #hero-editor .hed-f__label .hed-f__opt, #hero-editor .hed-sub__label .hed-f__opt, #hero-editor .hed-bgfx .hed-f__opt, #hero-editor .hed-focus .hed-f__opt, #tpl-editor .hed-f__note, #tpl-editor .hed-f__label .hed-f__opt, #tpl-editor .hed-sub__label .hed-f__opt, #tpl-editor .hed-bgfx .hed-f__opt, #tpl-editor .hed-focus .hed-f__opt { display: none; } /* 월간휴넷 · 월간X 편집기도 같이 (2026-10-21) */
+/* 자동 저장 상태 — 회차 칸 머리 오른쪽 작은 글자 */
+.iss__save { flex: none; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-3); font-size: 11px; }
+.iss__save[data-state="error"], .iss__save[data-state="conflict"] { color: #e5484d; }
+/* 처음 화면 목록 — 줄을 고르면 오른쪽 미리보기 · 「수정」으로 편집 (2026-10-21) */
+.iss-home__list li.is-sel { border-radius: 8px; background: var(--pane-accent-soft); }
+.iss-home__list li.is-sel .iss__item b, .iss-home__list li.is-sel .iss__item span { color: var(--pane-accent); }
+.compose__side .iss__edit { flex: none; min-height: 28px; padding: 0 10px; font-size: 12px; font-weight: 600; }
+/* 처음 화면 「+ 새 회차」 — 작게 (2026-10-21 사용자 요청 · 예전의 약 1/4 크기) */
+.compose__side .iss-home__bar .btn-ui { min-height: 24px; padding: 0 9px; border-radius: 6px; font-size: 11px; }
+/* 회차 지우기 · 지운 회차 (2026-10-21) */
+.iss__del:hover { color: #e5484d; }
+.iss__trash { margin-top: 12px; }
+.iss__trash ul { margin-top: 4px; }
+.iss__trash li { display: flex; align-items: center; gap: 8px; padding: 6px 8px; }
+.iss__item.is-gone { color: var(--ink-3); cursor: default; }

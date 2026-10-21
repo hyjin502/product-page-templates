@@ -175,9 +175,9 @@
           ],
           "labels": {
             "none": "없음",
-            "chevron-right": "› chevron-right",
-            "arrow-right": "→ arrow-right",
-            "plus": "+ plus"
+            "chevron-right": "꺾쇠 화살표",
+            "arrow-right": "화살표",
+            "plus": "더하기"
           },
           "default": "none",
           "label": "오른쪽 아이콘",

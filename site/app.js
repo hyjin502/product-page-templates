@@ -12,6 +12,9 @@ const assetBase = new URL('./', document.baseURI).href;
 const vname = (v) => v.id.slice(v.section.length + 1) || v.layout; // grid-default 처럼 섹션 안에서 구분되는 이름
 /** 화면에 보일 이름 — 한글 이름(meta label · sections.json name)이 있으면 그걸로, 없으면 코드 (2026-10-21 · 라이브러리 목록 · 조합기 공통) */
 const vlabel = (v) => v.label || vname(v);
+/** HDS 색 이름에서 영어 괄호를 빼요 — 「버튼 진한 회색 (button-neutral)」 → 「버튼 진한 회색」 (2026-10-21 · 편집기는 한글만) */
+const koLabel = (t) => String(t || '').replace(/\s*\([^)]*[A-Za-z][^)]*\)/g, '').trim();
+const radiusLabel = (r) => (r.px >= 900 ? '원형' : `${r.px}px`);
 const slabel = (s) => (s && s.name) || (s && s.key) || '';
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -35,7 +38,7 @@ try {
 } catch (e) {}
 if (!state.compose) state.compose = { title: '새 상품페이지', rows: defaultRows() };
 state.compose.rows = state.compose.rows.filter((r) => byId[r.variant]);
-function save() { try { localStorage.setItem('tpl-site', JSON.stringify(state)); } catch (e) {} }
+function save() { try { localStorage.setItem('tpl-site', JSON.stringify(state)); } catch (e) {} try { autoSaveTick(); } catch (e) {} }
 /* 조합기·히어로 편집기 — 왼쪽 패널 폭은 경계선을 끌어 조절(더블클릭 = 기본 폭), 미리보기 배율은 위쪽 막대에서 골라요.
    패널은 접히지 않아요(예전 「패널 접고 크게 보기」는 뒤로가기처럼 보여 메뉴가 사라진 것처럼 보였어요) */
 const PANEL_W = { def: 380, min: 300, previewMin: 480 };
@@ -1034,15 +1037,15 @@ function colorField(k, s, cur) {
   const list = paletteList(s.palette);
   const c = s.palette ? list.find((x) => x.key === cur) : HDS_COLOR[cur];
   const base = s.optional && s.default == null; // 기본값이 없으면 「기본」 = 시안 그대로
-  const now = c ? `<code>${esc(c.token)}</code> ${esc(c.label)}` : cur && cur === s.noneValue ? '없음' : '';
+  const now = c ? esc(koLabel(c.label)) : cur && cur === s.noneValue ? '없음' : '';
   return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label">${now}</span>${swatches({ 'data-f': k }, cur, s.label, s.palette, { base, noneValue: s.noneValue })}</div>`;
 }
 function radiusField(k, s, cur) {
   const r = HDS_RADIUS[cur];
-  return `<div class="hed-f">${fieldHead(s, s.note)}${r ? `<span class="hed-sub__label"><code>${esc(r.token)}</code></span>` : ''}${radiusChips({ 'data-f': k }, cur, s.label, s.optional && s.default == null)}</div>`;
+  return `<div class="hed-f">${fieldHead(s, s.note)}${r ? `<span class="hed-sub__label">${esc(radiusLabel(r))}</span>` : ''}${radiusChips({ 'data-f': k }, cur, s.label, s.optional && s.default == null)}</div>`;
 }
 function radiusChips(path, cur, label, base) {
-  return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${base ? `<button type="button" class="chip" ${attrs({ ...path, 'data-val': '', 'aria-pressed': String(!cur) })}>기본</button>` : ''}${REG.hds.radius.map((r) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': r.key, title: r.token, 'aria-pressed': String(r.key === cur) })}><span class="hed-rad__ico" style="border-top-left-radius:${Math.min(r.px, 10)}px"></span>${r.key} <span class="hed-rad__px">${r.px === 900 ? '' : r.px}</span></button>`).join('')}</div>`;
+  return `<div class="hed-rad" role="group" aria-label="${esc(label)}">${base ? `<button type="button" class="chip" ${attrs({ ...path, 'data-val': '', 'aria-pressed': String(!cur) })}>기본</button>` : ''}${REG.hds.radius.map((r) => `<button type="button" class="chip" ${attrs({ ...path, 'data-val': r.key, title: r.token, 'aria-pressed': String(r.key === cur) })}><span class="hed-rad__ico" style="border-top-left-radius:${Math.min(r.px, 10)}px"></span>${esc(radiusLabel(r))}</button>`).join('')}</div>`;
 }
 /** enum — 칩 하나를 고르는 그룹. 표시 이름은 spec.labels */
 function enumChips(path, s, cur, label) {
@@ -1084,11 +1087,11 @@ function itemField(k, i, kk, s, val, n, item, smpItem) {
   if (s.type === 'color') {
     const list = paletteList(s.palette);
     const c = s.palette ? list.find((x) => x.key === val) : HDS_COLOR[val];
-    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <code>${c ? esc(c.token) : s.palette === 'line' ? '없음' : ''}</code></span>${swatches(path, val, label, s.palette)}</div>`;
+    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <span class="hed-sub__now">${c ? esc(koLabel(c.label)) : s.palette === 'line' ? '없음' : ''}</span></span>${swatches(path, val, label, s.palette)}</div>`;
   }
   if (s.type === 'radius') {
     const r = HDS_RADIUS[val];
-    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <code>${r ? esc(r.token) : ''}</code></span>${radiusChips(path, val, label)}</div>`;
+    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <span class="hed-sub__now">${r ? esc(radiusLabel(r)) : ''}</span></span>${radiusChips(path, val, label)}</div>`;
   }
   if (s.type === 'enum') return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)}</span>${enumChips(path, s, val, label)}</div>`;
   const ph = s.type === 'url' ? 'https://… (비우면 #)' : '';
@@ -1117,11 +1120,11 @@ function mediaName(ref) {
   if (!ref) return '없음';
   if (ref.kind === 'css') { const p = bgPreset(ref.preset); return p ? `${p.label}${p.motion ? ' · 움직임' : ''}` : ref.preset; }
   if (ref.file) return `${ref.name || '올린 파일'}${blobUrls[ref.file] ? '' : ' (다시 골라 주세요)'}`;
-  return ref.src;
+  return /^assets\//.test(ref.src || '') ? '기본 이미지' : ref.src; // 시안 샘플은 파일 경로 대신 한글로
 }
 /** CSS 배경 프리셋 칩 — 슬롯에 cssPresets: true 일 때만 */
 function bgPresetChips(k, dev, ref) {
-  return `<div class="hed-bgfx" role="group" aria-label="CSS 배경"><span class="hed-sub__label">또는 CSS 배경 <span class="hed-f__opt">이미지·영상 없이 코드로 그려요</span></span>
+  return `<div class="hed-bgfx" role="group" aria-label="그려진 배경"><span class="hed-sub__label">또는 그려진 배경 <span class="hed-f__opt">이미지·영상 없이 코드로 그려요</span></span>
   <div class="hed-bgfx__list">${(REG.bgPresets || []).map((p) => `<button type="button" class="hed-bgfx__b" ${attrs({ 'data-act': 'bg-preset', 'data-f': k, 'data-dev': dev, 'data-preset': p.key, 'aria-pressed': String(!!ref && ref.kind === 'css' && ref.preset === p.key), title: p.label + (p.motion ? ' · 천천히 움직여요' : '') })}><span class="hed-bgfx__sw${p.motion ? ' is-motion' : ''}" style="background:${esc(p.swatch)}"></span><span class="hed-bgfx__name">${esc(p.label)}</span></button>`).join('')}</div></div>`;
 }
 /** sample = 그 칸의 샘플 값 — 지금 값과 다르면(지웠거나 바꿨으면) 「되돌리기」로 샘플로 돌려요 */
@@ -1199,7 +1202,7 @@ function renderHero() {
     const bg = x.sample.background && x.sample.background.pc;
     const src = x.thumb || (bg && bg.kind === 'image' ? bg.src : '');
     const thumb = src ? ` style="background-image:url('${esc(new URL(src, assetBase).href)}')"` : '';
-    return `<button type="button" class="hed-style" data-hed-variant="${x.id}" aria-pressed="${x.id === v.id}" title="${esc(x.when)}"><span class="hed-style__thumb"${thumb}></span><span class="hed-style__name">${esc(vname(x))}</span></button>`;
+    return `<button type="button" class="hed-style" data-hed-variant="${x.id}" aria-pressed="${x.id === v.id}" title="${esc(x.when)}"><span class="hed-style__thumb"${thumb}></span><span class="hed-style__name">${esc(vlabel(x))}</span></button>`;
   }).join('')}</div>
   <div class="hed-form" data-hed-form>${heroForm(v, e)}</div>
   </div>
@@ -1906,7 +1909,10 @@ async function latestPreview(t) {
   if (!iframe) return;
   tplFit = mountPreview(tplEl.querySelector('.compose__stage'), tplEl.querySelector('.v__frame'), iframe, tplEl.querySelector('.v__scale'), null, { zoomable: true });
   let row = null;
-  try { [row] = await sb(`issues?template=eq.${encodeURIComponent(key)}&select=*&order=updated_at.desc&limit=1`, { method: 'GET' }); } catch (e) {}
+  const want = tplState(key).homeSel;
+  let failed = false;
+  try { [row] = await sb(want ? `issues?id=eq.${want}&select=*` : `issues?template=eq.${encodeURIComponent(key)}${TRASH.ok ? '&deleted_at=is.null' : ''}&select=*&order=updated_at.desc&limit=1`, { method: 'GET' }); } catch (e) { failed = true; }
+  if (!want && failed) { try { [row] = await sb(`issues?template=eq.${encodeURIComponent(key)}&select=*&order=updated_at.desc&limit=1`, { method: 'GET' }); } catch (e) {} } // deleted_at 칸이 없을 때(SQL 실행 전)
   if (tplKey() !== key || issueOf(key) || !iframe.isConnected) return; // 그사이 회차를 열었으면 그만
   // 올린 파일({ file, url })은 저장된 주소로 바로 보여요 — IndexedDB 에 받지 않아요
   const toSrc = (x) => {
@@ -1927,8 +1933,9 @@ async function latestPreview(t) {
   } finally { state.tpl[key] = saved; }
   const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
   const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+  if (row) { tplState(key).homeShown = row.id; tplEl.querySelectorAll('[data-iss-row]').forEach((li) => li.classList.toggle('is-sel', li.dataset.issRow === row.id)); }
   if (label) label.innerHTML = row
-    ? `<b>최근 수정</b> ${esc(ymLabel(row.period))} ${esc(row.title || '')} · ${esc(whenLabel(row.updated_at))} · ${esc(row.updated_by || '')} <button type="button" class="iss__lnk" data-iss-open="${esc(row.id)}">이 회차 열기</button>`
+    ? `<b>${esc(ymLabel(row.period))} ${esc(row.title || '(이름 없음)')}</b> ${esc(whenLabel(row.updated_at))} 저장 · ${esc(row.updated_by || '')} <button type="button" class="iss__lnk" data-iss-open="${esc(row.id)}">수정</button>`
     : '아직 회차가 없어요 — 샘플 화면이에요';
   iframe.srcdoc = srcdoc(html, css, js, null);
   if (bars) tplSticky = stickyDock(tplEl.querySelector('.v__frame'), iframe, bars, css, js, () => {});
@@ -2322,6 +2329,7 @@ async function applyIssue(row) {
   state.tpl ||= {};
   state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [], issue: issueMeta(row) };
   state.mode = 'tpl:' + key;
+  autoMark(key);
   save();
   return true;
 }
@@ -2333,7 +2341,7 @@ async function openIssue(id) {
   } catch (e) { alert('회차를 불러오지 못했어요 — ' + (e && e.message || e)); return false; }
 }
 /** 저장 — rev 가 같을 때만 덮어써요. 그사이 누가 저장했으면 덮어쓸지 · 그 내용을 불러올지 물어요 */
-async function saveIssue(key, patch = {}) {
+async function saveIssue(key, patch = {}, opt = {}) {
   const iss = issueOf(key);
   const by = myName();
   if (!by) throw new Error('이름이 필요해요');
@@ -2342,15 +2350,53 @@ async function saveIssue(key, patch = {}) {
   if (!rows.length) {
     const [latest] = await sb(`issues?id=eq.${iss.id}&select=*`, { method: 'GET' });
     if (!latest) throw new Error('회차가 없어요');
+    if (opt.auto) return { conflict: latest }; // 자동 저장은 묻지 않고 알려만 줘요
     if (!confirm(`그사이 ${latest.updated_by || '다른 사람'}님이 ${whenLabel(latest.updated_at)}에 저장했어요.\n\n확인 = 내 내용으로 덮어쓰기\n취소 = 그 내용 불러오기 (내 내용은 따로 보관)`)) { await applyIssue(latest); renderTpl(); return null; }
     rows = await sb(`issues?id=eq.${iss.id}&rev=eq.${latest.rev}`, { method: 'PATCH', body: JSON.stringify({ ...body, rev: latest.rev + 1 }) });
     if (!rows.length) throw new Error('다시 저장해 주세요 (또 바뀌었어요)');
   }
   tplState(key).issue = issueMeta(rows[0]);
   tplState(key).dirty = false;
+  autoMark(key);
   save();
   return rows[0];
 }
+/* ---------- 자동 저장 (2026-10-21 사용자 결정) — 회차를 연 동안 고친 내용을 입력이 멈추고 2초 뒤 저장소에 저장해요.
+   로컬 save() 가 부를 때마다 회차 내용의 지문(sig)을 마지막 저장과 비교하고, 다르면 2초 뒤 saveIssue(auto). 그사이 다른 사람이 저장했으면
+   묻지 않고 「다른 사람이 고쳤어요 · 새로 불러오기 · 내 내용으로 덮기」를 회차 칸에 보여 줘요 */
+const AUTO = { timer: null, running: null, state: 'saved', sig: {}, conflict: null, at: null };
+const issueSig = (key) => { const ts = state.tpl && state.tpl[key]; if (!ts || !ts.issue) return ''; return JSON.stringify([ts.edits, ts.pick, ts.off, ts.extras, ts.order, ts.issue.title, ts.issue.period]); };
+function autoMark(key) { AUTO.sig[key] = issueSig(key); AUTO.state = 'saved'; AUTO.conflict = null; AUTO.at = Date.now(); autoShow(); }
+function autoLabel() {
+  if (AUTO.conflict) return `${esc(AUTO.conflict.updated_by || '다른 사람')}님이 고쳤어요 · <button type="button" class="iss__lnk" data-iss-act="take">새로 불러오기</button> · <button type="button" class="iss__lnk" data-iss-act="force">내 내용으로 덮기</button>`;
+  return { saving: '저장 중…', pending: '저장 중…', error: '저장 안 됨 · <button type="button" class="iss__lnk" data-iss-act="retry">다시 시도</button>', saved: '' }[AUTO.state] || '';
+}
+function autoShow() { const el = typeof tplEl !== 'undefined' && tplEl.querySelector('[data-iss-save]'); if (el) { el.innerHTML = autoLabel(); el.dataset.state = AUTO.conflict ? 'conflict' : AUTO.state; } }
+function autoSaveTick() {
+  const key = tplKey();
+  if (!key || !issueOf(key) || AUTO.conflict) return;
+  if (issueSig(key) === AUTO.sig[key]) return;
+  AUTO.state = 'pending'; autoShow();
+  clearTimeout(AUTO.timer);
+  AUTO.timer = setTimeout(() => autoRun(key), 2000);
+}
+async function autoRun(key) {
+  clearTimeout(AUTO.timer); AUTO.timer = null;
+  if (AUTO.running) { await AUTO.running; if (issueSig(key) === AUTO.sig[key]) return; }
+  if (!issueOf(key) || issueSig(key) === AUTO.sig[key]) return;
+  AUTO.state = 'saving'; autoShow();
+  AUTO.running = (async () => {
+    try {
+      const r = await saveIssue(key, {}, { auto: true });
+      if (r && r.conflict) { AUTO.conflict = r.conflict; AUTO.state = 'error'; autoShow(); }
+    } catch (e) { AUTO.state = 'error'; autoShow(); }
+  })();
+  await AUTO.running; AUTO.running = null;
+}
+/** 지금 기다리는 자동 저장을 바로 끝내요 (링크 복사 · 회차 목록으로 갈 때) */
+async function autoFlush(key) { if (AUTO.timer || issueSig(key) !== AUTO.sig[key]) await autoRun(key); else if (AUTO.running) await AUTO.running; }
+window.addEventListener('beforeunload', (ev) => { const key = tplKey(); if (key && issueOf(key) && (AUTO.timer || AUTO.running)) { ev.preventDefault(); ev.returnValue = ''; } });
+
 /** 새 회차 — from: 'current'(지금 편집 내용) · 'sample'(샘플) · 회차 id(그 회차 복사) */
 async function createIssue(key, { period, title, from }) {
   const by = myName();
@@ -2360,6 +2406,7 @@ async function createIssue(key, { period, title, from }) {
   const ts = tplState(key);
   const [row] = await sb('issues', { method: 'POST', body: JSON.stringify({ template: key, period, title, status: 'draft', data: await issueData(key), info: {}, created_by: by, updated_by: by }) });
   ts.issue = issueMeta(row);
+  autoMark(key);
   save();
   return row;
 }
@@ -2383,7 +2430,7 @@ async function finalFiles(key) {
 function issueSaveBtn(key) {
   const iss = issueOf(key);
   if (!iss) return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="new" title="회차(예: 2026년 11월호)로 저장하고 링크를 만들어요 — 지난 회차에 쌓여요">회차로 저장</button>`;
-  return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="save" title="같은 링크가 최신 내용으로 바뀌어요">저장하고 링크 복사</button>`;
+  return `<button type="button" class="btn-ui btn-ui--primary" data-iss-act="copy" title="고친 내용은 자동으로 저장돼요 — 이 링크는 항상 최신 내용이에요">링크 복사</button>`;
 }
 /** 회차 칸 — 두 줄로 간결하게: ① 연월 · 이름 · 상태(고르기) ② 저장 시각 · 사람 + 작은 글자 버튼(정보 · 지난 회차 · 닫기) */
 function issueBar(key) {
@@ -2391,14 +2438,12 @@ function issueBar(key) {
   const iss = issueOf(key);
   const tx = (act, label, on) => `<button type="button" class="iss__tx${on ? ' is-on' : ''}" data-iss-act="${act}">${label}</button>`;
   const more = (ts.newOpen ? issueNewForm(key) : '') + (ts.listOpen ? `<div class="iss__list" data-iss-listbox><p class="iss__muted">불러오는 중…</p></div>` : '');
-  const fold = `<button type="button" class="iss__fold" data-iss-act="fold" aria-expanded="${String(!ts.issFold)}" title="${ts.issFold ? '펼치기' : '접기'}">${ts.issFold ? '▸' : '▾'}</button>`;
-  if (!iss && ts.issFold) return `<div class="iss is-folded"><div class="iss__row">${fold}<span class="iss__muted">회차 없음</span></div></div>`;
+  const fold = ''; // 접기 ▾ 는 뺐어요 — 정보 · 목록보기가 늘 보여요 (2026-10-21 사용자 요청)
   if (!iss) return `<div class="iss"><div class="iss__row">${fold}<span class="iss__muted">회차 없음 — 저장하면 회차로 쌓여요</span><span class="iss__links">${tx('list', '지난 회차', ts.listOpen)}${tx('new', '+ 새 회차', ts.newOpen)}</span></div>${more}</div>`;
   // 상태(작성 중 · 디자이너 전달 · 완료)는 2026-10-21 사용자 요청으로 화면에서 뺐어요 — 회차는 언제든 고쳐 저장해요
-  const head = `<div class="iss__row">${fold}<b>${esc(ymLabel(iss.period))}</b><span class="iss__title">${esc(iss.title || '(이름 없음)')}</span>`;
-  if (ts.issFold) return `<div class="iss is-folded">${head}</div></div>`;
+  const head = `<div class="iss__row">${fold}<b data-iss-show="period">${esc(ymLabel(iss.period))}</b><span class="iss__title" data-iss-show="title">${esc(iss.title || '(이름 없음)')}</span>`;
   return `<div class="iss">
-  ${head}<span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('close', '← 회차 목록')}</span></div>
+  ${head}<span class="iss__save" data-iss-save>${autoLabel()}</span><span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('close', '← 목록보기')}</span></div>
   ${ts.infoOpen ? `<div class="iss__grid">
     <label>연월<input type="month" data-iss-f="period" value="${esc(iss.period || '')}"></label>
     <label>회차 이름<input type="text" data-iss-f="title" value="${esc(iss.title || '')}"></label>
@@ -2442,10 +2487,19 @@ function issueNewForm(key) {
   <div class="iss__acts"><button type="button" class="btn-ui btn-ui--primary" data-iss-act="create">만들기</button><button type="button" class="btn-ui" data-iss-act="cancel">취소</button></div>
 </div>`;
 }
+/* 회차 지우기 = 숨기기(휴지통) — deleted_at 에 시각을 적어 목록에서 빼요. 「지운 회차」에서 되살려요 (2026-10-21 사용자 결정)
+   표에 deleted_at 칸이 아직 없으면(SQL 실행 전) 지우기 버튼을 숨기고 예전처럼 다 보여요 */
+const TRASH = { ok: true };
 async function issueList(key) {
-  const rows = await sb(`issues?template=eq.${encodeURIComponent(key)}&select=${issueCols}&order=period.desc,updated_at.desc&limit=100`, { method: 'GET' });
+  let rows;
+  try { rows = await sb(`issues?template=eq.${encodeURIComponent(key)}&deleted_at=is.null&select=${issueCols}&order=period.desc,updated_at.desc&limit=100`, { method: 'GET' }); TRASH.ok = true; }
+  catch (e) { TRASH.ok = false; rows = await sb(`issues?template=eq.${encodeURIComponent(key)}&select=${issueCols}&order=period.desc,updated_at.desc&limit=100`, { method: 'GET' }); }
   tplState(key).listCache = rows.map((r) => ({ id: r.id, period: r.period, title: r.title }));
   return rows;
+}
+async function trashList(key) {
+  if (!TRASH.ok) return [];
+  try { return await sb(`issues?template=eq.${encodeURIComponent(key)}&deleted_at=not.is.null&select=id,period,title,deleted_at&order=deleted_at.desc&limit=50`, { method: 'GET' }); } catch (e) { return []; }
 }
 /** 지난 회차 — 한 줄씩: 연월 · 이름(누르면 열기) · 상태 · 작은 버튼(링크 · 복사해서 새 회차) */
 async function fillIssueList(key) {
@@ -2453,12 +2507,20 @@ async function fillIssueList(key) {
   if (!box) return;
   try {
     const rows = await issueList(key);
-    const cur = issueOf(key);
-    box.innerHTML = `<div class="iss__lhead"><span>지난 회차 ${rows.length}</span><button type="button" class="iss__tx" data-iss-act="list">접기 ▴</button></div>` + (rows.length ? `<ul>${rows.map((r) => `<li class="${cur && cur.id === r.id ? 'is-cur' : ''}">
-      <button type="button" class="iss__item" data-iss-open="${esc(r.id)}" title="열기"><b>${esc(ymLabel(r.period))}</b><span>${esc(r.title || '(이름 없음)')}</span>${cur && cur.id === r.id ? '<em class="iss__now">보는 중</em>' : ''}</button>
+    // 줄을 누르면 오른쪽 미리보기만 그 회차로 · 편집은 「수정」 (2026-10-21 사용자 요청)
+    const sel = tplState(key).homeSel || tplState(key).homeShown;
+    box.innerHTML = rows.length ? `<ul>${rows.map((r) => `<li class="${sel === r.id ? 'is-sel' : ''}" data-iss-row="${esc(r.id)}">
+      <button type="button" class="iss__item" data-iss-sel="${esc(r.id)}" title="미리보기"><b>${esc(ymLabel(r.period))}</b><span>${esc(r.title || '(이름 없음)')}</span></button>
       <button type="button" class="iss__tx" data-iss-link="${esc(r.id)}" title="링크 복사">링크</button>
       <button type="button" class="iss__tx" data-iss-from="${esc(r.id)}" title="이 회차를 복사해서 새 회차 시작">복사</button>
-    </li>`).join('')}</ul>` : '<p class="iss__muted">아직 회차가 없어요</p>');
+      ${TRASH.ok ? `<button type="button" class="iss__tx iss__del" data-iss-del="${esc(r.id)}" data-name="${esc(ymLabel(r.period) + ' ' + (r.title || ''))}" title="목록에서 지우기 (지운 회차에서 되살릴 수 있어요)">삭제</button>` : ''}
+      <button type="button" class="btn-ui iss__edit" data-iss-open="${esc(r.id)}">수정</button>
+    </li>`).join('')}</ul>` : '<p class="iss__muted">아직 회차가 없어요</p>';
+    if (TRASH.ok) {
+      const ts = tplState(key);
+      const gone = await trashList(key);
+      if (gone.length) box.insertAdjacentHTML('beforeend', `<div class="iss__trash"><button type="button" class="iss__tx" data-iss-act="trash">지운 회차 (${gone.length}) ${ts.trashOpen ? '▴' : '▾'}</button>${ts.trashOpen ? `<ul>${gone.map((r) => `<li><span class="iss__item is-gone"><b>${esc(ymLabel(r.period))}</b><span>${esc(r.title || '(이름 없음)')}</span></span><button type="button" class="iss__tx" data-iss-restore="${esc(r.id)}">되살리기</button></li>`).join('')}</ul>` : ''}</div>`);
+    }
   } catch (e) { box.innerHTML = `<p class="iss__muted">목록을 불러오지 못했어요 — ${esc(e.message || e)}</p>`; }
 }
 tplEl.addEventListener('input', (ev) => {
@@ -2470,7 +2532,11 @@ tplEl.addEventListener('input', (ev) => {
   if (f) {
     const iss = issueOf(key); if (!iss) return;
     if (f.dataset.issF) iss[f.dataset.issF] = f.value; else (iss.info ||= {})[f.dataset.issI] = f.value;
-    save(); // 서버에는 다음 「저장」 때 함께 나가요
+    // 회차 칸 머리(연월 · 이름)도 바로 바꿔요 — 서버 · 회차 목록에는 「저장」 때 나가요
+    const show = f.dataset.issF && tplEl.querySelector(`[data-iss-show="${f.dataset.issF}"]`);
+    if (show) show.textContent = f.dataset.issF === 'period' ? ymLabel(f.value) : (f.value || '(이름 없음)');
+    tplState(key).dirty = true;
+    save();
   }
 });
 
@@ -2488,10 +2554,14 @@ tplEl.addEventListener('click', async (ev) => {
     else download(fv.dataset.name, new Blob([text], { type: 'application/json' }));
     return;
   }
-  const btn = ev.target.closest('[data-iss-act], [data-iss-open], [data-iss-link], [data-iss-from]');
+  const btn = ev.target.closest('[data-iss-act], [data-iss-open], [data-iss-link], [data-iss-from], [data-iss-sel], [data-iss-del], [data-iss-restore]');
   if (!btn) return;
   const busy = async (fn) => { btn.disabled = true; try { await fn(); } catch (e) { alert('하지 못했어요 — ' + (e && e.message || e)); } finally { btn.disabled = false; } };
   const act = btn.dataset.issAct;
+  if (act === 'trash') { ts.trashOpen = !ts.trashOpen; save(); renderTpl(); return; }
+  if (act === 'retry') return busy(() => autoRun(key));
+  if (act === 'take') return busy(async () => { const latest = AUTO.conflict; AUTO.conflict = null; if (latest) { await applyIssue(latest); renderTpl(); } });
+  if (act === 'force') return busy(async () => { const latest = AUTO.conflict; AUTO.conflict = null; if (latest) { tplState(key).issue.rev = latest.rev; await autoRun(key); } });
   if (act === 'fold') { ts.issFold = !ts.issFold; save(); renderTpl(); return; }
   if (act === 'info') { ts.infoOpen = !ts.infoOpen; save(); renderTpl(); return; }
   if (act === 'list') { ts.listOpen = !ts.listOpen; if (ts.listOpen) ts.newOpen = false; save(); renderTpl(); return; }
@@ -2506,10 +2576,16 @@ tplEl.addEventListener('click', async (ev) => {
     copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || btn);
   });
   if (act === 'save') return busy(async () => { const row = await saveIssue(key); if (row) { renderTpl(); copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || btn); } });
-  if (act === 'copy') return copyText(issueUrl(issueOf(key).id), btn);
-  if (act === 'close') { if (ts.dirty && !issueLocked(key) && !confirm('저장하지 않은 수정이 있어요. 저장하지 않고 회차 목록으로 갈까요?')) return; delete ts.issue; ts.dirty = false; ts.newOpen = false; save(); renderTpl(); return; }
+  if (act === 'copy') return busy(async () => { await autoFlush(key); copyText(issueUrl(issueOf(key).id), btn); });
+  if (act === 'close') return busy(async () => { await autoFlush(key); if (AUTO.state === 'error' && !confirm('저장하지 못한 수정이 있어요. 그래도 목록으로 갈까요?')) return; delete ts.issue; ts.dirty = false; ts.newOpen = false; save(); renderTpl(); });
   if (btn.dataset.issOpen) return busy(async () => { if (await openIssue(btn.dataset.issOpen)) { tplState(key).listOpen = false; renderTpl(); } });
   if (btn.dataset.issLink) return copyText(issueUrl(btn.dataset.issLink), btn);
+  if (btn.dataset.issSel) { ts.homeSel = btn.dataset.issSel; save(); renderTpl(); return; }
+  if (btn.dataset.issDel) {
+    if (!confirm(`‘${btn.dataset.name.trim()}’을(를) 목록에서 지울까요?\n목록 아래 「지운 회차」에서 되살릴 수 있어요.`)) return;
+    return busy(async () => { await sb(`issues?id=eq.${btn.dataset.issDel}`, { method: 'PATCH', body: JSON.stringify({ deleted_at: new Date().toISOString() }) }); if (ts.homeSel === btn.dataset.issDel) ts.homeSel = null; ts.homeShown = null; save(); renderTpl(); });
+  }
+  if (btn.dataset.issRestore) return busy(async () => { await sb(`issues?id=eq.${btn.dataset.issRestore}`, { method: 'PATCH', body: JSON.stringify({ deleted_at: null }) }); renderTpl(); });
   if (btn.dataset.issFrom) { ts.newOpen = true; ts.listOpen = false; ts.newFrom = btn.dataset.issFrom; save(); renderTpl(); tplEl.querySelector('.iss__new')?.scrollIntoView({ block: 'nearest' }); }
 });
 
