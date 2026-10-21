@@ -1018,3 +1018,7 @@ pre, code, kbd, samp { font-family: var(--font-code); }
 .iss__trash ul { margin-top: 4px; }
 .iss__trash li { display: flex; align-items: center; gap: 8px; padding: 6px 8px; }
 .iss__item.is-gone { color: var(--ink-3); cursor: default; }
+/* 미리보기 위 막대 통일 (2026-10-21 사용자 요청) — 월간휴넷 · 월간X 처음 화면의 「회차 · 수정」 줄도 히어로 편집기의 줄 넘김 칸과 같은 흰 상자로 */
+.stage-bar .tpl-latest { flex: 1 1 320px; align-self: stretch; display: flex; align-items: center; gap: 6px; padding: 7px 12px; border: 1px solid var(--rule); border-radius: 10px;
+  background: var(--panel); color: var(--ink-2); font-size: 12px; line-height: 1.5; }
+.stage-bar .tpl-latest b { color: var(--accent); margin-right: 0; }

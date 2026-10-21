@@ -1870,7 +1870,7 @@ function renderTpl() {
 </aside>
 <div class="compose__stage">${home ? `<div class="stage-bar"><p class="tpl-latest" data-tpl-latest>최근 회차를 불러오는 중…</p>${zoomBar()}</div>
   <div class="v__frame"><iframe title="${esc(t.title)} 최근 회차 미리보기"></iframe><span class="v__scale"></span></div>` : `
-  <div class="stage-bar">${zoomBar()}</div>
+  <div class="stage-bar"><div class="hed-warn" data-tpl-warn role="status" aria-live="polite"></div>${zoomBar()}</div>
   <div class="v__frame"><iframe title="${esc(t.title)} 미리보기"></iframe><span class="v__scale"></span></div>`}
 </div>`;
   tplEl.querySelector('.compose__scroll').scrollTop = keep;
@@ -1888,6 +1888,8 @@ function renderTpl() {
       const secOf = (el) => { const sec = el.closest('[data-tpl-sec]'); return sec ? byId[sec.dataset.tplSec] : null; };
       attachPreviewPick(doc, tplEl, secOf, tplEdit, tplUpdate, (v) => { const f = tplEl.querySelector(`[data-vid="${v.id}"] [data-hed-form]`); if (f) f.innerHTML = heroForm(v, tplEdit(v)); });
       doc.addEventListener('click', (ev) => { if (doc.__focusDragged && Date.now() - doc.__focusDragged < 400) return; const v = secOf(ev.target); if (v) tplOpen(v.id, true); });
+      measureTplSoon();
+      doc.fonts && doc.fonts.ready.then(measureTplSoon);
     } catch (err) {}
   }, { zoomable: true });
   const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
@@ -2001,7 +2003,44 @@ function tplUpdate(v) {
     if (shell(cur) !== shell(next) || cur.children.length !== next.children.length) cur.replaceWith(next);
     else [...next.children].forEach((n, i) => { const c = cur.children[i]; if (c.outerHTML !== n.outerHTML) c.replaceWith(n); });
     tplSticky && tplSticky.place();
+    measureTplSoon();
   }, 100);
+}
+/* ---------- 줄 넘김 · 폭 넘침 경고 (페이지 템플릿 · 2026-10-21 사용자 요청 — 히어로 편집기처럼 미리보기 위 한 줄)
+   히어로는 배지 · 제목 · 설명의 줄 수를 재고(MEASURE), 모든 섹션은 글자가 칸 폭을 넘거나 잘리는 곳을 찾아요 */
+let tplMeasureTimer = null;
+function measureTplSoon() { clearTimeout(tplMeasureTimer); tplMeasureTimer = setTimeout(measureTpl, 120); }
+function measureTpl() {
+  const box = tplEl.querySelector('[data-tpl-warn]');
+  const iframe = tplEl.querySelector('.compose__stage iframe');
+  if (!box || !iframe) return;
+  let doc = null;
+  try { doc = iframe.contentDocument; } catch (err) {}
+  if (!doc || !doc.body) return;
+  const dev = `${DEVICE_LABEL[state.device]} ${DEVICE_W[state.device]}`;
+  const lineCount = (el) => { const r = doc.createRange(); r.selectNodeContents(el); const tops = new Set(); for (const b of r.getClientRects()) if (b.width > 1) tops.add(Math.round(b.top)); return tops.size; };
+  const msgs = [];
+  doc.querySelectorAll('[data-tpl-sec]').forEach((sec) => {
+    const v = byId[sec.dataset.tplSec];
+    if (!v) return;
+    const name = v.label || v.layout;
+    for (const [slot, sel] of MEASURE) {
+      const el = sec.querySelector(sel);
+      if (!el || !el.getClientRects().length || !v.slots[slot]) continue;
+      const parts = [...el.querySelectorAll('.hero__line')].filter((x) => x.getClientRects().length);
+      (parts.length ? parts : [el]).forEach((ln, i) => { if (lineCount(ln) > 1) msgs.push(`${name} ${v.slots[slot].label || slot}${parts.length > 1 ? ` ${i + 1}번째 줄` : ''}: 줄이 넘어가요`); });
+    }
+    let over = 0;
+    sec.querySelectorAll('h1, h2, h3, p, span, a, li, b, strong, button').forEach((el) => {
+      if (!el.getClientRects().length || !el.textContent.trim() || el.closest('[aria-hidden="true"]')) return;
+      if (el.scrollWidth > el.clientWidth + 1 && el.clientWidth > 0 && getComputedStyle(el).display !== 'inline') over++;
+    });
+    if (over) msgs.push(`${name}: 글자가 칸을 넘거나 잘린 곳 ${over}곳`);
+  });
+  box.className = 'hed-warn' + (msgs.length ? ' is-warn' : ' is-ok');
+  box.innerHTML = msgs.length
+    ? `<b>${dev}</b> · ${msgs.map(esc).join(' · ')} <span class="hed-warn__tip">문구를 줄이거나 줄을 나눠 보세요</span>`
+    : `<b>${dev}</b> · 줄 넘김 없음 <span class="hed-warn__tip">다른 기기는 위쪽 PC·TB·MO 로 확인</span>`;
 }
 function tplPage(key) {
   const t = tplByKey[key];
@@ -2635,7 +2674,7 @@ document.addEventListener('click', (e) => {
   const vw = e.target.closest('[data-view]');
   if (vw) { state.view = vw.dataset.view; applyGlobal(); cards.forEach((c) => c.links()); save(); if (state.mode === 'library') renderCat(); return; }
   const dv = e.target.closest('[data-device]');
-  if (dv) { state.device = dv.dataset.device; applyGlobal(); cards.forEach((c) => { c.apply(); c.fit(); }); composeFit && composeFit(); heroFit && heroFit(); tplFit && tplFit(); if (state.mode === 'hero') measureSoon(); save(); }
+  if (dv) { state.device = dv.dataset.device; applyGlobal(); cards.forEach((c) => { c.apply(); c.fit(); }); composeFit && composeFit(); heroFit && heroFit(); tplFit && tplFit(); if (state.mode === 'hero') measureSoon(); if (tplKey()) setTimeout(measureTpl, 400); save(); }
 });
 
 /* 패널 폭 드래그 — 조합기·히어로 편집기 공통 (끄는 동안 미리보기 iframe 이 마우스를 가로채지 않게 막아요) */

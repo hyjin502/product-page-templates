@@ -66,8 +66,6 @@
         "check-line",
         "check-square-solid",
         "check-square-line",
-        "check-done-02-solid",
-        "check-done-02-line",
         "check-verified-02-solid",
         "check-verified-02-line"
       ],
@@ -78,8 +76,6 @@
         "check-line": "check (line)",
         "check-square-solid": "check-square (solid)",
         "check-square-line": "check-square (line)",
-        "check-done-02-solid": "check-done-02 (solid)",
-        "check-done-02-line": "check-done-02 (line)",
         "check-verified-02-solid": "check-verified-02 (solid)",
         "check-verified-02-line": "check-verified-02 (line)"
       },

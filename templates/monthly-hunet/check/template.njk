@@ -4,7 +4,7 @@
     <h2 class="mh-h mh-h--center{% if titleColor == 'white' %} mh-h--white{% endif %}">{{ title | rt }}</h2>
     <ul class="mh-check__list">
 {% for it in items %}
-      <li class="mh-check__item"{% if iconColor %} style="--mh-check-icon: {{ iconColor | hdsColor }}"{% endif %}>{{ ('hds-' + (icon if (icon and icon != 'default') else 'check-circle-solid')) | icon }}<span>{{ it.text }}</span></li>
+      <li class="mh-check__item"{% if iconColor %} style="--mh-check-icon: {{ iconColor | hdsColor }}"{% endif %}>{{ ('hds-' + (icon if (icon and icon != 'default' and 'check-done-02' not in icon) else 'check-circle-solid')) | icon }}<span>{{ it.text }}</span></li>
 {% endfor %}
     </ul>
   </div>
