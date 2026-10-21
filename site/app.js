@@ -2519,7 +2519,7 @@ async function fillIssueList(key) {
     if (TRASH.ok) {
       const ts = tplState(key);
       const gone = await trashList(key);
-      if (gone.length) box.insertAdjacentHTML('beforeend', `<div class="iss__trash"><button type="button" class="iss__tx" data-iss-act="trash">지운 회차 (${gone.length}) ${ts.trashOpen ? '▴' : '▾'}</button>${ts.trashOpen ? `<ul>${gone.map((r) => `<li><span class="iss__item is-gone"><b>${esc(ymLabel(r.period))}</b><span>${esc(r.title || '(이름 없음)')}</span></span><button type="button" class="iss__tx" data-iss-restore="${esc(r.id)}">되살리기</button></li>`).join('')}</ul>` : ''}</div>`);
+      if (gone.length) box.insertAdjacentHTML('beforeend', `<div class="iss__trash"><button type="button" class="iss__tx" data-iss-act="trash">지운 회차 (${gone.length}) ${ts.trashOpen ? '▴' : '▾'}</button>${ts.trashOpen ? `<ul>${gone.map((r) => `<li><span class="iss__item is-gone"><b>${esc(ymLabel(r.period))}</b><span>${esc(r.title || '(이름 없음)')}</span></span><button type="button" class="iss__tx" data-iss-restore="${esc(r.id)}">되살리기</button><button type="button" class="iss__tx iss__del" data-iss-purge="${esc(r.id)}" data-name="${esc(ymLabel(r.period) + ' ' + (r.title || ''))}">영구삭제</button></li>`).join('')}</ul>` : ''}</div>`);
     }
   } catch (e) { box.innerHTML = `<p class="iss__muted">목록을 불러오지 못했어요 — ${esc(e.message || e)}</p>`; }
 }
@@ -2554,7 +2554,7 @@ tplEl.addEventListener('click', async (ev) => {
     else download(fv.dataset.name, new Blob([text], { type: 'application/json' }));
     return;
   }
-  const btn = ev.target.closest('[data-iss-act], [data-iss-open], [data-iss-link], [data-iss-from], [data-iss-sel], [data-iss-del], [data-iss-restore]');
+  const btn = ev.target.closest('[data-iss-act], [data-iss-open], [data-iss-link], [data-iss-from], [data-iss-sel], [data-iss-del], [data-iss-restore], [data-iss-purge]');
   if (!btn) return;
   const busy = async (fn) => { btn.disabled = true; try { await fn(); } catch (e) { alert('하지 못했어요 — ' + (e && e.message || e)); } finally { btn.disabled = false; } };
   const act = btn.dataset.issAct;
@@ -2584,6 +2584,14 @@ tplEl.addEventListener('click', async (ev) => {
   if (btn.dataset.issDel) {
     if (!confirm(`‘${btn.dataset.name.trim()}’을(를) 목록에서 지울까요?\n목록 아래 「지운 회차」에서 되살릴 수 있어요.`)) return;
     return busy(async () => { await sb(`issues?id=eq.${btn.dataset.issDel}`, { method: 'PATCH', body: JSON.stringify({ deleted_at: new Date().toISOString() }) }); if (ts.homeSel === btn.dataset.issDel) ts.homeSel = null; ts.homeShown = null; save(); renderTpl(); });
+  }
+  if (btn.dataset.issPurge) {
+    if (!confirm(`‘${btn.dataset.name.trim()}’을(를) 영구삭제할까요?\n되돌릴 수 없어요.`)) return;
+    return busy(async () => {
+      const rows = await sb(`issues?id=eq.${btn.dataset.issPurge}&deleted_at=not.is.null`, { method: 'DELETE' }); // 지운 회차만 완전 삭제돼요
+      if (!rows.length) throw new Error('저장소에서 영구삭제가 아직 허용되지 않았어요 (Supabase 설정 필요)');
+      renderTpl();
+    });
   }
   if (btn.dataset.issRestore) return busy(async () => { await sb(`issues?id=eq.${btn.dataset.issRestore}`, { method: 'PATCH', body: JSON.stringify({ deleted_at: null }) }); renderTpl(); });
   if (btn.dataset.issFrom) { ts.newOpen = true; ts.listOpen = false; ts.newFrom = btn.dataset.issFrom; save(); renderTpl(); tplEl.querySelector('.iss__new')?.scrollIntoView({ block: 'nearest' }); }
