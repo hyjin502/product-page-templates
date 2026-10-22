@@ -1,0 +1,32 @@
+{% set bg = bgColor | hdsBg %}
+<section class="mh-checklist2" style="{% if bg %}background: {{ bg }};{% endif %}{% if accentColor %} --mh-cl2: {{ accentColor | hdsColor }};{% endif %}">
+  <div class="mh-checklist2__body">
+    <div class="mh-checklist2__card">
+      <h2 class="mh-checklist2__title">{{ title | rt }}</h2>
+{% if items.length %}
+      <ul class="mh-checklist2__list">
+{% for it in items %}
+        <li><label class="mh-checklist2__item"><input type="checkbox"><span class="mh-checklist2__ico" aria-hidden="true">{{ 'hds-square' | icon }}{{ 'hds-check-square-line' | icon }}</span><span>{{ it.text }}</span></label></li>
+{% endfor %}
+      </ul>
+{% endif %}
+    </div>
+{% if results.length %}
+    <ul class="mh-checklist2__results">
+{% for r in results %}
+      <li class="mh-checklist2__result">
+        <p class="mh-checklist2__count">{% if r.icon and r.icon != 'none' %}<span class="mh-checklist2__badge">{{ ('hds-' + r.icon) | icon }}</span>{% endif %}<span>{{ r.title }}</span></p>
+        <div class="mh-checklist2__text">
+{% if r.head %}
+          <p class="mh-checklist2__head">{{ r.head }}</p>
+{% endif %}
+{% if r.desc %}
+          <p>{{ r.desc | rt }}</p>
+{% endif %}
+        </div>
+      </li>
+{% endfor %}
+    </ul>
+{% endif %}
+  </div>
+</section>

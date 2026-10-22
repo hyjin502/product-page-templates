@@ -6,7 +6,13 @@
   "order": [
     "hero",
     "summary",
-    "checklist",
+    {
+      "label": "체크리스트",
+      "pick": [
+        "checklist",
+        "checklist2"
+      ]
+    },
     {
       "label": "추천 대상",
       "pick": [

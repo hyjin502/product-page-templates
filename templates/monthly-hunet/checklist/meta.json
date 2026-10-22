@@ -2,7 +2,7 @@
   "id": "monthly-hunet-checklist",
   "section": "monthly-hunet",
   "layout": "checklist",
-  "label": "체크리스트",
+  "label": "체크리스트 (리본)",
   "order": 3,
   "when": "「잠깐 주목!」 리본 · 체크 목록(눌러서 체크) · 체크 개수별 결과 카드 3개 — 보라 바탕 위 흰 카드",
   "figma": {

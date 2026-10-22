@@ -1,0 +1,133 @@
+{
+  "id": "monthly-hunet-checklist2",
+  "section": "monthly-hunet",
+  "layout": "checklist2",
+  "label": "체크리스트 (카드)",
+  "order": 3,
+  "when": "연보라 바탕 · 흰 카드 안 체크 목록(눌러서 체크) · 아이콘이 붙은 결과 카드 3개 — 리본 없음",
+  "figma": {
+    "pc": "695:6397",
+    "mo": "695:6801",
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "default": "#f3f0fe",
+      "extract": false,
+      "label": "배경색",
+      "fig": {
+        "bg": true
+      }
+    },
+    "accentColor": {
+      "type": "color",
+      "palette": "700",
+      "default": "violet/700",
+      "extract": false,
+      "label": "강조 색",
+      "note": "제목 **굵게** · 결과 요약 · 아이콘 · 체크 색",
+      "fig": {
+        "paint": "vector",
+        "at": "Frame 2147238983"
+      }
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "maxChars": 24,
+      "note": "**굵게** 로 감싼 부분은 강조 색",
+      "fig": {
+        "text": 0,
+        "accent": "accentColor"
+      }
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "체크 항목",
+      "min": 0,
+      "max": 10,
+      "item": {
+        "text": {
+          "type": "text",
+          "extract": false,
+          "label": "문구",
+          "maxChars": 45,
+          "fig": {
+            "text": 0
+          }
+        }
+      },
+      "fig": {
+        "items": "2단"
+      }
+    },
+    "results": {
+      "type": "list",
+      "extract": false,
+      "label": "결과 카드",
+      "min": 0,
+      "max": 3,
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": [
+            "trophy-01",
+            "star-01",
+            "mark",
+            "none"
+          ],
+          "labels": {
+            "trophy-01": "트로피",
+            "star-01": "별",
+            "mark": "과녁",
+            "none": "없음"
+          },
+          "iconPrefix": "hds-",
+          "default": "trophy-01",
+          "label": "아이콘",
+          "fig": {
+            "skip": true
+          }
+        },
+        "title": {
+          "type": "text",
+          "extract": false,
+          "label": "체크 개수",
+          "maxChars": 16,
+          "fig": {
+            "text": 0
+          }
+        },
+        "head": {
+          "type": "text",
+          "extract": false,
+          "label": "한 줄 요약",
+          "maxChars": 24,
+          "optional": true,
+          "fig": {
+            "text": 1
+          }
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "optional": true,
+          "fig": {
+            "text": 2
+          }
+        }
+      },
+      "fig": {
+        "items": "Frame 2147238983"
+      }
+    }
+  }
+}
