@@ -50,8 +50,12 @@
   ],
   "background": {
     "pc": {
-      "kind": "css",
-      "preset": "live-glow"
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-bg.jpg"
+    },
+    "mo": {
+      "kind": "image",
+      "src": "assets/hero/monthly-hunet-bg-mo.jpg"
     }
   }
 }
