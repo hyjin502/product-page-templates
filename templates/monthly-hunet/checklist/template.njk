@@ -1,0 +1,33 @@
+{% set bg = bgColor | hdsBg %}
+<section class="mh-checklist"{% if bg %} style="--mh-cl: {{ bg }}"{% endif %}>
+  <div class="mh-checklist__card">
+{% if badge %}
+    <p class="mh-checklist__ribbon"><img src="assets/monthly-hunet/checklist-ribbon.png" alt="" width="399" height="133"><span>{{ badge }}</span></p>
+{% endif %}
+    <h2 class="mh-checklist__title">{{ title | rt }}</h2>
+{% if items.length %}
+    <ul class="mh-checklist__box">
+{% for it in items %}
+      <li><label class="mh-checklist__item"><input type="checkbox"><span class="mh-checklist__ico" aria-hidden="true">{{ 'hds-square' | icon }}{{ 'hds-check-square-line' | icon }}</span><span>{{ it.text }}</span></label></li>
+{% endfor %}
+    </ul>
+{% endif %}
+{% if results.length %}
+    <ul class="mh-checklist__results">
+{% for r in results %}
+      <li class="mh-checklist__result">
+        <p class="mh-checklist__count">{{ 'hds-check-square-line' | icon }}<span>{{ r.title }}</span></p>
+        <div class="mh-checklist__text">
+{% if r.head %}
+          <p class="mh-checklist__head">{{ r.head }}</p>
+{% endif %}
+{% if r.desc %}
+          <p>{{ r.desc | rt }}</p>
+{% endif %}
+        </div>
+      </li>
+{% endfor %}
+    </ul>
+{% endif %}
+  </div>
+</section>

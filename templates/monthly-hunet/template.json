@@ -6,6 +6,7 @@
   "order": [
     "hero",
     "summary",
+    "checklist",
     {
       "label": "추천 대상",
       "pick": [

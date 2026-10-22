@@ -1,0 +1,47 @@
+/* PC — Figma 「20261008_월간휴넷 (Copy)」 checklist 25001:5308 · 보라 바탕 #6541F2(토큰 아님 — 배경색 칸 기본값, 제목 강조색도 같은 색 --mh-cl) · 위아래 120
+   흰 카드 860 · 위 80 아래 40 · 묶음 사이 24 · 리본(Figma 이미지 399×133 + 「잠깐 주목!」 24 bold 흰 글씨)이 카드 위로 51 겹쳐 올라가요
+   제목 32 bold 가운데(둘째 줄 강조색) · 체크 칸: 회색 bg-ghost 바탕 · 안쪽 40 · 항목 640 · 사이 8 · 흰 줄(둥근 4 · 그림자 0 1 2 5%) 16/40 · 네모 24 + 18 medium
+   결과 카드 720: 3열 사이 16 · violet/200(#F3F0FE) · 안쪽 24 · 체크 네모 + 18 bold · 요약 16 bold · 설명 16 regular (사이 8)
+   체크 항목은 눌러서 체크할 수 있어요(체크하면 체크 네모) */
+.mh-checklist { --mh-cl: #6541f2; display: flex; justify-content: center; padding: 120px var(--container-pad); background: var(--mh-cl); }
+.mh-checklist p { margin: 0; }
+.mh-checklist__card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; width: var(--body, 860px); max-width: 100%; padding: 85px 40px 40px; background: var(--static-white); color: var(--t-100); }
+.mh-checklist__ribbon { position: absolute; top: -56px; /* 리본 양쪽 접힌 끝(이미지 위에서 56)이 카드 윗선에 딱 맞게 — Figma 는 51 이라 5px 겹쳐 보였어요 */ left: 50%; display: grid; place-items: center; width: 399px; max-width: calc(100% + 40px); height: 133px; transform: translateX(-50%);
+  pointer-events: none; } /* 리본 그림은 <img> 로 (조립 페이지가 HTML 의 assets 경로만 옮겨서) */
+.mh-checklist__ribbon img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.mh-checklist__ribbon span { position: relative; color: var(--static-white); font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); white-space: nowrap; }
+.mh-checklist__title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); text-align: center; }
+.mh-checklist__title b { color: var(--mh-cl); }
+.mh-checklist__box { display: flex; flex-direction: column; gap: 8px; width: 720px; max-width: 100%; margin: 0; padding: 40px; list-style: none; background: var(--bg-ghost, #f4f4f5); }
+.mh-checklist__item { display: flex; align-items: center; gap: 8px; padding: 16px 40px; border-radius: 4px; background: var(--static-white); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); white-space: nowrap; cursor: pointer; } /* PC 는 Figma 처럼 한 줄(긴 문구는 오른쪽 여백까지) */
+.mh-checklist__item input { position: absolute; opacity: 0; pointer-events: none; }
+.mh-checklist__ico { position: relative; flex: none; width: 24px; height: 24px; color: var(--t-80); }
+.mh-checklist__ico svg { position: absolute; inset: 0; width: 24px; height: 24px; }
+.mh-checklist__ico svg + svg { opacity: 0; }
+.mh-checklist__item input:checked + .mh-checklist__ico { color: var(--mh-cl); }
+.mh-checklist__item input:checked + .mh-checklist__ico svg:first-child { opacity: 0; }
+.mh-checklist__item input:checked + .mh-checklist__ico svg + svg { opacity: 1; }
+.mh-checklist__item input:focus-visible + .mh-checklist__ico { outline: 2px solid var(--mh-cl); outline-offset: 2px; border-radius: 4px; }
+.mh-checklist__results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; width: 720px; max-width: 100%; margin: 0; padding: 0; list-style: none; }
+.mh-checklist__result { display: flex; flex-direction: column; gap: 16px; padding: 24px; background: #f3f0fe; } /* HDS violet/200 */
+.mh-checklist__count { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-checklist__count svg { flex: none; width: 24px; height: 24px; color: var(--t-80); }
+.mh-checklist__text { display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
+.mh-checklist__head { font-weight: 700; }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) { .mh-checklist { padding: 96px var(--container-pad); } .mh-checklist__item { white-space: normal; } }
+
+/* MO — 제안값(Figma MO 없음) · 카드 양옆 16 · 리본 작게 · 항목 16 · 결과 카드 세로로 */
+@media (max-width: 767px) {
+  .mh-checklist { padding: 80px 16px 60px; }
+  .mh-checklist__card { padding: 64px 16px 24px; gap: 20px; }
+  .mh-checklist__ribbon { top: -39px; width: 280px; height: 93px; } /* 56 × 280/399 */
+  .mh-checklist__ribbon span { font-size: 18px; }
+  .mh-checklist__title { font-size: 24px; }
+  .mh-checklist__box { padding: 16px; }
+  .mh-checklist__item { align-items: flex-start; padding: 14px 16px; font-size: 16px; white-space: normal; }
+  .mh-checklist__results { grid-template-columns: 1fr; gap: 8px; }
+  .mh-checklist__result { gap: 8px; padding: 20px; }
+}

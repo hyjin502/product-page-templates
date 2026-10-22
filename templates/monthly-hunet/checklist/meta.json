@@ -1,0 +1,84 @@
+{
+  "id": "monthly-hunet-checklist",
+  "section": "monthly-hunet",
+  "layout": "checklist",
+  "label": "체크리스트",
+  "order": 3,
+  "when": "「잠깐 주목!」 리본 · 체크 목록(눌러서 체크) · 체크 개수별 결과 카드 3개 — 보라 바탕 위 흰 카드",
+  "$figma": "Figma 「20261008_월간휴넷 (Copy)」 L7E8G2WNxMEN6QJcKEWclW · 작업 페이지 checklist 25001:5308 (PC 만 · 원본 템플릿 파일 세트 밖이라 figma 링크는 비워 둠)",
+  "figma": {
+    "pc": null,
+    "mo": null,
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "default": "#6541f2",
+      "extract": false,
+      "label": "배경색",
+      "note": "제목 둘째 줄 강조색도 같은 색"
+    },
+    "badge": {
+      "type": "text",
+      "optional": true,
+      "extract": false,
+      "label": "리본 문구",
+      "maxChars": 12
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "maxChars": 24,
+      "note": "**굵게** 로 감싼 부분은 강조색"
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "체크 항목",
+      "min": 0,
+      "max": 10,
+      "item": {
+        "text": {
+          "type": "text",
+          "extract": false,
+          "label": "문구",
+          "maxChars": 45
+        }
+      }
+    },
+    "results": {
+      "type": "list",
+      "extract": false,
+      "label": "결과 카드",
+      "min": 0,
+      "max": 3,
+      "item": {
+        "title": {
+          "type": "text",
+          "extract": false,
+          "label": "체크 개수",
+          "maxChars": 16
+        },
+        "head": {
+          "type": "text",
+          "extract": false,
+          "label": "한 줄 요약",
+          "maxChars": 24,
+          "optional": true
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "optional": true
+        }
+      }
+    }
+  }
+}
