@@ -25,7 +25,10 @@
       "type": "richtext",
       "extract": false,
       "label": "제목",
-      "maxLines": 1
+      "maxLines": 1,
+      "fig": {
+        "text": 0
+      }
     },
     "labelColor": {
       "type": "color",
@@ -46,53 +49,94 @@
           "type": "text",
           "extract": false,
           "label": "세션 이름",
-          "maxChars": 20
+          "maxChars": 20,
+          "fig": {
+            "text": 0
+          }
         },
         "time": {
           "type": "text",
           "extract": false,
           "label": "시간",
-          "maxChars": 30
+          "maxChars": 30,
+          "fig": {
+            "pc": {
+              "at": "텍스트",
+              "text": 0
+            },
+            "mo": {
+              "at": "Frame 121",
+              "text": 0
+            }
+          }
         },
         "heading": {
           "type": "richtext",
           "label": "세션 제목",
-          "note": "소제목·설명이 없으면 조금 작게(20) 보여요"
+          "note": "소제목·설명이 없으면 조금 작게(20) 보여요",
+          "fig": {
+            "like": "기업이 주목해야",
+            "text": 0
+          }
         },
         "subtitle": {
           "type": "text",
           "extract": false,
           "label": "소제목",
           "maxChars": 40,
-          "optional": true
+          "optional": true,
+          "fig": {
+            "like": "기업이 주목해야",
+            "text": 1
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
           "note": "엔터로 줄바꿈",
-          "optional": true
+          "optional": true,
+          "fig": {
+            "like": "- 산업별",
+            "text": 0
+          }
         },
         "image": {
           "type": "image",
           "label": "사진",
           "hint": "150×150",
           "optional": true,
-          "profiles": true
+          "profiles": true,
+          "fig": {
+            "at": "프로필",
+            "img": -1
+          }
         },
         "org": {
           "type": "text",
           "extract": false,
           "label": "소속 (사진 아래)",
           "maxChars": 20,
-          "optional": true
+          "optional": true,
+          "fig": {
+            "skip": true
+          }
         },
         "name": {
           "type": "text",
           "extract": false,
           "label": "이름 (사진 아래)",
           "maxChars": 20,
-          "optional": true
+          "optional": true,
+          "fig": {
+            "like": "리더스아카데미팀",
+            "text": 0,
+            "format": "{org}\n{name}"
+          }
         }
+      },
+      "fig": {
+        "items": ".",
+        "from": 1
       }
     }
   }

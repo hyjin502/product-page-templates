@@ -16,26 +16,41 @@
       "type": "richtext",
       "extract": false,
       "label": "제목",
-      "maxLines": 1
+      "maxLines": 1,
+      "fig": {
+        "at": "Register",
+        "text": 0
+      }
     },
     "subtitle": {
       "type": "richtext",
       "extract": false,
       "label": "설명",
-      "maxLines": 2
+      "maxLines": 2,
+      "fig": {
+        "at": "Register",
+        "text": 1
+      }
     },
     "highlight": {
       "type": "richtext",
       "extract": false,
       "label": "강조 문구 (굵게)",
       "maxLines": 1,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "skip": true
+      }
     },
     "typeLabel": {
       "type": "text",
       "extract": false,
       "label": "신청 구분 이름",
-      "maxChars": 10
+      "maxChars": 10,
+      "fig": {
+        "at": "Frame 80",
+        "text": 0
+      }
     },
     "types": {
       "type": "list",
@@ -48,10 +63,17 @@
           "type": "text",
           "extract": false,
           "label": "선택지",
-          "maxChars": 12
+          "maxChars": 12,
+          "fig": {
+            "text": 0
+          }
         }
       },
-      "note": "첫 번째가 선택된 상태로 보여요"
+      "note": "첫 번째가 선택된 상태로 보여요",
+      "fig": {
+        "items": "Frame 80",
+        "from": 1
+      }
     },
     "fields": {
       "type": "list",
@@ -64,16 +86,26 @@
           "type": "text",
           "extract": false,
           "label": "이름",
-          "maxChars": 8
+          "maxChars": 8,
+          "fig": {
+            "text": 0
+          }
         },
         "placeholder": {
           "type": "text",
           "extract": false,
           "label": "안내 문구",
-          "maxChars": 30
+          "maxChars": 30,
+          "fig": {
+            "text": 1
+          }
         }
       },
-      "note": "2열로 놓여요"
+      "note": "2열로 놓여요",
+      "fig": {
+        "items": "Frame 78",
+        "deep": true
+      }
     },
     "agreements": {
       "type": "list",
@@ -86,7 +118,10 @@
           "type": "text",
           "extract": false,
           "label": "문구",
-          "maxChars": 40
+          "maxChars": 40,
+          "fig": {
+            "text": 0
+          }
         },
         "checked": {
           "type": "toggle",
@@ -97,8 +132,15 @@
           "extract": false,
           "label": "링크 문구",
           "maxChars": 10,
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 1
+          }
         }
+      },
+      "fig": {
+        "items": "개인정보수집",
+        "reverse": true
       }
     },
     "ctas": {
@@ -112,14 +154,20 @@
           "type": "text",
           "extract": false,
           "label": "버튼 문구",
-          "maxChars": 14
+          "maxChars": 14,
+          "fig": {
+            "text": 0
+          }
         },
         "href": {
           "type": "url",
           "label": "링크"
         }
       },
-      "note": "마지막 버튼이 진한 버튼(화살표)이에요"
+      "note": "마지막 버튼이 진한 버튼(화살표)이에요",
+      "fig": {
+        "items": "BTN"
+      }
     }
   }
 }

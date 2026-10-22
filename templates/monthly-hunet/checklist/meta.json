@@ -20,14 +20,20 @@
       "default": "#6541f2",
       "extract": false,
       "label": "배경색",
-      "note": "제목 둘째 줄 강조색도 같은 색"
+      "note": "제목 둘째 줄 강조색도 같은 색",
+      "fig": {
+        "bg": true
+      }
     },
     "badge": {
       "type": "text",
       "optional": true,
       "extract": false,
       "label": "리본 문구",
-      "maxChars": 12
+      "maxChars": 12,
+      "fig": {
+        "layer": "잠깐 주목!"
+      }
     },
     "title": {
       "type": "richtext",
@@ -35,7 +41,10 @@
       "label": "제목",
       "maxLines": 2,
       "maxChars": 24,
-      "note": "**굵게** 로 감싼 부분은 강조색"
+      "note": "**굵게** 로 감싼 부분은 강조색",
+      "fig": {
+        "layer": "title"
+      }
     },
     "items": {
       "type": "list",
@@ -48,8 +57,14 @@
           "type": "text",
           "extract": false,
           "label": "문구",
-          "maxChars": 45
+          "maxChars": 45,
+          "fig": {
+            "text": 0
+          }
         }
+      },
+      "fig": {
+        "items": "2단"
       }
     },
     "results": {
@@ -63,20 +78,32 @@
           "type": "text",
           "extract": false,
           "label": "체크 개수",
-          "maxChars": 16
+          "maxChars": 16,
+          "fig": {
+            "text": 0
+          }
         },
         "head": {
           "type": "text",
           "extract": false,
           "label": "한 줄 요약",
           "maxChars": 24,
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 1
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 2
+          }
         }
+      },
+      "fig": {
+        "items": "Frame 2147238983"
       }
     }
   }

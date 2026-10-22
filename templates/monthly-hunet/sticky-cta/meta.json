@@ -16,28 +16,64 @@
       "type": "text",
       "extract": false,
       "label": "왼쪽 문구",
-      "maxChars": 40
+      "maxChars": 40,
+      "fig": {
+        "pc": {
+          "at": "Frame 55",
+          "text": 0
+        },
+        "mo": {
+          "text": 0
+        }
+      }
     },
     "icon": {
       "type": "text",
       "extract": false,
       "label": "앞 이모지",
       "maxChars": 2,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "pc": {
+          "at": "Frame 28",
+          "text": 0
+        },
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "before": {
       "type": "text",
       "extract": false,
       "label": "남은 날 앞 문구",
       "maxChars": 10,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "pc": {
+          "at": "Frame 28",
+          "text": 1
+        },
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "count": {
       "type": "text",
       "extract": false,
       "label": "남은 날 (빨간 칸)",
       "maxChars": 6,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "pc": {
+          "at": "Group 11",
+          "text": 0
+        },
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "ddayMo": {
       "type": "text",
@@ -45,14 +81,33 @@
       "label": "MO 남은 날 칸",
       "maxChars": 8,
       "optional": true,
-      "note": "MO 는 버튼 왼쪽 회색 칸 하나 (예: D-2) · 비우면 PC 「남은 날」"
+      "note": "MO 는 버튼 왼쪽 회색 칸 하나 (예: D-2) · 비우면 PC 「남은 날」",
+      "fig": {
+        "pc": {
+          "skip": true
+        },
+        "mo": {
+          "at": "Group",
+          "text": 0,
+          "format": "{ddayMo}"
+        }
+      }
     },
     "after": {
       "type": "text",
       "extract": false,
       "label": "남은 날 뒤 문구",
       "maxChars": 6,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "pc": {
+          "at": "Frame 28",
+          "text": 3
+        },
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "ctas": {
       "type": "list",
@@ -65,14 +120,27 @@
           "type": "text",
           "extract": false,
           "label": "버튼 문구",
-          "maxChars": 10
+          "maxChars": 10,
+          "fig": {
+            "text": 0
+          }
         },
         "href": {
           "type": "url",
           "label": "링크"
         }
       },
-      "note": "마지막 버튼이 빨간 버튼(red/700)이에요 · 2개면 앞 버튼은 회색"
+      "note": "마지막 버튼이 빨간 버튼(red/700)이에요 · 2개면 앞 버튼은 회색",
+      "fig": {
+        "tail": true,
+        "item": "btn_dark",
+        "pc": {
+          "items": "Frame 2147238988"
+        },
+        "mo": {
+          "items": "Frame 92"
+        }
+      }
     }
   },
   "stage": "sticky"

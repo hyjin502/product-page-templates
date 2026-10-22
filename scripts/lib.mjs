@@ -341,6 +341,7 @@ export function slimSpec(fields, all = false) {
     if (s.nth != null) o.nth = s.nth;
     if (s.scope) o.scope = { names: [].concat(s.scope.figmaLayer || []), nth: s.scope.nth || 0 };
     if (s.figmaLayer || s.figmaPath || (s.aliases || []).length) o.figmaLayer = true;
+    if (s.fig) o.fig = s.fig; // 자리로 찾기(페이지 템플릿 — figma-plugin/src/main.js 의 fig)
     if (s.type === 'list') o.item = slimSpec(s.item, all);
     out[k] = o;
   }

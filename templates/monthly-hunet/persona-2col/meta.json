@@ -19,7 +19,10 @@
       "optional": true,
       "default": "#f7f7f8",
       "extract": false,
-      "label": "배경색"
+      "label": "배경색",
+      "fig": {
+        "bg": true
+      }
     },
     "titleColor": {
       "type": "enum",
@@ -40,7 +43,10 @@
       "type": "richtext",
       "extract": false,
       "label": "제목",
-      "maxLines": 2
+      "maxLines": 2,
+      "fig": {
+        "text": 0
+      }
     },
     "cards": {
       "type": "list",
@@ -52,19 +58,36 @@
         "image": {
           "type": "image",
           "label": "아바타",
-          "hint": "72×72 원형"
+          "hint": "72×72 원형",
+          "fig": {
+            "img": 0
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
           "note": "엔터로 줄바꿈 · 2줄 권장",
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 0
+          }
         },
         "name": {
           "type": "text",
           "extract": false,
           "label": "대상",
-          "maxChars": 16
+          "maxChars": 16,
+          "fig": {
+            "text": 1
+          }
+        }
+      },
+      "fig": {
+        "pc": {
+          "items": "content"
+        },
+        "mo": {
+          "items": "Frame 2147238973"
         }
       }
     }

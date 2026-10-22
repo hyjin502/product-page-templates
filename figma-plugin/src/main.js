@@ -61,8 +61,8 @@ const textColorOf = (key) => HDS.text.find((c) => c.key === key) || null;
 const radiusOf = (key) => { const r = HDS.radius.find((x) => x.key === key); return r ? r.px : null; };
 function paint(css) {
   if (!css || css === 'transparent' || css === 'inherit') return null;
-  let m = /^#([0-9a-f]{6})$/i.exec(css);
-  if (m) { const n = parseInt(m[1], 16); return { type: 'SOLID', color: { r: (n >> 16 & 255) / 255, g: (n >> 8 & 255) / 255, b: (n & 255) / 255 } }; }
+  let m = /^#([0-9a-f]{6})([0-9a-f]{2})?$/i.exec(css);
+  if (m) { const n = parseInt(m[1], 16); return { type: 'SOLID', color: { r: (n >> 16 & 255) / 255, g: (n >> 8 & 255) / 255, b: (n & 255) / 255 }, opacity: m[2] ? parseInt(m[2], 16) / 255 : 1 }; }
   m = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+))?\s*\)$/i.exec(css);
   if (m) return { type: 'SOLID', color: { r: m[1] / 255, g: m[2] / 255, b: m[3] / 255 }, opacity: m[4] == null ? 1 : +m[4] };
   return null;
@@ -110,6 +110,70 @@ function neededImages(page, devices) {
   return [...out];
 }
 
+/* ---------- fig: 자리로 찾기 — 레이어 이름이 문구라서 바뀌는 페이지 템플릿(월간휴넷)용. meta 슬롯의 "fig"
+   at: 이 이름의 레이어 안에서(atNth 번째) · layer: 이 이름의 레이어(nth 번째) · text: 그 안 n 번째 글자 레이어(기본 0)
+   like: 이름이 이 글자로 시작하는 글자 레이어만 · first: 그 안 첫 번째로 보이는 레이어 · lines: 줄마다 글자 레이어 하나씩(남는 레이어는 숨김) · self: 목록 항목 자신이 글자 레이어
+   items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
+   bg: 바탕색(섹션 또는 at 레이어) · format: "{live} ({channel})" · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
+const figOf = (s, dev) => { const f = Object.assign({}, s.fig, s.fig[dev] || {}); return f.skip ? null : f; };
+/** 보이는 것 먼저, 없으면 숨긴 것까지 */
+function findSome(root, pred) { let r = findAll(root, pred); if (!r.length) { ALL = true; r = findAll(root, pred); ALL = false; } return r; }
+/** want: 'text' | 'img' — 같은 이름이 여럿이면 그걸 가진 레이어만 봐요(그림 묶음 안의 같은 이름 프레임 건너뛰기) */
+function figBase(node, f, want) {
+  const has = (n) => !want || (want === 'text' ? n.type === 'TEXT' || findSome(n, (x) => x.type === 'TEXT').length : hasImg(n) || findSome(n, hasImg).length);
+  let base = node;
+  if (f.at) base = findSome(node, (n) => clean(n.name) === f.at && has(n))[f.atNth || 0] || null;
+  if (base && f.layer) base = findSome(base, (n) => clean(n.name) === f.layer && has(n))[f.nth || 0] || null;
+  if (base && f.first) base = kids(base)[0] || null;
+  return base;
+}
+const pickDev = (val, dev) => (val && typeof val === 'object' && !Array.isArray(val) ? (dev === 'mo' ? (val.mo ?? val.pc) : (val.pc ?? val.mo)) : val);
+/** 「**굵게**」 표시를 빼고 그 자리(강조 색 칠할 곳)를 기억해요 */
+function rich(str) {
+  const marks = []; let out = '';
+  String(str).split('**').forEach((part, i) => { if (i % 2 && part) marks.push([out.length, out.length + part.length]); out += part; });
+  return { value: norm(out), marks };
+}
+function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) {
+  const f = figOf(s, dev);
+  if (!f) return;
+  const base = figBase(node, f, 'text');
+  if (!base) { if (has && diff) warn(label + ': 레이어를 못 찾았어요'); return; }
+  let str = pickDev(val, dev);
+  if (f.format) str = f.format.replace(/\{(\w+)\}/g, (_, k) => pickDev(content[k], dev) || '').replace(/\s*\(\s*\)/g, '').trim();
+  const ts = f.self ? (base.type === 'TEXT' ? [base] : []) : (base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && (!f.like || clean(n.name).startsWith(f.like))));
+  if (f.lines) {
+    if (!ts.length) { if (diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
+    const lines = str == null ? [] : String(str).split('\n');
+    ts.forEach((t, i) => {
+      if (i >= lines.length) { ops.push({ op: 'hide', node: t }); return; }
+      const line = i === ts.length - 1 ? lines.slice(i).join('\n') : lines[i]; // 레이어보다 줄이 많으면 마지막 레이어에 이어요
+      ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t }, rich(line)));
+    });
+    return;
+  }
+  const t = ts[f.text || 0];
+  if (!t) { if (has && diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
+  if (str == null || str === '') { if (kind.optional) ops.push({ op: 'hide', node: t }); return; }
+  ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t }, rich(str)));
+}
+function figMedia(node, s, val, dev, label, ops, warn) {
+  const f = figOf(s, dev);
+  if (!f) return;
+  const m = mediaSrc(val, dev);
+  if (!m) return;
+  const base = figBase(node, f, f.fill ? null : 'img');
+  if (!base) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
+  let img = base;
+  if (!f.fill) { const all = findSome(base, hasImg); img = hasImg(base) && !f.img ? base : all[(f.img || 0) < 0 ? all.length + f.img : f.img || 0] || null; }
+  if (!img) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
+  if (!img.visible) ops.push({ op: 'show', node: img });
+  if (f.fill && 'children' in img) for (const c of img.children) ops.push({ op: 'hide', node: c });
+  ops.push({ op: m.kind === 'video' ? 'video' : 'image', node: img, src: m.src, css: m.css });
+}
+/** 바탕색 값 → css (#hex 그대로 · HDS bg 키 · 버튼 팔레트 키) */
+const bgCss = (val) => (/^#/.test(val) ? val : ((HDS.bg || []).find((c) => c.key === val) || {}).value || (colorOf(val) || {}).hex || null);
+
 /* ---------- plan: 슬롯 값 → 바꿀 목록 */
 function plan(root, v, content, dev, warn) {
   TOP = root;
@@ -133,6 +197,32 @@ function plan(root, v, content, dev, warn) {
         if (d.what === 'boxColor') { const c = colorOf(val); if (c) ops.push({ op: 'fill', node: box, css: c.hex }, ...(c.on !== 'inherit' ? [{ op: 'textFill', node: t, css: c.on }] : [])); }
         if (d.what === 'boxLine') ops.push({ op: 'stroke', node: box, css: val === kind.noneValue ? null : (lineOf(val) || {}).value });
         if (d.what === 'boxRadius') { const px = radiusOf(val); if (px != null) ops.push({ op: 'radius', node: box, px }); }
+        continue;
+      }
+      if (s.fig) { // 자리로 찾기
+        if (kind.type === 'text' || kind.type === 'richtext') figText(node, s, kind, val, content, dev, has, diff, label, ops, warn);
+        else if ((kind.type === 'media' || kind.type === 'image') && has && diff) figMedia(node, s, val, dev, label, ops, warn);
+        else if (kind.type === 'color' && s.fig.bg && val && val !== kind.default) {
+          const f = figOf(s, dev); const base = f && (f.at ? figBase(node, f) : node);
+          if (base) ops.push({ op: 'fill', node: base, css: bgCss(val) });
+        } else if (kind.type === 'list' && Array.isArray(val)) {
+          const f = figOf(s, dev);
+          if (!f) continue;
+          const box = f.items === '.' ? node : figBase(node, { at: f.items, atNth: f.itemsNth });
+          let items = box && 'children' in box ? box.children.slice(f.from || 0) : [];
+          if (f.deep) items = items.flatMap((r) => ('children' in r ? r.children.slice() : []));
+          if (f.item) items = items.filter((n) => clean(n.name) === f.item);
+          if (f.reverse) items.reverse();
+          const list = f.tail ? val.slice(-items.length) : val; // tail: Figma 칸이 적으면 뒤쪽 값부터(MO 는 마지막 버튼만)
+          if (!items.length) { if (diff) warn(label + ': 목록 항목을 못 찾았어요'); continue; }
+          items.forEach((it, i) => {
+            if (i >= list.length) { ops.push({ op: 'hide', node: it }); return; }
+            ops.push({ op: 'show', node: it });
+            fill(s.item || {}, kind.item || {}, it, list[i] || {}, sample && sample[k] && sample[k][i], label + '[' + i + '].');
+            if (kind.item) itemDecor(kind.item, it, list[i] || {}, ops);
+          });
+          if (!f.tail && val.length > items.length) warn(label + ': Figma 에 ' + items.length + '개만 있어서 ' + (val.length - items.length) + '개는 못 넣었어요');
+        }
         continue;
       }
       if (kind.type === 'text' || kind.type === 'richtext') {
@@ -222,10 +312,16 @@ async function run(ops, images, warn) {
       if (o.op === 'hide') n.visible = false;
       else if (o.op === 'show') n.visible = true;
       else if (o.op === 'text') {
-        if (n.characters === o.value) continue; // 같은 문구면 덮어쓰지 않아요 (불필요한 오버라이드·시간 줄이기)
-        const fonts = n.characters.length ? n.getRangeAllFontNames(0, n.characters.length) : [n.fontName];
+        if (n.characters === o.value && !(o.marks && o.marks.length)) continue; // 같은 문구면 덮어쓰지 않아요 (불필요한 오버라이드·시간 줄이기)
+        const len = n.characters.length;
+        const fonts = len ? n.getRangeAllFontNames(0, len) : [n.fontName];
         for (const f of fonts) if (f !== figma.mixed) await figma.loadFontAsync(f);
+        // 원본 글자색이 두 가지(앞 · 끝)면 끝 색을 강조 색으로 봐요 — 「**굵게**」 자리에 칠해요
+        const first = len ? n.getRangeFills(0, 1) : null;
+        const last = len ? n.getRangeFills(len - 1, len) : null;
         n.characters = o.value;
+        if (first && first !== figma.mixed && o.value.length) n.setRangeFills(0, o.value.length, first);
+        if (o.marks && last && last !== figma.mixed && JSON.stringify(first) !== JSON.stringify(last)) for (const [a, b] of o.marks) if (b <= o.value.length) n.setRangeFills(a, b, last);
       } else if (o.op === 'prop') {
         const key = Object.keys(n.componentProperties).find((k) => k.split('#')[0] === o.key);
         if (key && n.componentProperties[key].value === o.value) continue;

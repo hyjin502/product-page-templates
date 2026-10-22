@@ -40,6 +40,15 @@
       "mo": {
         "maxLines": 1,
         "maxChars": 60
+      },
+      "fig": {
+        "pc": {
+          "skip": true
+        },
+        "mo": {
+          "at": "Source/타이틀영역",
+          "text": 0
+        }
       }
     },
     "title": {
@@ -52,6 +61,15 @@
       "mo": {
         "maxLines": 2,
         "maxChars": 26
+      },
+      "fig": {
+        "lines": true,
+        "pc": {
+          "at": "타이틀"
+        },
+        "mo": {
+          "at": "Frame 2147239014"
+        }
       }
     },
     "description": {
@@ -73,7 +91,11 @@
       "label": "메인 비주얼",
       "hint": "PC 980×580 · MO 343×203 둥근 모서리 · 이미지 또는 mp4 · 미리보기에서 이미지를 끌면 따라 움직여요(PC·MO 따로) · 확대해서 칸을 채워요 · 클릭하면 파일을 바꿔요",
       "figmaLayer": "Main",
-      "focus": true
+      "focus": true,
+      "fig": {
+        "layer": "Main",
+        "fill": true
+      }
     },
     "visualShade": {
       "type": "toggle",
@@ -92,13 +114,33 @@
         "maxLines": 1,
         "maxChars": 23
       },
-      "figmaLayer": "2025. 2. 25 (화) 오후 2"
+      "figmaLayer": "2025. 2. 25 (화) 오후 2",
+      "fig": {
+        "pc": {
+          "at": "날짜"
+        },
+        "mo": {
+          "at": "Frame 2147239015",
+          "text": 0
+        }
+      }
     },
     "live": {
       "type": "text",
       "extract": false,
       "label": "진행 방식",
-      "maxChars": 12
+      "maxChars": 12,
+      "fig": {
+        "pc": {
+          "at": "온라인라이브",
+          "text": 0
+        },
+        "mo": {
+          "at": "Frame 2147239015",
+          "text": 1,
+          "format": "{live} ({channel})"
+        }
+      }
     },
     "channel": {
       "type": "text",
@@ -107,7 +149,15 @@
       "label": "채널",
       "note": "PC 는 진행 방식 옆, MO 는 괄호 안에 보여요",
       "maxChars": 16,
-      "figmaLayer": "유튜브 ’휴넷TV’"
+      "figmaLayer": "유튜브 ’휴넷TV’",
+      "fig": {
+        "pc": {
+          "at": "유튜브"
+        },
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "youtube": {
       "type": "toggle",
@@ -122,7 +172,14 @@
       "label": "연사 사진 1",
       "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
       "pcOnly": true,
-      "profiles": true
+      "profiles": true,
+      "fig": {
+        "layer": "Source/Profile",
+        "nth": 0,
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "speaker2": {
       "type": "media",
@@ -131,7 +188,14 @@
       "label": "연사 사진 2",
       "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
       "pcOnly": true,
-      "profiles": true
+      "profiles": true,
+      "fig": {
+        "layer": "Source/Profile",
+        "nth": 1,
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "speaker3": {
       "type": "media",
@@ -140,7 +204,14 @@
       "label": "연사 사진 3",
       "pcOnly": true,
       "hint": "PC 비주얼 오른쪽 아래 120×120 · 최대 3장, 오른쪽부터 붙어요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요 · MO 에는 없어요",
-      "profiles": true
+      "profiles": true,
+      "fig": {
+        "layer": "Source/Profile",
+        "nth": 2,
+        "mo": {
+          "skip": true
+        }
+      }
     },
     "ctas": {
       "type": "list",
@@ -153,7 +224,11 @@
         "label": {
           "type": "text",
           "label": "버튼 문구",
-          "maxChars": 14
+          "maxChars": 14,
+          "fig": {
+            "self": false,
+            "text": 0
+          }
         },
         "href": {
           "type": "url",
@@ -195,6 +270,15 @@
           "note": "HDS 아이콘 · 기본은 없음",
           "iconPrefix": "hds-"
         }
+      },
+      "fig": {
+        "pc": {
+          "skip": true
+        },
+        "mo": {
+          "items": "Frame 2147239016",
+          "item": "action button"
+        }
       }
     },
     "background": {
@@ -203,7 +287,10 @@
       "extract": false,
       "optional": true,
       "label": "위쪽 배경",
-      "hint": "위쪽 어두운 띠 · 기본은 CSS 배경 「라이브 글로우」(천천히 움직여요) · 다른 CSS 배경이나 이미지·mp4 로 바꿀 수 있어요. 아래는 흰 바탕이에요. MO 를 비우면 PC 것을 써요"
+      "hint": "위쪽 어두운 띠 · 기본은 CSS 배경 「라이브 글로우」(천천히 움직여요) · 다른 CSS 배경이나 이미지·mp4 로 바꿀 수 있어요. 아래는 흰 바탕이에요. MO 를 비우면 PC 것을 써요",
+      "fig": {
+        "layer": "bg"
+      }
     }
   }
 }

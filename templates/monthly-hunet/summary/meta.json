@@ -17,7 +17,10 @@
       "extract": false,
       "label": "제목",
       "maxLines": 3,
-      "note": "굵게 · 줄마다 한 칸"
+      "note": "굵게 · 줄마다 한 칸",
+      "fig": {
+        "text": 0
+      }
     },
     "paragraphs": {
       "type": "list",
@@ -29,10 +32,21 @@
         "text": {
           "type": "richtext",
           "label": "문단",
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "self": true
+          }
         }
       },
-      "note": "문단 사이는 16px 띄워요"
+      "note": "문단 사이는 16px 띄워요",
+      "fig": {
+        "pc": {
+          "items": "2단"
+        },
+        "mo": {
+          "items": "Frame 2147239019"
+        }
+      }
     }
   }
 }

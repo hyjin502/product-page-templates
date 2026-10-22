@@ -16,20 +16,43 @@
       "type": "richtext",
       "extract": false,
       "label": "제목",
-      "maxLines": 1
+      "maxLines": 1,
+      "fig": {
+        "pc": {
+          "at": "Benefits",
+          "text": 0
+        },
+        "mo": {
+          "at": "타이틀",
+          "text": 0
+        }
+      }
     },
     "subtitle": {
       "type": "richtext",
       "extract": false,
       "label": "설명",
-      "maxLines": 2
+      "maxLines": 2,
+      "fig": {
+        "pc": {
+          "at": "Benefits",
+          "text": 1
+        },
+        "mo": {
+          "at": "타이틀",
+          "text": 1
+        }
+      }
     },
     "highlight": {
       "type": "richtext",
       "extract": false,
       "label": "강조 문구 (설명 뒤에 굵게)",
       "maxLines": 1,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "skip": true
+      }
     },
     "items": {
       "type": "list",
@@ -41,25 +64,51 @@
         "image": {
           "type": "image",
           "label": "이미지",
-          "hint": "회색 칸(410×200) 가운데에 놓여요 · 배경 없는 PNG 권장"
+          "hint": "회색 칸(410×200) 가운데에 놓여요 · 배경 없는 PNG 권장",
+          "fig": {
+            "at": "Frame 39 Copy",
+            "img": 0
+          }
         },
         "badge": {
           "type": "richtext",
           "label": "뱃지",
           "note": "오른쪽 위 빨간 칸 · 2줄 권장",
-          "optional": true
+          "optional": true,
+          "fig": {
+            "at": "Group 27",
+            "text": 0
+          }
         },
         "title": {
           "type": "text",
           "extract": false,
           "label": "제목",
-          "maxChars": 30
+          "maxChars": 30,
+          "fig": {
+            "at": "Group 7",
+            "text": 0
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
           "note": "엔터로 줄바꿈",
-          "optional": true
+          "optional": true,
+          "fig": {
+            "at": "Group 7",
+            "text": 1
+          }
+        }
+      },
+      "fig": {
+        "pc": {
+          "items": "Gift"
+        },
+        "mo": {
+          "items": "Benefits",
+          "itemsNth": 1,
+          "reverse": true
         }
       }
     }

@@ -16,13 +16,33 @@
       "type": "richtext",
       "extract": false,
       "label": "제목",
-      "maxLines": 1
+      "maxLines": 1,
+      "fig": {
+        "pc": {
+          "at": "Title",
+          "text": 0
+        },
+        "mo": {
+          "at": "Frame 116",
+          "text": 0
+        }
+      }
     },
     "subtitle": {
       "type": "richtext",
       "extract": false,
       "label": "설명",
-      "maxLines": 3
+      "maxLines": 3,
+      "fig": {
+        "pc": {
+          "at": "Title",
+          "text": 1
+        },
+        "mo": {
+          "at": "Frame 116",
+          "text": 1
+        }
+      }
     },
     "items": {
       "type": "list",
@@ -34,28 +54,70 @@
         "image": {
           "type": "image",
           "label": "썸네일",
-          "hint": "410×217"
+          "hint": "410×217",
+          "fig": {
+            "first": true,
+            "fill": true
+          }
         },
         "title": {
           "type": "richtext",
           "label": "제목",
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "pc": {
+              "at": "Text",
+              "text": 0
+            },
+            "mo": {
+              "at": "Group 4",
+              "text": 0
+            }
+          }
         },
         "desc": {
           "type": "text",
           "extract": false,
           "label": "설명",
-          "maxChars": 80
+          "maxChars": 80,
+          "fig": {
+            "pc": {
+              "at": "Text",
+              "text": 1
+            },
+            "mo": {
+              "at": "Group 4",
+              "text": 1
+            }
+          }
         },
         "date": {
           "type": "text",
           "extract": false,
           "label": "기간",
-          "maxChars": 30
+          "maxChars": 30,
+          "fig": {
+            "pc": {
+              "at": "Text",
+              "text": 2
+            },
+            "mo": {
+              "at": "Group 4",
+              "text": 2
+            }
+          }
         },
         "href": {
           "type": "url",
           "label": "링크"
+        }
+      },
+      "fig": {
+        "pc": {
+          "items": "1줄"
+        },
+        "mo": {
+          "items": "썸네일"
         }
       }
     },
