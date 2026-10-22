@@ -11,7 +11,7 @@
 .mh-sticky__btns { display: flex; gap: 8px; }
 .mh-sticky__btn { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 20px; border-radius: 8px; background: var(--bg-faint); color: var(--t-100);
   font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; }
-.mh-sticky__btn--dark { min-width: 111px; background: var(--gray-1600); color: var(--static-white); }
+.mh-sticky__btn--dark { min-width: 111px; background: var(--error); color: var(--static-white); } /* Figma red/700 #FA2E43 「무료 신청하기」 */
 
 /* MO — Figma 637:4276 · 화면 폭 흰 판(위 둥근 8 · 위로 그림자) · 위 문구 2줄 · 아래 회색 칸(남은 날) + 빨간 버튼 하나(마지막 버튼)
    PC 의 첫 번째 버튼은 MO 에서 숨겨요(Figma MO 는 버튼 하나) */
@@ -25,5 +25,5 @@
     color: var(--error); font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); }
   .mh-sticky__btns { flex: 1; }
   .mh-sticky__btn:not(:last-child) { display: none; }
-  .mh-sticky__btn--dark { flex: 1; border-radius: 4px; background: var(--error); }
+  .mh-sticky__btn--dark { flex: 1; border-radius: 4px; }
 }
