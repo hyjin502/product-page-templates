@@ -50,6 +50,16 @@ function listItems(root, s) {
   return items;
 }
 const hasImg = (n) => 'fills' in n && Array.isArray(n.fills) && n.fills.some((f) => (f.type === 'IMAGE' || f.type === 'VIDEO') && f.visible !== false);
+/** 사진 채우기 위에 겹친 그라데이션 채우기들(= 그늘) — 없으면 null */
+function overlayOf(x) {
+  const f = 'fills' in x && Array.isArray(x.fills) ? x.fills : null;
+  if (!f) return null;
+  let li = -1;
+  f.forEach((p, i) => { if (p.visible !== false && (p.type === 'IMAGE' || p.type === 'VIDEO')) li = i; });
+  if (li < 0) return null;
+  const top = f.slice(li + 1).filter((p) => p.visible !== false && /^GRADIENT/.test(p.type));
+  return top.length ? top : null;
+}
 /** 채우기를 꺼 둔 이미지 자리도 (Figma 에서 사진 채우기 눈을 끈 곳 — 월간휴넷 아젠다 MO 세션 2) */
 const hasImgAny = (n) => 'fills' in n && Array.isArray(n.fills) && n.fills.some((f) => f.type === 'IMAGE' || f.type === 'VIDEO');
 const textOf = (n) => (n && n.type === 'TEXT' ? n : n && findAll(n, (x) => x.type === 'TEXT')[0]) || null;
@@ -184,12 +194,17 @@ function figMedia(node, s, val, dev, label, ops, warn, content, key) {
   if (!img) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
   if (!img.visible) ops.push({ op: 'show', node: img });
   if (f.fill && 'children' in img) for (const c of img.children) {
-    // 그라데이션(어두운 덮개)이 있는 레이어는 남기고 그 안의 사진만 빼요 — 히어로 비주얼 아래 그늘 · 나머지는 숨김
+    // 사진 위에 겹친 그라데이션(그늘)만 남겨요 — 그 레이어는 그라데이션만, 그걸 감싼 묶음은 바탕 없이, 나머지는 숨김 (히어로 비주얼 아래 그늘)
     if (!c.visible) continue;
-    const layers = [c].concat('findAll' in c ? c.findAll(() => true) : []);
-    const grad = layers.some((x) => x.visible && 'fills' in x && Array.isArray(x.fills) && x.fills.some((p) => p.visible !== false && /^GRADIENT/.test(p.type)));
-    if (!grad) { ops.push({ op: 'hide', node: c }); continue; }
-    for (const x of layers) if (hasImgAny(x)) ops.push({ op: 'stripImages', node: x });
+    const all = [c].concat('findAll' in c ? c.findAll((x) => x.visible) : []);
+    const keep = all.filter((x) => overlayOf(x));
+    if (!keep.length) { ops.push({ op: 'hide', node: c }); continue; }
+    const holds = (x) => keep.some((k) => { let y = k; while (y) { if (y === x) return true; y = y.parent; } return false; });
+    for (const x of all) {
+      if (overlayOf(x)) ops.push({ op: 'setFills', node: x, paints: overlayOf(x) });
+      else if (holds(x)) { if ('fills' in x) ops.push({ op: 'setFills', node: x, paints: [] }); }
+      else if (x.parent && holds(x.parent)) ops.push({ op: 'hide', node: x });
+    }
   }
   ops.push({ op: m.kind === 'video' ? 'video' : 'image', node: img, src: m.src, css: m.css });
 }
@@ -416,6 +431,7 @@ async function run(ops, images, warn) {
         const p = paint(o.css);
         n.strokes = p ? [p] : [];
         if (p && n.type !== 'LINE' && n.type !== 'VECTOR') { n.strokeWeight = 1; n.strokeAlign = 'INSIDE'; }
+      } else if (o.op === 'setFills') { n.fills = o.paints;
       } else if (o.op === 'stripImages') { n.fills = n.fills.filter((p) => p.type !== 'IMAGE' && p.type !== 'VIDEO');
       } else if (o.op === 'appendText') { // 마지막 줄 글자 레이어 뒤에 새 문단으로 이어 붙여요(인스턴스 안에는 레이어를 더할 수 없어서)
         if (!n.visible) { const vis = n.parent.children.filter((c) => c.type === 'TEXT' && c.visible); n = vis[vis.length - 1] || n; } // 제목이 한 줄이라 마지막 줄 레이어를 숨겼으면 보이는 마지막 줄에
