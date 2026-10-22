@@ -100,10 +100,10 @@
     "iconColor": {
       "type": "color",
       "palette": "700",
-      "default": "red/700",
       "extract": false,
       "label": "아이콘 색",
-      "note": "HDS 원색 700번"
+      "note": "HDS 원색 700번 · 비우면 Figma 기본 색(검정 80%)",
+      "optional": true
     }
   }
 }
