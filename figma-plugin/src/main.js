@@ -115,7 +115,7 @@ function neededImages(page, devices) {
 /* ---------- fig: 자리로 찾기 — 레이어 이름이 문구라서 바뀌는 페이지 템플릿(월간휴넷)용. meta 슬롯의 "fig"
    at: 이 이름의 레이어 안에서(atNth 번째) · layer: 이 이름의 레이어(nth 번째) · text: 그 안 n 번째 글자 레이어(기본 0)
    like: 이름이 이 글자로 시작하는 글자 레이어만 · first: 그 안 첫 번째로 보이는 레이어 · lines: 줄마다 글자 레이어 하나씩(남는 레이어는 숨김) · self: 목록 항목 자신이 글자 레이어
-   items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
+   items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · row: [칸 이름들] 사진 줄을 오른쪽부터 채움 · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
    bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · "{headingMo|heading}"(앞이 비면 뒤) · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
 const figOf = (s, dev) => { const f = Object.assign({}, s.fig, s.fig[dev] || {}); return f.skip ? null : f; };
 /** 보이는 것 먼저, 없으면 숨긴 것까지 */
@@ -159,12 +159,19 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
   if (str == null || str === '') { if (kind.optional) ops.push({ op: 'hide', node: t }); return; }
   ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t, accent: f.accent ? bgCss(pickDev(content[f.accent], dev) || '') : null }, rich(str)));
 }
-function figMedia(node, s, val, dev, label, ops, warn) {
+function figMedia(node, s, val, dev, label, ops, warn, content, key) {
   const f = figOf(s, dev);
   if (!f) return;
   const m = mediaSrc(val, dev);
   if (!m) return;
-  const base = figBase(node, f, f.fill ? null : 'img');
+  let base;
+  if (f.row) { // row: 이 이름 레이어 줄(숨긴 것 포함)을 오른쪽부터 채워요 — 사진이 있는 칸 수만큼, 남는 왼쪽 칸은 숨김(히어로 연사 1~3)
+    ALL = true; const L = findAll(node, (n) => clean(n.name) === f.layer); ALL = false;
+    const present = f.row.filter((k) => mediaSrc(content[k], dev));
+    const start = Math.max(0, L.length - present.length);
+    L.forEach((n, i) => ops.push({ op: i < start ? 'hide' : 'show', node: n }));
+    base = L[start + present.indexOf(key)] || null;
+  } else base = figBase(node, f, f.fill ? null : 'img');
   if (!base) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
   let img = base;
   if (!f.fill) { let all = findSome(base, hasImg); if (!all.length) all = findSome(base, hasImgAny); img = hasImgAny(base) && !f.img ? base : all[(f.img || 0) < 0 ? all.length + f.img : f.img || 0] || null; }
@@ -235,7 +242,7 @@ function plan(root, v, content, dev, warn) {
       }
       if (s.fig) { // 자리로 찾기
         if (kind.type === 'text' || kind.type === 'richtext') figText(node, s, kind, val, content, dev, has, diff, label, ops, warn);
-        else if ((kind.type === 'media' || kind.type === 'image') && has && val) figMedia(node, s, val, dev, label, ops, warn); // 페이지 템플릿은 샘플 사진이 Figma 원본과 달라서 늘 넣어요
+        else if ((kind.type === 'media' || kind.type === 'image') && has && val) figMedia(node, s, val, dev, label, ops, warn, content, k); // 페이지 템플릿은 샘플 사진이 Figma 원본과 달라서 늘 넣어요
         else if (kind.type === 'enum' && s.fig.sets) figIcon(node, s, kind, val, dev, label, ops, warn);
         else if ((kind.type === 'color' || kind.type === 'enum') && (s.fig.bg || s.fig.paint)) figColor(node, s, kind, val, dev, label, ops, warn);
         else if (kind.type === 'list' && Array.isArray(val)) {

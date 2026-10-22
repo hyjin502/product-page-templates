@@ -175,7 +175,12 @@
       "profiles": true,
       "fig": {
         "layer": "Source/Profile",
-        "nth": 0,
+        "row": [
+          "speaker1",
+          "speaker2",
+          "speaker3"
+        ],
+        "fill": true,
         "mo": {
           "skip": true
         }
@@ -191,7 +196,12 @@
       "profiles": true,
       "fig": {
         "layer": "Source/Profile",
-        "nth": 1,
+        "row": [
+          "speaker1",
+          "speaker2",
+          "speaker3"
+        ],
+        "fill": true,
         "mo": {
           "skip": true
         }
@@ -207,7 +217,12 @@
       "profiles": true,
       "fig": {
         "layer": "Source/Profile",
-        "nth": 2,
+        "row": [
+          "speaker1",
+          "speaker2",
+          "speaker3"
+        ],
+        "fill": true,
         "mo": {
           "skip": true
         }
