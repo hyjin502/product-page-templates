@@ -518,8 +518,11 @@ async function build(page, images, devices) {
       // MO 레이어 구조가 PC 와 달라 매핑을 PC 로만 맞춘 섹션(extractFrom: pc)은 MO 문구를 건드리지 않아요
       const moSkip = dev === 'mo' && v.extractFrom === 'pc';
       if (moSkip && !same(sec.content || v.sample, v.sample)) warn('MO 는 레이어 구조가 PC 와 달라 문구를 바꾸지 않았어요(Figma 원본 그대로)');
-      const ops = moSkip ? [] : plan(inst, v, sec.content || v.sample, dev, warn);
-      await run(ops, images, warn);
+      // 값 넣기에서 오류가 나도 섹션은 프레임에 넣고 다음 섹션을 계속 만들어요(오류 내용은 경고로)
+      try {
+        const ops = moSkip ? [] : plan(inst, v, sec.content || v.sample, dev, warn);
+        await run(ops, images, warn);
+      } catch (e) { warn('값을 넣다 멈췄어요 — ' + String(e && e.message || e).slice(0, 160)); }
       frame.appendChild(inst);
       inst.x = Math.round((W - inst.width) / 2);
       inst.y = yCursor;

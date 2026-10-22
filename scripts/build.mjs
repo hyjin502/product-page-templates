@@ -123,9 +123,9 @@ function buildLibrary(reg, env, baseCss) {
 
 /* ---------------------------------------------------------------- pages */
 
-/** 렌더된 HTML의 로컬 src 를 페이지 폴더 assets/ 로 복사하고 경로를 맞춰요 */
+/** 렌더된 HTML의 로컬 src · srcset · poster 를 페이지 폴더 assets/ 로 복사하고 경로를 맞춰요 */
 function collectAssets(html, pageFile, outDir) {
-  return html.replace(/\bsrc="([^"]+)"/g, (m, src) => {
+  return html.replace(/\b(src|srcset|poster)="([^"]+)"/g, (m, attr, src) => { // srcset = MO 배경(<picture><source>) · poster = 영상 첫 화면
     if (/^(https?:|data:|\/\/)/.test(src)) return m;
     const candidates = [path.resolve(path.dirname(pageFile), src), path.resolve(ROOT, src)];
     const file = candidates.find((f) => fs.existsSync(f));
@@ -134,7 +134,7 @@ function collectAssets(html, pageFile, outDir) {
     const target = rel.startsWith('assets' + path.sep) ? rel : path.join('assets', 'img', path.basename(file));
     fs.mkdirSync(path.join(outDir, path.dirname(target)), { recursive: true });
     fs.copyFileSync(file, path.join(outDir, target));
-    return `src="${target.split(path.sep).join('/')}"`;
+    return `${attr}="${target.split(path.sep).join('/')}"`;
   });
 }
 
