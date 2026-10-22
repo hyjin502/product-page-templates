@@ -83,6 +83,26 @@
       "mo": {
         "maxLines": 1,
         "maxChars": 60
+      },
+      "fig": {
+        "pc": {
+          "at": "타이틀",
+          "append": {
+            "size": 20,
+            "style": "Medium",
+            "lh": 150,
+            "gap": 20
+          }
+        },
+        "mo": {
+          "at": "Frame 2147239014",
+          "append": {
+            "size": 16,
+            "style": "Medium",
+            "lh": 150,
+            "gap": 20
+          }
+        }
       }
     },
     "visual": {

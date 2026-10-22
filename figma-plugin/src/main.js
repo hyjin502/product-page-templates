@@ -116,7 +116,7 @@ function neededImages(page, devices) {
    at: 이 이름의 레이어 안에서(atNth 번째) · layer: 이 이름의 레이어(nth 번째) · text: 그 안 n 번째 글자 레이어(기본 0)
    like: 이름이 이 글자로 시작하는 글자 레이어만 · first: 그 안 첫 번째로 보이는 레이어 · lines: 줄마다 글자 레이어 하나씩(남는 레이어는 숨김) · self: 목록 항목 자신이 글자 레이어
    items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · row: [칸 이름들] 사진 줄을 오른쪽부터 채움 · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
-   bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · "{headingMo|heading}"(앞이 비면 뒤) · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
+   append: { size, style, lh, gap } — 칸이 없는 문구를 마지막 글자 레이어 뒤 새 문단으로 · bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · "{headingMo|heading}"(앞이 비면 뒤) · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
 const figOf = (s, dev) => { const f = Object.assign({}, s.fig, s.fig[dev] || {}); return f.skip ? null : f; };
 /** 보이는 것 먼저, 없으면 숨긴 것까지 */
 function findSome(root, pred) { let r = findAll(root, pred); if (!r.length) { ALL = true; r = findAll(root, pred); ALL = false; } return r; }
@@ -154,6 +154,12 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
     });
     return;
   }
+  if (f.append) { // append: Figma 에 칸이 없는 문구를 이 묶음의 마지막 글자 레이어 뒤에 새 문단으로(히어로 하단 문구)
+    const last = ts[ts.length - 1];
+    if (!last) { if (has && diff) warn(label + ': 붙일 글자 레이어를 못 찾았어요'); return; }
+    if (str != null && str !== '') ops.push(Object.assign({ op: 'appendText', node: last, value: rich(str).value }, f.append));
+    return;
+  }
   const t = ts[f.text || 0];
   if (!t) { if (has && diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
   if (str == null || str === '') { if (kind.optional) ops.push({ op: 'hide', node: t }); return; }
@@ -177,7 +183,14 @@ function figMedia(node, s, val, dev, label, ops, warn, content, key) {
   if (!f.fill) { let all = findSome(base, hasImg); if (!all.length) all = findSome(base, hasImgAny); img = hasImgAny(base) && !f.img ? base : all[(f.img || 0) < 0 ? all.length + f.img : f.img || 0] || null; }
   if (!img) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
   if (!img.visible) ops.push({ op: 'show', node: img });
-  if (f.fill && 'children' in img) for (const c of img.children) ops.push({ op: 'hide', node: c });
+  if (f.fill && 'children' in img) for (const c of img.children) {
+    // 그라데이션(어두운 덮개)이 있는 레이어는 남기고 그 안의 사진만 빼요 — 히어로 비주얼 아래 그늘 · 나머지는 숨김
+    if (!c.visible) continue;
+    const layers = [c].concat('findAll' in c ? c.findAll(() => true) : []);
+    const grad = layers.some((x) => x.visible && 'fills' in x && Array.isArray(x.fills) && x.fills.some((p) => p.visible !== false && /^GRADIENT/.test(p.type)));
+    if (!grad) { ops.push({ op: 'hide', node: c }); continue; }
+    for (const x of layers) if (hasImgAny(x)) ops.push({ op: 'stripImages', node: x });
+  }
   ops.push({ op: m.kind === 'video' ? 'video' : 'image', node: img, src: m.src, css: m.css });
 }
 /** 아이콘 모양 enum — sets: { "check-circle": "<HDS 세트 key>" }, 값 "<세트>-solid|line" · 기본값이면 Figma 원본 그대로 */
@@ -367,7 +380,7 @@ async function iconSet(key) { if (!(key in iconSets)) iconSets[key] = await figm
 async function run(ops, images, warn) {
   for (const o of ops) {
     try {
-      const n = o.node;
+      let n = o.node;
       if (o.op === 'hide') n.visible = false;
       else if (o.op === 'show') n.visible = true;
       else if (o.op === 'text') {
@@ -403,6 +416,22 @@ async function run(ops, images, warn) {
         const p = paint(o.css);
         n.strokes = p ? [p] : [];
         if (p && n.type !== 'LINE' && n.type !== 'VECTOR') { n.strokeWeight = 1; n.strokeAlign = 'INSIDE'; }
+      } else if (o.op === 'stripImages') { n.fills = n.fills.filter((p) => p.type !== 'IMAGE' && p.type !== 'VIDEO');
+      } else if (o.op === 'appendText') { // 마지막 줄 글자 레이어 뒤에 새 문단으로 이어 붙여요(인스턴스 안에는 레이어를 더할 수 없어서)
+        if (!n.visible) { const vis = n.parent.children.filter((c) => c.type === 'TEXT' && c.visible); n = vis[vis.length - 1] || n; } // 제목이 한 줄이라 마지막 줄 레이어를 숨겼으면 보이는 마지막 줄에
+        const len = n.characters.length;
+        const fonts = len ? n.getRangeAllFontNames(0, len) : [n.fontName];
+        for (const f of fonts) if (f !== figma.mixed) await figma.loadFontAsync(f);
+        const fam = (fonts.find((f) => f !== figma.mixed) || {}).family;
+        const font = { family: fam, style: o.style || 'Medium' };
+        await figma.loadFontAsync(font);
+        n.insertCharacters(len, '\n' + o.value, 'BEFORE');
+        const a = len + 1, b = n.characters.length;
+        n.setRangeFontName(a, b, font);
+        if (o.size) n.setRangeFontSize(a, b, o.size);
+        if (o.lh) n.setRangeLineHeight(a, b, { unit: 'PERCENT', value: o.lh });
+        if (o.gap != null) n.paragraphSpacing = o.gap;
+        wrapFit(n);
       } else if (o.op === 'vectorsFill') { // 아이콘 색 — 그 안의 그림 선·면 (아이콘을 바꾼 뒤라도 지금 있는 것)
         const p = paint(o.css);
         for (const v of n.findAll((x) => x.type === 'VECTOR' || x.type === 'BOOLEAN_OPERATION' || x.type === 'LINE')) { if (v.type === 'LINE') v.strokes = p ? [p] : []; else v.fills = p ? [p] : []; }
@@ -540,6 +569,8 @@ async function build(page, images, devices) {
         const ops = moSkip ? [] : plan(inst, v, sec.content || v.sample, dev, warn);
         await run(ops, images, warn);
       } catch (e) { warn('값을 넣다 멈췄어요 — ' + String(e && e.message || e).slice(0, 160)); }
+      // 세로 오토레이아웃인데 높이가 고정이면 내용 높이로(문구가 줄면 아래 빈 공간이 남지 않게 — 월간휴넷 소개 글 PC 655 고정)
+      try { if (inst.layoutMode === 'VERTICAL' && inst.primaryAxisSizingMode === 'FIXED' && inst.children.some((c) => c.visible && c.layoutPositioning !== 'ABSOLUTE')) inst.primaryAxisSizingMode = 'AUTO'; /* 안이 모두 절대 위치면(체크리스트 리본형) 그대로 */ } catch (e) { /* 바꿀 수 없으면 그대로 */ }
       frame.appendChild(inst);
       inst.x = Math.round((W - inst.width) / 2);
       inst.y = yCursor;
