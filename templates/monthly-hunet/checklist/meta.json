@@ -5,10 +5,9 @@
   "label": "체크리스트",
   "order": 3,
   "when": "「잠깐 주목!」 리본 · 체크 목록(눌러서 체크) · 체크 개수별 결과 카드 3개 — 보라 바탕 위 흰 카드",
-  "$figma": "Figma 「20261008_월간휴넷 (Copy)」 L7E8G2WNxMEN6QJcKEWclW · 작업 페이지 checklist 25001:5308 (PC 만 · 원본 템플릿 파일 세트 밖이라 figma 링크는 비워 둠)",
   "figma": {
-    "pc": null,
-    "mo": null,
+    "pc": "668:6018",
+    "mo": "668:6021",
     "tb": null
   },
   "body": 860,
