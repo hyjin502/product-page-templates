@@ -72,6 +72,24 @@
       "name": "심현정",
       "src": "assets/profiles/p13.jpg",
       "figma": "637:4317"
+    },
+    {
+      "key": "p14",
+      "name": "이효나",
+      "src": "assets/profiles/p14.jpg",
+      "figma": "692:6314"
+    },
+    {
+      "key": "p15",
+      "name": "정은혜",
+      "src": "assets/profiles/p15.jpg",
+      "figma": "692:6323"
+    },
+    {
+      "key": "p16",
+      "name": "박용호",
+      "src": "assets/profiles/p16.jpg",
+      "figma": "692:6330"
     }
   ]
 }

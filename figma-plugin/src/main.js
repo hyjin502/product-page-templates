@@ -142,7 +142,7 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
   const base = figBase(node, f, 'text');
   if (!base) { if (has && diff) warn(label + ': 레이어를 못 찾았어요'); return; }
   let str = pickDev(val, dev);
-  if (f.format) str = f.format.replace(/\{([\w|]+)\}/g, (_, ks) => ks.split('|').map((k) => pickDev(content[k], dev)).find((x) => x != null && x !== '') || '').replace(/\s*\(\s*\)/g, '').trim(); // {a|b} = a, 비면 b
+  if (f.format) str = f.format.replace(/\{([\w|]+)\}/g, (_, ks) => ks.split('|').map((k) => pickDev(content[k], dev)).find((x) => x != null && x !== '') || '').replace(/\s*\(\s*\)/g, '').replace(/\*\*\s*\*\*/g, '').trim(); // {a|b} = a, 비면 b · 빈 「**…**」·「()」는 지워요
   const ts = f.self ? (base.type === 'TEXT' ? [base] : []) : (base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && (!f.like || clean(n.name).startsWith(f.like))));
   if (f.lines) {
     if (!ts.length) { if (diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
@@ -375,6 +375,14 @@ async function run(ops, images, warn) {
         if (first && first !== figma.mixed && o.value.length) n.setRangeFills(0, o.value.length, first);
         const acc = o.accent ? [paint(o.accent)].filter(Boolean) : (last && last !== figma.mixed && JSON.stringify(first) !== JSON.stringify(last) ? last : null); // accent: 강조 색을 다른 칸 값으로(체크리스트 = 배경색)
         if (o.marks && acc && acc.length) for (const [a, b] of o.marks) if (b <= o.value.length) n.setRangeFills(a, b, acc);
+        if (o.marks && o.marks.length && o.value.length) { // 「**굵게**」 자리는 같은 글꼴의 Bold 로 (사이트의 <b>)
+          const f0 = n.getRangeFontName(0, 1);
+          if (f0 !== figma.mixed) {
+            const bold = { family: f0.family, style: 'Bold' };
+            try { await figma.loadFontAsync(bold); for (const [a, b] of o.marks) if (b <= o.value.length) n.setRangeFontName(a, b, bold); }
+            catch (e) { warn(n.name + ': 굵은 글꼴(' + f0.family + ' Bold)을 불러오지 못했어요'); }
+          }
+        }
         wrapFit(n);
       } else if (o.op === 'prop') {
         const key = Object.keys(n.componentProperties).find((k) => k.split('#')[0] === o.key);

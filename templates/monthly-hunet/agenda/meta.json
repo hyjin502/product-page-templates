@@ -191,7 +191,7 @@
           "fig": {
             "like": "리더스아카데미팀",
             "text": 0,
-            "format": "{org}\n{name}"
+            "format": "{org}\n**{name}**"
           }
         }
       },
