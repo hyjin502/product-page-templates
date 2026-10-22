@@ -30,6 +30,8 @@
 .hero--monthly-live .hero__share svg { width: 18px; height: 22px; }
 /* 상단 문구 — 뱃지 상자 없이 글자만 (Figma heading-24 bold) */
 .hero--monthly-live .hero__eyebrow { padding: 0; background: none; font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
+/* 하단 문구 — 메인 타이틀 아래 한 줄 (2026-10-21 사용자 요청 · Figma 시안 없음, 제안값: 상단 문구보다 한 단계 작은 20 medium · 타이틀과 같은 색) */
+.hero--monthly-live .hero__subline { margin: 0; font-size: 20px; font-weight: 500; line-height: 1.5; letter-spacing: var(--tracking-tight); color: inherit; }
 
 /* 비주얼 + 일정 + 연사 (PC 는 한 상자 안에 겹쳐요) */
 .hero--monthly-live .hero__stage {
@@ -81,6 +83,7 @@
     padding-bottom: 40px; /* 제안값 — Figma 는 버튼 아래가 프레임 끝(0) */
   }
   .hero--monthly-live .hero__logo { width: 58.5px; height: 55px; }
+  .hero--monthly-live .hero__subline { font-size: 16px; }
   /* 비주얼·일정이 각자 그리드 줄에 놓여요 (PC 의 겹침 상자를 풀어요) */
   .hero--monthly-live .hero__stage { display: contents; }
   .hero--monthly-live .hero__visual--shade::after { display: none; } /* MO 는 일정이 비주얼 아래라 그라데이션이 필요 없어요 */

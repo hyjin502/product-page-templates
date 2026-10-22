@@ -36,10 +36,10 @@
       "label": "상단 문구",
       "note": "Figma 는 MO 에만 있어요 (AX 시대, 핵심은 HRD!)",
       "maxLines": 1,
-      "maxChars": 30,
+      "maxChars": 60,
       "mo": {
         "maxLines": 1,
-        "maxChars": 20
+        "maxChars": 60
       }
     },
     "title": {
@@ -52,6 +52,19 @@
       "mo": {
         "maxLines": 2,
         "maxChars": 26
+      }
+    },
+    "description": {
+      "type": "richtext",
+      "optional": true,
+      "extract": false,
+      "label": "하단 문구",
+      "note": "메인 타이틀 아래 한 줄 · 비우면 안 보여요",
+      "maxLines": 1,
+      "maxChars": 60,
+      "mo": {
+        "maxLines": 1,
+        "maxChars": 60
       }
     },
     "visual": {

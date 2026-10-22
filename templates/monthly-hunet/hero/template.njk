@@ -20,6 +20,10 @@
       <p class="hero__badge hero__eyebrow{% if not ebPc.length %} only-mo{% elif not ebMo.length %} only-pc{% endif %}">{{ lineSpans(eyebrow) }}</p>
 {% endif %}
       <h1 class="hero__title">{{ lineSpans(title) }}</h1>
+{% set dsPc = description | lines('pc') %}{% set dsMo = description | lines('mo') %}
+{% if dsPc.length or dsMo.length %}
+      <p class="hero__desc hero__subline{% if not dsPc.length %} only-mo{% elif not dsMo.length %} only-pc{% endif %}">{{ lineSpans(description) }}</p>
+{% endif %}
     </div>
     <div class="hero__stage">
       <div class="hero__visual{% if visualShade %} hero__visual--shade{% endif %}" data-focus="visual"{% set fv = focusVars(visual) | trim %}{% if fv %} style="{{ fv }}"{% endif %}>{{ visualMedia(visual) }}</div>
