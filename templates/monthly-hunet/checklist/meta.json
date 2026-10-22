@@ -43,7 +43,8 @@
       "maxChars": 24,
       "note": "**굵게** 로 감싼 부분은 강조색",
       "fig": {
-        "layer": "title"
+        "layer": "title",
+        "accent": "bgColor"
       }
     },
     "items": {

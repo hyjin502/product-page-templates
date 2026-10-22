@@ -114,7 +114,7 @@ function neededImages(page, devices) {
    at: 이 이름의 레이어 안에서(atNth 번째) · layer: 이 이름의 레이어(nth 번째) · text: 그 안 n 번째 글자 레이어(기본 0)
    like: 이름이 이 글자로 시작하는 글자 레이어만 · first: 그 안 첫 번째로 보이는 레이어 · lines: 줄마다 글자 레이어 하나씩(남는 레이어는 숨김) · self: 목록 항목 자신이 글자 레이어
    items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
-   bg: 바탕색(섹션 또는 at 레이어) · format: "{live} ({channel})" · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
+   bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
 const figOf = (s, dev) => { const f = Object.assign({}, s.fig, s.fig[dev] || {}); return f.skip ? null : f; };
 /** 보이는 것 먼저, 없으면 숨긴 것까지 */
 function findSome(root, pred) { let r = findAll(root, pred); if (!r.length) { ALL = true; r = findAll(root, pred); ALL = false; } return r; }
@@ -155,7 +155,7 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
   const t = ts[f.text || 0];
   if (!t) { if (has && diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
   if (str == null || str === '') { if (kind.optional) ops.push({ op: 'hide', node: t }); return; }
-  ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t }, rich(str)));
+  ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t, accent: f.accent ? bgCss(pickDev(content[f.accent], dev) || '') : null }, rich(str)));
 }
 function figMedia(node, s, val, dev, label, ops, warn) {
   const f = figOf(s, dev);
@@ -171,8 +171,40 @@ function figMedia(node, s, val, dev, label, ops, warn) {
   if (f.fill && 'children' in img) for (const c of img.children) ops.push({ op: 'hide', node: c });
   ops.push({ op: m.kind === 'video' ? 'video' : 'image', node: img, src: m.src, css: m.css });
 }
-/** 바탕색 값 → css (#hex 그대로 · HDS bg 키 · 버튼 팔레트 키) */
-const bgCss = (val) => (/^#/.test(val) ? val : ((HDS.bg || []).find((c) => c.key === val) || {}).value || (colorOf(val) || {}).hex || null);
+/** 아이콘 모양 enum — sets: { "check-circle": "<HDS 세트 key>" }, 값 "<세트>-solid|line" · 기본값이면 Figma 원본 그대로 */
+function figIcon(node, s, kind, val, dev, label, ops, warn) {
+  const f = figOf(s, dev);
+  if (!f || !val || val === kind.default) return;
+  const m = /^(.*)-(solid|line)$/.exec(val);
+  if (!m || !f.sets[m[1]]) return;
+  const box = f.at || f.layer ? figBase(node, f) : node;
+  if (!box) { warn(label + ': 아이콘 자리를 못 찾았어요'); return; }
+  ops.push({ op: 'swap', node: box, set: f.sets[m[1]], style: m[2] === 'line' ? 'line' : 'solid' });
+}
+/** 색 값 → css (#hex 그대로 · HDS bg · 글자색 · 버튼 팔레트 키) */
+const bgCss = (val) => (/^#/.test(val) ? val : ((HDS.bg || []).find((c) => c.key === val) || {}).value || (textColorOf(val) || {}).value || (colorOf(val) || {}).hex || null);
+/** 색 슬롯 — bg: 섹션(또는 at) 바탕 + tint: 이 레이어의 자식들을 흰 바탕으로(바탕이 흰색이 아닐 때 — 사이트와 같게)
+   paint: "text" | "vector" | "fill" — 그 레이어의 글자색 · 아이콘 선 · 채우기. all: 안의 것 모두(name: 이 이름만 · parent: 부모 이름이 이것만)
+   map: enum 값 → 색 ({ "white": "#ffffff" }) · 값이 비면(기본) Figma 원본 그대로 */
+function figColor(node, s, kind, val, dev, label, ops, warn) {
+  const f = figOf(s, dev);
+  if (f && f.bg && (val == null || val === '')) val = kind.default; // 바탕은 기본값도 넘겨요(사이트 기본 배경이 Figma 원본과 다를 수 있어서)
+  if (!f || val == null || val === '') return;
+  const css = f.map ? f.map[val] : bgCss(val);
+  if (!css) return;
+  const base = f.at || f.layer ? figBase(node, f) : node;
+  if (!base) { warn(label + ': 색을 칠할 레이어를 못 찾았어요'); return; }
+  if (f.bg) {
+    ops.push({ op: 'fill', node: base, css });
+    if (f.tint && !/^#ffffff(ff)?$/i.test(css)) { const box = figBase(node, { at: f.tint }); if (box && 'children' in box) for (const c of box.children) ops.push({ op: 'fill', node: c, css: '#ffffff' }); }
+    return;
+  }
+  const ok = (n) => (!f.name || clean(n.name) === f.name) && (!f.parent || (n.parent && clean(n.parent.name) === f.parent));
+  if (f.paint === 'fill') { ops.push({ op: 'fill', node: base, css }); return; }
+  if (f.paint === 'vector') { ops.push({ op: 'vectorsFill', node: base, css }); return; }
+  const ts = base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && ok(n));
+  for (const t of f.all ? ts : ts.slice(f.text || 0, (f.text || 0) + 1)) ops.push({ op: 'textFill', node: t, css });
+}
 
 /* ---------- plan: 슬롯 값 → 바꿀 목록 */
 function plan(root, v, content, dev, warn) {
@@ -185,7 +217,7 @@ function plan(root, v, content, dev, warn) {
       const val = content[k];
       const label = where + k;
       const diff = !same(val, sample && sample[k]); // 샘플 그대로면 Figma 원본이 이미 맞아요 → 못 찾아도 알리지 않아요
-      if (DECOR[k]) {
+      if (DECOR[k] && !s.fig) {
         if (val == null || val === '' || val === kind.default) continue;
         const d = DECOR[k];
         const base = target(node, spec[d.slot] || { names: [d.slot] }, 'TEXT');
@@ -202,10 +234,9 @@ function plan(root, v, content, dev, warn) {
       if (s.fig) { // 자리로 찾기
         if (kind.type === 'text' || kind.type === 'richtext') figText(node, s, kind, val, content, dev, has, diff, label, ops, warn);
         else if ((kind.type === 'media' || kind.type === 'image') && has && diff) figMedia(node, s, val, dev, label, ops, warn);
-        else if (kind.type === 'color' && s.fig.bg && val && val !== kind.default) {
-          const f = figOf(s, dev); const base = f && (f.at ? figBase(node, f) : node);
-          if (base) ops.push({ op: 'fill', node: base, css: bgCss(val) });
-        } else if (kind.type === 'list' && Array.isArray(val)) {
+        else if (kind.type === 'enum' && s.fig.sets) figIcon(node, s, kind, val, dev, label, ops, warn);
+        else if ((kind.type === 'color' || kind.type === 'enum') && (s.fig.bg || s.fig.paint)) figColor(node, s, kind, val, dev, label, ops, warn);
+        else if (kind.type === 'list' && Array.isArray(val)) {
           const f = figOf(s, dev);
           if (!f) continue;
           const box = f.items === '.' ? node : figBase(node, { at: f.items, atNth: f.itemsNth });
@@ -304,6 +335,25 @@ function itemDecor(kinds, it, val, ops) {
   if (kinds.radius && val.radius && val.radius !== kinds.radius.default) { const px = radiusOf(val.radius); if (px != null) ops.push({ op: 'radius', node: btn, px }); }
 }
 
+/** 글자 길이만큼 늘어나는 글자 레이어(너비 자동)가 칸 밖으로 넘치면 → 칸 폭에 맞춰 줄바꿈(높이 자동)
+    칸 = 위로 올라가며 처음 만나는, 너비가 글자에 따라 늘지 않는 레이어(고정 폭 · 또는 고정 폭 부모를 채우는 레이어)의 안쪽 오른쪽 끝
+    (HUG 부모 안의 FILL 은 글자 따라 늘어나서 건너뛰어요 — 월간휴넷 아젠다 MO 제목) */
+const fixedW = (a) => !a || a.type === 'PAGE' || !('layoutSizingHorizontal' in a) || a.layoutSizingHorizontal === 'FIXED' || (a.layoutSizingHorizontal === 'FILL' && fixedW(a.parent));
+function wrapFit(t) {
+  if (t.textAutoResize !== 'WIDTH_AND_HEIGHT') return;
+  const tb = t.absoluteBoundingBox;
+  if (!tb) return;
+  let a = t.parent;
+  while (a && a.type !== 'PAGE' && !fixedW(a)) a = a.parent;
+  if (!a || !a.absoluteBoundingBox) return;
+  const right = a.absoluteBoundingBox.x + a.absoluteBoundingBox.width - (a.paddingRight || 0);
+  if (tb.x + tb.width <= right + 0.5) return;
+  t.textAutoResize = 'HEIGHT';
+  t.resize(Math.max(20, right - tb.x), t.height);
+}
+const iconSets = {};
+async function iconSet(key) { if (!(key in iconSets)) iconSets[key] = await figma.importComponentSetByKeyAsync(key).catch(() => null); return iconSets[key]; }
+
 /* ---------- run: 바꾸기 */
 async function run(ops, images, warn) {
   for (const o of ops) {
@@ -321,7 +371,9 @@ async function run(ops, images, warn) {
         const last = len ? n.getRangeFills(len - 1, len) : null;
         n.characters = o.value;
         if (first && first !== figma.mixed && o.value.length) n.setRangeFills(0, o.value.length, first);
-        if (o.marks && last && last !== figma.mixed && JSON.stringify(first) !== JSON.stringify(last)) for (const [a, b] of o.marks) if (b <= o.value.length) n.setRangeFills(a, b, last);
+        const acc = o.accent ? [paint(o.accent)].filter(Boolean) : (last && last !== figma.mixed && JSON.stringify(first) !== JSON.stringify(last) ? last : null); // accent: 강조 색을 다른 칸 값으로(체크리스트 = 배경색)
+        if (o.marks && acc && acc.length) for (const [a, b] of o.marks) if (b <= o.value.length) n.setRangeFills(a, b, acc);
+        wrapFit(n);
       } else if (o.op === 'prop') {
         const key = Object.keys(n.componentProperties).find((k) => k.split('#')[0] === o.key);
         if (key && n.componentProperties[key].value === o.value) continue;
@@ -333,7 +385,15 @@ async function run(ops, images, warn) {
       } else if (o.op === 'stroke') {
         const p = paint(o.css);
         n.strokes = p ? [p] : [];
-        if (p) { n.strokeWeight = 1; n.strokeAlign = 'INSIDE'; }
+        if (p && n.type !== 'LINE' && n.type !== 'VECTOR') { n.strokeWeight = 1; n.strokeAlign = 'INSIDE'; }
+      } else if (o.op === 'vectorsFill') { // 아이콘 색 — 그 안의 그림 선·면 (아이콘을 바꾼 뒤라도 지금 있는 것)
+        const p = paint(o.css);
+        for (const v of n.findAll((x) => x.type === 'VECTOR' || x.type === 'BOOLEAN_OPERATION' || x.type === 'LINE')) { if (v.type === 'LINE') v.strokes = p ? [p] : []; else v.fills = p ? [p] : []; }
+      } else if (o.op === 'swap') { // 아이콘 모양 — HDS 아이콘 세트에서 style 을 골라 작은 인스턴스(32 이하)를 바꿔요
+        const set = await iconSet(o.set);
+        const comp = set && set.children.find((c) => c.name === 'style=' + o.style);
+        if (!comp) { warn('아이콘(' + o.style + ')을 HDS 라이브러리에서 불러오지 못했어요 — 이 파일에서 🖤 HDS 라이브러리를 켜 주세요'); continue; }
+        for (const i of n.findAll((x) => x.type === 'INSTANCE' && x.width <= 32 && x.height <= 32)) i.swapComponent(comp);
       } else if (o.op === 'radius') n.cornerRadius = o.px;
       else if (o.op === 'image' || o.op === 'video') {
         const bytes = images[o.src];

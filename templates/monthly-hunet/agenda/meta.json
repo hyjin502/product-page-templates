@@ -36,7 +36,18 @@
       "default": "blue/700",
       "extract": false,
       "label": "세션 이름 색",
-      "note": "Session 1. 같은 파란 글자 · HDS 원색 700번"
+      "note": "Session 1. 같은 파란 글자 · HDS 원색 700번",
+      "fig": {
+        "paint": "text",
+        "all": true,
+        "name": "Session 1.",
+        "pc": {
+          "parent": "Source/Session"
+        },
+        "mo": {
+          "parent": "Frame 120"
+        }
+      }
     },
     "sessions": {
       "type": "list",

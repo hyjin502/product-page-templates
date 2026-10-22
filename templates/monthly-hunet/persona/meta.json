@@ -21,7 +21,13 @@
       "extract": false,
       "label": "배경색",
       "fig": {
-        "bg": true
+        "bg": true,
+        "pc": {
+          "tint": "content"
+        },
+        "mo": {
+          "tint": "Frame 2147238973"
+        }
       }
     },
     "titleColor": {
@@ -37,7 +43,15 @@
       "default": "black",
       "extract": false,
       "label": "제목 색",
-      "note": "어두운 배경색이면 흰색"
+      "note": "어두운 배경색이면 흰색",
+      "fig": {
+        "paint": "text",
+        "text": 0,
+        "map": {
+          "white": "#ffffff",
+          "black": "#171719"
+        }
+      }
     },
     "title": {
       "type": "richtext",

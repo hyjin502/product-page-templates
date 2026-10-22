@@ -21,7 +21,8 @@
       "extract": false,
       "label": "배경색",
       "fig": {
-        "bg": true
+        "bg": true,
+        "tint": "2단"
       }
     },
     "titleColor": {
@@ -37,7 +38,15 @@
       "default": "black",
       "extract": false,
       "label": "제목 색",
-      "note": "어두운 배경색이면 흰색"
+      "note": "어두운 배경색이면 흰색",
+      "fig": {
+        "paint": "text",
+        "text": 0,
+        "map": {
+          "white": "#ffffff",
+          "black": "#171719"
+        }
+      }
     },
     "title": {
       "type": "richtext",
@@ -95,7 +104,16 @@
       "iconPrefix": "hds-",
       "extract": false,
       "label": "아이콘",
-      "note": "🖤 HDS check 아이콘"
+      "note": "🖤 HDS check 아이콘",
+      "fig": {
+        "at": "2단",
+        "sets": {
+          "check-circle": "6524c2de63b7d51d4699c5d3dda712b12ff895cb",
+          "check": "1d74f0b80e9095978f88a0682c90aa7f24daffc6",
+          "check-square": "f5b397c01f9c01fc096789aa9e40fa89364f2a86",
+          "check-verified-02": "270f855b1740d62cfd9349ff3d37f0726f86f711"
+        }
+      }
     },
     "iconColor": {
       "type": "color",
@@ -103,7 +121,11 @@
       "extract": false,
       "label": "아이콘 색",
       "note": "HDS 원색 700번 · 비우면 Figma 기본 색(검정 80%)",
-      "optional": true
+      "optional": true,
+      "fig": {
+        "paint": "vector",
+        "at": "2단"
+      }
     }
   }
 }
