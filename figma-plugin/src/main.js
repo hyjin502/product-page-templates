@@ -50,6 +50,8 @@ function listItems(root, s) {
   return items;
 }
 const hasImg = (n) => 'fills' in n && Array.isArray(n.fills) && n.fills.some((f) => (f.type === 'IMAGE' || f.type === 'VIDEO') && f.visible !== false);
+/** 채우기를 꺼 둔 이미지 자리도 (Figma 에서 사진 채우기 눈을 끈 곳 — 월간휴넷 아젠다 MO 세션 2) */
+const hasImgAny = (n) => 'fills' in n && Array.isArray(n.fills) && n.fills.some((f) => f.type === 'IMAGE' || f.type === 'VIDEO');
 const textOf = (n) => (n && n.type === 'TEXT' ? n : n && findAll(n, (x) => x.type === 'TEXT')[0]) || null;
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -100,7 +102,7 @@ function neededImages(page, devices) {
         const kind = kinds[k] || {};
         const val = content && content[k];
         if (kind.type === 'list' && Array.isArray(val)) val.forEach((it, i) => walk(s.item || {}, kind.item || {}, it, sample && sample[k] && sample[k][i]));
-        if ((kind.type === 'media' || kind.type === 'image') && val && !same(val, sample && sample[k])) {
+        if ((kind.type === 'media' || kind.type === 'image') && val && (s.fig || !same(val, sample && sample[k]))) {
           for (const d of devices) { const m = mediaSrc(val, d); if (m) out.add(m.src); }
         }
       }
@@ -114,13 +116,13 @@ function neededImages(page, devices) {
    at: 이 이름의 레이어 안에서(atNth 번째) · layer: 이 이름의 레이어(nth 번째) · text: 그 안 n 번째 글자 레이어(기본 0)
    like: 이름이 이 글자로 시작하는 글자 레이어만 · first: 그 안 첫 번째로 보이는 레이어 · lines: 줄마다 글자 레이어 하나씩(남는 레이어는 숨김) · self: 목록 항목 자신이 글자 레이어
    items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
-   bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
+   bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · "{headingMo|heading}"(앞이 비면 뒤) · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
 const figOf = (s, dev) => { const f = Object.assign({}, s.fig, s.fig[dev] || {}); return f.skip ? null : f; };
 /** 보이는 것 먼저, 없으면 숨긴 것까지 */
 function findSome(root, pred) { let r = findAll(root, pred); if (!r.length) { ALL = true; r = findAll(root, pred); ALL = false; } return r; }
 /** want: 'text' | 'img' — 같은 이름이 여럿이면 그걸 가진 레이어만 봐요(그림 묶음 안의 같은 이름 프레임 건너뛰기) */
 function figBase(node, f, want) {
-  const has = (n) => !want || (want === 'text' ? n.type === 'TEXT' || findSome(n, (x) => x.type === 'TEXT').length : hasImg(n) || findSome(n, hasImg).length);
+  const has = (n) => !want || (want === 'text' ? n.type === 'TEXT' || findSome(n, (x) => x.type === 'TEXT').length : hasImgAny(n) || findSome(n, hasImgAny).length);
   let base = node;
   if (f.at) base = findSome(node, (n) => clean(n.name) === f.at && has(n))[f.atNth || 0] || null;
   if (base && f.layer) base = findSome(base, (n) => clean(n.name) === f.layer && has(n))[f.nth || 0] || null;
@@ -140,7 +142,7 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
   const base = figBase(node, f, 'text');
   if (!base) { if (has && diff) warn(label + ': 레이어를 못 찾았어요'); return; }
   let str = pickDev(val, dev);
-  if (f.format) str = f.format.replace(/\{(\w+)\}/g, (_, k) => pickDev(content[k], dev) || '').replace(/\s*\(\s*\)/g, '').trim();
+  if (f.format) str = f.format.replace(/\{([\w|]+)\}/g, (_, ks) => ks.split('|').map((k) => pickDev(content[k], dev)).find((x) => x != null && x !== '') || '').replace(/\s*\(\s*\)/g, '').trim(); // {a|b} = a, 비면 b
   const ts = f.self ? (base.type === 'TEXT' ? [base] : []) : (base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && (!f.like || clean(n.name).startsWith(f.like))));
   if (f.lines) {
     if (!ts.length) { if (diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
@@ -165,7 +167,7 @@ function figMedia(node, s, val, dev, label, ops, warn) {
   const base = figBase(node, f, f.fill ? null : 'img');
   if (!base) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
   let img = base;
-  if (!f.fill) { const all = findSome(base, hasImg); img = hasImg(base) && !f.img ? base : all[(f.img || 0) < 0 ? all.length + f.img : f.img || 0] || null; }
+  if (!f.fill) { let all = findSome(base, hasImg); if (!all.length) all = findSome(base, hasImgAny); img = hasImgAny(base) && !f.img ? base : all[(f.img || 0) < 0 ? all.length + f.img : f.img || 0] || null; }
   if (!img) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
   if (!img.visible) ops.push({ op: 'show', node: img });
   if (f.fill && 'children' in img) for (const c of img.children) ops.push({ op: 'hide', node: c });
@@ -233,7 +235,7 @@ function plan(root, v, content, dev, warn) {
       }
       if (s.fig) { // 자리로 찾기
         if (kind.type === 'text' || kind.type === 'richtext') figText(node, s, kind, val, content, dev, has, diff, label, ops, warn);
-        else if ((kind.type === 'media' || kind.type === 'image') && has && diff) figMedia(node, s, val, dev, label, ops, warn);
+        else if ((kind.type === 'media' || kind.type === 'image') && has && val) figMedia(node, s, val, dev, label, ops, warn); // 페이지 템플릿은 샘플 사진이 Figma 원본과 달라서 늘 넣어요
         else if (kind.type === 'enum' && s.fig.sets) figIcon(node, s, kind, val, dev, label, ops, warn);
         else if ((kind.type === 'color' || kind.type === 'enum') && (s.fig.bg || s.fig.paint)) figColor(node, s, kind, val, dev, label, ops, warn);
         else if (kind.type === 'list' && Array.isArray(val)) {

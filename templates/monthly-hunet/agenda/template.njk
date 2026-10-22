@@ -1,15 +1,17 @@
 <section class="mh-agenda">
   <h2 class="mh-h mh-agenda__title">{{ title | rt }}</h2>
 {% for s in sessions %}
+{# MO 문구(…Mo)가 있으면 PC 는 PC 문구 · MO 는 MO 문구 (비우면 PC 문구 그대로) #}
+{% set timeMo = s.timeMo or s.time %}{% set headingMo = s.headingMo or s.heading %}{% set subtitleMo = s.subtitleMo or s.subtitle %}{% set descMo = s.descMo or s.desc %}
 {% set short = not s.subtitle and not s.desc %}
   <article class="mh-agenda__session{% if short %} mh-agenda__session--short{% endif %}">
-{% if s.label or s.time %}
+{% if s.label or timeMo %}
     <div class="mh-agenda__top">
 {% if s.label %}
       <p class="mh-agenda__label"{% if labelColor %} style="color: {{ labelColor | hdsColor }}"{% endif %}>{{ s.label }}</p>
 {% endif %}
-{% if s.time %}
-      <p class="mh-agenda__time only-mo">{{ s.time }}</p>
+{% if timeMo %}
+      <p class="mh-agenda__time only-mo">{{ timeMo }}</p>
 {% endif %}
     </div>
 {% endif %}
@@ -19,7 +21,7 @@
         <p class="mh-agenda__time only-pc">{{ s.time }}</p>
 {% endif %}
 {% if s.heading or s.subtitle %}
-        <div class="mh-agenda__heads">
+        <div class="mh-agenda__heads{% if s.headingMo or s.subtitleMo %} only-pc{% endif %}">
 {% if s.heading %}
           <h3 class="mh-agenda__heading">{{ s.heading | rt }}</h3>
 {% endif %}
@@ -28,8 +30,21 @@
 {% endif %}
         </div>
 {% endif %}
+{% if (s.headingMo or s.subtitleMo) and (headingMo or subtitleMo) %}
+        <div class="mh-agenda__heads only-mo">
+{% if headingMo %}
+          <h3 class="mh-agenda__heading">{{ headingMo | rt }}</h3>
+{% endif %}
+{% if subtitleMo %}
+          <p class="mh-agenda__subtitle">{{ subtitleMo }}</p>
+{% endif %}
+        </div>
+{% endif %}
 {% if s.desc %}
-        <p class="mh-agenda__desc">{{ s.desc | rt }}</p>
+        <p class="mh-agenda__desc{% if s.descMo %} only-pc{% endif %}">{{ s.desc | rt }}</p>
+{% endif %}
+{% if s.descMo %}
+        <p class="mh-agenda__desc only-mo">{{ s.descMo | rt }}</p>
 {% endif %}
       </div>
 {% if (s.image and s.image.src) or s.org or s.name %}

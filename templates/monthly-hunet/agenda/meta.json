@@ -77,9 +77,21 @@
             },
             "mo": {
               "at": "Frame 121",
-              "text": 0
+              "text": 0,
+              "format": "{timeMo|time}"
             }
           }
+        },
+        "timeMo": {
+          "type": "text",
+          "label": "시간 (MO)",
+          "optional": true,
+          "note": "비우면 PC 문구 그대로",
+          "fig": {
+            "skip": true
+          },
+          "maxChars": 30,
+          "extract": false
         },
         "heading": {
           "type": "richtext",
@@ -87,7 +99,19 @@
           "note": "소제목·설명이 없으면 조금 작게(20) 보여요",
           "fig": {
             "like": "기업이 주목해야",
-            "text": 0
+            "text": 0,
+            "mo": {
+              "format": "{headingMo|heading}"
+            }
+          }
+        },
+        "headingMo": {
+          "type": "richtext",
+          "label": "세션 제목 (MO)",
+          "optional": true,
+          "note": "비우면 PC 문구 그대로",
+          "fig": {
+            "skip": true
           }
         },
         "subtitle": {
@@ -98,8 +122,22 @@
           "optional": true,
           "fig": {
             "like": "기업이 주목해야",
-            "text": 1
+            "text": 1,
+            "mo": {
+              "format": "{subtitleMo|subtitle}"
+            }
           }
+        },
+        "subtitleMo": {
+          "type": "text",
+          "label": "소제목 (MO)",
+          "optional": true,
+          "note": "비우면 PC 문구 그대로",
+          "fig": {
+            "skip": true
+          },
+          "maxChars": 40,
+          "extract": false
         },
         "desc": {
           "type": "richtext",
@@ -108,7 +146,19 @@
           "optional": true,
           "fig": {
             "like": "- 산업별",
-            "text": 0
+            "text": 0,
+            "mo": {
+              "format": "{descMo|desc}"
+            }
+          }
+        },
+        "descMo": {
+          "type": "richtext",
+          "label": "설명 (MO)",
+          "optional": true,
+          "note": "비우면 PC 문구 그대로",
+          "fig": {
+            "skip": true
           }
         },
         "image": {
