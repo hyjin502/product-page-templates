@@ -1861,6 +1861,7 @@ function renderTpl() {
     <button type="button" class="btn-ui" data-tpl-act="download">page.json 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="copy">page.json 복사</button>
     <button type="button" class="btn-ui" data-tpl-act="figma" title="Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
+    <button type="button" class="btn-ui" data-tpl-act="html" title="지금 화면을 HTML 파일 한 장으로 — 사진도 파일 안에 담겨요">HTML 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="reset">샘플로 되돌리기</button>
   </div>
   ${draftLine(t.key)}
@@ -2135,6 +2136,16 @@ tplEl.addEventListener('click', (ev) => {
       copyText(url, ta);
       if (dropped) alert(`공유 링크를 복사했어요.\n\n직접 올린 이미지·영상 ${dropped}개는 링크에 담기지 않아요 — 받는 사람에게는 샘플 이미지로 보여요. 그 파일은 「page.json 받기」로 함께 받아 따로 보내 주세요.`);
     });
+    return;
+  }
+  if (ta.dataset.tplAct === 'html') {
+    const label = ta.textContent;
+    ta.disabled = true; ta.textContent = '만드는 중…';
+    standaloneHtml(key).then(({ html, missed, name }) => {
+      download(name, new Blob([html], { type: 'text/html' }));
+      if (missed.length) alert(`HTML 을 받았어요. 그림 ${missed.length}개는 파일에 넣지 못해 원래 주소로 남았어요:\n${missed.slice(0, 5).join('\n')}`);
+    }).catch((err) => alert('HTML 을 만들지 못했어요 — ' + (err && err.message || err)))
+      .finally(() => { ta.disabled = false; ta.textContent = label; });
     return;
   }
   const json = JSON.stringify(tplPage(key), null, 2) + '\n';
@@ -2448,6 +2459,40 @@ async function createIssue(key, { period, title, from }) {
   autoMark(key);
   save();
   return row;
+}
+/** HTML 받기 — 지금 편집한 화면을 HTML 파일 한 장으로(사진 · 영상 · 아이콘 이미지를 파일 안에 넣어서 이 파일 하나만 열어도 그대로 보여요)
+    편집기 전용 표시(가이드 선 · 링크 막기)는 빼고, 글꼴은 사이트와 같은 CDN 을 불러요 */
+async function standaloneHtml(key) {
+  const t = tplByKey[key];
+  const vs = tplVisible(t).map((id) => byId[id]);
+  await Promise.all(vs.flatMap((v) => mediaKeys(tplEdit(v))).map(loadBlob));
+  const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
+  const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+  const body = vs.map((v) => heroHtmlOrError(v, tplEdit(v))).join('\n');
+  const iss = issueOf(key);
+  const title = iss ? `${ymLabel(iss.period)} ${iss.title || t.title}` : t.title;
+  const run = (body.includes('data-pager') ? REG.pagerJs : '') + '\n' + js;
+  let doc = `<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+${REG.fontLink}
+<style>${REG.baseCss}\n${css}</style></head>
+<body>${body}${run.trim() ? `\n<script>${run}<\/script>` : ''}</body></html>`;
+  // 파일 안에 넣을 그림 — src · srcset · poster · CSS url() (글꼴 CDN · data: 는 그대로)
+  const refs = new Set();
+  doc.replace(/\b(?:src|srcset|poster)="([^"]+)"/g, (m, u) => refs.add(u));
+  doc.replace(/url\((['"]?)([^)'"]+)\1\)/g, (m, q, u) => refs.add(u));
+  const toDataUrl = (blob) => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(blob); });
+  const missed = [];
+  await Promise.all([...refs].filter((u) => !/^(data:|#|https?:\/\/(cdn|fonts)\.)/.test(u)).map(async (u) => {
+    try {
+      const r = await fetch(new URL(u.replace(/&amp;/g, '&'), assetBase).href);
+      if (!r.ok) throw new Error(r.status);
+      const d = await toDataUrl(await r.blob());
+      doc = doc.split(`"${u}"`).join(`"${d}"`).split(`(${u})`).join(`(${d})`).split(`('${u}')`).join(`('${d}')`).split(`("${u}")`).join(`("${d}")`);
+    } catch (e) { missed.push(u); }
+  }));
+  return { html: doc, missed, name: (iss ? `${key}-${iss.period || ''}` : key).replace(/-$/, '') + '.html' };
 }
 /** 완료 — 그때 화면(HTML) · page.json · Figma용 파일을 파일함에 함께 보관해요 (올린 사진은 저장된 주소로 바꿔 넣어요) */
 async function finalFiles(key) {
