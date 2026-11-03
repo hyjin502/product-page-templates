@@ -1,0 +1,233 @@
+{
+  "id": "monthly-hunet-card-grid",
+  "section": "monthly-hunet",
+  "layout": "card-grid",
+  "label": "카드 그리드 (아이콘)",
+  "order": 6,
+  "when": "「지금 우리 회사에 필요한 경험은?」 — 아이콘 + 제목 + 설명 카드(PC 3열 · MO 가로로 넘기기) · 버튼 · 아래 안내 문구",
+  "figma": {
+    "pc": "785:7092",
+    "mo": "785:7461",
+    "tb": null
+  },
+  "body": 860,
+  "slots": {
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "default": "#ffffff",
+      "extract": false,
+      "label": "배경색",
+      "fig": {
+        "bg": true
+      }
+    },
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "mo": {
+        "maxLines": 3
+      },
+      "note": "PC 가운데 · MO 왼쪽 정렬",
+      "fig": {
+        "text": 0
+      }
+    },
+    "subtitle": {
+      "type": "richtext",
+      "extract": false,
+      "label": "설명",
+      "optional": true,
+      "maxLines": 2,
+      "fig": {
+        "text": 1
+      }
+    },
+    "cards": {
+      "type": "list",
+      "extract": false,
+      "label": "카드",
+      "min": 0,
+      "max": 9,
+      "item": {
+        "icon": {
+          "type": "enum",
+          "values": [
+            "rocket-01",
+            "globe-06",
+            "line-chart-up-02",
+            "dataflow-04",
+            "coins-stacked-02",
+            "cpu-chip-01",
+            "pie-chart-01",
+            "settings-01",
+            "building-05",
+            "none"
+          ],
+          "labels": {
+            "rocket-01": "로켓",
+            "globe-06": "지구본",
+            "line-chart-up-02": "상승 그래프",
+            "dataflow-04": "조직도",
+            "coins-stacked-02": "동전",
+            "cpu-chip-01": "칩",
+            "pie-chart-01": "원 그래프",
+            "settings-01": "톱니바퀴",
+            "building-05": "건물",
+            "none": "없음"
+          },
+          "iconPrefix": "hds-",
+          "default": "rocket-01",
+          "label": "아이콘",
+          "fig": {
+            "swap": {
+              "rocket-01": {
+                "key": "c6cecfe9b54e957ef6207eddacfa008cd1437f78",
+                "style": "duotone"
+              },
+              "globe-06": {
+                "key": "83f7128343a9ed4f6beb6e4b624ac3a22e7af4c1",
+                "style": "duotone"
+              },
+              "line-chart-up-02": {
+                "key": "261fe32b8dc1e44ead8501bf9d0ca6b5a21fd479",
+                "style": "duotone"
+              },
+              "dataflow-04": {
+                "key": "ed60c0b5c78068d5ec11612e52705d942d37aa2c",
+                "style": "duotone"
+              },
+              "coins-stacked-02": {
+                "key": "f6a8f520861a2181d414d3d902e248b9d1abe42f",
+                "style": "line"
+              },
+              "cpu-chip-01": {
+                "key": "91fbdd750c35362d69930cdaf46a7bbe018114f2",
+                "style": "line"
+              },
+              "pie-chart-01": {
+                "key": "c846b4af997ed9cc54aed2788db6be20385d452e",
+                "style": "duotone"
+              },
+              "settings-01": {
+                "key": "94145a70961f2f6f3f726ee6f07bf3d985e2aa00",
+                "style": "duotone"
+              },
+              "building-05": {
+                "key": "2e33ed1d2d3e26be7582990305ecfeac4a1fcc0c",
+                "style": "duotone"
+              }
+            },
+            "max": 48
+          }
+        },
+        "title": {
+          "type": "richtext",
+          "extract": false,
+          "label": "카드 제목",
+          "maxLines": 2,
+          "fig": {
+            "text": 0
+          }
+        },
+        "desc": {
+          "type": "richtext",
+          "extract": false,
+          "label": "설명",
+          "optional": true,
+          "fig": {
+            "text": 1
+          }
+        }
+      },
+      "fig": {
+        "pc": {
+          "items": "content"
+        },
+        "mo": {
+          "items": "banner"
+        }
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "extract": false,
+      "label": "버튼",
+      "min": 0,
+      "max": 1,
+      "note": "비우면 버튼 없음",
+      "item": {
+        "label": {
+          "type": "text",
+          "label": "버튼 문구",
+          "maxChars": 30,
+          "fig": {
+            "text": 0
+          }
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "color": {
+          "type": "color",
+          "default": "interaction/button-neutral",
+          "label": "배경색",
+          "fig": {
+            "skip": true
+          }
+        },
+        "icon": {
+          "type": "enum",
+          "values": [
+            "none",
+            "chevron-right",
+            "arrow-right",
+            "plus"
+          ],
+          "labels": {
+            "none": "없음",
+            "chevron-right": "꺾쇠 화살표",
+            "arrow-right": "화살표",
+            "plus": "더하기"
+          },
+          "default": "chevron-right",
+          "label": "오른쪽 아이콘",
+          "iconPrefix": "hds-",
+          "fig": {
+            "skip": true
+          }
+        }
+      },
+      "fig": {
+        "pc": {
+          "items": "Frame 2147239023",
+          "item": "action button"
+        },
+        "mo": {
+          "skip": true
+        }
+      }
+    },
+    "note": {
+      "type": "richtext",
+      "extract": false,
+      "label": "아래 안내 문구",
+      "optional": true,
+      "maxLines": 3,
+      "fig": {
+        "pc": {
+          "at": "Frame 2147239023",
+          "layer": "subtitle"
+        },
+        "mo": {
+          "skip": true
+        }
+      }
+    }
+  }
+}

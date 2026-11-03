@@ -209,9 +209,21 @@ function figMedia(node, s, val, dev, label, ops, warn, content, key) {
   }
   ops.push({ op: m.kind === 'video' ? 'video' : 'image', node: img, src: m.src, css: m.css });
 }
+/** 아이콘 인스턴스 하나 (크기 한도 안 · 맨 바깥) */
+const firstIcon = (box, max) => ('findOne' in box ? box.findOne((x) => x.type === 'INSTANCE' && x.width <= (max || 32) && x.height <= (max || 32)) : null);
 /** 아이콘 모양 enum — sets: { "check-circle": "<HDS 세트 key>" }, 값 "<세트>-solid|line" · 기본값이면 Figma 원본 그대로 */
 function figIcon(node, s, kind, val, dev, label, ops, warn) {
   const f = figOf(s, dev);
+  if (f && f.swap && val) { // swap: { 값: { key, style } } — 값마다 다른 HDS 아이콘 세트 · max = 바꿀 인스턴스 크기 한도(기본 32) · 카드마다 Figma 아이콘이 달라서 기본값이어도 늘 바꿔요
+    const to = f.swap[val];
+    const box = f.at || f.layer ? figBase(node, f) : node;
+    if (!box) { warn(label + ': 아이콘 자리를 못 찾았어요'); return; }
+    const ic = firstIcon(box, f.max);
+    if (!to) { if (val === 'none' && ic) ops.push({ op: 'hide', node: ic }); return; }
+    if (ic) ops.push({ op: 'show', node: ic });
+    ops.push({ op: 'swap', node: box, set: to.key, style: to.style || 'line', max: f.max });
+    return;
+  }
   if (!f || !val || val === kind.default) return;
   const m = /^(.*)-(solid|line)$/.exec(val);
   if (!m || !f.sets[m[1]]) return;
@@ -272,7 +284,7 @@ function plan(root, v, content, dev, warn) {
       if (s.fig) { // 자리로 찾기
         if (kind.type === 'text' || kind.type === 'richtext') figText(node, s, kind, val, content, dev, has, diff, label, ops, warn);
         else if ((kind.type === 'media' || kind.type === 'image') && has && val) figMedia(node, s, val, dev, label, ops, warn, content, k); // 페이지 템플릿은 샘플 사진이 Figma 원본과 달라서 늘 넣어요
-        else if (kind.type === 'enum' && s.fig.sets) figIcon(node, s, kind, val, dev, label, ops, warn);
+        else if (kind.type === 'enum' && (s.fig.sets || s.fig.swap || (s.fig.pc && s.fig.pc.swap))) figIcon(node, s, kind, val, dev, label, ops, warn);
         else if ((kind.type === 'color' || kind.type === 'enum') && (s.fig.bg || s.fig.paint)) figColor(node, s, kind, val, dev, label, ops, warn);
         else if (kind.type === 'list' && Array.isArray(val)) {
           const f = figOf(s, dev);
@@ -456,7 +468,8 @@ async function run(ops, images, warn) {
         const set = await iconSet(o.set);
         const comp = set && set.children.find((c) => c.name === 'style=' + o.style);
         if (!comp) { warn('아이콘(' + o.style + ')을 HDS 라이브러리에서 불러오지 못했어요 — 이 파일에서 🖤 HDS 라이브러리를 켜 주세요'); continue; }
-        for (const i of n.findAll((x) => x.type === 'INSTANCE' && x.width <= 32 && x.height <= 32)) i.swapComponent(comp);
+        const max = o.max || 32;
+        for (const i of n.findAll((x) => x.type === 'INSTANCE' && x.width <= max && x.height <= max && !(x.parent && x.parent.type === 'INSTANCE' && x.parent.width <= max))) { const w = i.width, h = i.height; i.swapComponent(comp); if (i.width !== w || i.height !== h) i.resize(w, h); }
       } else if (o.op === 'radius') n.cornerRadius = o.px;
       else if (o.op === 'image' || o.op === 'video') {
         const bytes = images[o.src];

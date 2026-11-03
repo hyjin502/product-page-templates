@@ -1,0 +1,42 @@
+{% from "hero/_macros.njk" import btnIcon %}
+{% set bg = bgColor | hdsBg %}
+<section class="mh-cards"{% if bg %} style="background: {{ bg }}"{% endif %}>
+  <div class="mh-cards__body">
+    <div class="mh-cards__head">
+      <h2 class="mh-cards__title">{{ title | rt }}</h2>
+{% if subtitle %}
+      <p class="mh-cards__sub">{{ subtitle | rt }}</p>
+{% endif %}
+    </div>
+{% if cards.length %}
+    <div class="mh-cards__scroll">
+      <ul class="mh-cards__grid" data-mh-cards>
+{% for c in cards %}
+        <li class="mh-cards__card">
+{% if c.icon and c.icon != 'none' %}
+          <span class="mh-cards__ico" aria-hidden="true">{{ ('hds-' + c.icon) | icon }}</span>
+{% endif %}
+          <div class="mh-cards__text">
+            <p class="mh-cards__name">{{ c.title | rt }}</p>
+{% if c.desc %}
+            <p class="mh-cards__desc">{{ c.desc | rt }}</p>
+{% endif %}
+          </div>
+        </li>
+{% endfor %}
+      </ul>
+      <div class="mh-cards__bar" aria-hidden="true"><span></span></div>
+    </div>
+{% endif %}
+{% if ctas.length or note %}
+    <div class="mh-cards__foot">
+{% for c in ctas %}
+      <a class="mh-cards__btn" href="{{ c.href or '#' }}" style="--btn-bg: {{ c.color | hdsColor }}; --btn-fg: {{ c.color | hdsOn }}">{{ c.label }}{{ btnIcon(c) }}</a>
+{% endfor %}
+{% if note %}
+      <p class="mh-cards__note">{{ note | rt }}</p>
+{% endif %}
+    </div>
+{% endif %}
+  </div>
+</section>

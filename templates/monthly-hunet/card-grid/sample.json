@@ -1,0 +1,20 @@
+{
+  "bgColor": "#ffffff",
+  "title": {
+    "pc": "지금 우리 회사에 필요한 경험은?",
+    "mo": "지금 우리 회사에 \n필요한 경험은?"
+  },
+  "subtitle": "새로운 도전과 사업 과제 앞에서 어떤 전문성이 가장 필요하신가요?",
+  "cards": [
+    { "icon": "rocket-01", "title": "신사업·신규 시장 진출", "desc": "신규 사업모델 검토와 시장 진입 전략" },
+    { "icon": "globe-06", "title": "해외 진출·판로 개척", "desc": "반복되는 교육 운영과 관리 업무에\n많은 시간이 소요됩니다." },
+    { "icon": "line-chart-up-02", "title": "영업·마케팅 성과 개선", "desc": "매출 성장과 고객 확보 전략" },
+    { "icon": "dataflow-04", "title": "조직·인사체계 정비", "desc": "조직 운영과 인재관리 체계 고도화" },
+    { "icon": "coins-stacked-02", "title": "재무·투자 전략", "desc": "재무관리와 투자유치 대응" },
+    { "icon": "cpu-chip-01", "title": "디지털 전환·AI 활용", "desc": "기술 도입과 업무 프로세스 개선" }
+  ],
+  "ctas": [
+    { "label": "현재 가장 해결하고 싶은 사업 과제는?", "href": "#", "color": "interaction/button-neutral", "icon": "chevron-right" }
+  ],
+  "note": "설문을 통해 공유해 주신 기업의 고민과 사업과제는\n세션2에서 함께 살펴볼 예정입니다."
+}
