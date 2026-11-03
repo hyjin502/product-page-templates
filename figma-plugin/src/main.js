@@ -153,6 +153,7 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
   if (!base) { if (has && diff) warn(label + ': 레이어를 못 찾았어요'); return; }
   let str = pickDev(val, dev);
   if (f.format) str = f.format.replace(/\{([\w|]+)\}/g, (_, ks) => ks.split('|').map((k) => pickDev(content[k], dev)).find((x) => x != null && x !== '') || '').replace(/\s*\(\s*\)/g, '').replace(/\*\*\s*\*\*/g, '').trim(); // {a|b} = a, 비면 b · 빈 「**…**」·「()」는 지워요
+  if (f.bullet && str) str = String(str).split('\n').map((l) => l.trim().replace(/^•\s*/, '')).filter(Boolean).map((l) => f.bullet + l).join('\n'); // bullet: 줄마다 앞에 붙는 글자(아젠다 점 목록)
   const ts = f.self ? (base.type === 'TEXT' ? [base] : []) : (base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && (!f.like || clean(n.name).startsWith(f.like))));
   if (f.lines) {
     if (!ts.length) { if (diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }

@@ -13,13 +13,15 @@
 .mh-agenda__session--short .mh-agenda__heading { font-size: 20px; } /* Figma Session 3 — 소제목·설명이 없는 세션 */
 .mh-agenda__subtitle { margin: 0; font-size: 18px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); }
 .mh-agenda__desc { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
-.mh-agenda__profile { flex: none; min-width: 200px; margin: 0; display: flex; flex-direction: column; align-items: flex-end; }
-.mh-agenda__session:not(.mh-agenda__session--short) .mh-agenda__profile { min-height: 221px; }
+.mh-agenda__points span { display: block; } /* 점 목록 — Figma 775:7088 · 설명과 같은 글자 · 줄마다 • · 줄이 넘쳐도 들여쓰기 없음 */
+.mh-agenda__profiles { flex: none; display: flex; justify-content: flex-end; gap: 16px; min-width: 200px; } /* 강의자 2명이면 옆으로 사이 16 (Figma 637:3835) */
+.mh-agenda__session:not(.mh-agenda__session--short) .mh-agenda__profiles { min-height: 221px; }
+.mh-agenda__profile { flex: none; margin: 0; display: flex; flex-direction: column; align-items: flex-end; }
 .mh-agenda__photo { display: block; border-radius: 9.6px; }
 .mh-agenda__profile img { display: block; width: 150px; height: 150px; border-radius: 9.6px; object-fit: cover; background: #dee2e6; }
 .mh-agenda__profile figcaption { width: 150px; margin-top: 12px; display: flex; flex-direction: column; text-align: center; font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
 .mh-agenda__profile figcaption b { font-weight: 700; }
-.mh-agenda__session--short .mh-agenda__profile { margin-left: auto; }
+.mh-agenda__session--short .mh-agenda__profiles { margin-left: auto; }
 .mh-agenda__top { display: flex; align-items: center; gap: 10px; }
 @media (min-width: 768px) and (max-width: 1279px) { .mh-agenda { padding: 96px var(--container-pad); } }
 /* MO — Figma 637:3849 · 위아래 40 · 제목 28 왼쪽 · 세션 안쪽 30/24 · 세션 이름은 흰 알약(36) + 옆에 시간 · 제목 20 · 사진 80 + 이름 옆
@@ -36,8 +38,9 @@
   .mh-agenda__heads { gap: 4px; }
   .mh-agenda__heading, .mh-agenda__session--short .mh-agenda__heading { font-size: 20px; }
   .mh-agenda__desc { color: var(--btn-subtle); }
-  .mh-agenda__profile, .mh-agenda__session:not(.mh-agenda__session--short) .mh-agenda__profile { min-width: 0; min-height: 0; flex-direction: row; align-items: center; gap: 12px; }
-  .mh-agenda__session--short .mh-agenda__profile { margin-left: 0; }
+  .mh-agenda__profiles, .mh-agenda__session:not(.mh-agenda__session--short) .mh-agenda__profiles { min-width: 0; min-height: 0; flex-direction: column; align-items: stretch; gap: 16px; } /* MO 는 강의자를 아래로 쌓아요 (Figma 637:3892 · 775:7074) */
+  .mh-agenda__profile { flex-direction: row; align-items: center; gap: 12px; }
+  .mh-agenda__session--short .mh-agenda__profiles { margin-left: 0; }
   .mh-agenda__photo, .mh-agenda__profile img { width: 80px; height: 80px; border-radius: 12px; }
   .mh-agenda__profile figcaption { width: auto; margin-top: 0; text-align: left; color: var(--gray-13, #292a2d); }
 }

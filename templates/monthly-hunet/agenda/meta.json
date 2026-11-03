@@ -161,9 +161,32 @@
             "skip": true
           }
         },
+        "points": {
+          "type": "richtext",
+          "label": "점 목록",
+          "optional": true,
+          "note": "줄마다 앞에 • 가 붙어요 · 설명 아래",
+          "fig": {
+            "like": "- 산업별",
+            "text": 1,
+            "bullet": "•",
+            "mo": {
+              "format": "{pointsMo|points}"
+            }
+          }
+        },
+        "pointsMo": {
+          "type": "richtext",
+          "label": "점 목록 (MO)",
+          "optional": true,
+          "note": "비우면 PC 문구 그대로",
+          "fig": {
+            "skip": true
+          }
+        },
         "image": {
           "type": "image",
-          "label": "사진",
+          "label": "사진 1",
           "hint": "150×150",
           "optional": true,
           "profiles": true,
@@ -175,7 +198,7 @@
         "org": {
           "type": "text",
           "extract": false,
-          "label": "소속 (사진 아래)",
+          "label": "소속 1 (사진 아래)",
           "maxChars": 20,
           "optional": true,
           "fig": {
@@ -185,13 +208,47 @@
         "name": {
           "type": "text",
           "extract": false,
-          "label": "이름 (사진 아래)",
+          "label": "이름 1 (사진 아래)",
           "maxChars": 20,
           "optional": true,
           "fig": {
             "like": "리더스아카데미팀",
             "text": 0,
             "format": "{org}\n**{name}**"
+          }
+        },
+        "image2": {
+          "type": "image",
+          "label": "사진 2",
+          "hint": "150×150 · 강의자가 2명일 때 — PC 는 옆에, MO 는 아래에",
+          "optional": true,
+          "profiles": true,
+          "fig": {
+            "layer": "프로필1",
+            "nth": 1,
+            "img": -1
+          }
+        },
+        "org2": {
+          "type": "text",
+          "extract": false,
+          "label": "소속 2",
+          "maxChars": 20,
+          "optional": true,
+          "fig": {
+            "skip": true
+          }
+        },
+        "name2": {
+          "type": "text",
+          "extract": false,
+          "label": "이름 2",
+          "maxChars": 20,
+          "optional": true,
+          "fig": {
+            "like": "리더스아카데미팀",
+            "text": 1,
+            "format": "{org2}\n**{name2}**"
           }
         }
       },

@@ -1617,7 +1617,8 @@ function bindEditorForm(ctx) {
           const it = e[p.f][p.i];
           it[p.k] = ref;
           const sItem = s.item || {};
-          if (sItem.name && (!String(it.name || '').trim() || /^이름\s*직급$/.test(String(it.name).trim()))) it.name = hit.dataset.name;
+          const nk = p.k.replace(/^image/, 'name'); // 사진 2 → 이름 2
+          if (sItem[nk] && (!String(it[nk] || '').trim() || /^이름\s*직급$/.test(String(it[nk]).trim()))) it[nk] = hit.dataset.name;
         } else e[p.f][p.dev] = { kind: 'image', ...ref };
         break;
       }
@@ -1963,8 +1964,16 @@ function previewTo(id) {
   const top = iframe.getBoundingClientRect().top + sec.offsetTop * s - 12;
   let sc = iframe.parentElement;
   while (sc && sc !== document.body) { const o = getComputedStyle(sc).overflowY; if ((o === 'auto' || o === 'scroll') && sc.scrollHeight > sc.clientHeight) break; sc = sc.parentElement; }
-  if (sc && sc !== document.body) sc.scrollBy({ top: top - sc.getBoundingClientRect().top, behavior: 'smooth' });
-  else window.scrollBy({ top: top - (document.getElementById('top')?.offsetHeight || 0), behavior: 'smooth' });
+  // 이미 화면에 충분히 보이면 그대로 두고, 안 보일 때만 미끄러지지 않고 바로 옮겨요(눈이 피로하지 않게 — 2026-11-03 사용자 요청)
+  const inSc = sc && sc !== document.body;
+  const vTop = inSc ? sc.getBoundingClientRect().top : (document.getElementById('top')?.offsetHeight || 0);
+  const vBot = inSc ? sc.getBoundingClientRect().bottom : window.innerHeight;
+  const sTop = top + 12, sBot = sTop + sec.offsetHeight * s;
+  const seen = Math.min(sBot, vBot) - Math.max(sTop, vTop);
+  if (seen < Math.min(160, sBot - sTop)) {
+    if (inSc) sc.scrollBy({ top: top - vTop, behavior: 'instant' });
+    else window.scrollBy({ top: top - vTop, behavior: 'instant' });
+  }
   sec.animate([{ outline: `${Math.round(3 / s)}px solid #3a50c9`, outlineOffset: `-${Math.round(3 / s)}px` }, { outline: `${Math.round(3 / s)}px solid transparent`, outlineOffset: `-${Math.round(3 / s)}px` }], { duration: 1400, easing: 'ease-out' });
 }
 /** 섹션 입력칸 펴기·접기 (scroll = 펴고 그 칸으로 이동) */
@@ -1975,13 +1984,23 @@ function tplOpen(id, scroll) {
   const ts = tplState(v.section);
   const open = ts.open.includes(id);
   if (scroll || !open) tplCur = id; else if (tplCur === id) tplCur = null;
-  if (scroll && open) { markTplCur(); tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
+  if (scroll && open) { markTplCur(); listTo(id); return; }
   ts.open = open ? ts.open.filter((x) => x !== id) : [...ts.open, id];
   save();
   if (!r) return;
   redrawTplList(t);
   markTplCur();
-  if (scroll) tplEl.querySelector(`[data-vid="${id}"]`)?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  if (scroll) listTo(id);
+}
+/** 왼쪽 목록에서 그 섹션 칸을 보이게 — 이미 보이면 그대로, 안 보일 때만 바로(미끄러지지 않게) 옮겨요 */
+function listTo(id) {
+  const el = tplEl.querySelector(`[data-vid="${id}"]`);
+  if (!el) return;
+  const box = el.closest('.compose__scroll') || el.parentElement;
+  const r = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+  const seen = Math.min(r.bottom, b.bottom) - Math.max(r.top, b.top);
+  if (seen >= Math.min(120, r.height)) return;
+  el.scrollIntoView({ block: 'start', behavior: 'instant' });
 }
 const tplTimers = {};
 function tplUpdate(v) {

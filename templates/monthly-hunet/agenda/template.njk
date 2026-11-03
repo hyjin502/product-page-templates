@@ -1,9 +1,9 @@
 <section class="mh-agenda">
   <h2 class="mh-h mh-agenda__title">{{ title | rt }}</h2>
-{% for s in sessions %}
+{% for s in sessions %}{% set si = loop.index0 %}
 {# MO 문구(…Mo)가 있으면 PC 는 PC 문구 · MO 는 MO 문구 (비우면 PC 문구 그대로) #}
 {% set timeMo = s.timeMo or s.time %}{% set headingMo = s.headingMo or s.heading %}{% set subtitleMo = s.subtitleMo or s.subtitle %}{% set descMo = s.descMo or s.desc %}
-{% set short = not s.subtitle and not s.desc %}
+{% set short = not s.subtitle and not s.desc and not s.points %}
   <article class="mh-agenda__session{% if short %} mh-agenda__session--short{% endif %}">
 {% if s.label or timeMo %}
     <div class="mh-agenda__top">
@@ -46,16 +46,26 @@
 {% if s.descMo %}
         <p class="mh-agenda__desc only-mo">{{ s.descMo | rt }}</p>
 {% endif %}
+{# 점 목록 — 줄마다 앞에 • (MO 문구가 따로 있으면 PC · MO 두 벌) #}
+{% for pt in [[s.points, ('only-pc' if s.pointsMo else '')], [s.pointsMo, 'only-mo']] %}{% if pt[0] %}
+        <p class="mh-agenda__desc mh-agenda__points {{ pt[1] }}">{% for l in pt[0].split('\n') %}{% set l = l | trim | replace(r/^•\s*/, '') %}{% if l %}<span>•{{ l | rt }}</span>{% endif %}{% endfor %}</p>
+{% endif %}{% endfor %}
       </div>
-{% if (s.image and s.image.src) or s.org or s.name %}
+{# 강의자 1~2명 — PC 는 옆으로, MO 는 아래로 쌓아요 #}
+{% set sps = [] %}{% for n in ['', '2'] %}{% set im = s['image' + n] %}{% if (im and im.src) or s['org' + n] or s['name' + n] %}{% set sps = (sps.push({ im: im, org: s['org' + n], name: s['name' + n], f: 'image' + n }), sps) %}{% endif %}{% endfor %}
+{% if sps.length %}
+      <div class="mh-agenda__profiles">
+{% for p in sps %}
       <figure class="mh-agenda__profile">
-{% if s.image and s.image.src %}
-        <span class="mh-agenda__photo" data-pick-item="sessions:{{ loop.index0 }}:image"><img src="{{ s.image.src }}" alt="{{ s.image.alt or '' }}" width="150" height="150"></span>
+{% if p.im and p.im.src %}
+        <span class="mh-agenda__photo" data-pick-item="sessions:{{ si }}:{{ p.f }}"><img src="{{ p.im.src }}" alt="{{ p.im.alt or '' }}" width="150" height="150"></span>
 {% endif %}
-{% if s.org or s.name %}
-        <figcaption>{% if s.org %}<span>{{ s.org }}</span>{% endif %}{% if s.name %}<b>{{ s.name }}</b>{% endif %}</figcaption>
+{% if p.org or p.name %}
+        <figcaption>{% if p.org %}<span>{{ p.org }}</span>{% endif %}{% if p.name %}<b>{{ p.name }}</b>{% endif %}</figcaption>
 {% endif %}
       </figure>
+{% endfor %}
+      </div>
 {% endif %}
     </div>
   </article>

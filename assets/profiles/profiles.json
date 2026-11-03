@@ -90,6 +90,12 @@
       "name": "박용호",
       "src": "assets/profiles/p16.jpg",
       "figma": "692:6330"
+    },
+    {
+      "key": "p17",
+      "name": "문주희",
+      "src": "assets/profiles/p17.jpg",
+      "figma": "775:7071"
     }
   ]
 }
