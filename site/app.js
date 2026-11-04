@@ -1863,6 +1863,7 @@ function renderTpl() {
     <button type="button" class="btn-ui" data-tpl-act="copy">page.json 복사</button>
     <button type="button" class="btn-ui" data-tpl-act="figma" title="Figma 플러그인으로 가져가요 — 올린 이미지·영상도 함께 담겨요">Figma용으로 받기</button>
     <button type="button" class="btn-ui" data-tpl-act="html" title="지금 화면을 HTML 파일 한 장으로 — 사진도 파일 안에 담겨요">HTML 받기</button>
+    <button type="button" class="btn-ui" data-tpl-act="pubzip" title="퍼블리셔에게 줄 zip — HTML · CSS · JS · 이미지(짧은 이름)를 나눠 담고 README 를 붙여요">퍼블리셔용 zip</button>
     <button type="button" class="btn-ui" data-tpl-act="reset">샘플로 되돌리기</button>
   </div>
   ${draftLine(t.key)}
@@ -2164,6 +2165,16 @@ tplEl.addEventListener('click', (ev) => {
       download(name, new Blob([html], { type: 'text/html' }));
       if (missed.length) alert(`HTML 을 받았어요. 그림 ${missed.length}개는 파일에 넣지 못해 원래 주소로 남았어요:\n${missed.slice(0, 5).join('\n')}`);
     }).catch((err) => alert('HTML 을 만들지 못했어요 — ' + (err && err.message || err)))
+      .finally(() => { ta.disabled = false; ta.textContent = label; });
+    return;
+  }
+  if (ta.dataset.tplAct === 'pubzip') {
+    const label = ta.textContent;
+    ta.disabled = true; ta.textContent = '만드는 중…';
+    publisherZip(key).then(({ blob, missed, name }) => {
+      download(name, blob);
+      if (missed.length) alert(`zip 을 받았어요. 그림 ${missed.length}개는 담지 못했어요:\n${missed.slice(0, 5).join('\n')}`);
+    }).catch((err) => alert('zip 을 만들지 못했어요 — ' + (err && err.message || err)))
       .finally(() => { ta.disabled = false; ta.textContent = label; });
     return;
   }
@@ -2512,6 +2523,174 @@ ${REG.fontLink}
     } catch (e) { missed.push(u); }
   }));
   return { html: doc, missed, name: (iss ? `${key}-${iss.period || ''}` : key).replace(/-$/, '') + '.html' };
+}
+/** zip 파일 만들기 (압축 없이 담기만 · 파일 이름 UTF-8) — files: [{ name, data: Uint8Array }] */
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = (d) => { let c = 0xffffffff; for (let i = 0; i < d.length; i++) c = CRC_T[(c ^ d[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+function zipBlob(files) {
+  const now = new Date();
+  const time = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+  const date = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+  const enc = new TextEncoder();
+  const parts = [], dir = [];
+  let off = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name), crc = crc32(f.data), n = f.data.length;
+    const h = new DataView(new ArrayBuffer(30));
+    [[0, 0x04034b50, 4], [4, 20, 2], [6, 0x800, 2], [8, 0, 2], [10, time, 2], [12, date, 2], [14, crc, 4], [18, n, 4], [22, n, 4], [26, name.length, 2], [28, 0, 2]]
+      .forEach(([o, v, s]) => (s === 4 ? h.setUint32(o, v, true) : h.setUint16(o, v, true)));
+    const c = new DataView(new ArrayBuffer(46));
+    [[0, 0x02014b50, 4], [4, 20, 2], [6, 20, 2], [8, 0x800, 2], [10, 0, 2], [12, time, 2], [14, date, 2], [16, crc, 4], [20, n, 4], [24, n, 4], [28, name.length, 2], [30, 0, 2], [32, 0, 2], [34, 0, 2], [36, 0, 2], [38, 0, 4], [42, off, 4]]
+      .forEach(([o, v, s]) => (s === 4 ? c.setUint32(o, v, true) : c.setUint16(o, v, true)));
+    parts.push(h, name, f.data);
+    dir.push(c, name);
+    off += 30 + name.length + n;
+  }
+  const size = dir.reduce((a, x) => a + x.byteLength, 0);
+  const e = new DataView(new ArrayBuffer(22));
+  [[0, 0x06054b50, 4], [8, files.length, 2], [10, files.length, 2], [12, size, 4], [16, off, 4]].forEach(([o, v, s]) => (s === 4 ? e.setUint32(o, v, true) : e.setUint16(o, v, true)));
+  return new Blob([...parts, ...dir, e], { type: 'application/zip' });
+}
+/** 퍼블리셔용 zip — index.html(섹션마다 주석) · css/common.css · css/sections.css · js/sections.js · images/(짧은 이름) · README.md
+    이미지 이름 = 섹션 순서-섹션-용도(-pc|-mo). 올린 파일은 page.json 받기와 같은 이름(hero-bg-pc 등)에 순서를 붙여요 */
+async function publisherZip(key) {
+  const t = tplByKey[key];
+  const vs = tplVisible(t).map((id) => byId[id]);
+  await Promise.all(vs.flatMap((v) => mediaKeys(tplEdit(v))).map(loadBlob));
+  const iss = issueOf(key);
+  const title = iss ? `${ymLabel(iss.period)} ${iss.title || t.title}` : t.title;
+  const folder = (iss ? `${key}-${iss.period || ''}` : key).replace(/-$/, '');
+  const pad = (i) => String(i + 1).padStart(2, '0');
+  // 올린 파일 blob: 주소 → 내보내기 이름 (page.json 받기와 같은 규칙)
+  const upName = {};
+  vs.forEach((v) => {
+    const e = tplEdit(v), pre = v.pre || v.layout;
+    for (const [k, raw] of Object.entries(v.slots)) {
+      if (RC.specOf(raw).type !== 'media' || !e[k]) continue;
+      for (const dev of ['pc', 'mo']) { const ref = e[k][dev]; if (ref && ref.file && blobUrls[ref.file]) upName[blobUrls[ref.file]] = exportName(k, dev, ref, pre); }
+    }
+    for (const { k, i, kk, ref } of listUploads(v, e)) if (blobUrls[ref.file]) upName[blobUrls[ref.file]] = itemImageName(pre, k, i, kk, ref);
+  });
+  // 그림 주소 → 칸 이름 (hero-speaker1 · agenda-sessions-2-image2 · hero-bg-pc) — 샘플 사진도 원본 파일 이름 대신 들어가는 자리로 불러요
+  const slotName = {};
+  vs.forEach((v) => {
+    const pre = v.pre || v.layout;
+    const put = (src, n) => { if (src && !slotName[src]) slotName[src] = n; };
+    for (const [k, val] of Object.entries(contentFrom(v, tplEdit(v), false))) {
+      const kn = k === 'background' ? 'bg' : k;
+      if (Array.isArray(val)) val.forEach((it, i) => Object.entries(it || {}).forEach(([kk, x]) => { if (x && typeof x === 'object') put(x.src, `${pre}-${kn}-${i + 1}${kk === 'image' ? '' : '-' + kk}`); }));
+      else if (val && typeof val === 'object') {
+        put(val.src, `${pre}-${kn}`);
+        const both = val.pc && val.mo;
+        for (const d of ['pc', 'mo']) if (val[d]) put(val[d].src, `${pre}-${kn}${both ? '-' + d : ''}`);
+      }
+    }
+  });
+  const nameOf = {}, used = new Set(), images = [];
+  const uniq = (n) => { let x = n, i = 2; while (used.has(x)) x = n.replace(/(\.[^.]+)$/, `-${i++}$1`); used.add(x); return x; };
+  const refsIn = (s) => {
+    const out = [];
+    s.replace(/\b(?:src|poster)="([^"]+)"/g, (m, u) => out.push(u));
+    s.replace(/\bsrcset="([^"]+)"/g, (m, u) => u.split(',').forEach((p) => out.push(p.trim().split(/\s+/)[0])));
+    s.replace(/url\((['"]?)([^)'"]+)\1\)/g, (m, q, u) => out.push(u));
+    return out.filter((u) => u && !/^(data:|#|https?:\/\/(cdn|fonts)\.)/.test(u));
+  };
+  const nameFor = (u, i, v) => {
+    if (nameOf[u]) return;
+    const path = u.replace(/[?#].*$/, '');
+    const ext = ((/\.([a-z0-9]+)$/i.exec(upName[u] || path) || [])[1] || 'jpg').toLowerCase();
+    let base = slotName[u] ? `${slotName[u]}.${ext}` : upName[u] || path.split('/').pop().replace(new RegExp('^' + key + '-'), '');
+    if (!slotName[u] && !upName[u] && !base.startsWith(v.layout)) base = `${v.layout}-${base}`;
+    nameOf[u] = uniq(`${pad(i)}-${base}`.toLowerCase());
+    images.push({ url: u, name: nameOf[u], sec: `${pad(i)} ${vlabel(v)}`, from: upName[u] ? '올린 파일' : '샘플' });
+  };
+  // 섹션 HTML — 편집기 전용 표시(미리보기에서 사진 바꾸기)는 빼고 빈 줄을 정리해요
+  const secs = vs.map((v, i) => {
+    let h = heroHtmlOrError(v, tplEdit(v)).replace(/\s+data-pick(?:-item)?="[^"]*"/g, '').replace(/[ \t]+$/gm, '').replace(/\n{2,}/g, '\n').trim();
+    refsIn(h).forEach((u) => nameFor(u, i, v));
+    const cls = (/<[a-z]+[^>]*?\sclass="([^" ]+)/.exec(h) || [])[1] || '';
+    return { v, i, h, cls };
+  });
+  // CSS — 섹션마다 /* 이름 */ 머리로 나뉜 덩어리를 한 번씩만
+  const seen = new Set(), blocks = [];
+  vs.forEach((v) => v.css.split(/\n\n(?=\/\* [^\n]* \*\/\n)/).forEach((b) => { const head = b.split('\n')[0]; if (!seen.has(head)) { seen.add(head); blocks.push(b.trim()); } }));
+  let secCss = blocks.join('\n\n') + '\n';
+  let common = REG.baseCss.trim() + '\n';
+  [common, secCss].forEach((s) => refsIn(s).forEach((u) => nameFor(u, 0, vs[0])));
+  const swap = (s, pre) => Object.entries(nameOf).reduce((a, [u, n]) => a.split(u).join(`${pre}images/${n}`), s);
+  common = swap(common, '../'); secCss = swap(secCss, '../');
+  const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+  const run = ((secs.some((s) => s.h.includes('data-pager')) ? REG.pagerJs : '') + '\n' + js).trim();
+  const body = secs.map(({ v, i, h }) => `\x3C!-- ${pad(i)} · ${vlabel(v)} (${v.base || v.id}) -->\n${swap(h, '')}`).join('\n\n');
+  const html = `<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+${REG.fontLink}
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/sections.css">
+</head>
+<body>
+
+${body}
+${run ? '\n<script src="js/sections.js"><\/script>\n' : ''}</body>
+</html>
+`;
+  // 이미지 받기 + 크기 재기
+  const missed = [];
+  const bin = {};
+  await Promise.all(images.map(async (im) => {
+    try {
+      const r = await fetch(new URL(im.url.replace(/&amp;/g, '&'), assetBase).href);
+      if (!r.ok) throw new Error(r.status);
+      const b = await r.blob();
+      bin[im.name] = new Uint8Array(await b.arrayBuffer());
+      if (/^image\/(?!svg)/.test(b.type) && typeof createImageBitmap === 'function') { const bm = await createImageBitmap(b); im.size = `${bm.width}×${bm.height}`; bm.close && bm.close(); }
+      else im.size = /svg/.test(b.type) ? 'SVG' : /video/.test(b.type) ? '영상' : '';
+    } catch (e) { missed.push(im.url); im.missed = true; }
+  }));
+  const jsNotes = vs.filter((v) => v.js).map((v) => { const m = /^\/\/\s*(.+)$/m.exec(v.js); return `- ${vlabel(v)}: ${m ? m[1].replace(/^[\w-]+\s+—\s*/, '') : '스크립트'}`; });
+  const today = new Date().toISOString().slice(0, 10);
+  const readme = `# ${title} — 퍼블리싱 전달 파일
+
+만든 날 ${today} · 상품페이지 템플릿 「${t.title}」 편집기에서 받았어요.
+
+## 폴더
+| 파일 | 내용 |
+|---|---|
+| index.html | 섹션 순서대로 · 섹션마다 \`\x3C!-- 순서 · 이름 -->\` 주석 |
+| css/common.css | 공통 토큰(색 · 글자 · 간격 변수)과 기본 스타일 |
+| css/sections.css | 섹션 스타일 — 섹션 클래스 안에서만 적용 · PC → TB → MO 순서 |
+${run ? '| js/sections.js | 움직이는 부분 (아래) |\n' : ''}| images/ | 이미지 — 이름 = 섹션 순서-섹션-용도, PC·MO 가 다르면 -pc / -mo |
+
+## 반응형
+- MO ≤ 767px · TB 768–1279px · PC ≥ 1280px (common.css 맨 위)
+- 글꼴: Pretendard 1.3.9 (index.html \`<head>\` 의 jsdelivr CDN)
+
+## 섹션
+| 순서 | 섹션 | 루트 클래스 |
+|---|---|---|
+${secs.map(({ v, i, cls }) => `| ${pad(i)} | ${vlabel(v)} | \`.${cls}\` |`).join('\n')}
+${jsNotes.length ? `\n## 움직이는 부분\n${jsNotes.join('\n')}\n` : ''}
+## 이미지
+**이미지는 2배(화면에 보이는 크기의 2배)로 넣어 주세요.** 「샘플」은 Figma 렌더 1배라 2배 원본으로 바꿔야 할 수 있어요.
+
+| 파일 | 섹션 | 크기(px) | 출처 |
+|---|---|---|---|
+${images.filter((im) => !im.missed).map((im) => `| images/${im.name} | ${im.sec} | ${im.size || ''} | ${im.from} |`).join('\n')}
+`;
+  const enc = new TextEncoder();
+  const files = [
+    { name: `${folder}/index.html`, data: enc.encode(html) },
+    { name: `${folder}/css/common.css`, data: enc.encode(common) },
+    { name: `${folder}/css/sections.css`, data: enc.encode(secCss) },
+    ...(run ? [{ name: `${folder}/js/sections.js`, data: enc.encode(run + '\n') }] : []),
+    ...images.filter((im) => bin[im.name]).map((im) => ({ name: `${folder}/images/${im.name}`, data: bin[im.name] })),
+    { name: `${folder}/README.md`, data: enc.encode(readme) },
+  ];
+  return { blob: zipBlob(files), missed, name: `${folder}.zip` };
 }
 /** 완료 — 그때 화면(HTML) · page.json · Figma용 파일을 파일함에 함께 보관해요 (올린 사진은 저장된 주소로 바꿔 넣어요) */
 async function finalFiles(key) {
