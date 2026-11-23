@@ -120,12 +120,13 @@
       "palette": "700",
       "extract": false,
       "label": "아이콘 색",
-      "note": "HDS 원색 700번 · 비우면 Figma 기본 색(검정 80%)",
+      "note": "HDS 원색 700번 · 「포인트」 = 페이지 포인트 컬러(시안대로면 Figma 기본 색 검정 80%)",
       "optional": true,
       "fig": {
         "paint": "vector",
         "at": "2단"
-      }
+      },
+      "point": true
     }
   }
 }

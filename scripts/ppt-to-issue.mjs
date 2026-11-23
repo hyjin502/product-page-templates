@@ -7,6 +7,7 @@
      "template": "monthly-hunet", "period": "2026-11", "title": "월간휴넷(PPT 테스트)", "by": "Claude · PPT 자동",
      "pick": { "<자리 키>": "<variant id>" },      // 자리 키 = 그 자리 variant id 를 | 로 이은 것
      "off": ["<자리 키>"],                          // 뺄 자리
+     "point": "violet/700",                         // 페이지 포인트 컬러(선택 · HDS 700번)
      "sections": { "<variant id>": { …칸: 값 } },   // 샘플 위에 덮어써요(적지 않은 칸 = 샘플 그대로)
      "flags": [ "확인할 것 …" ]                      // 보고용(저장하지 않아요)
    }
@@ -31,12 +32,12 @@ function editFrom(v, content) {
   const ctx = RC.contextFor(v.slots, content);
   for (const [k, raw] of Object.entries(v.slots)) {
     const s = RC.specOf(raw);
-    const val = ctx[k];
+    const val = s.point ? (content || {})[k] : ctx[k]; // 포인트 칸은 비면 비운 채로(페이지 포인트 컬러)
     if (s.type === 'richtext') {
       e[k] = RC.textLines(val, 'pc');
       const mo = RC.textLines(val, 'mo');
       if (s.mo && mo.join('\n') !== e[k].join('\n')) (e['@mo'] ||= {})[k] = mo;
-    } else if (s.type === 'list') e[k] = (val || []).map((it) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(vv)])));
+    } else if (s.type === 'list') e[k] = (val || []).map((it, i) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(s.item && RC.specOf(s.item[kk]).point ? (((content || {})[k] || [])[i] || {})[kk] : vv)])));
     else if (s.type === 'media') {
       e[k] = { pc: (val && val.pc) || null, mo: (val && val.mo) || null, moSame: !(val && val.mo) };
       if (s.focus && val && val.pos) { e[k].pos = JSON.parse(JSON.stringify(val.pos)); if (e[k].pos.mo) e[k].pos.moOwn = true; }
@@ -94,6 +95,7 @@ async function main() {
     // 편집기가 「손대지 않은 샘플 사진」으로 보고 되돌리지 않게 — 기준(@base)과 샘플 판(@sv)을 함께 적어요
     e['@base'] = Object.fromEntries(Object.entries(v.slots).filter(([, raw]) => RC.specOf(raw).type === 'media').map(([k]) => [k, JSON.stringify(fresh[k] || null)]));
     if (v.sampleVersion) e['@sv'] = v.sampleVersion;
+    e['@pt'] = 2; // 포인트 칸 정리를 이미 한 값 (site/app.js PT_VER 와 같게)
     const changed = Object.keys(part).filter((k) => JSON.stringify(e[k]) !== JSON.stringify(fresh[k]));
     if (!changed.length) { summary.push(`  = ${v.label || id} — 샘플과 같아요`); continue; }
     edits[id] = e;
@@ -108,7 +110,7 @@ async function main() {
   if (plan.flags?.length) console.log('\n확인할 것\n' + plan.flags.map((f, i) => `  ${i + 1}. ${f}`).join('\n'));
   if (dry) return;
 
-  const data = { v: 1, edits, pick: plan.pick || {}, off: plan.off || [], extras: {}, order: [] };
+  const data = { v: 1, edits, pick: plan.pick || {}, off: plan.off || [], extras: {}, order: [], point: plan.point || '' }; // point = 페이지 포인트 컬러(HDS 700번 키, 비우면 시안대로)
   // 공유 링크 — site/app.js zip() 과 같은 형식(deflate-raw + base64url, 앞에 z)
   const share = (base) => `${base}#share-${t.key}=z${zlib.deflateRawSync(Buffer.from(JSON.stringify(data))).toString('base64url')}`;
   const showShare = () => {

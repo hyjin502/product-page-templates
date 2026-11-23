@@ -1022,3 +1022,8 @@ pre, code, kbd, samp { font-family: var(--font-code); }
 .stage-bar .tpl-latest { flex: 1 1 320px; align-self: stretch; display: flex; align-items: center; gap: 6px; padding: 7px 12px; border: 1px solid var(--rule); border-radius: 10px;
   background: var(--panel); color: var(--ink-2); font-size: 12px; line-height: 1.5; }
 .stage-bar .tpl-latest b { color: var(--accent); margin-right: 0; }
+
+/* 페이지 포인트 컬러 (페이지 템플릿 편집기 · 섹션 편집 위) */
+.tpl-point { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-bottom: 1px solid var(--pane-line, #eaebec); }
+.tpl-point__head { display: flex; align-items: baseline; gap: 8px; }
+.tpl-point__head b { font-size: 14px; }

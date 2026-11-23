@@ -33,10 +33,9 @@
     "labelColor": {
       "type": "color",
       "palette": "700",
-      "default": "blue/700",
       "extract": false,
       "label": "세션 이름 색",
-      "note": "Session 1. 같은 파란 글자 · HDS 원색 700번",
+      "note": "Session 1. 같은 파란 글자 · 「포인트」 = 페이지 포인트 컬러(시안대로면 blue/700)",
       "fig": {
         "paint": "text",
         "all": true,
@@ -47,7 +46,10 @@
         "mo": {
           "parent": "Frame 120"
         }
-      }
+      },
+      "optional": true,
+      "point": true,
+      "pointFallback": "blue/700"
     },
     "sessions": {
       "type": "list",

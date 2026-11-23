@@ -17,24 +17,29 @@
       "palette": "bg",
       "free": true,
       "optional": true,
-      "default": "#f3f0fe",
       "extract": false,
       "label": "배경색",
       "fig": {
         "bg": true
-      }
+      },
+      "point": true,
+      "pointFallback": "#f3f0fe",
+      "pointTint": 0.08,
+      "note": "「포인트」 = 페이지 포인트 컬러를 흰색에 8% 섞은 옅은 색(시안대로면 #F3F0FE = violet/200)"
     },
     "accentColor": {
       "type": "color",
       "palette": "700",
-      "default": "violet/700",
       "extract": false,
       "label": "강조 색",
-      "note": "제목 **굵게** · 결과 요약 · 아이콘 · 체크 색",
+      "note": "제목 **굵게** · 결과 요약 · 아이콘 · 체크 색 · 「포인트」 = 페이지 포인트 컬러(시안대로면 violet/700)",
       "fig": {
         "paint": "vector",
         "at": "Frame 2147238983"
-      }
+      },
+      "optional": true,
+      "point": true,
+      "pointFallback": "violet/700"
     },
     "title": {
       "type": "richtext",

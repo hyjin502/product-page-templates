@@ -171,6 +171,7 @@ function validateValue(s, v, where, errors) {
       const shown = s.palette ? Object.keys(pal) : HDS.colors.map((c) => c.key);
       if (s.noneValue && v === s.noneValue) break; // 예: 뱃지 테두리 "none" = 빼기
       if (s.free && /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(String(v))) break; // 자유 색 — #rrggbb(aa)
+      if (s.point && v === 'static/black') break; // 포인트 칸 — 페이지 포인트 컬러 블랙(700번 팔레트 밖)
       if (!pal[v]) errors.push(`${where}: HDS ${s.palette === 'text' ? '글자색' : s.palette === 'line' ? '선 색' : s.palette === 'bg' ? '배경색' : '색'} 키예요 (가능: ${shown.join(', ')} / 현재 "${v}")`);
       break;
     }

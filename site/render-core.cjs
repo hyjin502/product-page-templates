@@ -99,7 +99,7 @@
       for (const [k, raw] of Object.entries(fields || {})) {
         const s = specOf(raw);
         let v = obj ? obj[k] : undefined;
-        if (v == null || v === '') v = s.type === 'list' ? [] : (s.default ?? null);
+        if (v == null || v === '') v = s.type === 'list' ? [] : s.point ? (s.pointFallback ?? null) : (s.default ?? null); // 포인트 칸(point) — 비면 시안 색(pointFallback)
         if (s.type === 'list' && Array.isArray(v) && s.item) v = v.map((it) => ({ ...it, ...fill(s.item, it) }));
         out[k] = v;
       }

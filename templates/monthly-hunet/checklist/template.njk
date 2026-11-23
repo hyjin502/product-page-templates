@@ -1,6 +1,6 @@
 {% set bg = bgColor | hdsBg %}
-<section class="mh-checklist"{% if bg %} style="--mh-cl: {{ bg }}"{% endif %}>
-  <div class="mh-checklist__card">
+<section class="mh-checklist"{% if bg or accentColor %} style="{% if bg %}--mh-cl: {{ bg }};{% endif %}{% if accentColor %} --mh-ac: {{ accentColor | hdsColor }};{% endif %}"{% endif %}>
+  <div class="mh-checklist__card{% if badge %} mh-checklist__card--ribbon{% endif %}">
 {% if badge %}
     <p class="mh-checklist__ribbon"><img src="assets/monthly-hunet/checklist-ribbon.png" alt="" width="399" height="133"><span>{{ badge }}</span></p>
 {% endif %}

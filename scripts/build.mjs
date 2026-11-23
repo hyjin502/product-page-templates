@@ -83,7 +83,7 @@ function buildLibrary(reg, env, baseCss) {
       key: s.key, name: s.name || null, role: s.role, order: s.order, variants: s.variants,
       figmaSet: figmaUrl(catalog, s.figmaSet), figmaSetDev: figmaUrl(catalog, s.figmaSet, true),
     })),
-    templates: reg.templates.map((t) => ({ key: t.key, title: t.title, variants: t.variants, rows: t.rows, order: t.order, figmaSet: figmaUrl(catalog, t.figmaSet) })),
+    templates: reg.templates.map((t) => ({ key: t.key, title: t.title, variants: t.variants, rows: t.rows, order: t.order, point: t.point || null, figmaSet: figmaUrl(catalog, t.figmaSet) })),
     variants: reg.variants.map((v) => ({
       id: v.id, section: v.section, layout: v.layout, label: v.label, when: v.when, body: v.body || 980,
       figma: Object.fromEntries(['pc', 'tb', 'mo'].map((d) => [d, v.figma?.[d] ? { url: figmaUrl(catalog, v.figma[d]), dev: figmaUrl(catalog, v.figma[d], true), node: v.figma[d] } : null])),

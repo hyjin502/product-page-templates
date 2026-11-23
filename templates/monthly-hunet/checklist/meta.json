@@ -2,38 +2,56 @@
   "id": "monthly-hunet-checklist",
   "section": "monthly-hunet",
   "layout": "checklist",
-  "label": "체크리스트 (리본)",
+  "label": "체크리스트 (기본)",
   "order": 3,
-  "when": "「잠깐 주목!」 리본 · 체크 목록(눌러서 체크) · 체크 개수별 결과 카드 3개 — 보라 바탕 위 흰 카드",
+  "when": "체크 목록(눌러서 체크) · 체크 개수별 결과 카드 3개 — 보라 바탕 위 흰 카드 · 리본 문구를 쓰면 위에 리본(선택)",
   "figma": {
     "pc": "668:6018",
     "mo": "668:6021",
     "tb": null
   },
   "body": 860,
+  "sampleVersion": 2,
+  "formerTexts": [
+    "잠깐 주목!"
+  ],
   "slots": {
     "bgColor": {
       "type": "color",
       "palette": "bg",
       "free": true,
       "optional": true,
-      "default": "#6541f2",
       "extract": false,
       "label": "배경색",
-      "note": "제목 둘째 줄 강조색도 같은 색",
+      "note": "「포인트」 = 페이지 포인트 컬러(시안대로면 #6541F2 = violet/700) · 강조 색을 비우면 같은 색",
       "fig": {
         "bg": true
+      },
+      "point": true,
+      "pointFallback": "#6541f2"
+    },
+    "accentColor": {
+      "type": "color",
+      "palette": "700",
+      "optional": true,
+      "point": true,
+      "extract": false,
+      "label": "강조 색",
+      "note": "제목 **굵게** · 체크 색 · 「포인트」 = 페이지 포인트 컬러(시안대로면 배경색과 같은 색)",
+      "fig": {
+        "skip": true
       }
     },
     "badge": {
       "type": "text",
       "optional": true,
       "extract": false,
-      "label": "리본 문구",
+      "label": "리본 문구 (선택 · 비우면 리본 없음)",
       "maxChars": 12,
       "fig": {
-        "layer": "잠깐 주목!"
-      }
+        "skip": true
+      },
+      "hint": "2026-11 Figma 시안에서 리본이 빠졌어요. 쓰면 카드 위에 리본이 붙어요"
     },
     "title": {
       "type": "richtext",

@@ -83,12 +83,14 @@
         },
         "color": {
           "type": "color",
-          "default": "blue/700",
           "label": "배경색",
           "hideWhen": {
             "style": "outline"
           },
-          "note": "기본 blue/700 = HDS primary"
+          "note": "「포인트」 = 페이지 포인트 컬러(시안대로면 blue/700 = HDS primary)",
+          "optional": true,
+          "point": true,
+          "pointFallback": "blue/700"
         },
         "line": {
           "type": "color",

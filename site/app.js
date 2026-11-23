@@ -735,7 +735,9 @@ const RC = window.RenderCore;
 const HDS_COLOR = Object.fromEntries(REG.hds.colors.map((c) => [c.key, c]));
 for (const [old, k] of Object.entries(REG.hds.aliases || {})) if (HDS_COLOR[k]) HDS_COLOR[old] = HDS_COLOR[k]; // 예전 키 → 새 키
 /** 색 팔레트 — 슬롯 palette: text(글자) · line(선) · bg(섹션 배경) · 700(원색 700번 13색) · cta(흰색 · 검정 + 700번 13색) · 없으면 버튼 색 */
-const paletteList = (p) => (p === 'text' ? REG.hds.text : p === 'line' ? REG.hds.line : p === 'bg' ? REG.hds.bg : p === '700' ? REG.hds.colors.filter((c) => c.key.endsWith('/700')) : p === 'cta' ? REG.hds.colors.filter((c) => c.key.endsWith('/700') || c.key.startsWith('static/')) : REG.hds.colors) || [];
+const paletteList = (p) => (p === 'text' ? REG.hds.text : p === 'line' ? REG.hds.line : p === 'bg' ? REG.hds.bg : p === '700' ? REG.hds.colors.filter((c) => c.key.endsWith('/700')) : p === 'cta' ? REG.hds.colors.filter((c) => c.key.endsWith('/700') || c.key.startsWith('static/'))
+  : p === 'point' ? [...REG.hds.colors.filter((c) => c.key === 'static/black'), ...REG.hds.colors.filter((c) => c.key.endsWith('/700'))] // 페이지 포인트 컬러 = 블랙 + 700번 13색(블랙은 회색 앞 — 2026-11-23 사용자 요청)
+  : REG.hds.colors) || [];
 const HDS_RADIUS = Object.fromEntries(REG.hds.radius.map((r) => [r.key, r]));
 // 줄 넘김을 재는 요소 — hero variant 들이 함께 쓰는 클래스
 const MEASURE = [['eyebrow', '.hero__badge'], ['title', '.hero__title'], ['description', '.hero__desc']];
@@ -762,12 +764,12 @@ function editFrom(v, content) {
   const ctx = RC.contextFor(v.slots, content); // 빈 슬롯은 meta 의 default 로
   for (const [k, raw] of Object.entries(v.slots)) {
     const s = RC.specOf(raw);
-    const val = ctx[k];
+    const val = s.point ? (content || {})[k] : ctx[k]; // 포인트 칸은 비면 비운 채로(= 페이지 포인트 컬러를 따라가요)
     if (s.type === 'richtext') {
       e[k] = RC.textLines(val, 'pc');
       const mo = RC.textLines(val, 'mo');
       if (s.mo && mo.join('\n') !== e[k].join('\n')) (e['@mo'] ||= {})[k] = mo;
-    } else if (s.type === 'list') e[k] = (val || []).map((it) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(vv)])));
+    } else if (s.type === 'list') e[k] = (val || []).map((it, i) => Object.fromEntries(Object.entries(it).map(([kk, vv]) => [kk, blank(s.item && RC.specOf(s.item[kk]).point ? (((content || {})[k] || [])[i] || {})[kk] : vv)])));
     else if (s.type === 'media') {
       e[k] = { pc: (val && val.pc) || null, mo: (val && val.mo) || null, moSame: !(val && val.mo) };
       if (s.focus && val && val.pos) { e[k].pos = JSON.parse(JSON.stringify(val.pos)); if (e[k].pos.mo) e[k].pos.moOwn = true; } // 이미지 위치·크기 (MO 값이 있으면 「MO 따로」)
@@ -789,7 +791,22 @@ function heroEdit(v) {
  *  직접 올린 파일 · 붙여넣은 주소 · 직접 고른 CSS 배경 · 비운 칸은 그대로 둬요 */
 /* 예전 샘플 기본값 — @base 가 생기기 전(2026-10-14)에 잠깐 샘플이었던 값이면 손대지 않은 것으로 봐요 */
 const FORMER_SAMPLES = { 'monthly-x-hero': { background: [JSON.stringify({ pc: { kind: 'css', preset: 'x-pattern' }, mo: null, moSame: true })] } };
+const PT_VER = 2; // 포인트 칸 정리 판 — 포인트 칸을 새로 늘리면 올려요 (ppt-to-issue.mjs 도 같이)
 function fixStaleAssets(v, e) {
+  // 포인트 칸(2026-11-23) — 예전 기본값(= 시안 색 pointFallback)이 그대로 남은 칸은 비워서 페이지 포인트 컬러를 따라가게 (판마다 한 번 · @pt = PT_VER)
+  // 2 = 체크리스트 배경색도 포인트 칸이 됨
+  const same = (a, b) => typeof a === 'string' && typeof b === 'string' && a.toLowerCase() === b.toLowerCase();
+  if ((e['@pt'] || 0) < PT_VER) {
+    for (const [k, raw] of Object.entries(v.slots)) {
+      const sp = RC.specOf(raw);
+      if (sp.type === 'color' && sp.point && sp.pointFallback && same(e[k], sp.pointFallback)) e[k] = '';
+      if (sp.type === 'list' && sp.item && Array.isArray(e[k])) for (const [kk, r2] of Object.entries(sp.item)) {
+        const s2 = RC.specOf(r2);
+        if (s2.type === 'color' && s2.point && s2.pointFallback) e[k].forEach((it) => { if (it && same(it[kk], s2.pointFallback)) it[kk] = ''; });
+      }
+    }
+    e['@pt'] = PT_VER;
+  }
   // 예전 버튼 화살표(arrow: true/false) → 오른쪽 아이콘(icon: chevron-right / none)
   if (Array.isArray(e.ctas)) for (const it of e.ctas) if (it && 'arrow' in it) { if (!it.icon || it.icon === 'none') it.icon = it.arrow === true || it.arrow === 'true' ? 'chevron-right' : 'none'; delete it.arrow; }
   const fresh = editFrom(v, v.sample);
@@ -814,6 +831,8 @@ function fixStaleAssets(v, e) {
   if (v.sampleVersion && (e['@sv'] || 1) < v.sampleVersion) {
     const isEmpty = (x) => x == null || x === '' || (Array.isArray(x) && x.every((l) => typeof l === 'string' ? !l.trim() : false) ) || (Array.isArray(x) && !x.length);
     for (const k of Object.keys(v.slots)) if (isEmpty(e[k]) && !isEmpty(fresh[k])) e[k] = JSON.parse(JSON.stringify(fresh[k]));
+    // meta.formerTexts — 예전 샘플 문구가 그대로 남은 칸은 새 샘플 값으로 (예: 체크리스트 리본 「잠깐 주목!」 → 빈 칸 = 리본 없음, 2026-11-23 Figma 수정)
+    for (const k of Object.keys(v.slots)) if (typeof e[k] === 'string' && (v.formerTexts || []).includes(e[k].trim())) e[k] = typeof fresh[k] === 'string' ? fresh[k] : '';
     // meta.formerImages — 예전 샘플 사진을 그대로 쓰던 목록 항목 사진은 새 샘플 사진으로 (직접 바꾼 사진은 그대로)
     const former = new Set(v.formerImages || []);
     if (former.size) for (const [k, raw] of Object.entries(v.slots)) {
@@ -874,6 +893,32 @@ function listUploads(v, e) {
   }
   return out;
 }
+/* ---------- 페이지 포인트 컬러 (2026-11-23 사용자 요청 — 한 번에 전체 강조 색 바꾸기)
+   template.json point = 페이지 칩(HDS 700번) · 섹션의 포인트 칸(meta color 슬롯 point: true — 아젠다 세션 이름 · 체크리스트 강조 · 추천 대상 아이콘 · 이미지 섹션 버튼)은
+   값이 비면 페이지 포인트 컬러를, 그것도 「시안대로」면 그 칸의 시안 색(pointFallback · render-core)을 써요. 칸에서 색을 직접 고르면 그 색이 이겨요 */
+const pagePoint = (v) => { const sec = v && v.section; return sec && tplByKey[sec] && tplByKey[sec].point ? ((state.tpl && state.tpl[sec] && state.tpl[sec].point) || '') : ''; };
+/** content 의 빈 포인트 칸을 페이지 포인트 컬러로 채워요 (미리보기 · page.json · Figma · zip 이 모두 contentFrom 을 거쳐요) */
+/** 자유 색 칸(free · 배경색)에 넣을 포인트 색 — HDS 색의 #hex, pointTint 가 있으면 흰색에 그만큼 섞은 옅은 색 (예: 체크리스트 카드형 바탕 8% ≈ 200번) */
+function pointHex(pt, tint) {
+  const c = HDS_COLOR[pt];
+  const hex = c && (c.value || c.hex);
+  if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return '';
+  if (!tint) return hex.toLowerCase();
+  return '#' + [1, 3, 5].map((i) => Math.round(255 + (parseInt(hex.slice(i, i + 2), 16) - 255) * tint).toString(16).padStart(2, '0')).join('');
+}
+function pointFill(v, c) {
+  const pt = pagePoint(v);
+  if (!pt) return c;
+  for (const [k, raw] of Object.entries(v.slots)) {
+    const sp = RC.specOf(raw);
+    if (sp.type === 'color' && sp.point && !c[k]) c[k] = sp.free ? pointHex(pt, sp.pointTint) : pt;
+    if (sp.type === 'list' && sp.item && Array.isArray(c[k])) for (const [kk, r2] of Object.entries(sp.item)) {
+      const s2 = RC.specOf(r2);
+      if (s2.type === 'color' && s2.point) c[k].forEach((it) => { if (it && !it[kk]) it[kk] = pt; });
+    }
+  }
+  return c;
+}
 function contentFrom(v, e, forExport, pre) {
   const c = {};
   for (const [k, raw] of Object.entries(v.slots)) {
@@ -911,7 +956,7 @@ function contentFrom(v, e, forExport, pre) {
     } else if (s.type === 'toggle') c[k] = !!val;
     else if (String(blank(val)).trim()) c[k] = String(val).trim();
   }
-  return c;
+  return pointFill(v, c);
 }
 
 /* ---------- 올린 파일 (IndexedDB, 실패하면 이번 화면에서만) */
@@ -984,7 +1029,8 @@ function swatches(path, cur, label, palette, opt = {}) {
   // 라인처럼 비울 수 있는 색은 맨 앞에 「없음」
   // opt.base = 맨 앞 「기본」(비우면 시안 그대로), opt.noneValue = 맨 뒤 「없음」(그 값으로 빼기)
   const none = palette === 'line' && !opt.base ? `<button type="button" class="hed-sw__b hed-sw__b--none" ${attrs({ ...path, 'data-val': '', title: '없음', 'aria-label': '없음', 'aria-pressed': String(!cur) })}></button>` : '';
-  const base = opt.base ? `<button type="button" class="hed-sw__b hed-sw__b--base" ${attrs({ ...path, 'data-val': '', title: '기본 (시안 그대로)', 'aria-label': '기본 (시안 그대로)', 'aria-pressed': String(!cur) })}>기본</button>` : '';
+  const bl = opt.baseLabel || '기본', bt = opt.baseTitle || '기본 (시안 그대로)';
+  const base = opt.base ? `<button type="button" class="hed-sw__b hed-sw__b--base" ${attrs({ ...path, 'data-val': '', title: bt, 'aria-label': bt, 'aria-pressed': String(!cur) })}>${esc(bl)}</button>` : '';
   const off = opt.noneValue ? `<button type="button" class="hed-sw__b hed-sw__b--none" ${attrs({ ...path, 'data-val': opt.noneValue, title: '없음', 'aria-label': '없음', 'aria-pressed': String(cur === opt.noneValue) })}></button>` : '';
   return `<div class="hed-sw${palette === 'text' ? ' hed-sw--text' : ''}" role="group" aria-label="${esc(label)}">${base}${none}${off}${list.map((c) => `<button type="button" class="hed-sw__b" ${attrs({ ...path, 'data-val': c.key, style: `--c:${c.value || c.hex}`, title: `${c.label} · ${c.token}`, 'aria-label': `${c.label} (${c.token})`, 'aria-pressed': String(c.key === cur) })}></button>`).join('')}</div>`;
 }
@@ -1022,15 +1068,17 @@ function colorPicker(path, cur, label) {
   <div class="cp__inputs"><span class="cp__mode">Hex</span><input type="text" data-cp-hex value="${c.hex.toUpperCase()}" maxlength="7" spellcheck="false" aria-label="${esc(label)} HEX"><input type="number" data-cp-a value="${c.a}" min="0" max="100" aria-label="${esc(label)} 불투명도"><span class="cp__pct">%</span></div>
 </div>`;
 }
-function colorField(k, s, cur) {
+function colorField(k, s, cur, v) {
   if (s.free) {
     const base = s.optional && s.default == null;
+    const follow = s.point && !cur; // 포인트 칸 — 비어 있으면 페이지 포인트 컬러를 따라가요
     if (!cur && s.default != null) cur = s.default; // 비어 있으면 기본값이 보이는 색이에요 (예전 편집 값 포함)
+    if (follow) cur = pointHex(pagePoint(v), s.pointTint) || s.pointFallback || '';
     const c = cpHex(cur);
-    const now = c ? `<code>#${c.hex.toUpperCase()}${c.a < 100 ? ` · ${c.a}%` : ''}</code>` : '';
+    const now = follow ? '포인트 컬러' : c ? `<code>#${c.hex.toUpperCase()}${c.a < 100 ? ` · ${c.a}%` : ''}</code>` : '';
     // 「기본」 — 기본값이 없으면 비우기(시안 그대로), 있으면 그 색으로 (예: 추천 대상 #F7F7F8)
     const defC = s.default != null ? cpHex(s.default) : null;
-    const chip = base ? `<button type="button" class="chip" data-f="${k}" data-val="" aria-pressed="${String(!c)}">기본</button>`
+    const chip = base ? `<button type="button" class="chip" data-f="${k}" data-val="" aria-pressed="${String(s.point ? follow : !c)}"${s.point ? ' title="페이지 포인트 컬러를 따라가요"' : ''}>${s.point ? '포인트' : '기본'}</button>`
       : defC ? `<button type="button" class="chip" data-f="${k}" data-val="${esc(s.default)}" aria-pressed="${String(!!c && c.hex === defC.hex && c.a === defC.a)}" title="#${defC.hex.toUpperCase()}">기본</button>` : '';
     return `<div class="hed-f">${fieldHead(s, s.note)}<div class="cp-head"><span class="hed-sub__label" data-cp-now>${now}</span>${chip}</div>${colorPicker({ 'data-f': k }, cur, s.label)}</div>`;
   }
@@ -1038,7 +1086,8 @@ function colorField(k, s, cur) {
   const c = s.palette ? list.find((x) => x.key === cur) : HDS_COLOR[cur];
   const base = s.optional && s.default == null; // 기본값이 없으면 「기본」 = 시안 그대로
   const now = c ? esc(koLabel(c.label)) : cur && cur === s.noneValue ? '없음' : '';
-  return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label">${now}</span>${swatches({ 'data-f': k }, cur, s.label, s.palette, { base, noneValue: s.noneValue })}</div>`;
+  const pt = s.point ? { baseLabel: '포인트', baseTitle: '페이지 포인트 컬러를 따라가요' } : {};
+  return `<div class="hed-f">${fieldHead(s, s.note)}<span class="hed-sub__label">${now || (s.point && !cur ? '포인트 컬러' : '')}</span>${swatches({ 'data-f': k }, cur, s.label, s.palette, { base, noneValue: s.noneValue, ...pt })}</div>`;
 }
 function radiusField(k, s, cur) {
   const r = HDS_RADIUS[cur];
@@ -1087,7 +1136,8 @@ function itemField(k, i, kk, s, val, n, item, smpItem) {
   if (s.type === 'color') {
     const list = paletteList(s.palette);
     const c = s.palette ? list.find((x) => x.key === val) : HDS_COLOR[val];
-    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <span class="hed-sub__now">${c ? esc(koLabel(c.label)) : s.palette === 'line' ? '없음' : ''}</span></span>${swatches(path, val, label, s.palette)}</div>`;
+    const pt = s.point ? { base: true, baseLabel: '포인트', baseTitle: '페이지 포인트 컬러를 따라가요' } : {};
+    return `<div class="hed-sub"><span class="hed-sub__label">${esc(s.label || kk)} <span class="hed-sub__now">${c ? esc(koLabel(c.label)) : s.point && !val ? '포인트 컬러' : s.palette === 'line' ? '없음' : ''}</span></span>${swatches(path, val, label, s.palette, pt)}</div>`;
   }
   if (s.type === 'radius') {
     const r = HDS_RADIUS[val];
@@ -1177,7 +1227,7 @@ function heroForm(v, e) {
     if (s.type === 'richtext') return linesField(k, s, e[k], e['@mo'] && e['@mo'][k]);
     if (s.type === 'list') return listField(k, s, e[k], smp[k] || []);
     if (s.type === 'media') return mediaField(k, s, e[k], smp[k] || {});
-    if (s.type === 'color') return colorField(k, s, e[k]);
+    if (s.type === 'color') return colorField(k, s, e[k], v);
     if (s.type === 'radius') return radiusField(k, s, e[k]);
     if (s.type === 'enum') return `<div class="hed-f">${fieldHead(s, s.note)}${enumChips({ 'data-f': k }, s, e[k], s.label)}</div>`;
     if (s.type === 'toggle') return `<div class="hed-f">${toggleBox({ 'data-f': k }, s, e[k])}</div>`;
@@ -1606,7 +1656,7 @@ function bindEditorForm(ctx) {
     switch (hit.dataset.act) {
       case 'add-line': { const ls = p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]; if (ls.length === 0) ls.push(''); ls.push(''); break; }
       case 'del-line': (p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]).splice(p.line, 1); break;
-      case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, blank(vv)]))); break;
+      case 'add-item': e[p.f].push(Object.fromEntries(Object.entries(RC.contextFor(s.item, {})).map(([kk, vv]) => [kk, RC.specOf(s.item[kk]).point ? '' : blank(vv)]))); break; // 포인트 칸은 비워서 페이지 포인트 컬러를 따라가요
       case 'del-item': e[p.f].splice(p.i, 1); break;
       case 'clear': if (p.i != null) e[p.f][p.i][p.k] = null; else e[p.f][p.dev] = null; break;
       case 'focus-reset': if (e[p.f].pos) delete e[p.f].pos[p.dev]; break;
@@ -1838,6 +1888,13 @@ function stickyDock(frame, mainIframe, html, css, js, onClick) {
 let tplSticky = null;
 let tplFit = null;
 let tplLoaded = false;
+/** 페이지 포인트 컬러 칩 — 고르면 포인트 칸을 비워 둔 섹션이 모두 그 색으로 바뀌어요 */
+function pointBar(t) {
+  const cur = tplState(t.key).point || '';
+  const c = paletteList(t.point.palette).find((x) => x.key === cur);
+  return `<div class="tpl-point"><div class="tpl-point__head"><b>${esc(t.point.label || '포인트 컬러')}</b><span class="hed-sub__label">${c ? esc(koLabel(c.label)) : '시안대로'}</span></div>
+  ${swatches({ 'data-tpl-point': '1' }, cur, t.point.label || '포인트 컬러', t.point.palette, { base: true, baseLabel: '시안대로', baseTitle: '섹션마다 시안 색 그대로' })}</div>`;
+}
 function renderTpl() {
   const t = tplByKey[tplKey()];
   if (!t) return;
@@ -1852,6 +1909,7 @@ function renderTpl() {
   <div class="compose__scroll">
   ${home ? issueHome(t.key) : `<div class="tpl-head"><div class="hed-intro"><h2>${esc(t.title)}</h2></div>
   ${issueBar(t.key)}</div>
+  ${t.point ? pointBar(t) : ''}
   <div class="tpl-edit-head"><b>섹션 편집</b><span>${vs.length}개</span><button type="button" class="btn-ui" data-tpl-fold="1">모두 접기</button><button type="button" class="btn-ui" data-tpl-fold="0">모두 펴기</button></div>
   <div class="tpl-secs">${rows.map((r) => tplBlock(t, r)).join('')}</div>
   ${todo.length ? `<p class="compose__hint">준비 중: ${todo.map(esc).join(' · ')}</p>` : ''}`}
@@ -1941,7 +1999,7 @@ async function latestPreview(t) {
   const saved = state.tpl[key];
   let vs = [];
   let html = '', bars = '';
-  state.tpl[key] = { edits: toSrc(JSON.parse(JSON.stringify(data.edits || {}))), pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [] };
+  state.tpl[key] = { edits: toSrc(JSON.parse(JSON.stringify(data.edits || {}))), pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], point: data.point || '', open: [] };
   try {
     vs = tplVisible(t).map((id) => byId[id]);
     html = vs.filter((v) => v.stage !== 'sticky').map(tplSecHtml).join('\n');
@@ -2109,6 +2167,8 @@ tplEl.addEventListener('click', (ev) => {
   if (!t) return;
   const tg = ev.target.closest('[data-tpl-toggle]');
   if (tg) { const id = tg.dataset.tplToggle; tplOpen(id); if (tplCur === id) previewTo(id); return; }
+  const pb = ev.target.closest('[data-tpl-point]');
+  if (pb) { tplState(key).point = pb.dataset.val || ''; save(); renderTpl(); return; }
   const fd = ev.target.closest('[data-tpl-fold]');
   if (fd) { tplState(key).open = fd.dataset.tplFold === '1' ? [] : tplVisible(t); save(); redrawTplList(t); return; }
   // extra 자리 — 섹션 추가 · 순서 · 빼기 (뺀 섹션의 입력값도 지워요)
@@ -2249,7 +2309,7 @@ async function shareLink(key) {
     if (JSON.stringify(e) === JSON.stringify(fresh)) continue; // 샘플 그대로인 섹션은 빼요
     edits[id] = strip(e, fresh);
   }
-  const data = { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order };
+  const data = { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order, point: ts.point || '' };
   const url = new URL(location.href);
   url.hash = `share-${key}=${await zip(JSON.stringify(data))}`;
   return { url: url.href, dropped };
@@ -2263,7 +2323,7 @@ async function openShare(hash) {
     state.tplBackup ||= {};
     if (state.tpl && state.tpl[key]) state.tplBackup[key] = state.tpl[key]; // 지금 편집하던 내용은 남겨 둬요
     state.tpl ||= {};
-    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [], shared: true }; // shared = 처음 화면 미리보기에 받은 시안을 보여요
+    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], point: data.point || "", open: [], shared: true }; // shared = 처음 화면 미리보기에 받은 시안을 보여요
     state.mode = 'tpl:' + key;
     return true;
   } catch (e) {
@@ -2318,7 +2378,7 @@ async function saveDraft(key) {
     if (JSON.stringify(e) === JSON.stringify(editFrom(v, v.sample))) continue; // 샘플 그대로인 섹션은 빼요
     edits[id] = e;
   }
-  const data = { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order };
+  const data = { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order, point: ts.point || '' };
   state.myDrafts ||= {};
   const mine = draftMine(ts);
   let rows = await supaRpc('draft_save', { p_id: mine ? ts.draftId : null, p_key: mine ? state.myDrafts[ts.draftId] : null, p_template: key, p_title: t.title, p_data: data });
@@ -2341,7 +2401,7 @@ async function openDraft(id) {
     const cur = state.tpl && state.tpl[key];
     if (cur && cur.draftId !== id) state.tplBackup[key] = cur; // 지금 편집하던 다른 내용은 남겨 둬요
     state.tpl ||= {};
-    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [], draftId: id, draftAt: Date.parse(updated_at) || Date.now() };
+    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], point: data.point || "", open: [], draftId: id, draftAt: Date.parse(updated_at) || Date.now() };
     state.mode = 'tpl:' + key;
     return true;
   } catch (e) {
@@ -2406,7 +2466,7 @@ async function issueData(key) {
     if (JSON.stringify(e) === JSON.stringify(editFrom(v, v.sample))) continue;
     edits[id] = e;
   }
-  return { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order };
+  return { v: 1, edits, pick: ts.pick, off: ts.off, extras: ts.extras, order: ts.order, point: ts.point || '' };
 }
 /** 회차를 편집기로 — 지금 편집하던 다른 내용은 tplBackup 에 남겨요 */
 async function applyIssue(row) {
@@ -2418,7 +2478,7 @@ async function applyIssue(row) {
   const cur = state.tpl && state.tpl[key];
   if (cur && (!cur.issue || cur.issue.id !== row.id)) state.tplBackup[key] = cur;
   state.tpl ||= {};
-  state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [], issue: issueMeta(row) };
+  state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], point: data.point || "", open: [], issue: issueMeta(row) };
   state.mode = 'tpl:' + key;
   autoMark(key);
   save();
@@ -2456,7 +2516,7 @@ async function saveIssue(key, patch = {}, opt = {}) {
    로컬 save() 가 부를 때마다 회차 내용의 지문(sig)을 마지막 저장과 비교하고, 다르면 2초 뒤 saveIssue(auto). 그사이 다른 사람이 저장했으면
    묻지 않고 「다른 사람이 고쳤어요 · 새로 불러오기 · 내 내용으로 덮기」를 회차 칸에 보여 줘요 */
 const AUTO = { timer: null, running: null, state: 'saved', sig: {}, conflict: null, at: null };
-const issueSig = (key) => { const ts = state.tpl && state.tpl[key]; if (!ts || !ts.issue) return ''; return JSON.stringify([ts.edits, ts.pick, ts.off, ts.extras, ts.order, ts.issue.title, ts.issue.period]); };
+const issueSig = (key) => { const ts = state.tpl && state.tpl[key]; if (!ts || !ts.issue) return ''; return JSON.stringify([ts.edits, ts.pick, ts.off, ts.extras, ts.order, ts.point || '', ts.issue.title, ts.issue.period]); };
 function autoMark(key) { AUTO.sig[key] = issueSig(key); AUTO.state = 'saved'; AUTO.conflict = null; AUTO.at = Date.now(); autoShow(); }
 function autoLabel() {
   if (AUTO.conflict) return `${esc(AUTO.conflict.updated_by || '다른 사람')}님이 고쳤어요 · <button type="button" class="iss__lnk" data-iss-act="take">새로 불러오기</button> · <button type="button" class="iss__lnk" data-iss-act="force">내 내용으로 덮기</button>`;

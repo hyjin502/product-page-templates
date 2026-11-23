@@ -3,6 +3,10 @@
   "key": "monthly-hunet",
   "title": "월간휴넷",
   "figmaSet": "637:3394",
+  "point": {
+    "label": "포인트 컬러",
+    "palette": "point"
+  },
   "order": [
     "hero",
     "summary",
