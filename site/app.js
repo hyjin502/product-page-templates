@@ -791,7 +791,7 @@ function heroEdit(v) {
  *  직접 올린 파일 · 붙여넣은 주소 · 직접 고른 CSS 배경 · 비운 칸은 그대로 둬요 */
 /* 예전 샘플 기본값 — @base 가 생기기 전(2026-10-14)에 잠깐 샘플이었던 값이면 손대지 않은 것으로 봐요 */
 const FORMER_SAMPLES = { 'monthly-x-hero': { background: [JSON.stringify({ pc: { kind: 'css', preset: 'x-pattern' }, mo: null, moSame: true })] } };
-const PT_VER = 2; // 포인트 칸 정리 판 — 포인트 칸을 새로 늘리면 올려요 (ppt-to-issue.mjs 도 같이)
+const PT_VER = 3; // 포인트 칸 정리 판 — 포인트 칸을 새로 늘리면 올려요 (ppt-to-issue.mjs 도 같이) · 3 = 월간X 포인트 칸
 function fixStaleAssets(v, e) {
   // 포인트 칸(2026-11-23) — 예전 기본값(= 시안 색 pointFallback)이 그대로 남은 칸은 비워서 페이지 포인트 컬러를 따라가게 (판마다 한 번 · @pt = PT_VER)
   // 2 = 체크리스트 배경색도 포인트 칸이 됨

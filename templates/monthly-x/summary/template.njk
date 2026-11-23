@@ -1,4 +1,4 @@
-<section class="mx-summary">
+<section class="mx-summary"{% if accentColor %} style="--mx-ac: {{ accentColor | hdsColor }}; --mx-ac-bg: color-mix(in srgb, {{ accentColor | hdsColor }} 4%, #fff)"{% endif %}>
   <h2 class="mx-summary__title">{{ title | rt }}</h2>
 {% if paragraphs.length %}
   <div class="mx-summary__text">

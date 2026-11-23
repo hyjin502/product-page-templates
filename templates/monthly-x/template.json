@@ -3,6 +3,10 @@
   "key": "monthly-x",
   "title": "월간X",
   "figmaSet": "643:3323",
+  "point": {
+    "label": "포인트 컬러",
+    "palette": "point"
+  },
   "order": [
     "hero",
     "summary",

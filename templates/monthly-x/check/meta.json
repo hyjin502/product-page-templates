@@ -67,10 +67,12 @@
     "ctaColor": {
       "type": "color",
       "palette": "cta",
-      "default": "blue/700",
       "extract": false,
       "label": "버튼 색",
-      "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리)"
+      "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리) · 「포인트」 = 페이지 포인트 컬러(시안대로면 blue/700)",
+      "optional": true,
+      "point": true,
+      "pointFallback": "blue/700"
     },
     "cta": {
       "type": "text",

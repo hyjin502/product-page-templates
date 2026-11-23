@@ -75,6 +75,15 @@
       "label": "순서대로 강조 (자동)",
       "note": "위에서부터 1.5초마다 한 줄씩 진한 점 · 회색 카드로 바뀌며 반복 (월간휴넷 세미나 페이지와 같은 효과 · 간격은 사용자 요청으로 1.5초) · 끄면 「강조」 켠 줄만"
     },
+    "accentColor": {
+      "type": "color",
+      "palette": "700",
+      "optional": true,
+      "point": true,
+      "extract": false,
+      "label": "세션 이름 색",
+      "note": "시간표 세션 이름(Session 1. 같은 파란 글자) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
+    },
     "items": {
       "type": "list",
       "extract": false,

@@ -84,10 +84,21 @@
     "ctaColor": {
       "type": "color",
       "palette": "cta",
-      "default": "blue/700",
       "extract": false,
       "label": "버튼 색",
-      "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리)"
+      "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리) · 「포인트」 = 페이지 포인트 컬러(시안대로면 blue/700)",
+      "optional": true,
+      "point": true,
+      "pointFallback": "blue/700"
+    },
+    "accentColor": {
+      "type": "color",
+      "palette": "700",
+      "optional": true,
+      "point": true,
+      "extract": false,
+      "label": "미션 카드 색",
+      "note": "미션 제목 글자 · 카드 바탕(같은 색을 옅게) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
     },
     "cta": {
       "type": "text",

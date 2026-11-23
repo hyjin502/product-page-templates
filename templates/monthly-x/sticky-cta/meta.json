@@ -86,6 +86,15 @@
       "optional": true,
       "extract": false,
       "label": "마감 버튼 링크"
+    },
+    "accentColor": {
+      "type": "color",
+      "palette": "700",
+      "optional": true,
+      "point": true,
+      "extract": false,
+      "label": "파란 버튼 색",
+      "note": "마감 상태의 파란 버튼 (글자색은 색마다 자동) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
     }
   },
   "stage": "sticky"

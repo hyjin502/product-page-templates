@@ -1,4 +1,4 @@
-<div class="mx-sticky">
+<div class="mx-sticky"{% if accentColor %} style="--mx-ac: {{ accentColor | hdsColor }}; --mx-ac-on: {{ accentColor | hdsOn }}"{% endif %}>
   <div class="mx-sticky__bar">
 {% if state == 'closed' %}
     <p class="mx-sticky__title mx-sticky__title--closed">{{ closedText | rt }}</p>

@@ -14,7 +14,7 @@
 .mx-sticky__chip { display: inline-flex; align-items: center; justify-content: center; min-width: 52px; height: 27px; padding: 2px 12px; border-radius: 4px; line-height: 1; color: var(--error); background: var(--bg-faint); }
 .mx-sticky__btn { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 113px; height: 48px; padding: 0 20px; border-radius: 4px; background: #212225; color: var(--static-white);
   font-size: 14px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; }
-.mx-sticky__btn--blue { background: #096cde; }
+.mx-sticky__btn--blue { background: var(--mx-ac, #096cde); color: var(--mx-ac-on, var(--static-white)); } /* 파란 버튼 색(--mx-ac · 포인트 컬러) */
 
 /* MO — 제안값(Figma MO 없음) · 화면 폭 판 · 문구 위 · 버튼 아래 전체 폭 */
 @media (max-width: 767px) {

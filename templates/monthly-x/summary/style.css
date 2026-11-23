@@ -7,8 +7,8 @@
 .mx-summary__text p { margin: 0; }
 .mx-summary__text b { font-weight: 700; }
 .mx-summary__missions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px; margin: 0; padding: 0; list-style: none; text-align: left; }
-.mx-summary__mission { display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 14px; background: var(--blue-100, #f5f9ff); }
-.mx-summary__mission-title { width: 305px; max-width: 100%; margin: 0; font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--brand); text-align: center; }
+.mx-summary__mission { display: flex; flex-direction: column; gap: 16px; padding: 24px; border-radius: 14px; background: var(--mx-ac-bg, var(--blue-100, #f5f9ff)); } /* 미션 카드 색(--mx-ac) — 바탕은 같은 색 4% (시안 #F5F9FF ≈ blue/700 4%) */
+.mx-summary__mission-title { width: 305px; max-width: 100%; margin: 0; font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--mx-ac, var(--brand)); text-align: center; }
 .mx-summary__mission-body { display: flex; flex-direction: column; gap: 19.6px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
 .mx-summary__mission-body p { margin: 0; }
 .mx-summary__mission-note { font-size: 12px; line-height: 1.4; letter-spacing: -0.7px; }

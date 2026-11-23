@@ -1,4 +1,4 @@
-<section class="mx-program"{% if cycle %} data-cycle{% endif %}>
+<section class="mx-program"{% if cycle %} data-cycle{% endif %}{% if accentColor %} style="--mx-ac: {{ accentColor | hdsColor }}"{% endif %}>
   <div class="mx-program__head">
 {% if eyebrow %}
     <p class="mx-program__eyebrow">{{ eyebrow }}</p>

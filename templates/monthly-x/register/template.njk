@@ -1,4 +1,4 @@
-<section class="mx-register">
+<section class="mx-register"{% if accentColor %} style="--mx-ac: {{ accentColor | hdsColor }}; --mx-ac-on: {{ accentColor | hdsOn }}"{% endif %}>
   <div class="mx-register__head">
     <h2 class="mx-register__title">{{ title }}</h2>
 {% if desc %}

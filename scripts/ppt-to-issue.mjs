@@ -95,7 +95,7 @@ async function main() {
     // 편집기가 「손대지 않은 샘플 사진」으로 보고 되돌리지 않게 — 기준(@base)과 샘플 판(@sv)을 함께 적어요
     e['@base'] = Object.fromEntries(Object.entries(v.slots).filter(([, raw]) => RC.specOf(raw).type === 'media').map(([k]) => [k, JSON.stringify(fresh[k] || null)]));
     if (v.sampleVersion) e['@sv'] = v.sampleVersion;
-    e['@pt'] = 2; // 포인트 칸 정리를 이미 한 값 (site/app.js PT_VER 와 같게)
+    e['@pt'] = 3; // 포인트 칸 정리를 이미 한 값 (site/app.js PT_VER 와 같게)
     const changed = Object.keys(part).filter((k) => JSON.stringify(e[k]) !== JSON.stringify(fresh[k]));
     if (!changed.length) { summary.push(`  = ${v.label || id} — 샘플과 같아요`); continue; }
     edits[id] = e;
