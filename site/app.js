@@ -1915,6 +1915,17 @@ async function latestPreview(t) {
   tplFit = mountPreview(tplEl.querySelector('.compose__stage'), tplEl.querySelector('.v__frame'), iframe, tplEl.querySelector('.v__scale'), null, { zoomable: true });
   let row = null;
   const want = tplState(key).homeSel;
+  // 공유 링크로 받은 시안 — 회차 목록에서 다른 회차를 고르기 전까지 받은 내용을 보여 줘요 (저장소에 연결되지 않아도 보여요)
+  if (tplState(key).shared && !want) {
+    const vs = tplVisible(t).map((id) => byId[id]);
+    const css = [...new Set(vs.map((v) => v.css))].join('\n\n');
+    const js = [...new Set(vs.map((v) => v.js).filter(Boolean))].join('\n');
+    const bars = vs.filter((v) => v.stage === 'sticky').map(tplSecHtml).join('\n');
+    if (label) label.innerHTML = '<b>공유 받은 시안</b> · 「+ 새 회차」 → 시작 내용 「이 브라우저에 남은 편집 내용」으로 회차에 저장해요';
+    iframe.srcdoc = srcdoc(vs.filter((v) => v.stage !== 'sticky').map(tplSecHtml).join('\n'), css, js, null);
+    if (bars) tplSticky = stickyDock(tplEl.querySelector('.v__frame'), iframe, bars, css, js, () => {});
+    return;
+  }
   let failed = false;
   try { [row] = await sb(want ? `issues?id=eq.${want}&select=*` : `issues?template=eq.${encodeURIComponent(key)}${TRASH.ok ? '&deleted_at=is.null' : ''}&select=*&order=updated_at.desc&limit=1`, { method: 'GET' }); } catch (e) { failed = true; }
   if (!want && failed) { try { [row] = await sb(`issues?template=eq.${encodeURIComponent(key)}&select=*&order=updated_at.desc&limit=1`, { method: 'GET' }); } catch (e) {} } // deleted_at 칸이 없을 때(SQL 실행 전)
@@ -2252,7 +2263,7 @@ async function openShare(hash) {
     state.tplBackup ||= {};
     if (state.tpl && state.tpl[key]) state.tplBackup[key] = state.tpl[key]; // 지금 편집하던 내용은 남겨 둬요
     state.tpl ||= {};
-    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [] };
+    state.tpl[key] = { edits: data.edits || {}, pick: data.pick || {}, off: data.off || [], extras: data.extras || {}, order: data.order || [], open: [], shared: true }; // shared = 처음 화면 미리보기에 받은 시안을 보여요
     state.mode = 'tpl:' + key;
     return true;
   } catch (e) {
