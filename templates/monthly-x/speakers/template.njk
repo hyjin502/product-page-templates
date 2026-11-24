@@ -1,0 +1,13 @@
+<section class="mx-speakers">
+  <h2 class="mx-speakers__title">{{ title }}</h2>
+{% if speakers.length %}
+  <ul class="mx-speakers__list">
+{% for s in speakers %}
+    <li class="mx-speakers__card">
+      <span class="mx-speakers__photo" data-pick-item="speakers:{{ loop.index0 }}:image">{% if s.image and s.image.src %}<img src="{{ s.image.src }}" alt="{{ s.image.alt or '' }}" width="100" height="100">{% endif %}</span>
+      <p class="mx-speakers__who"><b>{{ s.name }}</b>{% if s.org %}<span>{{ s.org }}</span>{% endif %}</p>
+    </li>
+{% endfor %}
+  </ul>
+{% endif %}
+</section>

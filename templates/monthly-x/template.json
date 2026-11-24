@@ -19,6 +19,13 @@
     },
     "check",
     "program",
+    {
+      "label": "연사 소개",
+      "pick": [
+        "speakers"
+      ],
+      "off": true
+    },
     "register",
     "faq",
     "about",

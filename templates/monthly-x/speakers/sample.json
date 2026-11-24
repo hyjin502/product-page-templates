@@ -1,0 +1,7 @@
+{
+  "title": "Speakers & Moderators",
+  "speakers": [
+    { "image": { "src": "assets/profiles/p02.jpg", "alt": "임선예 팀장" }, "name": "임선예 팀장", "org": "휴넷 리더스아카데미팀" },
+    { "image": { "src": "assets/monthly-x/monthly-x-speaker-2.png", "alt": "김경중 연구원" }, "name": "김경중 연구원", "org": "휴넷 리더스아카데미팀" }
+  ]
+}

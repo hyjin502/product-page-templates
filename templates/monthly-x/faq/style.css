@@ -1,4 +1,4 @@
-/* PC — Figma 월간X_PC 643:4691 · bg-page · 위아래 120 · 본문 740 · 제목 32 bold ↔ 목록 40 · 질문 사이 8
+/* PC — Figma 세트 843:3883(2026-11-24 세트 컴포넌트로 · 예전 프레임 643:4691) · bg-page · 위아래 120 · 본문 740 · 제목 32 bold ↔ 목록 40 · 질문 사이 8
    질문 칸: 흰 바탕 · 둥근 8 · 24/32 · 질문 16 bold + 화살표 24(펼치면 위) · 답변 16 regular #70737c(질문 ↔ 답변 32). 누르면 펼치고 접어요(<details>) */
 .mx-faq { display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 120px var(--container-pad); background: var(--bg-page); color: var(--t-100); }
 .mx-faq__title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); text-align: center; }
@@ -14,11 +14,13 @@
 /* TB — 제안값 */
 @media (min-width: 768px) and (max-width: 1279px) { .mx-faq { padding: 96px var(--container-pad); } }
 
-/* MO — 제안값(Figma MO 없음) */
+/* MO — Figma 844:4254 · 위아래 80 · 양옆 16 · 제목 24 ↔ 목록 40 · 질문 사이 8
+   질문 칸 16 · 질문 14 bold + 화살표 16 · 답변 14 regular(질문 ↔ 답변 24) */
 @media (max-width: 767px) {
-  .mx-faq { gap: 32px; padding: 72px 16px; }
+  .mx-faq { padding: 80px 16px; }
   .mx-faq__title { font-size: 24px; }
-  .mx-faq__item { padding: 20px; }
-  .mx-faq__q, .mx-faq__a { font-size: 15px; }
-  .mx-faq__a { margin-top: 16px; }
+  .mx-faq__item { padding: 16px; }
+  .mx-faq__q, .mx-faq__a { font-size: 14px; }
+  .mx-faq__q svg { width: 16px; height: 16px; margin-top: 3px; }
+  .mx-faq__a { margin-top: 24px; }
 }

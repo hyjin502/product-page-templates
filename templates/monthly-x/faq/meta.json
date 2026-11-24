@@ -6,8 +6,8 @@
   "order": 7,
   "when": "자주 묻는 질문 — 눌러서 펼치는 질문 목록",
   "figma": {
-    "pc": "643:4691",
-    "mo": null,
+    "pc": "843:3883",
+    "mo": "844:4254",
     "tb": null
   },
   "body": 740,
@@ -16,7 +16,10 @@
       "type": "text",
       "extract": false,
       "label": "제목",
-      "maxChars": 20
+      "maxChars": 20,
+      "fig": {
+        "layer": "자주 묻는 질문"
+      }
     },
     "items": {
       "type": "list",
@@ -29,18 +32,30 @@
           "type": "text",
           "extract": false,
           "label": "질문",
-          "maxChars": 60
+          "maxChars": 60,
+          "fig": {
+            "text": 0
+          }
         },
         "a": {
           "type": "richtext",
           "label": "답변",
           "optional": true,
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "byCount": {
+              "2": 1
+            }
+          }
         },
         "open": {
           "type": "toggle",
           "label": "펼친 상태로"
         }
+      },
+      "fig": {
+        "items": "질문리스트",
+        "item": "Promotion/FAQ/FAQ_질문답변(PC)"
       }
     }
   }

@@ -1,7 +1,7 @@
-/* PC — Figma 월간X_PC 643:4647 · 검정 바탕 · 위아래 120 · 머리 ↔ 신청서 64 · 본문 860
+/* PC — Figma 세트 843:3577(2026-11-24 세트 컴포넌트로 · 예전 프레임 643:4647) · 검정 바탕 · 위아래 120 · 머리 ↔ 신청서 60 · 본문 860
    제목 32 bold 흰 글씨 · 안내 16 regular(가운데) · 입력칸 2열(이름 칸 102 + 입력 300×50 흰 바탕 둥근 8 · 줄 사이 10) · 신청서 ↔ 아래 40
    동의: 체크 16(채움 blue) + 16 흰 글씨 + 자세히 보기 14 #70737c 밑줄 · 버튼: 알약 48(회색 #eaebec · 파랑 #096cde Figma 값) 14 bold */
-.mx-register { display: flex; flex-direction: column; align-items: center; gap: 64px; padding: 120px var(--container-pad); background: var(--static-black, #000); color: var(--static-white); }
+.mx-register { display: flex; flex-direction: column; align-items: center; gap: 60px; padding: 120px var(--container-pad); background: var(--static-black, #000); color: var(--static-white); }
 .mx-register p { margin: 0; }
 .mx-register__head { display: flex; flex-direction: column; gap: 16px; width: var(--body, 860px); max-width: 100%; text-align: center; }
 .mx-register__title { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); }

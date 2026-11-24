@@ -1,0 +1,54 @@
+{
+  "id": "monthly-x-speakers",
+  "section": "monthly-x",
+  "layout": "speakers",
+  "label": "연사 소개",
+  "order": 6,
+  "when": "Speakers & Moderators — 연사 사진 · 이름 · 소속 카드(1~3명)",
+  "figma": {
+    "pc": "843:3466",
+    "mo": "844:3884",
+    "tb": null
+  },
+  "body": 740,
+  "slots": {
+    "title": {
+      "type": "text",
+      "extract": false,
+      "label": "제목",
+      "maxChars": 30,
+      "fig": { "at": "Frame 251", "text": 0 }
+    },
+    "speakers": {
+      "type": "list",
+      "extract": false,
+      "label": "연사",
+      "min": 1,
+      "max": 3,
+      "fig": { "items": "프로필", "mo": { "items": "Frame 2147239025" } },
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "사진",
+          "hint": "정사각 200×200 이상",
+          "optional": true,
+          "profiles": true,
+          "fig": { "layer": "Profile", "img": -1 }
+        },
+        "name": {
+          "type": "text",
+          "label": "이름",
+          "maxChars": 20,
+          "fig": { "text": 0, "mo": { "format": "**{name}**\n{org}" } }
+        },
+        "org": {
+          "type": "text",
+          "label": "소속",
+          "optional": true,
+          "maxChars": 30,
+          "fig": { "text": 1, "mo": { "skip": true } }
+        }
+      }
+    }
+  }
+}

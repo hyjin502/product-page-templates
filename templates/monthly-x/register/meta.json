@@ -6,7 +6,7 @@
   "order": 6,
   "when": "검정 바탕 신청서 — 제목 · 안내 · 입력칸(2열) · 동의 · 버튼 2개",
   "figma": {
-    "pc": "643:4647",
+    "pc": "843:3577",
     "mo": null,
     "tb": null
   },
@@ -16,13 +16,21 @@
       "type": "text",
       "extract": false,
       "label": "제목",
-      "maxChars": 30
+      "maxChars": 30,
+      "fig": {
+        "at": "Register",
+        "text": 0
+      }
     },
     "desc": {
       "type": "richtext",
       "label": "안내",
       "optional": true,
-      "note": "한 줄에 한 문단 · **굵게** 가능"
+      "note": "한 줄에 한 문단 · **굵게** 가능",
+      "fig": {
+        "at": "Register",
+        "text": 1
+      }
     },
     "fields": {
       "type": "list",
@@ -35,17 +43,27 @@
           "type": "text",
           "extract": false,
           "label": "이름",
-          "maxChars": 10
+          "maxChars": 10,
+          "fig": {
+            "text": 0
+          }
         },
         "placeholder": {
           "type": "text",
           "extract": false,
           "label": "안내 문구",
           "maxChars": 30,
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 1
+          }
         }
       },
-      "note": "2열로 채워요"
+      "note": "2열로 채워요",
+      "fig": {
+        "items": "Frame 78",
+        "deep": true
+      }
     },
     "consents": {
       "type": "list",
@@ -58,7 +76,10 @@
           "type": "text",
           "extract": false,
           "label": "문구",
-          "maxChars": 50
+          "maxChars": 50,
+          "fig": {
+            "text": 0
+          }
         },
         "checked": {
           "type": "toggle",
@@ -69,8 +90,15 @@
           "extract": false,
           "label": "링크 문구",
           "maxChars": 10,
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 1
+          }
         }
+      },
+      "fig": {
+        "items": "개인정보수집",
+        "reverse": true
       }
     },
     "secondary": {
@@ -78,13 +106,21 @@
       "extract": false,
       "label": "왼쪽 버튼",
       "maxChars": 12,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "at": "BTN",
+        "text": 0
+      }
     },
     "primary": {
       "type": "text",
       "extract": false,
       "label": "신청 버튼",
-      "maxChars": 12
+      "maxChars": 12,
+      "fig": {
+        "at": "BTN",
+        "text": 1
+      }
     },
     "primaryHref": {
       "type": "url",
@@ -99,7 +135,12 @@
       "point": true,
       "extract": false,
       "label": "버튼 색",
-      "note": "신청하기 버튼 · 동의 체크 (글자색은 색마다 자동) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
+      "note": "신청하기 버튼 · 동의 체크 (글자색은 색마다 자동) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)",
+      "fig": {
+        "layer": "action button",
+        "nth": 1,
+        "paint": "button"
+      }
     }
   }
 }
