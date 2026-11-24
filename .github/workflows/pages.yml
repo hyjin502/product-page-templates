@@ -1,3 +1,19 @@
+# main 에 푸시하면 사이트를 빌드해 비밀번호로 잠근 뒤 GitHub Pages 에 올려요
+#   주소: https://hyjin502.github.io/product-page-templates/
+#   비밀번호는 저장소 secret SITE_PASSWORD (코드에 쓰지 않아요)
+#   만들기(build)와 올리기(deploy)를 나눠요 — 한 단계에서 바로 올리면 GitHub 가 방금 올린 묶음을 못 찾을 때가 있어요
+name: pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
