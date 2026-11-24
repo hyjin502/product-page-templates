@@ -1,5 +1,5 @@
 {
- "_note": "HDS(휴넷 디자인 시스템) 토큰 중 편집기에서 고르는 값 — Figma 라이브러리 Atomic/Semantic 컬렉션에서 읽은 값이에요. on 은 그 색을 버튼 배경으로 쓸 때의 글자색이에요. 템플릿 필터(hdsColor · hdsOn · hdsRadius)와 히어로 편집기가 이 파일 하나만 봐요. text 는 HDS Theme 컬렉션의 typography 글자색(라이트 값 — hero 는 테마를 따르지 않아요). 타이틀·서브 색 슬롯(palette: \"text\")과 hdsText 필터가 써요. colors 는 버튼 배경 후보 — HDS Theme 의 static 2 · interaction 5 와 Atomic 각 색의 700번(on = 그 위 글자색 — 밝기 0.4 미만이면 흰 글자, 채도 높은 색은 Figma 처럼 흰 글자). aliases 는 예전 키(white · gray/1000 · gray/1400 → 같은 값의 새 키). transparent 는 HDS 토큰이 아닌 투명 바탕 — 글자색은 hero 글자색을 따르고 라인과 함께 써요. line 은 Theme 의 line 색 4개(라이트 값) — 버튼 라인 색. bg = 섹션 배경색 팔레트(HDS Theme background 라이트 값 + 원색 200, tokens/base.css 와 같은 값) — color 슬롯 palette: \"bg\".",
+ "_note": "HDS(휴넷 디자인 시스템) 토큰 중 편집기에서 고르는 값 — Figma 라이브러리 Atomic/Semantic 컬렉션에서 읽은 값이에요. on 은 그 색을 버튼 배경으로 쓸 때의 글자색이에요. 템플릿 필터(hdsColor · hdsOn · hdsRadius)와 히어로 편집기가 이 파일 하나만 봐요. text 는 HDS Theme 컬렉션의 typography 글자색(라이트 값 — hero 는 테마를 따르지 않아요). 타이틀·서브 색 슬롯(palette: \"text\")과 hdsText 필터가 써요. colors 는 버튼 배경 후보 — HDS Theme 의 static 2 · interaction 5 와 Atomic 각 색의 700번(on = 그 위 글자색 — 밝기 0.4 미만이면 흰 글자, 채도 높은 색은 Figma 처럼 흰 글자). aliases 는 예전 키(white · gray/1000 · gray/1400 → 같은 값의 새 키). transparent 는 HDS 토큰이 아닌 투명 바탕 — 글자색은 hero 글자색을 따르고 라인과 함께 써요. line 은 Theme 의 line 색 4개(라이트 값) — 버튼 라인 색. bg = 섹션 배경색 팔레트(HDS Theme background 라이트 값 + 원색 200, tokens/base.css 와 같은 값) — color 슬롯 palette: \"bg\". tint200 = Atomic 각 색의 200번(🖤 HDS 변수에서 읽음, 2026-11-24) — 700번 색과 짝인 옅은 색. 필터 hds200 이 700번 키(또는 static/black → gray/200)를 받아 이 값을 줘요(아이콘 면 색).",
  "colors": [
   {
    "key": "static/white",
@@ -343,6 +343,73 @@
    "token": "color/violet/200",
    "value": "#f3f0fe",
    "label": "옅은 보라"
+  }
+ ],
+ "tint200": [
+  {
+   "key": "gray/200",
+   "token": "color/gray/200",
+   "value": "#f4f4f5"
+  },
+  {
+   "key": "red/200",
+   "token": "color/red/200",
+   "value": "#ffeef0"
+  },
+  {
+   "key": "red-orange/200",
+   "token": "color/red-orange/200",
+   "value": "#fff2eb"
+  },
+  {
+   "key": "orange/200",
+   "token": "color/orange/200",
+   "value": "#fff6eb"
+  },
+  {
+   "key": "yellow/200",
+   "token": "color/yellow/200",
+   "value": "#fffded"
+  },
+  {
+   "key": "lime/200",
+   "token": "color/lime/200",
+   "value": "#f2fbeb"
+  },
+  {
+   "key": "green/200",
+   "token": "color/green/200",
+   "value": "#ebfaf0"
+  },
+  {
+   "key": "cyan/200",
+   "token": "color/cyan/200",
+   "value": "#ebfafc"
+  },
+  {
+   "key": "sky/200",
+   "token": "color/sky/200",
+   "value": "#ebf9ff"
+  },
+  {
+   "key": "blue/200",
+   "token": "color/blue/200",
+   "value": "#ebf3ff"
+  },
+  {
+   "key": "violet/200",
+   "token": "color/violet/200",
+   "value": "#f3f0fe"
+  },
+  {
+   "key": "purple/200",
+   "token": "color/purple/200",
+   "value": "#fbf2ff"
+  },
+  {
+   "key": "pink/200",
+   "token": "color/pink/200",
+   "value": "#fef1fc"
   }
  ]
 }

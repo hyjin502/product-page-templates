@@ -13,7 +13,7 @@
   </div>
 {% endif %}
 {% if showMissions and missionType == 'cards' and cards.length %}
-  <div class="mx-summary__cards" data-mx-cards>
+  <div class="mx-summary__cards" data-mx-cards{% if iconColor %} style="--mx-ic-bg: {{ iconColor | hds200 }}"{% endif %}>
     <ul class="mx-summary__cards-track">
 {% for c in cards %}
       <li class="mx-summary__card">

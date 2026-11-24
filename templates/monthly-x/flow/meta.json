@@ -1,0 +1,145 @@
+{
+  "id": "monthly-x-flow",
+  "section": "monthly-x",
+  "layout": "flow",
+  "label": "실습 흐름",
+  "order": 3,
+  "when": "실습 워크숍 — 「무엇을 하는지」를 단계 카드(번호 · 간단한 화면 그림 · 이름 · 설명)로 보여 줄 때. 소개 글 바로 아래",
+  "figma": {
+    "pc": "846:4982",
+    "mo": "848:5104",
+    "tb": null
+  },
+  "body": 920,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "maxChars": 36,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 20
+      }
+    },
+    "desc": {
+      "type": "richtext",
+      "extract": false,
+      "optional": true,
+      "label": "설명",
+      "maxLines": 3,
+      "maxChars": 60,
+      "mo": {
+        "maxLines": 6,
+        "maxChars": 30
+      }
+    },
+    "badge": {
+      "type": "text",
+      "extract": false,
+      "optional": true,
+      "label": "검정 알약",
+      "maxChars": 12
+    },
+    "subtitle": {
+      "type": "richtext",
+      "extract": false,
+      "optional": true,
+      "label": "작은 제목",
+      "maxLines": 1,
+      "maxChars": 30,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 16
+      }
+    },
+    "accentColor": {
+      "type": "color",
+      "palette": "700",
+      "optional": true,
+      "point": true,
+      "extract": false,
+      "label": "강조 색",
+      "note": "단계 번호 · 그림 속 고른 칸 · 바꾼 칸 색 · 「포인트」 = 페이지 포인트 컬러(시안대로면 파랑)"
+    },
+    "steps": {
+      "type": "list",
+      "extract": false,
+      "label": "단계",
+      "min": 1,
+      "max": 4,
+      "note": "PC 가로로 나란히(3개 = 920 폭) · MO 294 폭 카드를 옆으로 넘기기 + 점",
+      "item": {
+        "no": {
+          "type": "text",
+          "label": "번호",
+          "maxChars": 4
+        },
+        "mock": {
+          "type": "enum",
+          "values": [
+            "grid",
+            "list",
+            "image"
+          ],
+          "labels": {
+            "grid": "고르기 칸",
+            "list": "목록",
+            "image": "이미지"
+          },
+          "default": "list",
+          "label": "그림 모양"
+        },
+        "head": {
+          "type": "text",
+          "label": "그림 제목",
+          "optional": true,
+          "maxChars": 24,
+          "hideWhen": {
+            "mock": "grid"
+          },
+          "note": "목록 그림 위 굵은 한 줄"
+        },
+        "sub": {
+          "type": "text",
+          "label": "그림 작은 글",
+          "optional": true,
+          "maxChars": 30,
+          "hideWhen": {
+            "mock": "grid"
+          }
+        },
+        "lines": {
+          "type": "richtext",
+          "label": "그림 내용",
+          "optional": true,
+          "note": "고르기 칸: 한 줄에 칸 하나(첫 칸이 고른 칸) · 목록: 「이름: 태그, 태그」 — 태그 앞에 ↔ + ✎ 를 붙이면 강조, − 는 흐리게(그 줄은 테두리 강조)"
+        },
+        "note": {
+          "type": "text",
+          "label": "그림 아래 안내",
+          "optional": true,
+          "maxChars": 40
+        },
+        "image": {
+          "type": "image",
+          "label": "그림 이미지",
+          "optional": true,
+          "hint": "「이미지」 모양일 때 · 262×224 (2배 524×448)"
+        },
+        "title": {
+          "type": "text",
+          "label": "이름",
+          "maxChars": 20
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "optional": true,
+          "note": "엔터로 줄바꿈"
+        }
+      }
+    }
+  }
+}

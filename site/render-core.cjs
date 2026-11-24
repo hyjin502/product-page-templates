@@ -66,6 +66,7 @@
       text: Object.fromEntries((hds.text || []).map((t) => [t.key, t])),
       line: Object.fromEntries((hds.line || []).map((t) => [t.key, t])),
       bg: Object.fromEntries((hds.bg || []).map((t) => [t.key, t])),
+      tint200: Object.fromEntries((hds.tint200 || []).map((t) => [t.key, t])),
     };
   }
 
@@ -80,6 +81,8 @@
     env.addFilter('hdsRadius', (k) => (idx.radius[k] ? idx.radius[k].px + 'px' : ''));
     env.addFilter('hdsText', (k) => (idx.text[k] ? idx.text[k].value : ''));
     env.addFilter('hdsLine', (k) => (idx.line[k] ? idx.line[k].value : ''));
+    // 700번 색 키 → 같은 색 200번 값 (static/black 은 gray/200) — 아이콘 면처럼 포인트 색과 짝인 옅은 색
+    env.addFilter('hds200', (k) => { const c = String(k || '').replace(/^static\/black$/, 'gray/700').replace(/\/\d+$/, '/200'); return idx.tint200[c] ? idx.tint200[c].value : ''; });
     env.addFilter('hdsBg', (k) => (/^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(String(k || '')) ? k : idx.bg[k] ? idx.bg[k].value : '')); // 자유 색(#hex) 또는 HDS 배경 키
     env.addFilter('hdsToken', (k, kind) => { const t = (kind === 'radius' ? idx.radius : kind === 'text' ? idx.text : kind === 'line' ? idx.line : idx.colors)[k]; return t ? t.token : ''; });
     return env;

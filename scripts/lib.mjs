@@ -78,7 +78,9 @@ export function loadRegistry() {
       t.rows = (t.order || []).map((o) => (typeof o === 'string' ? { ids: [idOf(o)] }
         : o.extra ? { label: o.label, ids: [], extra: o.extra.map(idOf).filter(Boolean), max: o.max ?? 3 }
           : { label: o.label, ids: (o.pick || []).map(idOf) }))
-        .map((r, i) => ({ ...r, ids: r.ids.filter(Boolean), ...(typeof t.order[i] === 'object' && t.order[i].movable ? { movable: true } : {}) })).filter((r) => r.ids.length || (r.extra && r.extra.length));
+        .map((r, i) => ({ ...r, ids: r.ids.filter(Boolean), ...(typeof t.order[i] === 'object' && t.order[i].movable ? { movable: true } : {}),
+          // { …, off: true } = 기본은 빠진 자리 — 새로 만든 섹션이 지난 회차에 갑자기 나타나지 않게. 켜면 state.off 에 「+자리 키」를 적어요
+          ...(typeof t.order[i] === 'object' && t.order[i].off ? { defaultOff: true } : {}) })).filter((r) => r.ids.length || (r.extra && r.extra.length));
       t.variants = t.rows.flatMap((r) => [...r.ids, ...(r.extra || [])]);
       t.defaults = t.rows.map((r) => r.ids[0]).filter(Boolean); // 샘플 페이지 = 자리마다 첫 번째
       t.sharedCss = readIf(path.join(dir, '_shared.css'));

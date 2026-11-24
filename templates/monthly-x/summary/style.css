@@ -21,6 +21,8 @@
 .mx-summary__cards-track::-webkit-scrollbar { display: none; }
 .mx-summary__card { display: flex; flex-direction: column; gap: 24px; padding: 32px 32px 40px; border: 1px solid var(--line-outline); border-radius: 16px; background: var(--bg-surface); scroll-snap-align: start; }
 .mx-summary__card-ico { display: flex; color: var(--t-100); }
+/* 아이콘 면 색(iconColor · 포인트 컬러) — 선은 그대로 검정, duotone 면(opacity .12 path)만 그 색의 200번으로 칠해요 */
+.mx-summary__cards[style*="--mx-ic-bg"] .mx-summary__card-ico path[opacity="0.12"] { fill: var(--mx-ic-bg); opacity: 1; }
 .mx-summary__card-ico svg { width: 48px; height: 48px; }
 .mx-summary__card-text { display: flex; flex-direction: column; gap: 16px; }
 .mx-summary__card-title { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }

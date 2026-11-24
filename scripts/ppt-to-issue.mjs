@@ -6,7 +6,7 @@
    {
      "template": "monthly-hunet", "period": "2026-11", "title": "월간휴넷(PPT 테스트)", "by": "Claude · PPT 자동",
      "pick": { "<자리 키>": "<variant id>" },      // 자리 키 = 그 자리 variant id 를 | 로 이은 것
-     "off": ["<자리 키>"],                          // 뺄 자리
+     "off": ["<자리 키>", "+<자리 키>"],            // 뺄 자리 · 「+」 = 기본은 빠진 자리(template.json off: true)를 켜기
      "point": "violet/700",                         // 페이지 포인트 컬러(선택 · HDS 700번)
      "sections": { "<variant id>": { …칸: 값 } },   // 샘플 위에 덮어써요(적지 않은 칸 = 샘플 그대로)
      "flags": [ "확인할 것 …" ]                      // 보고용(저장하지 않아요)
@@ -80,7 +80,7 @@ async function main() {
   if (!t) throw new Error(`없는 템플릿: ${plan.template}`);
   const rowKey = (r) => (r.extra ? 'extra:' + r.extra.join('|') : r.ids.join('|'));
   const rowKeys = t.rows.map(rowKey);
-  for (const k of [...Object.keys(plan.pick || {}), ...(plan.off || [])]) if (!rowKeys.includes(k)) throw new Error(`없는 자리 키: ${k}\n  가능: ${rowKeys.join(', ')}`);
+  for (const k of [...Object.keys(plan.pick || {}), ...(plan.off || []).map((x) => x.replace(/^\+/, ''))]) if (!rowKeys.includes(k)) throw new Error(`없는 자리 키: ${k}\n  가능: ${rowKeys.join(', ')}`);
 
   const errors = [];
   const edits = {};
@@ -115,7 +115,7 @@ async function main() {
     edits[id] = e;
     summary.push(`  ✎ ${v.label || id} — ${changed.join(', ')}`);
   }
-  const visible = t.rows.filter((r) => !r.extra && !(plan.off || []).includes(rowKey(r))).map((r) => (plan.pick || {})[rowKey(r)] || r.ids[0]);
+  const visible = t.rows.filter((r) => !r.extra && (r.defaultOff ? (plan.off || []).includes('+' + rowKey(r)) : !(plan.off || []).includes(rowKey(r)))).map((r) => (plan.pick || {})[rowKey(r)] || r.ids[0]);
   console.log(`템플릿 ${t.title} · ${plan.period} · ${plan.title}`);
   console.log(`보이는 섹션 ${visible.length}개: ${visible.map((id) => reg.byId[id].label || id).join(' → ')}`);
   console.log(summary.join('\n'));

@@ -1761,7 +1761,8 @@ const tplSecHtml = (v) => heroHtmlOrError(v, tplEdit(v)).replace(/^(\s*)<([a-z][
    extra 섹션은 같은 variant 를 여러 번 넣으려고 byId 에 복제본(id = variant~uid, base = 원래 id)을 만들어 편집 값을 따로 둬요 */
 const rowKey = (r) => (r.extra ? 'extra:' + r.extra.join('|') : r.ids.join('|'));
 const rowPick = (t, r) => { const p = tplState(t.key).pick[rowKey(r)]; return r.ids.includes(p) ? p : r.ids[0]; };
-const rowOn = (t, r) => !tplState(t.key).off.includes(rowKey(r));
+// 기본은 빠진 자리(defaultOff)는 off 에 「+자리 키」가 있을 때만 켜져요 — 예전 회차 데이터는 그대로 두고 새 섹션만 꺼 두려고
+const rowOn = (t, r) => (r.defaultOff ? tplState(t.key).off.includes('+' + rowKey(r)) : !tplState(t.key).off.includes(rowKey(r)));
 /** 자리 목록 — movable 자리는 편집기에서 바꾼 순서(state.tpl[key].order = 자리 키 목록)대로, 나머지는 template.json 순서 그대로 */
 function tplRows(t) {
   const base = t.rows || t.variants.map((id) => ({ ids: [id] }));
@@ -2152,7 +2153,9 @@ tplEl.addEventListener('change', (ev) => {
   if (!cb) return;
   const ts = tplState(tplKey());
   const k = cb.dataset.tplOn;
-  ts.off = cb.checked ? ts.off.filter((x) => x !== k) : [...new Set([...ts.off, k])];
+  const r = tplRows(tplByKey[tplKey()]).find((x) => rowKey(x) === k);
+  if (r && r.defaultOff) ts.off = cb.checked ? [...new Set([...ts.off, '+' + k])] : ts.off.filter((x) => x !== '+' + k);
+  else ts.off = cb.checked ? ts.off.filter((x) => x !== k) : [...new Set([...ts.off, k])];
   save(); renderTpl();
 });
 bindEditorForm({

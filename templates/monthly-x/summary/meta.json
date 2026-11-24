@@ -111,6 +111,9 @@
             "pie-chart-01",
             "settings-01",
             "building-05",
+            "award-01",
+            "user-check-01",
+            "clock-fast-forward",
             "none"
           ],
           "labels": {
@@ -123,7 +126,10 @@
             "pie-chart-01": "원 그래프",
             "settings-01": "톱니바퀴",
             "building-05": "건물",
-            "none": "없음"
+            "none": "없음",
+            "award-01": "메달",
+            "user-check-01": "확인된 사람",
+            "clock-fast-forward": "빠른 시계"
           },
           "iconPrefix": "hds-",
           "default": "pie-chart-01",
@@ -165,6 +171,18 @@
               "building-05": {
                 "key": "2e33ed1d2d3e26be7582990305ecfeac4a1fcc0c",
                 "style": "duotone"
+              },
+              "award-01": {
+                "key": "2ebadca0a62d669377004a8a9813bdcfd358d2cc",
+                "style": "duotone"
+              },
+              "user-check-01": {
+                "key": "4f2ab5ec9fb2548ccb3634315d8ba1be605f5edf",
+                "style": "duotone"
+              },
+              "clock-fast-forward": {
+                "key": "0609b97684f2aad1c62553b27412adaf4e9e842e",
+                "style": "duotone"
               }
             },
             "max": 48
@@ -182,6 +200,15 @@
           "note": "엔터로 줄바꿈"
         }
       }
+    },
+    "iconColor": {
+      "type": "color",
+      "palette": "700",
+      "optional": true,
+      "point": true,
+      "extract": false,
+      "label": "아이콘 면 색 (2번)",
+      "note": "아이콘 선은 그대로 검정 · 채워진 면만 고른 색의 200번(HDS) · 「포인트」 = 페이지 포인트 컬러(검정이면 gray/200) · 시안대로면 옅은 회색 면"
     },
     "showCta": {
       "type": "toggle",

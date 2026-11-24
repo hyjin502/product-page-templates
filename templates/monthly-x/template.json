@@ -10,6 +10,13 @@
   "order": [
     "hero",
     "summary",
+    {
+      "label": "실습 흐름",
+      "pick": [
+        "flow"
+      ],
+      "off": true
+    },
     "check",
     "program",
     "register",

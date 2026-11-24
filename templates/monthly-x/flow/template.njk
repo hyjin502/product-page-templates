@@ -1,0 +1,71 @@
+{# 단계 그림 — 고르기 칸(grid) · 목록(list) · 이미지(image). 강조 색은 --mx-ac (포인트 컬러) #}
+{% macro mock(s, pick) %}
+{% if s.mock == 'image' %}
+<span class="mx-flow__art mx-flow__art--image" data-pick-item="steps:{{ pick }}:image">{% if s.image and s.image.src %}<img src="{{ s.image.src }}" alt="{{ s.image.alt or '' }}">{% endif %}</span>
+{% elif s.mock == 'grid' %}
+<div class="mx-flow__art mx-flow__art--grid">
+  <ul class="mx-flow__tiles">
+{% for l in s.lines | lines %}{% if l | trim %}
+    <li class="mx-flow__tile{% if loop.first %} is-on{% endif %}"><span class="mx-flow__bar"></span>{{ l | trim }}</li>
+{% endif %}{% endfor %}
+  </ul>
+{% if s.note %}
+  <p class="mx-flow__art-note">{{ s.note }}</p>
+{% endif %}
+</div>
+{% else %}
+<div class="mx-flow__art mx-flow__art--list">
+{% if s.head or s.sub %}
+  <div class="mx-flow__art-head">{% if s.head %}<b>{{ s.head }}</b>{% endif %}{% if s.sub %}<span>{{ s.sub }}</span>{% endif %}</div>
+{% endif %}
+  <ul class="mx-flow__rows">
+{% for l in s.lines | lines %}{% if l | trim %}
+{% set parts = l.split(':') %}
+{% set rest = parts.slice(1).join(':') %}
+{% set tags = rest.split(',') %}
+    <li class="mx-flow__row{% if ('↔' in rest) or ('+' in rest) or ('✎' in rest) or ('−' in rest) %} is-on{% endif %}"><span class="mx-flow__row-name">{{ parts[0] | trim }}</span>{% for g in tags %}{% set gt = g | trim %}{% if gt %}{% set c = gt.charAt(0) %}<span class="mx-flow__tag{% if c == '↔' or c == '+' or c == '✎' %} is-on{% elif c == '−' %} is-off{% endif %}">{{ gt }}</span>{% endif %}{% endfor %}</li>
+{% endif %}{% endfor %}
+  </ul>
+{% if s.note %}
+  <p class="mx-flow__art-note">{{ s.note }}</p>
+{% endif %}
+</div>
+{% endif %}
+{% endmacro %}
+<section class="mx-flow"{% if accentColor %} style="--mx-ac: {{ accentColor | hdsColor }}"{% endif %}>
+  <div class="mx-flow__head">
+    <h2 class="mx-flow__title">{{ title | rt }}</h2>
+{% if desc %}
+    <p class="mx-flow__desc">{{ desc | rt }}</p>
+{% endif %}
+  </div>
+{% if badge or subtitle %}
+  <div class="mx-flow__sub">
+{% if badge %}
+    <span class="mx-flow__badge">{{ badge }}</span>
+{% endif %}
+{% if subtitle %}
+    <p class="mx-flow__subtitle">{{ subtitle | rt }}</p>
+{% endif %}
+  </div>
+{% endif %}
+{% if steps.length %}
+  <ol class="mx-flow__steps" data-mx-flow>
+{% for s in steps %}
+    <li class="mx-flow__step">
+{% if s.no %}
+      <span class="mx-flow__no">{{ s.no }}</span>
+{% endif %}
+      {{ mock(s, loop.index0) }}
+      <p class="mx-flow__name">{{ s.title }}</p>
+{% if s.desc %}
+      <p class="mx-flow__step-desc">{{ s.desc | rt }}</p>
+{% endif %}
+    </li>
+{% endfor %}
+  </ol>
+{% if steps.length > 1 %}
+  <div class="mx-flow__dots">{% for s in steps %}<span{% if loop.first %} class="is-on"{% endif %}></span>{% endfor %}</div>
+{% endif %}
+{% endif %}
+</section>
