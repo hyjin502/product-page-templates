@@ -13,23 +13,25 @@
 .mx-summary__mission-body p { margin: 0; }
 .mx-summary__mission-note { font-size: 12px; line-height: 1.4; letter-spacing: -0.7px; }
 
-/* 가치 카드 (Figma MKT_월간X 12회 986:1418) — 980 폭 3열 사이 16 · 카드 안쪽 32 · 둥근 20 · 바탕 = 카드 색 7%(시안 #EEF7F2)
-   아이콘 160 원(자리 표시 = 같은 색 20%, 시안 #CFE3D9) ↔ 글 20 · 영문 24 Bold 카드 색 · 이름 20 Medium(#111) 사이 4 · 설명 16/1.6(#4A5550) 16
-   문단 ↔ 카드 48 · 카드 ↔ 버튼 100 */
-.mx-summary > .mx-summary__values { width: 980px; }
-.mx-summary__values { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 8px 0 60px; padding: 0; list-style: none; text-align: left; }
-.mx-summary__value { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 32px; border-radius: 20px; background: color-mix(in srgb, var(--mx-ac, var(--brand)) 7%, #fff); }
-.mx-summary__value-icon { display: block; width: 160px; height: 160px; border-radius: 50%; overflow: hidden; background: color-mix(in srgb, var(--mx-ac, var(--brand)) 20%, #fff); cursor: pointer; }
-.mx-summary__value-icon:has(img) { border-radius: 0; background: none; }
-.mx-summary__value-icon img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.mx-summary__value-text { display: flex; flex-direction: column; gap: 16px; align-self: stretch; }
-.mx-summary__value-head { display: flex; flex-direction: column; gap: 4px; margin: 0; }
-.mx-summary__value-en { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--mx-ac, var(--brand)); }
-.mx-summary__value-head strong { font-size: 20px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }
-.mx-summary__value-desc { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
+/* 2번 아이콘 카드 (Figma 643:5115 type2 844:4717) — 780 폭 3열 사이 24 · 흰 바탕 · line-outline 1px · 둥근 16 · 안쪽 32/32/40/32 · 아이콘 48 ↔ 글 24
+   제목 20 Bold(1.4 · -0.7) · 설명 16/1.6 black-80 사이 16 · 3개가 넘으면 PC 는 3개씩 옆으로 넘기고 점(8 · 사이 8 · 켜짐 #46474C · 꺼짐 black 25%) — Figma 는 카드 3개에 점 6개(자리 표시로 봄) */
+.mx-summary__cards { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+.mx-summary__cards-track { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 48px) / 3); gap: 24px; width: 100%; margin: 0; padding: 0; list-style: none; text-align: left;
+  overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.mx-summary__cards-track::-webkit-scrollbar { display: none; }
+.mx-summary__card { display: flex; flex-direction: column; gap: 24px; padding: 32px 32px 40px; border: 1px solid var(--line-outline); border-radius: 16px; background: var(--bg-surface); scroll-snap-align: start; }
+.mx-summary__card-ico { display: flex; color: var(--t-100); }
+.mx-summary__card-ico svg { width: 48px; height: 48px; }
+.mx-summary__card-text { display: flex; flex-direction: column; gap: 16px; }
+.mx-summary__card-title { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }
+.mx-summary__card-desc { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+.mx-summary__dots { display: flex; gap: 8px; }
+.mx-summary__dots span { width: 8px; height: 8px; border-radius: 50%; background: rgba(23, 23, 25, .25); }
+.mx-summary__dots span.is-on { background: #46474c; }
+
 
 /* TB — 제안값 */
-@media (min-width: 768px) and (max-width: 1279px) { .mx-summary { padding: 96px var(--container-pad); } .mx-summary__value { padding: 24px; } .mx-summary__value-icon { width: 120px; height: 120px; } }
+@media (min-width: 768px) and (max-width: 1279px) { .mx-summary { padding: 96px var(--container-pad); } }
 
 /* MO — Figma 643:5122 · 위아래 72 · 양옆 16 · 제목 20 · 문단 16 사이 16 · 미션 카드 세로(사이 16 · 안쪽 20 · 제목 왼쪽) */
 @media (max-width: 767px) {
@@ -41,11 +43,9 @@
   .mx-summary__mission-title { width: auto; text-align: left; }
   .mx-summary__mission-body { gap: 16px; font-size: 14px; }
   .mx-summary__mission-note { line-height: 1.6; letter-spacing: var(--tracking-tight); }
-  /* 가치 카드 — 기획안 「MO 가치 카드 세로 3개」 · 아이콘 120(Figma MO 119) · 나머지 제안값 */
-  .mx-summary__values { grid-template-columns: 1fr; gap: 12px; margin: 0 0 24px; }
-  .mx-summary__value { padding: 24px; }
-  .mx-summary__value-icon { width: 120px; height: 120px; }
-  .mx-summary__value-en { font-size: 20px; }
-  .mx-summary__value-head strong { font-size: 18px; }
-  .mx-summary__value-desc { font-size: 15px; }
+  /* 2번 아이콘 카드 — Figma 844:4754: 세로 사이 24 · 안쪽 32/24/40/24 · 아이콘 32 · 점 없음 */
+  .mx-summary__cards-track { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: 1fr; overflow: visible; }
+  .mx-summary__card { padding: 32px 24px 40px; }
+  .mx-summary__card-ico svg { width: 32px; height: 32px; }
+  .mx-summary__dots { display: none; }
 }

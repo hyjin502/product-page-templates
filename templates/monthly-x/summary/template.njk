@@ -12,7 +12,28 @@
 {% endfor %}
   </div>
 {% endif %}
-{% if showMissions and missions.length %}
+{% if showMissions and missionType == 'cards' and cards.length %}
+  <div class="mx-summary__cards" data-mx-cards>
+    <ul class="mx-summary__cards-track">
+{% for c in cards %}
+      <li class="mx-summary__card">
+{% if c.icon and c.icon != 'none' %}
+        <span class="mx-summary__card-ico" aria-hidden="true">{{ ('hds-' + c.icon) | icon }}</span>
+{% endif %}
+        <div class="mx-summary__card-text">
+          <p class="mx-summary__card-title">{{ c.title | rt }}</p>
+{% if c.desc %}
+          <p class="mx-summary__card-desc">{{ c.desc | rt }}</p>
+{% endif %}
+        </div>
+      </li>
+{% endfor %}
+    </ul>
+{% if cards.length > 3 %}
+    <div class="mx-summary__dots">{% for i in range(0, ((cards.length + 2) / 3) | int) %}<span{% if loop.first %} class="is-on"{% endif %}></span>{% endfor %}</div>
+{% endif %}
+  </div>
+{% elif showMissions and missions.length %}
   <ul class="mx-summary__missions">
 {% for m in missions %}
     <li class="mx-summary__mission">
@@ -23,21 +44,6 @@
 {% endif %}
 {% if m.note %}
         <p class="mx-summary__mission-note">{{ m.note | rt }}</p>
-{% endif %}
-      </div>
-    </li>
-{% endfor %}
-  </ul>
-{% endif %}
-{% if showValues and values.length %}
-  <ul class="mx-summary__values">
-{% for c in values %}
-    <li class="mx-summary__value">
-      <span class="mx-summary__value-icon" data-pick-item="values:{{ loop.index0 }}:image">{% if c.image and c.image.src %}<img src="{{ c.image.src }}" alt="{{ c.image.alt or '' }}">{% endif %}</span>
-      <div class="mx-summary__value-text">
-        <p class="mx-summary__value-head">{% if c.en %}<span class="mx-summary__value-en">{{ c.en }}</span>{% endif %}<strong>{{ c.title }}</strong></p>
-{% if c.desc %}
-        <p class="mx-summary__value-desc">{{ c.desc | rt }}</p>
 {% endif %}
       </div>
     </li>

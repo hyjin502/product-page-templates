@@ -1651,7 +1651,16 @@ function bindEditorForm(ctx) {
     if (!v) return;
     const e = ctx.edit(v);
     const p = at(hit);
-    if (hit.matches('[data-val]')) { if (p.i != null) e[p.f][p.i][p.k] = hit.dataset.val; else e[p.f] = hit.dataset.val; ctx.redraw(v); ctx.update(v); return; }
+    if (hit.matches('[data-val]')) {
+      if (p.i != null) e[p.f][p.i][p.k] = hit.dataset.val;
+      else {
+        e[p.f] = hit.dataset.val;
+        // spec turnsOn: "<toggle 칸>" — 고르면 그 켜고 끄기도 함께 켜요 (예: 월간X 소개 글 카드 타입 → 미션 카드 보이기)
+        const on = RC.specOf(v.slots[p.f] || {}).turnsOn;
+        if (on && e[on] === false) e[on] = true;
+      }
+      ctx.redraw(v); ctx.update(v); return;
+    }
     const s = RC.specOf(v.slots[p.f]);
     switch (hit.dataset.act) {
       case 'add-line': { const ls = p.dev === 'mo' ? e['@mo'][p.f] : e[p.f]; if (ls.length === 0) ls.push(''); ls.push(''); break; }
