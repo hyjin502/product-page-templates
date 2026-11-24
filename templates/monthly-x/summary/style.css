@@ -13,8 +13,23 @@
 .mx-summary__mission-body p { margin: 0; }
 .mx-summary__mission-note { font-size: 12px; line-height: 1.4; letter-spacing: -0.7px; }
 
+/* 가치 카드 (Figma MKT_월간X 12회 986:1418) — 980 폭 3열 사이 16 · 카드 안쪽 32 · 둥근 20 · 바탕 = 카드 색 7%(시안 #EEF7F2)
+   아이콘 160 원(자리 표시 = 같은 색 20%, 시안 #CFE3D9) ↔ 글 20 · 영문 24 Bold 카드 색 · 이름 20 Medium(#111) 사이 4 · 설명 16/1.6(#4A5550) 16
+   문단 ↔ 카드 48 · 카드 ↔ 버튼 100 */
+.mx-summary > .mx-summary__values { width: 980px; }
+.mx-summary__values { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 8px 0 60px; padding: 0; list-style: none; text-align: left; }
+.mx-summary__value { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 32px; border-radius: 20px; background: color-mix(in srgb, var(--mx-ac, var(--brand)) 7%, #fff); }
+.mx-summary__value-icon { display: block; width: 160px; height: 160px; border-radius: 50%; overflow: hidden; background: color-mix(in srgb, var(--mx-ac, var(--brand)) 20%, #fff); cursor: pointer; }
+.mx-summary__value-icon:has(img) { border-radius: 0; background: none; }
+.mx-summary__value-icon img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.mx-summary__value-text { display: flex; flex-direction: column; gap: 16px; align-self: stretch; }
+.mx-summary__value-head { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.mx-summary__value-en { font-size: 24px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--mx-ac, var(--brand)); }
+.mx-summary__value-head strong { font-size: 20px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }
+.mx-summary__value-desc { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
+
 /* TB — 제안값 */
-@media (min-width: 768px) and (max-width: 1279px) { .mx-summary { padding: 96px var(--container-pad); } }
+@media (min-width: 768px) and (max-width: 1279px) { .mx-summary { padding: 96px var(--container-pad); } .mx-summary__value { padding: 24px; } .mx-summary__value-icon { width: 120px; height: 120px; } }
 
 /* MO — Figma 643:5122 · 위아래 72 · 양옆 16 · 제목 20 · 문단 16 사이 16 · 미션 카드 세로(사이 16 · 안쪽 20 · 제목 왼쪽) */
 @media (max-width: 767px) {
@@ -26,4 +41,11 @@
   .mx-summary__mission-title { width: auto; text-align: left; }
   .mx-summary__mission-body { gap: 16px; font-size: 14px; }
   .mx-summary__mission-note { line-height: 1.6; letter-spacing: var(--tracking-tight); }
+  /* 가치 카드 — 기획안 「MO 가치 카드 세로 3개」 · 아이콘 120(Figma MO 119) · 나머지 제안값 */
+  .mx-summary__values { grid-template-columns: 1fr; gap: 12px; margin: 0 0 24px; }
+  .mx-summary__value { padding: 24px; }
+  .mx-summary__value-icon { width: 120px; height: 120px; }
+  .mx-summary__value-en { font-size: 20px; }
+  .mx-summary__value-head strong { font-size: 18px; }
+  .mx-summary__value-desc { font-size: 15px; }
 }

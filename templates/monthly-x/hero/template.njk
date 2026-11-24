@@ -1,6 +1,6 @@
 {% from "hero/_macros.njk" import bgMedia, visualMedia, lineSpans %}
 {% set lg = (logo.pc or logo.mo) if logo else null %}
-<section class="hero hero--monthly-x">
+<section class="hero hero--monthly-x{% if description | lines('pc') | join('') %} hero--mx-note{% endif %}"{% if cardColor %} style="--ticket-blue: {{ cardColor | hdsColor }}; --ticket-on: {{ cardColor | hdsOn }}"{% endif %}>
   {{ bgMedia(background) }}
   <div class="hero__body">
 {% if (lg and lg.src) or share %}
@@ -13,8 +13,15 @@
 {% endif %}
     </div>
 {% endif %}
+{% if subtitle | lines('pc') | join('') or subtitle | lines('mo') | join('') %}
+    <div class="hero__heading">
+      <h1 class="hero__title">{{ lineSpans(title) }}</h1>
+      <p class="hero__sub">{{ lineSpans(subtitle) }}</p>
+    </div>
+{% else %}
     <h1 class="hero__title">{{ lineSpans(title) }}</h1>
-    <div class="hero__ticket"{% if cardColor %} style="--ticket-blue: {{ cardColor | hdsColor }}; --ticket-on: {{ cardColor | hdsOn }}" data-hds="{{ cardColor | hdsToken }}"{% endif %}>
+{% endif %}
+    <div class="hero__ticket"{% if cardColor %} data-hds="{{ cardColor | hdsToken }}"{% endif %}>
       <div class="hero__card">
       <div class="hero__visual">{{ visualMedia(visual) }}</div>
       <dl class="hero__details">
@@ -30,5 +37,8 @@
       <img class="hero__mark" src="assets/hero/monthly-x-mark.svg" alt="" aria-hidden="true">
 {% endif %}
     </div>
+{% if description | lines('pc') | join('') or description | lines('mo') | join('') %}
+    <p class="hero__note">{{ lineSpans(description) }}</p>
+{% endif %}
   </div>
 </section>

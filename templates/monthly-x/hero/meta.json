@@ -40,6 +40,19 @@
         "maxChars": 22
       }
     },
+    "subtitle": {
+      "type": "richtext",
+      "optional": true,
+      "extract": false,
+      "label": "부제(타이틀 아래)",
+      "note": "비우면 안 보여요 · 흰색 → 티켓 색 그라디언트 글자 (Figma 월간X 12회 시안)",
+      "maxLines": 1,
+      "maxChars": 34,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 24
+      }
+    },
     "visual": {
       "type": "media",
       "extract": false,
@@ -100,6 +113,19 @@
       "default": true,
       "extract": false,
       "label": "X 장식(티켓 오른쪽 아래)"
+    },
+    "description": {
+      "type": "richtext",
+      "optional": true,
+      "extract": false,
+      "label": "아래 설명(티켓 아래)",
+      "note": "비우면 안 보여요",
+      "maxLines": 2,
+      "maxChars": 32,
+      "mo": {
+        "maxLines": 3,
+        "maxChars": 30
+      }
     },
     "background": {
       "type": "media",

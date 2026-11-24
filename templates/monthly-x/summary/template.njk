@@ -29,6 +29,21 @@
 {% endfor %}
   </ul>
 {% endif %}
+{% if showValues and values.length %}
+  <ul class="mx-summary__values">
+{% for c in values %}
+    <li class="mx-summary__value">
+      <span class="mx-summary__value-icon" data-pick-item="values:{{ loop.index0 }}:image">{% if c.image and c.image.src %}<img src="{{ c.image.src }}" alt="{{ c.image.alt or '' }}">{% endif %}</span>
+      <div class="mx-summary__value-text">
+        <p class="mx-summary__value-head">{% if c.en %}<span class="mx-summary__value-en">{{ c.en }}</span>{% endif %}<strong>{{ c.title }}</strong></p>
+{% if c.desc %}
+        <p class="mx-summary__value-desc">{{ c.desc | rt }}</p>
+{% endif %}
+      </div>
+    </li>
+{% endfor %}
+  </ul>
+{% endif %}
 {% if showCta and cta %}
   <a class="mx-btn{% if ctaColor == 'static/white' %} mx-btn--light{% endif %}" href="{{ ctaHref or '#' }}"{% if ctaColor %} style="--btn-bg: {{ ctaColor | hdsColor }}; --btn-fg: {{ ctaColor | hdsOn }}"{% endif %}>{{ cta }}{{ 'hds-chevron-right' | icon }}</a>
 {% endif %}

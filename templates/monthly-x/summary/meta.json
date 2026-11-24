@@ -75,6 +75,45 @@
       },
       "note": "PC 2열 · MO 세로"
     },
+    "showValues": {
+      "type": "toggle",
+      "default": false,
+      "extract": false,
+      "label": "가치 카드 보이기"
+    },
+    "values": {
+      "type": "list",
+      "extract": false,
+      "label": "가치 카드",
+      "min": 0,
+      "max": 3,
+      "note": "PC 3열 · MO 세로 · 바탕과 영문 이름은 「미션 카드 색」(포인트 컬러)을 따라가요 (Figma 월간X 12회 986:1418)",
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "아이콘",
+          "hint": "160×160 (MO 120) · 비우면 옅은 원",
+          "optional": true
+        },
+        "en": {
+          "type": "text",
+          "label": "영문 이름",
+          "maxChars": 20,
+          "optional": true
+        },
+        "title": {
+          "type": "text",
+          "label": "이름",
+          "maxChars": 16
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "optional": true,
+          "note": "엔터로 줄바꿈"
+        }
+      }
+    },
     "showCta": {
       "type": "toggle",
       "default": true,
@@ -97,8 +136,8 @@
       "optional": true,
       "point": true,
       "extract": false,
-      "label": "미션 카드 색",
-      "note": "미션 제목 글자 · 카드 바탕(같은 색을 옅게) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
+      "label": "미션 · 가치 카드 색",
+      "note": "미션 제목 · 가치 카드 영문 이름 글자 · 카드 바탕(같은 색을 옅게) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
     },
     "cta": {
       "type": "text",

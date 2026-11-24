@@ -9,6 +9,8 @@ description: 기획서 PPT(.pptx)를 읽어 페이지 템플릿(월간휴넷 · 
 
 기획서는 사내 문서다 → **PPT · 읽은 결과 · plan.json 은 저장소에 넣지 않는다.** 모두 스크래치 폴더에 둔다.
 
+기획서가 **Figma** 로 오면(예: 월간X 12회) PPT 읽기 대신 use_figma 로 보이는 글자를 위→아래로 읽고(부모가 숨겨진 레이어는 빼기) 같은 plan.json 을 만든다.
+
 ## 1. 읽기
 ```bash
 node scripts/ppt-read.mjs "<파일.pptx>" --out <scratch>/read.json --media <scratch>/media
@@ -31,6 +33,7 @@ node scripts/ppt-read.mjs "<파일.pptx>" --out <scratch>/read.json --media <scr
 node scripts/ppt-to-issue.mjs <scratch>/plan.json --dry     # 글자 수 · 줄 수 · 목록 개수 검사 + 바뀐 칸 요약
 node scripts/ppt-to-issue.mjs <scratch>/plan.json           # Supabase issues 에 「작성 중」 회차 → #i-<id> 링크
 node scripts/ppt-to-issue.mjs <scratch>/plan.json --share   # 저장소 없이 공유 링크(#share-…)만
+node scripts/ppt-to-issue.mjs <scratch>/plan.json --update <회차 id>   # 만든 회차를 고친 plan 으로 다시 쓰기
 ```
 저장소에 연결하지 못하면(프로젝트 일시 정지 등) 자동으로 공유 링크를 보여 준다. 회차는 공유 DB 라 다른 사람 목록에도 보인다 — 사용자가 회차 만들기를 요청했을 때만 저장한다.
 
