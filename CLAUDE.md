@@ -11,6 +11,8 @@
 - CI: `.github/workflows/ci.yml` 이 푸시·PR 마다 validate · build 를 돌리고 `dist/` 를 site 아티팩트로 남긴다.
 - **GitHub Pages**: `.github/workflows/pages.yml` 이 main 푸시마다 build → validate → `scripts/protect.mjs`(비밀번호 잠금) → 배포한다. 주소 https://hyjin502.github.io/product-page-templates/
   - 비밀번호는 저장소 secret `SITE_PASSWORD` 에만 있다. **비밀번호 값을 코드·문서·커밋·메모리에 절대 쓰지 않는다.**
+  - 배포는 두 job — `build`(validate · build · protect · upload-pages-artifact) → `deploy`(needs: build, deploy-pages). 2026-11-24 한 job 안에서 바로 올리다가 「No artifacts named "github-pages"」로 연달아 실패해서 나눴다(GitHub 쪽 경쟁 상태 — actions/deploy-pages#451). Re-run 을 반복하면 묶음이 두 개가 되어 다른 오류가 날 수 있다.
+  - 이 PC 의 GitHub 토큰에는 `workflow` 권한이 없어 `.github/workflows/` 를 고친 커밋은 푸시가 거절된다 → 사용자가 GitHub 웹에서 고친다(파일 전체를 붙여 넣게 안내).
   - 잠금은 사이트 입구만 막는다(저장소는 공개). 비밀번호가 같으면 다시 배포해도 브라우저가 다시 묻지 않는다(고정 salt PBKDF2 → AES-GCM).
 
 ## Figma 원본
