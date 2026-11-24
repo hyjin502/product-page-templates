@@ -46,6 +46,7 @@ export function buildFigmaPlugin(reg = loadRegistry()) {
   };
   const main = fs.readFileSync(path.join(ROOT, 'figma-plugin/src/main.js'), 'utf8');
   const code = `// 자동 생성 — scripts/figma-plugin.mjs (고치려면 figma-plugin/src/main.js)\nconst DATA = ${JSON.stringify(data)};\n${main}`;
+  try { new Function(code); } catch (e) { throw new Error('figma-plugin/code.js 문법 오류 — Figma 에서 플러그인이 안 열려요: ' + e.message); } // 2026-11-24 주석에 catch 가 묻혀 Figma 에서 SyntaxError 가 났던 일
   fs.writeFileSync(path.join(ROOT, 'figma-plugin/code.js'), code);
   return { variants: Object.keys(variants).length, missing };
 }

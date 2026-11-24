@@ -501,7 +501,7 @@ async function run(ops, images, warn) {
         const to = new Map(o.maps.map(([f2, t]) => [f2, paint(t)]));
         for (const x of [n].concat(n.findAll ? n.findAll(() => true) : [])) for (const k of ['fills', 'strokes']) {
           const ps = x[k]; if (!Array.isArray(ps) || !ps.some((q) => q.type === 'SOLID' && to.has(hx(q.color)))) continue;
-          try { x[k] = ps.map((q) => { if (!(q.type === 'SOLID' && to.get(hx(q.color)))) return q; const r = Object.assign({}, q, { color: to.get(hx(q.color)).color }); delete r.boundVariables; return r; }); } // 색 변수에 묶인 칠(HDS blue 등)은 변수 연결을 풀어야 새 색이 남아요 catch (e) { /* 글꼴이 안 불러와진 글자 등은 건너뜀 */ }
+          try { x[k] = ps.map((q) => { if (!(q.type === 'SOLID' && to.get(hx(q.color)))) return q; const r = Object.assign({}, q, { color: to.get(hx(q.color)).color }); delete r.boundVariables; return r; }); } catch (e) { /* 글꼴이 안 불러와진 글자 등은 건너뜀 */ } // 색 변수에 묶인 칠(HDS blue 등)은 변수 연결을 풀어야 새 색이 남아요
         }
       } else if (o.op === 'hug') {
         for (const x of [n].concat(n.findAll ? n.findAll((y) => y.type === 'FRAME' || y.type === 'INSTANCE') : [])) {
