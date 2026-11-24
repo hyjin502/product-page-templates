@@ -13,7 +13,9 @@
       "note": "* 실습 당일 15종의 프리패키지드 코스가 공개됩니다.",
       "image": null,
       "title": "코스 고르기",
-      "desc": "직급·상황에 맞는\n프리패키지드 코스 선택"
+      "desc": "직급·상황에 맞는\n프리패키지드 코스 선택",
+      "highlight": false,
+      "more": false
     },
     {
       "no": "02",
@@ -24,7 +26,9 @@
       "note": "",
       "image": null,
       "title": "그대로 불러오기",
-      "desc": "전문가가 설계한 커리큘럼을\n구성 그대로 불러오기"
+      "desc": "전문가가 설계한 커리큘럼을\n구성 그대로 불러오기",
+      "highlight": false,
+      "more": false
     },
     {
       "no": "03",
@@ -35,7 +39,9 @@
       "note": "",
       "image": null,
       "title": "우리 회사에 맞게 편집",
-      "desc": "같은 과정에서 필요한 부분만\n바꾸고, 더하고, 빼기"
+      "desc": "같은 과정에서 필요한 부분만\n바꾸고, 더하고, 빼기",
+      "highlight": true,
+      "more": false
     }
   ]
 }

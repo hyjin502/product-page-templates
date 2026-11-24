@@ -23,7 +23,7 @@
 {% set parts = l.split(':') %}
 {% set rest = parts.slice(1).join(':') %}
 {% set tags = rest.split(',') %}
-    <li class="mx-flow__row{% if ('↔' in rest) or ('+' in rest) or ('✎' in rest) or ('−' in rest) %} is-on{% endif %}"><span class="mx-flow__row-name">{{ parts[0] | trim }}</span>{% for g in tags %}{% set gt = g | trim %}{% if gt %}{% set c = gt.charAt(0) %}<span class="mx-flow__tag{% if c == '↔' or c == '+' or c == '✎' %} is-on{% elif c == '−' %} is-off{% endif %}">{{ gt }}</span>{% endif %}{% endfor %}</li>
+    <li class="mx-flow__row"><span class="mx-flow__row-name">{{ parts[0] | trim }}</span>{% for g in tags %}{% set gt = g | trim %}{% if gt %}{% set c = gt.charAt(0) %}<span class="mx-flow__tag{% if c == '↔' or c == '+' or c == '✎' %} is-on{% elif c == '−' %} is-off{% endif %}">{{ gt }}</span>{% endif %}{% endfor %}{% if s.more %}<span class="mx-flow__more" aria-hidden="true">···</span>{% endif %}</li>
 {% endif %}{% endfor %}
   </ul>
 {% if s.note %}
@@ -52,12 +52,12 @@
 {% if steps.length %}
   <ol class="mx-flow__steps" data-mx-flow>
 {% for s in steps %}
-    <li class="mx-flow__step">
+    <li class="mx-flow__step{% if s.highlight %} mx-flow__step--on{% endif %}">
 {% if s.no %}
       <span class="mx-flow__no">{{ s.no }}</span>
 {% endif %}
       {{ mock(s, loop.index0) }}
-      <p class="mx-flow__name">{{ s.title }}</p>
+      <p class="mx-flow__name">{{ s.title | rt }}</p>
 {% if s.desc %}
       <p class="mx-flow__step-desc">{{ s.desc | rt }}</p>
 {% endif %}

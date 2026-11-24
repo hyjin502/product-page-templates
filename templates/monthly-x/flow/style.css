@@ -13,40 +13,51 @@
 .mx-flow__badge { display: inline-flex; padding: 4px 16px; border-radius: 900px; background: var(--ac); color: var(--mx-ac-on, var(--static-white, #fff)); font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
 .mx-flow__subtitle { font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-80); }
 
-.mx-flow__steps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 19px; margin: 0; padding: 0; list-style: none; }
-.mx-flow__step { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 16px; border: 1px solid var(--line-outline); border-radius: 12px; background: var(--bg-page); }
-.mx-flow__no { font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--ac); }
-.mx-flow__name { font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100); }
-.mx-flow__step-desc { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-60); }
+/* 단계 카드 — 2026-11-25 기획서(MKT_월간X 1129:795 「화면 흐름 3단계」) 모양
+   카드 294 · 사이 화살표(→ 24 Bold #969696 · 양옆 12) · 흰 바탕 + 강조 색 20% 테두리 1.5(시안 #D0E2D8) · 둥근 12 · 안쪽 24/16 · 사이 12
+   번호 15 Bold 강조 색 · 이름 18 Bold/1.4 · 설명 14/1.4 #5A605E
+   강조 카드(highlight) = 강조 색 바탕 · 글자 흰색(설명 85%) · 그림 칸 흰 바탕 · 줄 강조 색 6% */
+.mx-flow__steps { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 294px); justify-content: center; gap: 48px; width: 980px; margin: 0; padding: 0; list-style: none; }
+.mx-flow__step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 16px; border: 1.5px solid color-mix(in srgb, var(--ac) 20%, #fff); border-radius: 12px; background: var(--static-white, #fff); }
+.mx-flow__step + .mx-flow__step::before { content: "→"; position: absolute; top: 50%; left: -36px; width: 24px; transform: translateY(-50%); font-size: 24px; font-weight: 700; line-height: 1.4; color: #969696; text-align: center; } /* Figma #969696 */
+.mx-flow__no { font-size: 15px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tight); color: var(--ac); }
+.mx-flow__name { font-size: 18px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tight); color: var(--t-100); }
+.mx-flow__step-desc { font-size: 14px; line-height: 1.4; letter-spacing: var(--tracking-tight); color: #5a605e; } /* Figma #5A605E */
+.mx-flow__step--on { border-color: var(--ac); background: var(--ac); }
+.mx-flow__step--on .mx-flow__no,
+.mx-flow__step--on .mx-flow__name { color: var(--mx-ac-on, #fff); }
+.mx-flow__step--on .mx-flow__step-desc { color: color-mix(in srgb, var(--mx-ac-on, #fff) 85%, transparent); } /* 시안 #DCF0E6 */
 
-/* 그림 칸 */
-.mx-flow__art { display: flex; flex-direction: column; gap: 5px; align-self: stretch; min-height: 224px; padding: 8px; border-radius: 8px; background: var(--bg-faint); text-align: left; }
-.mx-flow__art--grid { justify-content: center; }
+/* 그림 칸 262 × 173 · 강조 색 5% 바탕(시안 #F3F8F5) · 둥근 8 · 안쪽 8 */
+.mx-flow__art { display: flex; flex-direction: column; gap: 6px; align-self: stretch; min-height: 173px; padding: 8px; border-radius: 8px; background: color-mix(in srgb, var(--ac) 5%, #fff); text-align: left; }
+.mx-flow__art--grid { gap: 5px; justify-content: center; }
+.mx-flow__step--on .mx-flow__art { background: var(--static-white, #fff); }
 .mx-flow__art--image { display: block; padding: 0; overflow: hidden; cursor: pointer; }
 .mx-flow__art--image img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.mx-flow__art-note { font-size: 12px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); color: #6e6e6e; } /* Figma #6E6E6E (토큰 아님) */
+.mx-flow__art-note { font-size: 10px; font-weight: 500; line-height: 1.4; color: #6e6e6e; } /* Figma #6E6E6E (토큰 아님) */
 .mx-flow__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin: 0; padding: 0; list-style: none; }
-.mx-flow__tile { display: flex; flex-direction: column; gap: 3px; padding: 5px; border: 1px solid #c8c8c8; border-radius: 5px; background: var(--static-white, #fff); font-size: 12px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); white-space: nowrap; overflow: hidden; }
-.mx-flow__tile.is-on { border: 2px solid var(--ac); padding: 4px; color: var(--ac); } /* 고른 칸 — 테두리 2 */
-.mx-flow__bar { display: block; height: 13px; border-radius: 2px; background: #dbdcdf; } /* Figma 썸네일 자리 */
+.mx-flow__tile { display: flex; flex-direction: column; gap: 3px; padding: 5px; border: 1px solid #c8c8c8; border-radius: 5px; background: var(--static-white, #fff); font-size: 10px; font-weight: 500; line-height: 1.4; color: #111; white-space: nowrap; overflow: hidden; }
+.mx-flow__tile.is-on { border: 2px solid var(--ac); padding: 4px; color: var(--ac); font-weight: 700; } /* 고른 칸 — 테두리 2 */
+.mx-flow__bar { display: block; height: 13px; border-radius: 2px; background: #e1e1e1; } /* Figma 썸네일 자리 */
 .mx-flow__art-head { display: flex; flex-direction: column; gap: 4px; padding-bottom: 1px; }
-.mx-flow__art-head b { font-size: 12px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100); }
+.mx-flow__art-head b { font-size: 12px; line-height: 1.4; color: var(--t-100); }
 .mx-flow__art-head span { font-size: 10px; line-height: 1.4; color: #8c8c8c; } /* Figma #8C8C8C */
-.mx-flow__rows { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
-.mx-flow__row { display: flex; align-items: center; gap: 5px; min-height: 37px; padding: 5px 8px; border-radius: 6px; background: var(--static-white, #fff); font-size: 12px; font-weight: 500; line-height: 1.6; letter-spacing: var(--tracking-tight); }
-.mx-flow__row.is-on { border: 1px solid var(--ac); } /* 바꾼 줄 — 테두리만큼 2 높아져요 (Figma 37 → 39) */
-.mx-flow__row-name { flex: none; width: 55px; color: var(--t-100); }
-.mx-flow__tag { padding: 3px 6px; border: 1px solid var(--line-outline); border-radius: 4px; background: var(--static-white, #fff); color: #5a605e; white-space: nowrap; } /* Figma #5A605E */
-.mx-flow__tag.is-on { border-color: var(--ac); background: color-mix(in srgb, var(--ac) 10%, #fff); color: var(--ac); } /* 시안 #E6F5EE ≈ 초록 10% */
-.mx-flow__tag.is-off { color: #8c8c8c; }
+.mx-flow__rows { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.mx-flow__row { display: flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 6px; background: var(--static-white, #fff); font-size: 10.5px; font-weight: 500; line-height: 1.4; }
+.mx-flow__step--on .mx-flow__row { background: color-mix(in srgb, var(--ac) 6%, #fff); } /* 시안 #F0F8F4 */
+.mx-flow__row-name { flex: none; width: 55px; color: #111; }
+.mx-flow__tag { padding: 3px 6px; border: 1px solid #c8c8c8; border-radius: 5px; background: var(--static-white, #fff); font-weight: 400; color: #5a605e; white-space: nowrap; } /* Figma #C8C8C8 · #5A605E */
+.mx-flow__step--on .mx-flow__tag { border-color: #dedede; }
+.mx-flow__tag.is-on { border-color: var(--ac); background: var(--ac); font-weight: 700; color: var(--mx-ac-on, #fff); } /* 바꾼 칸 — 강조 색 채움 */
+.mx-flow__tag.is-off { color: #969696; text-decoration: line-through; } /* 뺀 칸 — 취소선 */
+.mx-flow__more { font-size: 11px; font-weight: 700; color: #969696; letter-spacing: 1px; }
 .mx-flow__dots { display: none; }
 
 /* TB 768–1279 — 제안값: 같은 3열, 칸이 좁아지면 그림 글자가 잘리지 않게 줄여요 */
 @media (min-width: 768px) and (max-width: 1279px) {
   .mx-flow { padding-bottom: 96px; }
-  .mx-flow__steps { gap: 12px; }
-  .mx-flow__art { font-size: 11px; }
-  .mx-flow__tile, .mx-flow__row { font-size: 11px; }
+  .mx-flow__steps { grid-auto-columns: minmax(0, 1fr); gap: 36px; width: auto; }
+  .mx-flow__step + .mx-flow__step::before { left: -30px; }
   .mx-flow__row-name { width: 48px; }
 }
 
@@ -58,9 +69,10 @@
   .mx-flow__title { font-size: 28px; }
   .mx-flow__head { gap: 40px; }
   .mx-flow__sub { margin-bottom: -16px; }
-  .mx-flow__steps { grid-auto-columns: 294px; gap: 19px; width: auto; max-width: none; margin: 0 -16px; padding: 0 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none; align-self: stretch; }
+  .mx-flow__steps { grid-auto-columns: 294px; justify-content: start; gap: 19px; width: auto; max-width: none; margin: 0 -16px; padding: 0 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none; align-self: stretch; }
   .mx-flow__steps::-webkit-scrollbar { display: none; }
   .mx-flow__step { scroll-snap-align: start; }
+  .mx-flow__step + .mx-flow__step::before { content: none; } /* MO 는 화살표 없이 넘기기 */
   .mx-flow__dots { display: flex; justify-content: center; gap: 8px; margin-top: -16px; }
   .mx-flow__dots span { width: 8px; height: 8px; border-radius: 50%; background: rgba(23, 23, 25, .25); }
   .mx-flow__dots span.is-on { background: #46474c; }
