@@ -17,7 +17,11 @@
       "extract": false,
       "label": "작은 제목",
       "maxChars": 20,
-      "optional": true
+      "optional": true,
+      "fig": {
+        "at": "Frame 251",
+        "text": 0
+      }
     },
     "title": {
       "type": "richtext",
@@ -27,6 +31,10 @@
       "note": "가운데 정렬 · 굵게",
       "mo": {
         "maxLines": 3
+      },
+      "fig": {
+        "at": "Frame 251",
+        "text": 1
       }
     },
     "info": {
@@ -55,7 +63,10 @@
           "type": "text",
           "extract": false,
           "label": "문구",
-          "maxChars": 30
+          "maxChars": 30,
+          "fig": {
+            "text": 0
+          }
         },
         "sub": {
           "type": "text",
@@ -63,10 +74,16 @@
           "label": "덧붙임",
           "maxChars": 10,
           "optional": true,
-          "note": "예 (3h)"
+          "note": "예 (3h)",
+          "fig": {
+            "text": 1
+          }
         }
       },
-      "note": "PC 가로 · MO 세로 · 비우면 칸 없음"
+      "note": "PC 가로 · MO 세로 · 비우면 칸 없음",
+      "fig": {
+        "items": "Frame 244"
+      }
     },
     "cycle": {
       "type": "toggle",
@@ -95,7 +112,10 @@
           "type": "text",
           "extract": false,
           "label": "시간",
-          "maxChars": 12
+          "maxChars": 12,
+          "fig": {
+            "text": 0
+          }
         },
         "duration": {
           "type": "text",
@@ -103,7 +123,21 @@
           "label": "소요 시간",
           "maxChars": 8,
           "optional": true,
-          "note": "예 (20분)"
+          "note": "예 (20분)",
+          "fig": {
+            "pc": {
+              "byCount": {
+                "3": 2,
+                "5": 4
+              }
+            },
+            "mo": {
+              "byCount": {
+                "3": 1,
+                "5": 1
+              }
+            }
+          }
         },
         "active": {
           "type": "toggle",
@@ -116,7 +150,19 @@
           "label": "세션 이름",
           "maxChars": 20,
           "optional": true,
-          "note": "파란 글씨 · 있으면 왼쪽 정렬 카드"
+          "note": "파란 글씨 · 있으면 왼쪽 정렬 카드",
+          "fig": {
+            "pc": {
+              "byCount": {
+                "5": 1
+              }
+            },
+            "mo": {
+              "byCount": {
+                "5": 2
+              }
+            }
+          }
         },
         "highlight": {
           "type": "toggle",
@@ -126,34 +172,77 @@
         "title": {
           "type": "richtext",
           "label": "제목",
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "pc": {
+              "byCount": {
+                "3": 1,
+                "5": 2
+              }
+            },
+            "mo": {
+              "byCount": {
+                "2": 1,
+                "3": 2,
+                "5": 3
+              },
+              "format": "{titleMo|title}"
+            }
+          }
         },
         "titleMo": {
           "type": "richtext",
           "label": "MO 제목",
           "optional": true,
-          "note": "MO 에서 다르게 쓸 때만 · 비우면 PC 제목"
+          "note": "MO 에서 다르게 쓸 때만 · 비우면 PC 제목",
+          "fig": {
+            "skip": true
+          }
         },
         "points": {
           "type": "richtext",
           "label": "목록",
           "optional": true,
-          "note": "한 줄에 하나씩 · 점 목록"
+          "note": "한 줄에 하나씩 · 점 목록",
+          "fig": {
+            "pc": {
+              "byCount": {
+                "5": 3
+              }
+            },
+            "mo": {
+              "byCount": {
+                "5": 4
+              }
+            }
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
           "optional": true,
-          "note": "제목 아래 보통 글씨 · 점 없이 (줄바꿈 그대로)"
+          "note": "제목 아래 보통 글씨 · 점 없이 (줄바꿈 그대로)",
+          "fig": {
+            "missing": true
+          }
         }
       },
-      "note": "카드 사이 12"
+      "note": "카드 사이 12",
+      "fig": {
+        "items": "Frame 195",
+        "from": 1,
+        "fit": "session"
+      }
     },
     "notes": {
       "type": "richtext",
       "label": "안내",
       "optional": true,
-      "note": "한 줄에 하나씩 · 작은 회색 글씨"
+      "note": "한 줄에 하나씩 · 작은 회색 글씨",
+      "fig": {
+        "at": "Frame 234",
+        "text": -1
+      }
     }
   },
   "renamedItemFields": {

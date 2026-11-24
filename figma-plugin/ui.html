@@ -67,6 +67,25 @@ $('go').onclick = () => {
   parent.postMessage({ pluginMessage: { type: 'need', page: lite, devices: devices() } }, '*');
   needTimer = setTimeout(() => { status(''); log('<span class="err">✗ 플러그인 본체가 답하지 않아요. Figma 메뉴 Plugins → Development → Show/Hide console 의 빨간 오류를 알려 주세요.</span>'); $('go').disabled = false; }, 15000);
 };
+/** Figma 는 PNG · JPG · GIF 만 받아요 → webp · svg 등은 여기서 PNG 로 바꿔요 (영상 mp4 는 그대로) */
+async function figmaImage(b) {
+  const head = String.fromCharCode(...b.slice(0, 16));
+  if (/^\x89PNG|^\xff\xd8|^GIF8/.test(head) || /ftyp/.test(head)) return b;
+  const txt = /^\s*</.test(head);
+  const type = txt ? 'image/svg+xml' : /^RIFF....WEBP/.test(head) ? 'image/webp' : '';
+  const url = URL.createObjectURL(new Blob([b], { type }));
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const k = txt ? 2 : 1; // svg 는 2배로 그려요
+    const c = document.createElement('canvas');
+    c.width = (img.naturalWidth || 512) * k; c.height = (img.naturalHeight || 512) * k;
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const png = await new Promise((r) => c.toBlob(r, 'image/png'));
+    return new Uint8Array(await png.arrayBuffer());
+  } finally { URL.revokeObjectURL(url); }
+}
 onmessage = async (e) => {
   const m = e.data.pluginMessage;
   if (!m) return;
@@ -79,14 +98,15 @@ onmessage = async (e) => {
     const files = page.files || {};
     await Promise.all(m.list.map(async (src) => {
       try {
-        if (files[src]) { images[src] = dataUrlBytes(files[src]); return; }
-        if (/^(data:)/.test(src)) { images[src] = dataUrlBytes(src); return; }
-        if (/^https?:/.test(src)) { warns.push('외부 주소 이미지는 받을 수 없어 건너뛰었어요: ' + src); return; }
+        if (files[src]) { images[src] = await figmaImage(dataUrlBytes(files[src])); return; }
+        if (/^(data:)/.test(src)) { images[src] = await figmaImage(dataUrlBytes(src)); return; }
+        // 회차에 올린 사진(Supabase 파일함)은 그 주소에서, 저장소 이미지는 GitHub 원본 주소에서
+        if (/^https?:/.test(src) && !/^https:\/\/[\w-]+\.supabase\.co\//.test(src)) { warns.push('외부 주소 이미지는 받을 수 없어 건너뛰었어요: ' + src); return; }
         const ctl = new AbortController();
         const t = setTimeout(() => ctl.abort(), 20000); // 한 장에 20초 넘으면 건너뛰어요
-        const r = await fetch(m.raw + src.replace(/^\.?\//, ''), { signal: ctl.signal }).finally(() => clearTimeout(t));
+        const r = await fetch(/^https?:/.test(src) ? src : m.raw + src.replace(/^\.?\//, ''), { signal: ctl.signal }).finally(() => clearTimeout(t));
         if (!r.ok) throw new Error(r.status);
-        images[src] = new Uint8Array(await r.arrayBuffer());
+        images[src] = await figmaImage(new Uint8Array(await r.arrayBuffer()));
       } catch (err) { warns.push('이미지를 받지 못했어요(' + (err.name === 'AbortError' ? '20초 초과' : err.message) + '): ' + src); }
     }));
     if (m.list.length) log('이미지 ' + Object.keys(images).length + '/' + m.list.length + '개 받음');

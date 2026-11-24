@@ -20,13 +20,21 @@
       "extract": false,
       "optional": true,
       "label": "로고",
-      "hint": "왼쪽 위 로고 · 흰색 로고(SVG·PNG)를 권해요. 비우면 로고 없음"
+      "hint": "왼쪽 위 로고 · 흰색 로고(SVG·PNG)를 권해요. 비우면 로고 없음",
+      "fig": {
+        "skip": true
+      }
     },
     "share": {
       "type": "toggle",
       "default": true,
       "extract": false,
-      "label": "공유 버튼(오른쪽 위)"
+      "label": "공유 버튼(오른쪽 위)",
+      "fig": {
+        "off": [
+          "Promotion/공유하기/공유하기(PC)"
+        ]
+      }
     },
     "title": {
       "type": "richtext",
@@ -38,6 +46,10 @@
       "mo": {
         "maxLines": 2,
         "maxChars": 22
+      },
+      "fig": {
+        "at": "타이틀",
+        "lines": true
       }
     },
     "subtitle": {
@@ -51,13 +63,33 @@
       "mo": {
         "maxLines": 2,
         "maxChars": 24
+      },
+      "fig": {
+        "at": "타이틀",
+        "append": {
+          "size": 32,
+          "style": "Bold",
+          "lh": 140,
+          "gap": 0
+        },
+        "mo": {
+          "append": {
+            "size": 16,
+            "style": "Medium",
+            "lh": 150,
+            "gap": 0
+          }
+        }
       }
     },
     "visual": {
       "type": "media",
       "extract": false,
       "label": "티켓 사진",
-      "hint": "PC 470×420 · MO 280×250 · 위에 파란 빛·아래 파란 그라디언트가 덮여요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요"
+      "hint": "PC 470×420 · MO 280×250 · 위에 파란 빛·아래 파란 그라디언트가 덮여요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요",
+      "fig": {
+        "layer": "image"
+      }
     },
     "cardColor": {
       "type": "color",
@@ -65,7 +97,21 @@
       "extract": false,
       "label": "티켓 색",
       "note": "정보 칸 바탕과 사진 위·아래 그라디언트가 함께 바뀌어요 · 「포인트」 = 페이지 포인트 컬러(시안대로면 #1927EC)",
-      "point": true
+      "point": true,
+      "fig": {
+        "layer": "일정",
+        "paint": "fill",
+        "also": [
+          {
+            "layer": "Rectangle 29",
+            "paint": "gradient"
+          },
+          {
+            "layer": "Frame 225",
+            "paint": "gradient"
+          }
+        ]
+      }
     },
     "details": {
       "type": "list",
@@ -92,20 +138,32 @@
         "label": {
           "type": "text",
           "label": "작은 제목",
-          "maxChars": 20
+          "maxChars": 20,
+          "fig": {
+            "text": 0
+          }
         },
         "value": {
           "type": "text",
           "label": "내용",
-          "maxChars": 24
+          "maxChars": 24,
+          "fig": {
+            "text": 1
+          }
         },
         "sub": {
           "type": "text",
           "optional": true,
           "label": "보조 문구",
           "note": "내용 옆에 작게",
-          "maxChars": 16
+          "maxChars": 16,
+          "fig": {
+            "text": 2
+          }
         }
+      },
+      "fig": {
+        "items": "일정"
       }
     },
     "mark": {
@@ -125,6 +183,9 @@
       "mo": {
         "maxLines": 3,
         "maxChars": 30
+      },
+      "fig": {
+        "missing": true
       }
     },
     "background": {
@@ -133,7 +194,11 @@
       "extract": false,
       "optional": true,
       "label": "배경",
-      "hint": "기본은 CSS 배경 「X 패턴 흐름」(Figma X 패턴이 아주 천천히 위로 흘러요) · 다른 CSS 배경이나 이미지·mp4 로 바꿀 수 있어요(멈춘 패턴 이미지 monthly-x-bg.jpg 도 남겨 뒀어요). MO 를 비우면 PC 것을 써요"
+      "hint": "기본은 CSS 배경 「X 패턴 흐름」(Figma X 패턴이 아주 천천히 위로 흘러요) · 다른 CSS 배경이나 이미지·mp4 로 바꿀 수 있어요(멈춘 패턴 이미지 monthly-x-bg.jpg 도 남겨 뒀어요). MO 를 비우면 PC 것을 써요",
+      "fig": {
+        "layer": "Asset 2",
+        "noCss": true
+      }
     }
   }
 }

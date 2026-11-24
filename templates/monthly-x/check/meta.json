@@ -19,7 +19,10 @@
       "optional": true,
       "default": "#f7f7f8",
       "extract": false,
-      "label": "배경색"
+      "label": "배경색",
+      "fig": {
+        "bg": true
+      }
     },
     "title": {
       "type": "richtext",
@@ -29,6 +32,9 @@
       "note": "가운데 정렬 · 굵게",
       "mo": {
         "maxLines": 3
+      },
+      "fig": {
+        "first": true
       }
     },
     "cards": {
@@ -43,26 +49,51 @@
           "label": "아바타",
           "hint": "64×64 원형",
           "optional": true,
-          "profiles": true
+          "profiles": true,
+          "fig": {
+            "img": -1
+          }
         },
         "quote": {
           "type": "richtext",
           "label": "고민 문구",
-          "note": "굵게 · 따옴표까지 그대로"
+          "note": "굵게 · 따옴표까지 그대로",
+          "fig": {
+            "text": 0
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "대상",
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 1
+          }
         }
       },
-      "note": "카드 사이 12"
+      "note": "카드 사이 12",
+      "fig": {
+        "items": "Frame 189",
+        "mo": {
+          "items": "Frame 2147239020"
+        }
+      }
     },
     "showCta": {
       "type": "toggle",
       "default": true,
       "extract": false,
-      "label": "버튼 보이기"
+      "label": "버튼 보이기",
+      "fig": {
+        "off": [
+          "action button"
+        ],
+        "mo": {
+          "off": [
+            "button"
+          ]
+        }
+      }
     },
     "ctaColor": {
       "type": "color",
@@ -72,7 +103,14 @@
       "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리) · 「포인트」 = 페이지 포인트 컬러(시안대로면 blue/700)",
       "optional": true,
       "point": true,
-      "pointFallback": "blue/700"
+      "pointFallback": "blue/700",
+      "fig": {
+        "layer": "action button",
+        "paint": "button",
+        "mo": {
+          "layer": "button"
+        }
+      }
     },
     "cta": {
       "type": "text",
@@ -80,7 +118,13 @@
       "label": "버튼 문구",
       "maxChars": 30,
       "optional": true,
-      "note": "PC 80 · MO 56 전체 폭 · 비우면 버튼 없음"
+      "note": "PC 80 · MO 56 전체 폭 · 비우면 버튼 없음",
+      "fig": {
+        "layer": "action button",
+        "mo": {
+          "layer": "button"
+        }
+      }
     },
     "ctaHref": {
       "type": "url",

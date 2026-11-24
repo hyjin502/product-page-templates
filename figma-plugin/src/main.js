@@ -126,6 +126,7 @@ function neededImages(page, devices) {
    at: 이 이름의 레이어 안에서(atNth 번째) · layer: 이 이름의 레이어(nth 번째) · text: 그 안 n 번째 글자 레이어(기본 0)
    like: 이름이 이 글자로 시작하는 글자 레이어만 · first: 그 안 첫 번째로 보이는 레이어 · lines: 줄마다 글자 레이어 하나씩(남는 레이어는 숨김) · self: 목록 항목 자신이 글자 레이어
    items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · row: [칸 이름들] 사진 줄을 오른쪽부터 채움 · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
+   byCount: { 글자 레이어 수: 번호 } 항목 구성마다 다른 번호 · text 음수 = 뒤에서 · missing: Figma 에 없는 칸(값이 있으면 알림) · off: [레이어] 켜고 끄기가 꺼지면 숨김 · vis: { 값: [레이어] } 고른 값만 보임(when) · noCss: CSS 배경 프리셋이면 원본 그대로 · paint button|gradient · also: [같은 색 칠할 다른 자리]
    append: { size, style, lh, gap } — 칸이 없는 문구를 마지막 글자 레이어 뒤 새 문단으로 · bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · "{headingMo|heading}"(앞이 비면 뒤) · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
 const figOf = (s, dev) => { const f = Object.assign({}, s.fig, s.fig[dev] || {}); return f.skip ? null : f; };
 /** 보이는 것 먼저, 없으면 숨긴 것까지 */
@@ -171,8 +172,9 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
     if (str != null && str !== '') ops.push(Object.assign({ op: 'appendText', node: last, value: rich(str).value }, f.append));
     return;
   }
-  const t = ts[f.text || 0];
-  if (!t) { if (has && diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
+  let idx = f.byCount ? f.byCount[ts.length] : f.text || 0; // byCount: { 글자 레이어 수: 번호 } — 항목마다 구성이 다를 때(월간X 프로그램: 일반 줄 · 세션 줄)
+  const t = idx == null ? null : ts[idx < 0 ? ts.length + idx : idx]; // 음수 = 뒤에서부터
+  if (!t) { if (has && diff && str != null && str !== '') warn(label + ': ' + (idx == null ? 'Figma 의 이 줄에는 칸이 없어 넣지 못했어요' : '글자 레이어를 못 찾았어요')); return; }
   if (str == null || str === '') { if (kind.optional) ops.push({ op: 'hide', node: t }); return; }
   ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t, accent: f.accent ? bgCss(pickDev(content[f.accent], dev) || '') : null }, rich(str)));
 }
@@ -181,6 +183,7 @@ function figMedia(node, s, val, dev, label, ops, warn, content, key) {
   if (!f) return;
   const m = mediaSrc(val, dev);
   if (!m) return;
+  if (f.noCss && m.css) return; // noCss: CSS 배경 프리셋(움직이는 배경)이면 Figma 원본 배경을 둬요(월간X X 패턴)
   let base;
   if (f.row) { // row: 이 이름 레이어 줄(숨긴 것 포함)을 오른쪽부터 채워요 — 사진이 있는 칸 수만큼, 남는 왼쪽 칸은 숨김(히어로 연사 1~3)
     ALL = true; const L = findAll(node, (n) => clean(n.name) === f.layer); ALL = false;
@@ -250,7 +253,15 @@ function figColor(node, s, kind, val, dev, label, ops, warn) {
     return;
   }
   const ok = (n) => (!f.name || clean(n.name) === f.name) && (!f.parent || (n.parent && clean(n.parent.name) === f.parent));
+  if (f.also) for (const sub of f.also) figColor(node, { fig: sub }, kind, val, dev, label, ops, warn); // also: 같은 색을 함께 칠할 다른 레이어들
   if (f.paint === 'fill') { ops.push({ op: 'fill', node: base, css }); return; }
+  if (f.paint === 'gradient') { ops.push({ op: 'gradColor', node: base, css }); return; } // 그라데이션 색만 바꾸고 투명도는 그대로
+  if (f.paint === 'button') { // 버튼 바탕 + 글자 · 아이콘은 그 색의 on
+    ops.push({ op: 'fill', node: base, css });
+    const c = colorOf(val);
+    if (c && c.on && c.on !== 'inherit') { for (const t of findSome(base, (n) => n.type === 'TEXT')) ops.push({ op: 'textFill', node: t, css: c.on }); ops.push({ op: 'iconOn', node: base, css: c.on }); }
+    return;
+  }
   if (f.paint === 'vector') { ops.push({ op: 'vectorsFill', node: base, css }); return; }
   const ts = base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && ok(n));
   for (const t of f.all ? ts : ts.slice(f.text || 0, (f.text || 0) + 1)) ops.push({ op: 'textFill', node: t, css });
@@ -282,6 +293,18 @@ function plan(root, v, content, dev, warn) {
         continue;
       }
       if (s.fig) { // 자리로 찾기
+        const F = figOf(s, dev);
+        if (F && F.missing) { if (has && diff && val != null && val !== '') warn(label + ': Figma 시안에 이 칸이 없어 넣지 못했어요'); continue; } // missing: Figma 에 자리가 없는 칸
+        if (kind.type === 'toggle' && s.fig.off !== undefined) { // off: 꺼지면 이 이름 레이어들을 숨겨요
+          if (F && val === false) for (const nm of F.off) { const b = figBase(node, { layer: nm }); if (b) ops.push({ op: 'hide', node: b }); }
+          continue;
+        }
+        if (kind.type === 'enum' && s.fig.vis) { // vis: { 값: [보일 레이어] } — 고른 값의 레이어만 보이고 나머지는 숨김 · when: 이 켜고 끄기가 꺼져 있으면 건드리지 않음
+          if (!F || (F.when && content[F.when] === false)) continue;
+          const cur = val || kind.default;
+          for (const [v2, nms] of Object.entries(F.vis)) for (const nm of nms) { const b = figBase(node, { layer: nm }); if (b) ops.push({ op: v2 === cur ? 'show' : 'hide', node: b }); }
+          continue;
+        }
         if (kind.type === 'text' || kind.type === 'richtext') figText(node, s, kind, val, content, dev, has, diff, label, ops, warn);
         else if ((kind.type === 'media' || kind.type === 'image') && has && val) figMedia(node, s, val, dev, label, ops, warn, content, k); // 페이지 템플릿은 샘플 사진이 Figma 원본과 달라서 늘 넣어요
         else if (kind.type === 'enum' && (s.fig.sets || s.fig.swap || (s.fig.pc && s.fig.pc.swap))) figIcon(node, s, kind, val, dev, label, ops, warn);
@@ -296,8 +319,23 @@ function plan(root, v, content, dev, warn) {
           if (f.reverse) items.reverse();
           const list = f.tail ? val.slice(-items.length) : val; // tail: Figma 칸이 적으면 뒤쪽 값부터(MO 는 마지막 버튼만)
           if (!items.length) { if (diff) warn(label + ': 목록 항목을 못 찾았어요'); continue; }
-          items.forEach((it, i) => {
-            if (i >= list.length) { ops.push({ op: 'hide', node: it }); return; }
+          // fit: "필드" — 그 필드 값이 있는 항목은 그 칸이 있는 Figma 줄에만 넣어요(순서대로 · 남는 줄은 숨김). 월간X 프로그램: 세션 항목 → 세션 줄
+          let rows = items.map((it, i) => (i < list.length ? i : -1));
+          if (f.fit && s.item && s.item[f.fit]) {
+            const ff = figOf(s.item[f.fit], dev);
+            const can = (r) => !ff || !ff.byCount || ff.byCount[findSome(r, (x) => x.type === 'TEXT').length] != null;
+            const got = items.map(() => -1); let j = 0, ok = true;
+            for (let i = 0; i < list.length; i++) {
+              const need = list[i] && list[i][f.fit];
+              while (j < items.length && need && !can(items[j])) j++;
+              if (j >= items.length || items.length - j < list.length - i) { ok = false; break; }
+              got[j++] = i;
+            }
+            if (ok) rows = got;
+          }
+          items.forEach((it, r) => {
+            const i = rows[r];
+            if (i < 0) { ops.push({ op: 'hide', node: it }); return; }
             ops.push({ op: 'show', node: it });
             fill(s.item || {}, kind.item || {}, it, list[i] || {}, sample && sample[k] && sample[k][i], label + '[' + i + '].');
             if (kind.item) itemDecor(kind.item, it, list[i] || {}, ops);
@@ -444,6 +482,12 @@ async function run(ops, images, warn) {
         const p = paint(o.css);
         n.strokes = p ? [p] : [];
         if (p && n.type !== 'LINE' && n.type !== 'VECTOR') { n.strokeWeight = 1; n.strokeAlign = 'INSIDE'; }
+      } else if (o.op === 'gradColor') {
+        const p = paint(o.css);
+        if (p) n.fills = n.fills.map((f) => (/^GRADIENT/.test(f.type) ? Object.assign({}, f, { gradientStops: f.gradientStops.map((g) => ({ position: g.position, color: { r: p.color.r, g: p.color.g, b: p.color.b, a: g.color.a } })) }) : f));
+      } else if (o.op === 'iconOn') { // 버튼 안 아이콘 — 선으로 그린 건 선, 면은 면
+        const p = paint(o.css);
+        if (p) for (const v of n.findAll((x) => x.type === 'VECTOR' || x.type === 'BOOLEAN_OPERATION')) { if (v.strokes && v.strokes.length) v.strokes = [p]; else if (v.fills !== figma.mixed && v.fills.length) v.fills = [p]; }
       } else if (o.op === 'setFills') { n.fills = o.paints;
       } else if (o.op === 'stripImages') { n.fills = n.fills.filter((p) => p.type !== 'IMAGE' && p.type !== 'VIDEO');
       } else if (o.op === 'appendText') { // 마지막 줄 글자 레이어 뒤에 새 문단으로 이어 붙여요(인스턴스 안에는 레이어를 더할 수 없어서)

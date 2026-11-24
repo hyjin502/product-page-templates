@@ -20,6 +20,9 @@
       "note": "가운데 정렬 · 굵게",
       "mo": {
         "maxLines": 4
+      },
+      "fig": {
+        "first": true
       }
     },
     "paragraphs": {
@@ -32,22 +35,40 @@
         "text": {
           "type": "richtext",
           "label": "문단",
-          "note": "엔터로 줄바꿈 · **굵게** 로 감싸면 굵은 글씨"
+          "note": "엔터로 줄바꿈 · **굵게** 로 감싸면 굵은 글씨",
+          "fig": {
+            "self": true,
+            "mo": {
+              "format": "{mo|text}"
+            }
+          }
         },
         "mo": {
           "type": "richtext",
           "label": "MO 문구",
           "optional": true,
-          "note": "비우면 PC 문구 그대로"
+          "note": "비우면 PC 문구 그대로",
+          "fig": {
+            "skip": true
+          }
         }
       },
-      "note": "문단 사이 PC 20 · MO 16"
+      "note": "문단 사이 PC 20 · MO 16",
+      "fig": {
+        "items": "Frame 238"
+      }
     },
     "showMissions": {
       "type": "toggle",
       "default": true,
       "extract": false,
-      "label": "미션 카드 보이기"
+      "label": "미션 카드 보이기",
+      "fig": {
+        "off": [
+          "type1",
+          "type2"
+        ]
+      }
     },
     "missionType": {
       "type": "enum",
@@ -63,7 +84,18 @@
       "extract": false,
       "label": "카드 타입",
       "note": "Figma type1 · type2 — 고르면 「미션 카드 보이기」도 켜져요",
-      "turnsOn": "showMissions"
+      "turnsOn": "showMissions",
+      "fig": {
+        "vis": {
+          "missions": [
+            "type1"
+          ],
+          "cards": [
+            "type2"
+          ]
+        },
+        "when": "showMissions"
+      }
     },
     "missions": {
       "type": "list",
@@ -76,20 +108,32 @@
           "type": "text",
           "extract": false,
           "label": "카드 제목",
-          "maxChars": 40
+          "maxChars": 40,
+          "fig": {
+            "text": 0
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "text": 1
+          }
         },
         "note": {
           "type": "richtext",
           "label": "작은 안내 (*)",
-          "optional": true
+          "optional": true,
+          "fig": {
+            "text": 2
+          }
         }
       },
-      "note": "PC 2열 · MO 세로"
+      "note": "PC 2열 · MO 세로",
+      "fig": {
+        "items": "type1"
+      }
     },
     "cards": {
       "type": "list",
@@ -191,13 +235,25 @@
         "title": {
           "type": "richtext",
           "label": "제목",
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "layer": "title"
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
           "optional": true,
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "layer": "description"
+          }
+        }
+      },
+      "fig": {
+        "items": "content",
+        "mo": {
+          "items": "type2"
         }
       }
     },
@@ -214,7 +270,17 @@
       "type": "toggle",
       "default": true,
       "extract": false,
-      "label": "버튼 보이기"
+      "label": "버튼 보이기",
+      "fig": {
+        "off": [
+          "action button"
+        ],
+        "mo": {
+          "off": [
+            "button"
+          ]
+        }
+      }
     },
     "ctaColor": {
       "type": "color",
@@ -224,7 +290,14 @@
       "note": "HDS 흰색 · 검정 · 700번 — 글자색은 색마다 자동(흰 버튼은 회색 테두리) · 「포인트」 = 페이지 포인트 컬러(시안대로면 blue/700)",
       "optional": true,
       "point": true,
-      "pointFallback": "blue/700"
+      "pointFallback": "blue/700",
+      "fig": {
+        "layer": "action button",
+        "paint": "button",
+        "mo": {
+          "layer": "button"
+        }
+      }
     },
     "accentColor": {
       "type": "color",
@@ -241,7 +314,13 @@
       "label": "버튼 문구",
       "maxChars": 30,
       "optional": true,
-      "note": "PC 80 · MO 56 전체 폭 · 비우면 버튼 없음"
+      "note": "PC 80 · MO 56 전체 폭 · 비우면 버튼 없음",
+      "fig": {
+        "layer": "action button",
+        "mo": {
+          "layer": "button"
+        }
+      }
     },
     "ctaHref": {
       "type": "url",
