@@ -21,7 +21,12 @@
         <span class="mx-summary__card-ico" aria-hidden="true">{{ ('hds-' + c.icon) | icon }}</span>
 {% endif %}
         <div class="mx-summary__card-text">
-          <p class="mx-summary__card-title">{{ c.title | rt }}</p>
+          <div class="mx-summary__card-head">
+{% if c.sub %}
+            <p class="mx-summary__card-sub">{{ c.sub }}</p>
+{% endif %}
+            <p class="mx-summary__card-title">{{ c.title | rt }}</p>
+          </div>
 {% if c.desc %}
           <p class="mx-summary__card-desc">{{ c.desc | rt }}</p>
 {% endif %}

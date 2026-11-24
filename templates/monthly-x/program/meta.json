@@ -238,7 +238,8 @@
       "fig": {
         "items": "Frame 195",
         "from": 1,
-        "fit": "session"
+        "fit": "session",
+        "hug": true
       }
     },
     "notes": {

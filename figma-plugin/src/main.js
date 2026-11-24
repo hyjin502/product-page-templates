@@ -348,6 +348,7 @@ function plan(root, v, content, dev, warn) {
             ops.push({ op: 'show', node: it });
             fill(s.item || {}, kind.item || {}, it, list[i] || {}, sample && sample[k] && sample[k][i], label + '[' + i + '].');
             if (kind.item) itemDecor(kind.item, it, list[i] || {}, ops);
+            if (f.hug) ops.push({ op: 'hug', node: it }); // hug: 높이가 고정된 줄 · 카드를 내용 높이로(월간X 프로그램 PC Session 1 줄 207 · Session 3 카드 239)
           });
           if (!f.tail && val.length > items.length) warn(label + ': Figma 에 ' + items.length + '개만 있어서 ' + (val.length - items.length) + '개는 못 넣었어요');
         }
@@ -499,7 +500,11 @@ async function run(ops, images, warn) {
         const to = new Map(o.maps.map(([f2, t]) => [f2, paint(t)]));
         for (const x of [n].concat(n.findAll ? n.findAll(() => true) : [])) for (const k of ['fills', 'strokes']) {
           const ps = x[k]; if (!Array.isArray(ps) || !ps.some((q) => q.type === 'SOLID' && to.has(hx(q.color)))) continue;
-          try { x[k] = ps.map((q) => (q.type === 'SOLID' && to.get(hx(q.color)) ? Object.assign({}, q, { color: to.get(hx(q.color)).color }) : q)); } catch (e) { /* 글꼴이 안 불러와진 글자 등은 건너뜀 */ }
+          try { x[k] = ps.map((q) => { if (!(q.type === 'SOLID' && to.get(hx(q.color)))) return q; const r = Object.assign({}, q, { color: to.get(hx(q.color)).color }); delete r.boundVariables; return r; }); } // 색 변수에 묶인 칠(HDS blue 등)은 변수 연결을 풀어야 새 색이 남아요 catch (e) { /* 글꼴이 안 불러와진 글자 등은 건너뜀 */ }
+        }
+      } else if (o.op === 'hug') {
+        for (const x of [n].concat(n.findAll ? n.findAll((y) => y.type === 'FRAME' || y.type === 'INSTANCE') : [])) {
+          if (x.layoutMode && x.layoutMode !== 'NONE' && x.layoutSizingVertical === 'FIXED') { try { x.layoutSizingVertical = 'HUG'; } catch (e) { /* 바꿀 수 없으면 그대로 */ } }
         }
       } else if (o.op === 'iconOn') { // 버튼 안 아이콘 — 선으로 그린 건 선, 면은 면
         const p = paint(o.css);

@@ -232,12 +232,24 @@
             "max": 48
           }
         },
+        "sub": {
+          "type": "text",
+          "label": "서브 문구",
+          "optional": true,
+          "maxChars": 24,
+          "hint": "제목 위 작은 글씨 · 포인트 컬러",
+          "fig": {
+            "at": "heading",
+            "text": 0
+          }
+        },
         "title": {
           "type": "richtext",
           "label": "제목",
           "note": "엔터로 줄바꿈",
           "fig": {
-            "layer": "title"
+            "at": "heading",
+            "text": 1
           }
         },
         "desc": {
@@ -308,10 +320,10 @@
       "label": "미션 카드 색",
       "note": "미션 제목 글자 · 카드 바탕(같은 색을 옅게) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)",
       "fig": {
-        "at": "type1",
         "paint": "recolor",
         "from": [
-          "#0066ff"
+          "#0066ff",
+          "#3385ff"
         ],
         "tintFrom": [
           "#f5f9ff"

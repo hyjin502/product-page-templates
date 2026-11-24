@@ -25,6 +25,8 @@
 .mx-summary__cards[style*="--mx-ic-bg"] .mx-summary__card-ico path[opacity="0.12"] { fill: var(--mx-ic-bg); opacity: 1; }
 .mx-summary__card-ico svg { width: 48px; height: 48px; }
 .mx-summary__card-text { display: flex; flex-direction: column; gap: 16px; }
+.mx-summary__card-head { display: flex; flex-direction: column; gap: 4px; } /* 서브 문구 ↔ 제목 4 (Figma 2026-11-24) */
+.mx-summary__card-sub { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--mx-ac, var(--brand)); } /* 서브 문구 16 regular · 포인트 컬러(시안 #0066ff) */
 .mx-summary__card-title { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); color: var(--t-100); }
 .mx-summary__card-desc { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
 .mx-summary__dots { display: flex; gap: 8px; }
