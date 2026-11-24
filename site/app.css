@@ -860,6 +860,13 @@ body.is-dev .flink__label::after { content: none; }
 .iss__grid a { color: var(--accent); }
 .iss__wide { grid-column: 1 / -1; }
 .iss__new .iss__acts { display: flex; gap: 6px; margin-top: 6px; }
+/* 기획서에서 새 회차 — 시작 내용이 「기획서에서」일 때만 */
+.iss__brief { display: none; grid-column: 1 / -1; flex-direction: column; gap: 6px; }
+.iss__new:has(select[data-iss-new="from"] option[value="brief"]:checked) .iss__brief { display: flex; }
+.iss__brief label { display: flex; flex-direction: column; gap: 2px; color: var(--ink-3); font-size: 11px; }
+.iss__flags { margin-top: 6px; padding: 8px 10px; border-radius: 8px; background: #fff8e6; border: 1px solid #f5d48a; font-size: 12px; line-height: 1.5; color: var(--ink-1, #171719); }
+.iss__flags ol { margin: 4px 0 0; padding-left: 18px; }
+.iss__flags li + li { margin-top: 2px; }
 .iss__list { margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--rule); }
 .iss__list ul { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
 .iss__list li { display: flex; align-items: center; gap: 8px; padding: 5px 4px; border-radius: 6px; }

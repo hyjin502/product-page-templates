@@ -2561,18 +2561,183 @@ async function autoFlush(key) { if (AUTO.timer || issueSig(key) !== AUTO.sig[key
 window.addEventListener('beforeunload', (ev) => { const key = tplKey(); if (key && issueOf(key) && (AUTO.timer || AUTO.running)) { ev.preventDefault(); ev.returnValue = ''; } });
 
 /** 새 회차 — from: 'current'(지금 편집 내용) · 'sample'(샘플) · 회차 id(그 회차 복사) */
-async function createIssue(key, { period, title, from }) {
+async function createIssue(key, { period, title, from, info = {} }) {
   const by = myName();
   if (!by) throw new Error('이름이 필요해요');
   if (from === 'sample') { const ts = tplState(key); state.tplBackup ||= {}; state.tplBackup[key] = JSON.parse(JSON.stringify(ts)); state.tpl[key] = { edits: {}, pick: {}, off: [], extras: {}, order: [], open: [] }; }
   else if (from && from !== 'current') { const [src] = await sb(`issues?id=eq.${from}&select=*`, { method: 'GET' }); if (src) await applyIssue({ ...src, id: null }); }
   const ts = tplState(key);
-  const [row] = await sb('issues', { method: 'POST', body: JSON.stringify({ template: key, period, title, status: 'draft', data: await issueData(key), info: {}, created_by: by, updated_by: by }) });
+  const [row] = await sb('issues', { method: 'POST', body: JSON.stringify({ template: key, period, title, status: 'draft', data: await issueData(key), info, created_by: by, updated_by: by }) });
   ts.issue = issueMeta(row);
   autoMark(key);
   save();
   return row;
 }
+/* ---------------------------------------------------------------- 기획서 → 새 회차 (2026-11-24 사용자 요청 — PPT · Figma 기획서를 넣으면 칸이 채워진 회차)
+   PPT 는 브라우저에서 읽고(scripts/ppt-read.mjs 와 같은 규칙), Figma 는 서버가 읽어요. 칸 나누기는 Supabase 함수 plan-fill(Claude) —
+   API 키 · Figma 토큰은 그 함수의 Secrets 에만 있어요(supabase/functions/plan-fill/index.ts). 결과는 ppt-to-issue.mjs 와 같은 방식으로 편집 값이 돼요. */
+const BRIEF_FN = `${SUPA.url}/functions/v1/plan-fill`;
+async function pptUnzip(buf) {
+  const dv = new DataView(buf);
+  let eocd = buf.byteLength - 22;
+  while (eocd >= 0 && dv.getUint32(eocd, true) !== 0x06054b50) eocd--;
+  if (eocd < 0) throw new Error('PPT 파일(.pptx)이 아니에요');
+  const n = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  const dec = new TextDecoder();
+  const files = new Map();
+  for (let i = 0; i < n; i++) {
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+    const nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true);
+    const local = dv.getUint32(p + 42, true);
+    const name = dec.decode(new Uint8Array(buf, p + 46, nlen));
+    p += 46 + nlen + xlen + clen;
+    const start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+    const raw = new Uint8Array(buf, start, csize);
+    files.set(name, async () => (method === 8 ? new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer()) : raw));
+  }
+  return files;
+}
+/** 기획서 PPT → { slides, blobs } — slides 는 ppt-read.mjs 와 같은 모양(제목 · 글자 · 그림 · 메모) */
+async function readPptx(file) {
+  const z = await pptUnzip(await file.arrayBuffer());
+  const dec = new TextDecoder();
+  const read = async (n) => (z.get(n) ? dec.decode(await z.get(n)()) : '');
+  const unxml = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+  const attr = (s, k) => { const m = s.match(new RegExp(`\\s${k}="([^"]*)"`)); return m ? m[1] : null; };
+  const EMU = 12700;
+  const para = (p) => {
+    const runs = [...p.matchAll(/<a:(r|br)\b[^>]*?(?:\/>|>([\s\S]*?)<\/a:\1>)/g)].map((m) => {
+      if (m[1] === 'br') return { t: '\n', b: false };
+      const rpr = (m[2].match(/<a:rPr\b[^>]*>/) || [''])[0];
+      return { t: unxml((m[2].match(/<a:t>([\s\S]*?)<\/a:t>/) || [, ''])[1]), b: attr(rpr, 'b') === '1', sz: +attr(rpr, 'sz') || 0 };
+    });
+    const text = runs.map((r) => r.t).join('');
+    if (!text.trim()) return null;
+    const vis = runs.filter((r) => r.t.trim());
+    const allBold = vis.length && vis.every((r) => r.b);
+    let out = '';
+    if (allBold) out = text;
+    else { let open = false; for (const r of runs) { if (r.b && r.t.trim() && !open) { out += '**'; open = true; } if (!r.b && r.t.trim() && open) { out = out.replace(/(\s*)$/, '**$1'); open = false; } out += r.t; } if (open) out = out.replace(/(\s*)$/, '**$1'); }
+    return { text: out.trim(), bold: !!allBold, size: Math.max(0, ...runs.map((r) => r.sz || 0)) / 100 || null };
+  };
+  const shapes = (xml) => [...xml.matchAll(/<p:(sp|pic|graphicFrame)>([\s\S]*?)<\/p:\1>/g)].map((m) => {
+    const body = m[2];
+    const nv = body.match(/<p:cNvPr\b[^>]*>/);
+    const off = body.match(/<a:off x="(-?\d+)" y="(-?\d+)"\/>/);
+    const ext = body.match(/<a:ext cx="(\d+)" cy="(\d+)"\/>/);
+    return { kind: m[1], name: nv ? unxml(attr(nv[0], 'name') || '') : '', geom: (body.match(/<a:prstGeom prst="([^"]+)"/) || [, ''])[1], x: off ? Math.round(+off[1] / EMU) : 0, y: off ? Math.round(+off[2] / EMU) : 0, w: ext ? Math.round(+ext[1] / EMU) : 0, h: ext ? Math.round(+ext[2] / EMU) : 0, paras: [...body.matchAll(/<a:p\b[^>]*>([\s\S]*?)<\/a:p>/g)].map((pm) => para(pm[1])).filter(Boolean), embed: (body.match(/r:embed="([^"]+)"/) || [, null])[1] };
+  });
+  const rel = (xml) => Object.fromEntries([...xml.matchAll(/<Relationship\b[^>]*>/g)].map((m) => [attr(m[0], 'Id'), attr(m[0], 'Target')]));
+  const order = [...(await read('ppt/presentation.xml')).matchAll(/<p:sldId\b[^>]*r:id="([^"]+)"/g)].map((m) => m[1]);
+  const prels = rel(await read('ppt/_rels/presentation.xml.rels'));
+  const blobs = {};
+  const slides = [];
+  for (const [i, id] of order.entries()) {
+    const sf = 'ppt/' + prels[id].replace(/^\/?ppt\//, '');
+    const xml = await read(sf);
+    const rels = rel(await read(sf.replace('slides/', 'slides/_rels/') + '.rels'));
+    const s = { no: i + 1, section: null, notes: [], texts: [], images: [] };
+    const inGroup = new Set();
+    for (const g of [...xml.matchAll(/<p:grpSp>([\s\S]*?)<\/p:grpSp>/g)].map((m) => m[1])) {
+      const gs = shapes(g); const txt = gs.flatMap((x) => x.paras.map((pp) => pp.text));
+      if (txt[0] === 'Description') { s.notes.push(...txt.slice(1).filter((t) => !/^(\*|\d+)$/.test(t.trim()))); gs.forEach((x) => inGroup.add(`${x.name}@${x.x},${x.y}`)); }
+      else if (/^(화면 ID|요청자|업무 구분)$/.test(txt[0] || '')) gs.forEach((x) => inGroup.add(`${x.name}@${x.x},${x.y}`));
+    }
+    for (const x of shapes(xml)) {
+      if (inGroup.has(`${x.name}@${x.x},${x.y}`)) continue;
+      if (x.kind === 'pic' || (x.embed && !x.paras.length)) {
+        const target = rels[x.embed]; if (!target) continue;
+        const src = new URL(target, 'http://x/' + sf).pathname.slice(1);
+        const fname = src.split('/').pop();
+        if (z.get(src) && !blobs[fname]) { const ext = fname.split('.').pop().toLowerCase(); blobs[fname] = new Blob([await z.get(src)()], { type: { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp' }[ext] || 'application/octet-stream' }); }
+        s.images.push({ file: fname, x: x.x, y: x.y, w: x.w, h: x.h });
+        continue;
+      }
+      if (!x.paras.length) continue;
+      const head = x.paras[0].text.trim();
+      if (head === 'Description') { s.notes.push(...x.paras.slice(1).map((pp) => pp.text.trim()).filter((t) => t && !/^(\*|\d+|.)$/.test(t))); continue; }
+      if (/^(화면 ID|요청자|업무 구분)$/.test(head)) continue;
+      const joined = x.paras.map((pp) => pp.text).join(' ').trim();
+      if (x.name.startsWith('제목') || /^Title/i.test(x.name)) { if (!s.section) { s.section = joined.replace(/\s+/g, ' '); continue; } }
+      if (/^(이미지|이미지 영역|image|img)$/i.test(joined)) continue;
+      if (x.geom === 'ellipse' && /^\d{1,2}$/.test(joined)) continue;
+      s.texts.push({ x: x.x, y: x.y, size: Math.max(0, ...x.paras.map((pp) => pp.size || 0)) || null, paras: x.paras.map((pp) => (pp.bold ? { text: pp.text, bold: true } : { text: pp.text })) });
+    }
+    slides.push(s);
+  }
+  // 여러 슬라이드(3장 이상)에 반복되는 짧은 글자 = 양식 찌꺼기
+  const seen = new Map();
+  for (const s of slides) for (const t of s.texts) { const k = t.paras.map((pp) => pp.text).join('|'); seen.set(k, (seen.get(k) || 0) + 1); }
+  for (const s of slides) {
+    s.texts = s.texts.filter((t) => { const k = t.paras.map((pp) => pp.text).join('|'); return !(seen.get(k) >= 3 && k.length <= 10); });
+    s.texts.sort((a, b) => (Math.abs(a.y - b.y) < 8 ? a.x - b.x : a.y - b.y));
+  }
+  return { slides, blobs };
+}
+/** 템플릿 칸 정보(서버로 보내는 것) — Figma 연결 · 추출 규칙은 빼고 사람이 쓰는 제약만 */
+function briefTemplate(t) {
+  const keep = ['type', 'label', 'hint', 'note', 'optional', 'maxLines', 'minLines', 'maxChars', 'mo', 'max', 'min', 'values', 'labels', 'palette', 'point', 'default', 'pcOnly', 'single'];
+  const slim = (slots) => Object.fromEntries(Object.entries(slots || {}).map(([k, raw]) => {
+    const s = RC.specOf(raw);
+    const o = Object.fromEntries(keep.filter((x) => s[x] != null).map((x) => [x, s[x]]));
+    if (s.type === 'list') o.item = slim(s.item);
+    return [k, o];
+  }));
+  const rows = t.rows.map((r) => ({ key: rowKey(r), label: r.label || '', ids: r.extra || r.ids, defaultOff: !!r.defaultOff, extra: !!r.extra }));
+  const ids = [...new Set(t.rows.filter((r) => !r.extra).flatMap((r) => r.ids))];
+  return { key: t.key, title: t.title, rows, variants: ids.map((id) => { const v = byId[id]; return { id, label: v.label || id, when: v.when || '', slots: slim(v.slots), sample: v.sample }; }) };
+}
+/** 기획서 → 회차에 넣을 data + 확인할 것 */
+async function briefToData(key, { file, figma }, progress) {
+  const t = tplByKey[key];
+  let source; let blobs = {};
+  if (file) { progress('PPT 읽는 중…'); const r = await readPptx(file); source = { kind: 'ppt', file: file.name, slides: r.slides }; blobs = r.blobs; }
+  else source = { kind: 'figma', url: figma };
+  progress('AI 가 칸을 채우는 중… (1~3분)');
+  const res = await fetch(BRIEF_FN, { method: 'POST', headers: { apikey: SUPA.key, Authorization: `Bearer ${SUPA.key}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ template: briefTemplate(t), source }) }).catch(() => null);
+  if (!res) throw new Error('서버 함수(plan-fill)에 연결하지 못했어요 — Supabase 에 함수가 올라가 있는지 확인해 주세요');
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(j.error || `서버 응답 ${res.status}`);
+  const plan = j.plan || {};
+  const flags = [...(plan.flags || [])];
+  // PPT 그림 — "ppt:<파일 이름>" 을 issues 파일함 주소로
+  progress('그림 올리는 중…');
+  const swap = async (x) => {
+    if (Array.isArray(x)) { for (let i = 0; i < x.length; i++) x[i] = await swap(x[i]); return x; }
+    if (x && typeof x === 'object') { for (const k of Object.keys(x)) x[k] = await swap(x[k]); return x; }
+    if (typeof x === 'string' && x.startsWith('ppt:')) {
+      const b = blobs[x.slice(4)];
+      if (!b) { flags.push(`그림 ${x.slice(4)} 을(를) 찾지 못해 비웠어요`); return ''; }
+      return supaUpload(new File([b], x.slice(4), { type: b.type }), ISS.bucket);
+    }
+    return x;
+  };
+  const rowKeys = new Set(t.rows.map(rowKey));
+  const pick = Object.fromEntries(Object.entries(plan.pick || {}).filter(([k, v]) => rowKeys.has(k) && byId[v]));
+  const off = (plan.off || []).filter((k) => rowKeys.has(k.replace(/^\+/, '')));
+  const edits = {};
+  const same = (a, b) => String(a || '').toLowerCase() === String(b || '').toLowerCase();
+  for (const [id, part0] of Object.entries(plan.sections || {})) {
+    const v = byId[id];
+    if (!v || v.section !== key || !part0 || typeof part0 !== 'object') { flags.push(`모르는 섹션 ${id} 은(는) 넣지 않았어요`); continue; }
+    const part = await swap(part0);
+    const content = { ...JSON.parse(JSON.stringify(v.sample)), ...part };
+    const e = editFrom(v, content);
+    const fresh = editFrom(v, v.sample);
+    e['@base'] = Object.fromEntries(Object.entries(v.slots).filter(([, raw]) => RC.specOf(raw).type === 'media').map(([k]) => [k, JSON.stringify(fresh[k] || null)]));
+    if (v.sampleVersion) e['@sv'] = v.sampleVersion;
+    for (const [k, raw] of Object.entries(v.slots)) { // 샘플에 남은 시안 색은 비워 페이지 포인트 컬러를 따라가게(ppt-to-issue.mjs 와 같게)
+      const s = RC.specOf(raw);
+      if (s.point && !(k in part) && s.pointFallback && same(e[k], s.pointFallback)) e[k] = '';
+      if (s.type === 'list' && s.item && Array.isArray(e[k]) && !(k in part)) for (const [kk, rr] of Object.entries(s.item)) { const ss = RC.specOf(rr); if (ss.point && ss.pointFallback) e[k].forEach((it) => { if (same(it[kk], ss.pointFallback)) it[kk] = ''; }); }
+    }
+    e['@pt'] = PT_VER;
+    edits[id] = e;
+  }
+  return { data: { edits, pick, off, extras: {}, order: [], point: plan.point || '' }, flags, source: j.source || {} };
+}
+window.tplBrief = { readPptx, briefTemplate }; // 점검용(콘솔에서 기획서 읽기 확인)
 /** HTML 받기 — 지금 편집한 화면을 HTML 파일 한 장으로(사진 · 영상 · 아이콘 이미지를 파일 안에 넣어서 이 파일 하나만 열어도 그대로 보여요)
     편집기 전용 표시(가이드 선 · 링크 막기)는 빼고, 글꼴은 사이트와 같은 CDN 을 불러요 */
 async function standaloneHtml(key) {
@@ -2809,6 +2974,7 @@ function issueBar(key) {
   const head = `<div class="iss__row">${fold}<b data-iss-show="period">${esc(ymLabel(iss.period))}</b><span class="iss__title" data-iss-show="title">${esc(iss.title || '(이름 없음)')}</span>`;
   return `<div class="iss">
   ${head}<span class="iss__save" data-iss-save>${autoLabel()}</span><span class="iss__links">${tx('info', '정보', ts.infoOpen)}${tx('close', '← 목록보기')}</span></div>
+  ${(iss.info && iss.info.flags && iss.info.flags.length && !ts.flagsHide) ? `<div class="iss__flags"><b>기획서에서 채운 회차 · 확인할 것 ${iss.info.flags.length}</b> <button type="button" class="iss__tx" data-iss-act="flags">접기</button><ol>${iss.info.flags.map((f) => `<li>${esc(f)}</li>`).join('')}</ol></div>` : (iss.info && iss.info.flags && iss.info.flags.length ? `<div class="iss__row"><button type="button" class="iss__tx" data-iss-act="flags">기획서 확인할 것 ${iss.info.flags.length} 보기</button></div>` : '')}
   ${ts.infoOpen ? `<div class="iss__grid">
     <label>연월<input type="month" data-iss-f="period" value="${esc(iss.period || '')}"></label>
     <label>회차 이름<input type="text" data-iss-f="title" value="${esc(iss.title || '')}"></label>
@@ -2847,7 +3013,13 @@ function issueNewForm(key) {
       ${list.map((r) => `<option value="${esc(r.id)}"${from === r.id ? ' selected' : ''}>${esc(ymLabel(r.period))} ${esc(r.title || '')} 복사</option>`).join('')}
       <option value="current"${from === 'current' ? ' selected' : ''}>이 브라우저에 남은 편집 내용</option>
       <option value="sample"${from === 'sample' ? ' selected' : ''}>Figma 샘플</option>
+      <option value="brief"${from === 'brief' ? ' selected' : ''}>기획서에서 (PPT · Figma)</option>
     </select></label>
+    <div class="iss__brief iss__wide">
+      <label>기획서 PPT (.pptx)<input type="file" accept=".pptx" data-iss-new-file></label>
+      <label>또는 Figma 기획서 링크<input type="url" data-iss-new="figma" placeholder="https://www.figma.com/design/…?node-id=…"></label>
+      <p class="iss__muted">AI 가 기획서 문구를 칸에 나눠 넣어요(1~3분). 만든 뒤 위쪽 「확인할 것」을 꼭 봐 주세요.</p>
+    </div>
   </div>
   <div class="iss__acts"><button type="button" class="btn-ui btn-ui--primary" data-iss-act="create">만들기</button><button type="button" class="btn-ui" data-iss-act="cancel">취소</button></div>
 </div>`;
@@ -2929,6 +3101,7 @@ tplEl.addEventListener('click', async (ev) => {
   if (act === 'force') return busy(async () => { const latest = AUTO.conflict; AUTO.conflict = null; if (latest) { tplState(key).issue.rev = latest.rev; await autoRun(key); } });
   if (act === 'fold') { ts.issFold = !ts.issFold; save(); renderTpl(); return; }
   if (act === 'info') { ts.infoOpen = !ts.infoOpen; save(); renderTpl(); return; }
+  if (act === 'flags') { ts.flagsHide = !ts.flagsHide; save(); renderTpl(); return; }
   if (act === 'list') { ts.listOpen = !ts.listOpen; if (ts.listOpen) ts.newOpen = false; save(); renderTpl(); return; }
   if (act === 'new') { ts.newOpen = !ts.newOpen; ts.listOpen = false; ts.newFrom = null; save(); renderTpl(); if (!ts.listCache) issueList(key).then(() => renderTpl()).catch(() => {}); return; }
   if (act === 'cancel') { ts.newOpen = false; save(); renderTpl(); return; }
@@ -2936,7 +3109,22 @@ tplEl.addEventListener('click', async (ev) => {
     const val = (n) => (tplEl.querySelector(`[data-iss-new="${n}"]`) || {}).value || '';
     const period = val('period');
     if (!/^\d{4}-\d{2}$/.test(period)) throw new Error('연월을 골라 주세요');
-    const row = await createIssue(key, { period, title: val('title').trim(), from: val('from') });
+    let from = val('from'), info = {};
+    if (from === 'brief') { // 기획서 → 칸 채우기(서버 함수) → 그 내용으로 새 회차
+      const file = (tplEl.querySelector('[data-iss-new-file]') || {}).files?.[0];
+      const figma = val('figma').trim();
+      if (!file && !/figma\.com\//.test(figma)) throw new Error('기획서 PPT 를 고르거나 Figma 링크를 넣어 주세요');
+      if (!myName()) throw new Error('이름이 필요해요');
+      const label = btn.textContent;
+      try {
+        const r = await briefToData(key, { file, figma }, (m) => { btn.textContent = m; });
+        state.tplBackup ||= {}; state.tplBackup[key] = JSON.parse(JSON.stringify(tplState(key)));
+        state.tpl[key] = { ...r.data, open: [] };
+        info = { flags: r.flags, brief: { kind: file ? 'ppt' : 'figma', name: file ? file.name : figma, at: new Date().toISOString() } };
+        from = 'current';
+      } finally { btn.textContent = label; }
+    }
+    const row = await createIssue(key, { period, title: val('title').trim(), from, info });
     const t2 = tplState(key); t2.newOpen = false; t2.listCache = null; save(); renderTpl();
     copyText(issueUrl(row.id), tplEl.querySelector('[data-iss-act="save"]') || btn);
   });
