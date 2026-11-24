@@ -32,7 +32,7 @@
 </div>
 {% endif %}
 {% endmacro %}
-<section class="mx-flow"{% if accentColor %} style="--mx-ac: {{ accentColor | hdsColor }}"{% endif %}>
+<section class="mx-flow"{% if accentColor %} style="--mx-ac: {{ accentColor | hdsColor }}; --mx-ac-on: {{ accentColor | hdsOn }}"{% endif %}>
   <div class="mx-flow__head">
     <h2 class="mx-flow__title">{{ title | rt }}</h2>
 {% if desc %}

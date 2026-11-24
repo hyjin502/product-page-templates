@@ -45,9 +45,9 @@
   .mx-summary__mission-title { width: auto; text-align: left; }
   .mx-summary__mission-body { gap: 16px; font-size: 14px; }
   .mx-summary__mission-note { line-height: 1.6; letter-spacing: var(--tracking-tight); }
-  /* 2번 아이콘 카드 — Figma 844:4754: 세로 사이 24 · 안쪽 32/24/40/24 · 아이콘 32 · 점 없음 */
+  /* 2번 아이콘 카드 — Figma 643:5122 type2 (2026-11-24 간격 수정): 세로 사이 24 · 안쪽 24 · 아이콘 ↔ 글자 12 · 아이콘 32 · 점 없음 */
   .mx-summary__cards-track { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: 1fr; overflow: visible; }
-  .mx-summary__card { padding: 32px 24px 40px; }
+  .mx-summary__card { gap: 12px; padding: 24px; }
   .mx-summary__card-ico svg { width: 32px; height: 32px; }
   .mx-summary__dots { display: none; }
 }
