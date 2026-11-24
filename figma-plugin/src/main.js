@@ -197,7 +197,9 @@ function figMedia(node, s, val, dev, label, ops, warn, content, key) {
   if (!f.fill) { let all = findSome(base, hasImg); if (!all.length) all = findSome(base, hasImgAny); img = hasImgAny(base) && !f.img ? base : all[(f.img || 0) < 0 ? all.length + f.img : f.img || 0] || null; }
   if (!img) { warn(label + ': 이미지 레이어를 못 찾았어요'); return; }
   if (!img.visible) ops.push({ op: 'show', node: img });
-  if (f.fill && 'children' in img) for (const c of img.children) {
+  // fill: "keep" — 칸 자체를 사진으로 채우고 안의 사진 레이어만 숨겨요(위에 겹친 색 · 그라데이션은 그대로). 월간X 히어로: 원본 사진 레이어가 칸보다 훨씬 넓어(1108×421) 새 사진이 엉뚱하게 잘려서
+  if (f.fill === 'keep' && 'children' in img) { for (const c of img.children) if (c.visible && (hasImgAny(c) || findAll(c, hasImgAny).length)) ops.push({ op: 'hide', node: c }); }
+  else if (f.fill && 'children' in img) for (const c of img.children) {
     // 사진 위에 겹친 그라데이션(그늘)만 남겨요 — 그 레이어는 그라데이션만, 그걸 감싼 묶음은 바탕 없이, 나머지는 숨김 (히어로 비주얼 아래 그늘)
     if (!c.visible) continue;
     const all = [c].concat('findAll' in c ? c.findAll((x) => x.visible) : []);
@@ -255,6 +257,13 @@ function figColor(node, s, kind, val, dev, label, ops, warn) {
   const ok = (n) => (!f.name || clean(n.name) === f.name) && (!f.parent || (n.parent && clean(n.parent.name) === f.parent));
   if (f.also) for (const sub of f.also) figColor(node, { fig: sub }, kind, val, dev, label, ops, warn); // also: 같은 색을 함께 칠할 다른 레이어들
   if (f.paint === 'fill') { ops.push({ op: 'fill', node: base, css }); return; }
+  if (f.paint === 'recolor') { // recolor: 안의 모든 레이어에서 Figma 시안 색(from)을 이 색으로, tintFrom 은 이 색을 흰색에 tint 만큼 섞은 색으로 (채우기 · 선, 불투명도는 그대로)
+    const p = paint(css); if (!p) return;
+    const mix = (a) => '#' + ['r', 'g', 'b'].map((k) => Math.round((p.color[k] * a + (1 - a)) * 255).toString(16).padStart(2, '0')).join('');
+    const maps = (f.from || []).map((h) => [h.toLowerCase(), css]).concat((f.tintFrom || []).map((h) => [h.toLowerCase(), mix(f.tint || 0.1)]));
+    ops.push({ op: 'recolor', node: base, maps });
+    return;
+  }
   if (f.paint === 'gradient') { ops.push({ op: 'gradColor', node: base, css }); return; } // 그라데이션 색만 바꾸고 투명도는 그대로
   if (f.paint === 'button') { // 버튼 바탕 + 글자 · 아이콘은 그 색의 on
     ops.push({ op: 'fill', node: base, css });
@@ -485,6 +494,13 @@ async function run(ops, images, warn) {
       } else if (o.op === 'gradColor') {
         const p = paint(o.css);
         if (p) n.fills = n.fills.map((f) => (/^GRADIENT/.test(f.type) ? Object.assign({}, f, { gradientStops: f.gradientStops.map((g) => ({ position: g.position, color: { r: p.color.r, g: p.color.g, b: p.color.b, a: g.color.a } })) }) : f));
+      } else if (o.op === 'recolor') {
+        const hx = (c) => '#' + ['r', 'g', 'b'].map((k) => Math.round(c[k] * 255).toString(16).padStart(2, '0')).join('');
+        const to = new Map(o.maps.map(([f2, t]) => [f2, paint(t)]));
+        for (const x of [n].concat(n.findAll ? n.findAll(() => true) : [])) for (const k of ['fills', 'strokes']) {
+          const ps = x[k]; if (!Array.isArray(ps) || !ps.some((q) => q.type === 'SOLID' && to.has(hx(q.color)))) continue;
+          try { x[k] = ps.map((q) => (q.type === 'SOLID' && to.get(hx(q.color)) ? Object.assign({}, q, { color: to.get(hx(q.color)).color }) : q)); } catch (e) { /* 글꼴이 안 불러와진 글자 등은 건너뜀 */ }
+        }
       } else if (o.op === 'iconOn') { // 버튼 안 아이콘 — 선으로 그린 건 선, 면은 면
         const p = paint(o.css);
         if (p) for (const v of n.findAll((x) => x.type === 'VECTOR' || x.type === 'BOOLEAN_OPERATION')) { if (v.strokes && v.strokes.length) v.strokes = [p]; else if (v.fills !== figma.mixed && v.fills.length) v.fills = [p]; }

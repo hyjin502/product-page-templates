@@ -217,15 +217,15 @@
                 "style": "duotone"
               },
               "award-01": {
-                "key": "2ebadca0a62d669377004a8a9813bdcfd358d2cc",
+                "key": "83fd6ccb83acb64bd7afdbf1bf5fc454e6994a74",
                 "style": "duotone"
               },
               "user-check-01": {
-                "key": "4f2ab5ec9fb2548ccb3634315d8ba1be605f5edf",
+                "key": "e6178c70728d614a40bc41f88cd365a1ad9ef6aa",
                 "style": "duotone"
               },
               "clock-fast-forward": {
-                "key": "0609b97684f2aad1c62553b27412adaf4e9e842e",
+                "key": "cf1450c718a2b8f1b27b342747f685e733dbd30b",
                 "style": "duotone"
               }
             },
@@ -306,7 +306,18 @@
       "point": true,
       "extract": false,
       "label": "미션 카드 색",
-      "note": "미션 제목 글자 · 카드 바탕(같은 색을 옅게) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
+      "note": "미션 제목 글자 · 카드 바탕(같은 색을 옅게) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)",
+      "fig": {
+        "at": "type1",
+        "paint": "recolor",
+        "from": [
+          "#0066ff"
+        ],
+        "tintFrom": [
+          "#f5f9ff"
+        ],
+        "tint": 0.04
+      }
     },
     "cta": {
       "type": "text",

@@ -48,8 +48,11 @@
         "maxChars": 22
       },
       "fig": {
-        "at": "타이틀",
-        "lines": true
+        "at": "Frame 2147239035",
+        "lines": true,
+        "mo": {
+          "at": "Frame 2147239036"
+        }
       }
     },
     "subtitle": {
@@ -66,20 +69,7 @@
       },
       "fig": {
         "at": "타이틀",
-        "append": {
-          "size": 32,
-          "style": "Bold",
-          "lh": 140,
-          "gap": 0
-        },
-        "mo": {
-          "append": {
-            "size": 16,
-            "style": "Medium",
-            "lh": 150,
-            "gap": 0
-          }
-        }
+        "text": -1
       }
     },
     "visual": {
@@ -88,7 +78,8 @@
       "label": "티켓 사진",
       "hint": "PC 470×420 · MO 280×250 · 위에 파란 빛·아래 파란 그라디언트가 덮여요 · 미리보기의 사진을 클릭해도 바꿀 수 있어요",
       "fig": {
-        "layer": "image"
+        "layer": "image",
+        "fill": "keep"
       }
     },
     "cardColor": {

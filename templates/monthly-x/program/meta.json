@@ -99,7 +99,14 @@
       "point": true,
       "extract": false,
       "label": "세션 이름 색",
-      "note": "시간표 세션 이름(Session 1. 같은 파란 글자) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)"
+      "note": "시간표 세션 이름(Session 1. 같은 파란 글자) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)",
+      "fig": {
+        "at": "Frame 195",
+        "paint": "recolor",
+        "from": [
+          "#0066ff"
+        ]
+      }
     },
     "items": {
       "type": "list",

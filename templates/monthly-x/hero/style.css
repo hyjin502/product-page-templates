@@ -61,13 +61,10 @@
 .hero--monthly-x .hero__detail dd span { font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); }
 .hero--monthly-x .hero__mark { position: absolute; left: 347px; top: 498px; width: 233.6px; height: auto; pointer-events: none; }
 
-/* 부제 · 아래 설명 (Figma MKT_월간X 12회 986:1338) — 부제 32 Bold(1.4 · -0.7) 흰색 → 티켓 색 그라디언트 · 타이틀↔부제 12
-   아래 설명 20 Medium(1.4) 흰색 · 티켓↔설명 64(본문 gap) · 설명이 있으면 아래 여백 60 */
-.hero--monthly-x .hero__heading { gap: 12px; }
-.hero--monthly-x .hero__sub {
-  margin: 0; font-size: 32px; font-weight: 700; line-height: 1.4; letter-spacing: var(--tracking-tighter); white-space: nowrap;
-  background: linear-gradient(90deg, #ffffff, var(--ticket-blue)); -webkit-background-clip: text; background-clip: text; color: transparent;
-}
+/* 부제 (2026-11-24 세트 컴포넌트 643:3360 에 부제 레이어가 생김 — 예전 MKT 12회 시안의 32 Bold 그라디언트 대신) 24 Medium(1.4) 흰색 · 타이틀↔부제 8
+   아래 설명 20 Medium(1.4) 흰색(MKT 12회 986:1338) · 티켓↔설명 64(본문 gap) · 설명이 있으면 아래 여백 60 */
+.hero--monthly-x .hero__heading { gap: 8px; }
+.hero--monthly-x .hero__sub { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); white-space: nowrap; }
 .hero--monthly-x .hero__note { margin: 0; font-size: 20px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
 .hero--monthly-x.hero--mx-note { padding-bottom: 60px; }
 
@@ -93,9 +90,9 @@
   .hero--monthly-x .hero__detail strong { font-size: 18px; line-height: 1.6; letter-spacing: var(--tracking-tight); }
   .hero--monthly-x .hero__detail dd span { font-size: 14px; }
   .hero--monthly-x .hero__mark { left: 213.5px; top: 350px; width: 105.6px; }
-  /* 부제 16 Medium · 아래 설명 15 Medium (Figma 986:1975) */
+  /* 부제 14 Medium(1.6 · 세트 643:3324) · 아래 설명 15 Medium (Figma 986:1975) */
   .hero--monthly-x .hero__heading { gap: 8px; }
-  .hero--monthly-x .hero__sub { font-size: 16px; font-weight: 500; white-space: normal; }
+  .hero--monthly-x .hero__sub { font-size: 14px; line-height: 1.6; letter-spacing: var(--tracking-tight); white-space: normal; }
   .hero--monthly-x .hero__note { font-size: 15px; }
   .hero--monthly-x.hero--mx-note { padding-bottom: 48px; }
 }

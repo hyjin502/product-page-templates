@@ -137,9 +137,10 @@
       "label": "버튼 색",
       "note": "신청하기 버튼 · 동의 체크 (글자색은 색마다 자동) · 「포인트」 = 페이지 포인트 컬러(시안대로면 시안 색)",
       "fig": {
-        "layer": "action button",
-        "nth": 1,
-        "paint": "button"
+        "paint": "recolor",
+        "from": [
+          "#de4209"
+        ]
       }
     }
   }

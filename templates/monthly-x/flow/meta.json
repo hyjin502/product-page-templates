@@ -61,7 +61,17 @@
       "point": true,
       "extract": false,
       "label": "강조 색",
-      "note": "단계 번호 · 그림 속 고른 칸 · 바꾼 칸 색 · 「포인트」 = 페이지 포인트 컬러(시안대로면 파랑)"
+      "note": "단계 번호 · 그림 속 고른 칸 · 바꾼 칸 색 · 「포인트」 = 페이지 포인트 컬러(시안대로면 파랑)",
+      "fig": {
+        "paint": "recolor",
+        "from": [
+          "#0b7a55"
+        ],
+        "tintFrom": [
+          "#e6f5ee"
+        ],
+        "tint": 0.1
+      }
     },
     "steps": {
       "type": "list",
