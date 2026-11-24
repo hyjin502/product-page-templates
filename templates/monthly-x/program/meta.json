@@ -118,6 +118,11 @@
           "optional": true,
           "note": "파란 글씨 · 있으면 왼쪽 정렬 카드"
         },
+        "highlight": {
+          "type": "toggle",
+          "label": "제목 포인트 색",
+          "note": "제목을 포인트 컬러로 · 왼쪽 정렬 카드 (월간X 12회 — 오프닝 · 휴식 · Session 3)"
+        },
         "title": {
           "type": "richtext",
           "label": "제목",
@@ -134,6 +139,12 @@
           "label": "목록",
           "optional": true,
           "note": "한 줄에 하나씩 · 점 목록"
+        },
+        "desc": {
+          "type": "richtext",
+          "label": "설명",
+          "optional": true,
+          "note": "제목 아래 보통 글씨 · 점 없이 (줄바꿈 그대로)"
         }
       },
       "note": "카드 사이 12"

@@ -20,17 +20,20 @@
 {% for it in items %}
       <li class="mx-program__row{% if it.active %} is-active{% endif %}">
         <span class="mx-program__dot" aria-hidden="true"></span>
-        <div class="mx-program__card{% if it.session or it.points %} mx-program__card--session{% endif %}">
+        <div class="mx-program__card{% if it.session or it.points or it.desc or it.highlight %} mx-program__card--session{% endif %}">
           <p class="mx-program__time"><span>{{ it.time }}</span>{% if it.duration %}<span class="mx-program__dur">{{ it.duration }}</span>{% endif %}</p>
           <div class="mx-program__what">
 {% if it.session %}
             <p class="mx-program__label">{{ it.session }}</p>
 {% endif %}
 {% if it.titleMo %}
-            <p class="mx-program__name only-pc">{{ it.title | rt }}</p>
-            <p class="mx-program__name only-mo">{{ it.titleMo | rt }}</p>
+            <p class="mx-program__name only-pc{% if it.highlight %} mx-program__name--ac{% endif %}">{{ it.title | rt }}</p>
+            <p class="mx-program__name only-mo{% if it.highlight %} mx-program__name--ac{% endif %}">{{ it.titleMo | rt }}</p>
 {% else %}
-            <p class="mx-program__name">{{ it.title | rt }}</p>
+            <p class="mx-program__name{% if it.highlight %} mx-program__name--ac{% endif %}">{{ it.title | rt }}</p>
+{% endif %}
+{% if it.desc %}
+            <p class="mx-program__desc">{{ it.desc | rt }}</p>
 {% endif %}
 {% set pts = it.points | lines %}
 {% if pts.length %}
