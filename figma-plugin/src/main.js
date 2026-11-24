@@ -177,6 +177,7 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
   if (!t) { if (has && diff && str != null && str !== '') warn(label + ': ' + (idx == null ? 'Figma 의 이 줄에는 칸이 없어 넣지 못했어요' : '글자 레이어를 못 찾았어요')); return; }
   if (str == null || str === '') { if (kind.optional) ops.push({ op: 'hide', node: t }); return; }
   ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t, accent: f.accent ? bgCss(pickDev(content[f.accent], dev) || '') : null }, rich(str)));
+  if (f.gradTo) ops.push({ op: 'textGrad', node: t, css: bgCss(pickDev(content[f.gradTo], dev) || '') || f.gradFallback }); // gradTo: 글자를 흰색 → 이 칸 색 가로 그라디언트로(월간X 히어로 부제 · 티켓 색)
 }
 function figMedia(node, s, val, dev, label, ops, warn, content, key) {
   const f = figOf(s, dev);
@@ -506,6 +507,9 @@ async function run(ops, images, warn) {
         for (const x of [n].concat(n.findAll ? n.findAll((y) => y.type === 'FRAME' || y.type === 'INSTANCE') : [])) {
           if (x.layoutMode && x.layoutMode !== 'NONE' && x.layoutSizingVertical === 'FIXED') { try { x.layoutSizingVertical = 'HUG'; } catch (e) { /* 바꿀 수 없으면 그대로 */ } }
         }
+      } else if (o.op === 'textGrad') {
+        const p = paint(o.css);
+        if (p) n.fills = [{ type: 'GRADIENT_LINEAR', gradientTransform: [[1, 0, 0], [0, 1, 0]], gradientStops: [{ position: 0, color: { r: 1, g: 1, b: 1, a: 1 } }, { position: 1, color: { r: p.color.r, g: p.color.g, b: p.color.b, a: 1 } }] }];
       } else if (o.op === 'iconOn') { // 버튼 안 아이콘 — 선으로 그린 건 선, 면은 면
         const p = paint(o.css);
         if (p) for (const v of n.findAll((x) => x.type === 'VECTOR' || x.type === 'BOOLEAN_OPERATION')) { if (v.strokes && v.strokes.length) v.strokes = [p]; else if (v.fills !== figma.mixed && v.fills.length) v.fills = [p]; }

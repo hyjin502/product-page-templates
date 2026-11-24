@@ -69,7 +69,9 @@
       },
       "fig": {
         "at": "타이틀",
-        "text": -1
+        "text": -1,
+        "gradTo": "cardColor",
+        "gradFallback": "#1927ec"
       }
     },
     "visual": {

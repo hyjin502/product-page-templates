@@ -61,10 +61,14 @@
 .hero--monthly-x .hero__detail dd span { font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: var(--tracking-tight); }
 .hero--monthly-x .hero__mark { position: absolute; left: 347px; top: 498px; width: 233.6px; height: auto; pointer-events: none; }
 
-/* 부제 (2026-11-24 세트 컴포넌트 643:3360 에 부제 레이어가 생김 — 예전 MKT 12회 시안의 32 Bold 그라디언트 대신) 24 Medium(1.4) 흰색 · 타이틀↔부제 8
+/* 부제 (2026-11-24 세트 컴포넌트 643:3360 에 부제 레이어가 생김) 24 Medium(1.4) · 흰색 → 티켓 색 그라디언트 · 타이틀↔부제 8
    아래 설명 20 Medium(1.4) 흰색(MKT 12회 986:1338) · 티켓↔설명 64(본문 gap) · 설명이 있으면 아래 여백 60 */
 .hero--monthly-x .hero__heading { gap: 8px; }
-.hero--monthly-x .hero__sub { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); white-space: nowrap; }
+.hero--monthly-x .hero__sub {
+  margin: 0; font-size: 24px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); white-space: nowrap;
+  /* 흰색 → 티켓 색 그라디언트(기획서 MKT 12회 · 2026-11-24 사용자 요청으로 다시 — Figma 컴포넌트는 흰 단색) */
+  background: linear-gradient(90deg, #ffffff, var(--ticket-blue)); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 .hero--monthly-x .hero__note { margin: 0; font-size: 20px; font-weight: 500; line-height: 1.4; letter-spacing: var(--tracking-tighter); }
 .hero--monthly-x.hero--mx-note { padding-bottom: 60px; }
 
