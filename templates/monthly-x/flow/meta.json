@@ -21,6 +21,9 @@
       "mo": {
         "maxLines": 3,
         "maxChars": 20
+      },
+      "fig": {
+        "text": 0
       }
     },
     "desc": {
@@ -33,6 +36,9 @@
       "mo": {
         "maxLines": 6,
         "maxChars": 30
+      },
+      "fig": {
+        "text": 1
       }
     },
     "badge": {
@@ -40,7 +46,11 @@
       "extract": false,
       "optional": true,
       "label": "알약",
-      "maxChars": 12
+      "maxChars": 12,
+      "fig": {
+        "at": "Frame 2147239033",
+        "text": 0
+      }
     },
     "subtitle": {
       "type": "richtext",
@@ -52,6 +62,10 @@
       "mo": {
         "maxLines": 2,
         "maxChars": 16
+      },
+      "fig": {
+        "at": "Frame 2147239033",
+        "text": 1
       }
     },
     "accentColor": {
@@ -84,7 +98,10 @@
         "no": {
           "type": "text",
           "label": "번호",
-          "maxChars": 4
+          "maxChars": 4,
+          "fig": {
+            "text": 0
+          }
         },
         "mock": {
           "type": "enum",
@@ -116,7 +133,11 @@
           "hideWhen": {
             "mock": "grid"
           },
-          "note": "목록 그림 위 굵은 한 줄"
+          "note": "목록 그림 위 굵은 한 줄",
+          "fig": {
+            "child": 1,
+            "head": 0
+          }
         },
         "sub": {
           "type": "text",
@@ -125,13 +146,21 @@
           "maxChars": 30,
           "hideWhen": {
             "mock": "grid"
+          },
+          "fig": {
+            "child": 1,
+            "head": 1
           }
         },
         "lines": {
           "type": "richtext",
           "label": "그림 내용",
           "optional": true,
-          "note": "고르기 칸: 한 줄에 칸 하나(첫 칸이 고른 칸) · 목록: 「이름: 태그, 태그」 — 태그 앞에 ↔ + ✎ 를 붙이면 강조, − 는 흐리게(그 줄은 테두리 강조)"
+          "note": "고르기 칸: 한 줄에 칸 하나(첫 칸이 고른 칸) · 목록: 「이름: 태그, 태그」 — 태그 앞에 ↔ + ✎ 를 붙이면 강조, − 는 흐리게(그 줄은 테두리 강조)",
+          "fig": {
+            "child": 1,
+            "cells": true
+          }
         },
         "more": {
           "type": "toggle",
@@ -147,27 +176,45 @@
           "type": "text",
           "label": "그림 아래 안내",
           "optional": true,
-          "maxChars": 40
+          "maxChars": 40,
+          "fig": {
+            "child": 1,
+            "own": true,
+            "text": 0
+          }
         },
         "image": {
           "type": "image",
           "label": "그림 이미지",
           "optional": true,
-          "hint": "「이미지」 모양일 때 · 262×224 (2배 524×448)"
+          "hint": "「이미지」 모양일 때 · 262×224 (2배 524×448)",
+          "fig": {
+            "missing": true
+          }
         },
         "title": {
           "type": "richtext",
           "label": "이름",
           "maxLines": 2,
           "maxChars": 16,
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "text": -2
+          }
         },
         "desc": {
           "type": "richtext",
           "label": "설명",
           "optional": true,
-          "note": "엔터로 줄바꿈"
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "text": -1
+          }
         }
+      },
+      "fig": {
+        "items": "type1",
+        "hug": true
       }
     }
   }

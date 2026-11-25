@@ -138,7 +138,35 @@ function figBase(node, f, want) {
   if (f.at) base = findSome(node, (n) => clean(n.name) === f.at && has(n))[f.atNth || 0] || null;
   if (base && f.layer) base = findSome(base, (n) => clean(n.name) === f.layer && has(n))[f.nth || 0] || null;
   if (base && f.first) base = kids(base)[0] || null;
+  if (base && f.child != null) for (const i of [].concat(f.child)) { base = kids(base)[i] || null; if (!base) break; } // child: n 번째 자식(배열 = 손자 경로) — 월간X 실습 흐름 그림 칸
   return base;
+}
+/** cells: 그림 칸 안의 칸 · 줄에 「그림 내용」을 한 줄씩(월간X 실습 흐름) — 목록 줄 = [이름 글자, 태그 프레임…](「이름: 태그, 태그」) · 고르기 칸 = [사각형, 글자]. 남는 칸 · 줄 · 태그는 숨겨요 */
+function figCells(art, str, label, ops, warn) {
+  const lines = String(str == null ? '' : str).split('\n').map((l) => l.trim()).filter(Boolean);
+  const put = (t, v) => { if (t) ops.push({ op: 'show', node: t }, Object.assign({ op: 'text', node: t }, rich(v))); };
+  const frames = findSome(art, (n) => n.type === 'FRAME' && 'children' in n && n.children.length > 0);
+  const rows = frames.filter((n) => n.children[0].type === 'TEXT' && n.children.some((c) => c.type === 'FRAME'));
+  const tiles = frames.filter((n) => n.children.some((c) => c.type === 'RECTANGLE') && n.children.some((c) => c.type === 'TEXT'));
+  const cells = rows.length ? rows : tiles;
+  if (!cells.length) { if (lines.length) warn(label + ': 그림 칸을 못 찾았어요'); return; }
+  cells.forEach((c, i) => {
+    const l = lines[i];
+    if (l == null) { ops.push({ op: 'hide', node: c }); return; }
+    ops.push({ op: 'show', node: c });
+    if (!rows.length) { put(c.children.find((x) => x.type === 'TEXT'), l.replace(/:.*$/, '').trim()); return; }
+    const at = l.indexOf(':');
+    const tags = at < 0 ? [] : l.slice(at + 1).split(',').map((x) => x.trim()).filter(Boolean);
+    put(c.children[0], at < 0 ? l : l.slice(0, at).trim());
+    const boxes = c.children.filter((x) => x.type === 'FRAME');
+    boxes.forEach((b, j) => {
+      if (j >= tags.length) { ops.push({ op: 'hide', node: b }); return; }
+      ops.push({ op: 'show', node: b });
+      put(b.type === 'TEXT' ? b : findSome(b, (x) => x.type === 'TEXT')[0], tags[j]);
+    });
+    if (tags.length > boxes.length) warn(label + ': ' + (i + 1) + '번째 줄은 Figma 에 칸이 ' + boxes.length + '개라 ' + (tags.length - boxes.length) + '개는 못 넣었어요');
+  });
+  if (lines.length > cells.length) warn(label + ': Figma 에 ' + cells.length + '줄만 있어서 ' + (lines.length - cells.length) + '줄은 못 넣었어요');
 }
 const pickDev = (val, dev) => (val && typeof val === 'object' && !Array.isArray(val) ? (dev === 'mo' ? (val.mo ?? val.pc) : (val.pc ?? val.mo)) : val);
 /** 「**굵게**」 표시를 빼고 그 자리(강조 색 칠할 곳)를 기억해요 */
@@ -155,7 +183,17 @@ function figText(node, s, kind, val, content, dev, has, diff, label, ops, warn) 
   let str = pickDev(val, dev);
   if (f.format) str = f.format.replace(/\{([\w|]+)\}/g, (_, ks) => ks.split('|').map((k) => pickDev(content[k], dev)).find((x) => x != null && x !== '') || '').replace(/\s*\(\s*\)/g, '').replace(/\*\*\s*\*\*/g, '').trim(); // {a|b} = a, 비면 b · 빈 「**…**」·「()」는 지워요
   if (f.bullet && str) str = String(str).split('\n').map((l) => l.trim().replace(/^•\s*/, '')).filter(Boolean).map((l) => f.bullet + l).join('\n'); // bullet: 줄마다 앞에 붙는 글자(아젠다 점 목록)
-  const ts = f.self ? (base.type === 'TEXT' ? [base] : []) : (base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && (!f.like || clean(n.name).startsWith(f.like))));
+  if (f.unless && Object.entries(f.unless).some(([k2, v2]) => content[k2] === v2)) return; // unless: { 칸: 값 } 그 값이면 건드리지 않아요
+  if (f.cells) { figCells(base, str, label, ops, warn); return; }
+  if (f.head != null) { // head: 그림 칸 안 글자만 있는 묶음(제목 · 작은 글)의 n 번째 글자
+    const hb = findSome(base, (n) => n.type === 'FRAME' && 'children' in n && n.children.length > 1 && n.children.every((c) => c.type === 'TEXT'))[0];
+    const t = hb && hb.children[f.head];
+    if (!t) { if (str != null && str !== '') warn(label + ': Figma 시안에 이 칸이 없어 넣지 못했어요'); return; }
+    if (str == null || str === '') { ops.push({ op: 'hide', node: t }); if (hb.children.every((c) => c === t || ops.some((o) => o.op === 'hide' && o.node === c))) ops.push({ op: 'hide', node: hb }); return; } // 둘 다 비면 묶음도 숨겨요
+    ops.push({ op: 'show', node: hb }, { op: 'show', node: t }, Object.assign({ op: 'text', node: t }, rich(str)));
+    return;
+  }
+  const ts = f.own ? kids(base).filter((n) => n.type === 'TEXT') : f.self ? (base.type === 'TEXT' ? [base] : []) : (base.type === 'TEXT' ? [base] : findSome(base, (n) => n.type === 'TEXT' && (!f.like || clean(n.name).startsWith(f.like))));
   if (f.lines) {
     if (!ts.length) { if (diff) warn(label + ': 글자 레이어를 못 찾았어요'); return; }
     const lines = str == null ? [] : String(str).split('\n');
