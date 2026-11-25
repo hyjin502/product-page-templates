@@ -1,0 +1,86 @@
+{
+  "id": "monthly-hunet-faq",
+  "section": "monthly-hunet",
+  "layout": "faq",
+  "label": "FAQ",
+  "order": 9,
+  "when": "자주 묻는 질문 — 눌러서 펼치는 질문 목록(답변 아래 「자세히보기」 링크 선택)",
+  "figma": {
+    "pc": "896:3652",
+    "mo": "896:3653",
+    "tb": null
+  },
+  "body": 980,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "maxChars": 30,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 16
+      },
+      "note": "Figma MO 는 짧게(「자주 묻는 질문」) — MO 문구 따로 쓰기",
+      "fig": {
+        "layer": "자주 묻는 질문"
+      }
+    },
+    "items": {
+      "type": "list",
+      "extract": false,
+      "label": "질문",
+      "min": 0,
+      "max": 20,
+      "item": {
+        "q": {
+          "type": "text",
+          "extract": false,
+          "label": "질문",
+          "maxChars": 60,
+          "fig": {
+            "text": 0
+          }
+        },
+        "a": {
+          "type": "richtext",
+          "label": "답변",
+          "optional": true,
+          "note": "엔터로 줄바꿈",
+          "fig": {
+            "byCount": {
+              "2": 1,
+              "3": 1
+            }
+          }
+        },
+        "link": {
+          "type": "text",
+          "label": "링크 문구",
+          "optional": true,
+          "maxChars": 20,
+          "note": "답변 아래 파란 밑줄 글자(예: 자세히보기 >)",
+          "fig": {
+            "byCount": {
+              "3": 2
+            }
+          }
+        },
+        "href": {
+          "type": "text",
+          "label": "링크 주소",
+          "optional": true,
+          "maxChars": 300
+        },
+        "open": {
+          "type": "toggle",
+          "label": "펼친 상태로"
+        }
+      },
+      "fig": {
+        "items": "질문리스트"
+      }
+    }
+  }
+}

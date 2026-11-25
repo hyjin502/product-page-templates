@@ -45,6 +45,13 @@
     "register",
     "benefits",
     "replay",
+    {
+      "label": "FAQ",
+      "pick": [
+        "faq"
+      ],
+      "off": true
+    },
     "sticky-cta"
   ]
 }

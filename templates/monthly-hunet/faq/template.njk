@@ -1,0 +1,22 @@
+<section class="mh-faq">
+  <h2 class="mh-h mh-h--center mh-faq__title">{{ title | rt }}</h2>
+{% if items.length %}
+  <div class="mh-faq__list">
+{% for it in items %}
+    <details class="mh-faq__item"{% if it.open %} open{% endif %}>
+      <summary class="mh-faq__q"><span>{{ it.q }}</span>{{ 'hds-chevron-right' | icon }}</summary>
+{% if it.a or it.link %}
+      <div class="mh-faq__a">
+{% if it.a %}
+        <p>{{ it.a | rt }}</p>
+{% endif %}
+{% if it.link %}
+        <a class="mh-faq__link" href="{{ it.href or '#' }}"{% if it.href %} target="_blank" rel="noopener"{% endif %}>{{ it.link }}</a>
+{% endif %}
+      </div>
+{% endif %}
+    </details>
+{% endfor %}
+  </div>
+{% endif %}
+</section>

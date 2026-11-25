@@ -1,0 +1,30 @@
+/* PC — Figma 세트 896:3652 · bg-page · 위아래 120 · 본문 980 · 제목 32 bold ↔ 목록 80 · 질문 사이 8
+   질문 칸: 흰 바탕 · 둥근 8 · 24/32 · 질문 16 bold + 화살표 24(펼치면 위) · 답변 16 regular black-80(질문 ↔ 답변 32)
+   링크(자세히보기 >): 답변 아래 24 · 16 · 줄 높이 25 · #3385FF(Figma blue-05 — 토큰 아님) · 밑줄. 누르면 펼치고 접어요(<details>) */
+.mh-faq { display: flex; flex-direction: column; align-items: center; gap: 80px; padding: 120px var(--container-pad); background: var(--bg-page); }
+.mh-faq__title { width: var(--body, 980px); max-width: 100%; }
+.mh-faq__list { display: flex; flex-direction: column; gap: 8px; width: var(--body, 980px); max-width: 100%; }
+.mh-faq__item { padding: 24px 32px; border-radius: 8px; background: var(--bg-surface, #fff); }
+.mh-faq__q { display: flex; align-items: flex-start; gap: 16px; list-style: none; cursor: pointer; font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100); }
+.mh-faq__q::-webkit-details-marker { display: none; }
+.mh-faq__q span { flex: 1; min-width: 0; }
+.mh-faq__q svg { flex: none; width: 24px; height: 24px; color: var(--t-100); transform: rotate(90deg); transition: transform .2s; }
+.mh-faq__item[open] .mh-faq__q svg { transform: rotate(-90deg); }
+.mh-faq__a { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; margin-top: 32px; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); }
+.mh-faq__a p { margin: 0; }
+.mh-faq__link { font-size: 16px; line-height: 25px; letter-spacing: -0.2px; color: #3385ff; text-decoration: underline; }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) { .mh-faq { gap: 64px; padding: 96px var(--container-pad); } }
+
+/* MO — Figma 896:3653 · 위 64 · 아래 80 · 양옆 16 · 제목 24 ↔ 목록 48 · 질문 사이 8
+   질문 칸 16 · 질문 14 bold + 화살표 16 · 답변 14 regular(질문 ↔ 답변 24) · 링크 답변 아래 16 */
+@media (max-width: 767px) {
+  .mh-faq { gap: 48px; padding: 64px 16px 80px; }
+  .mh-faq__title { font-size: 24px; }
+  .mh-faq__item { padding: 16px; }
+  .mh-faq__q, .mh-faq__a { font-size: 14px; }
+  .mh-faq__q svg { width: 16px; height: 16px; margin-top: 3px; }
+  .mh-faq__a { gap: 16px; margin-top: 24px; }
+  .mh-faq__link { font-size: 14px; }
+}
