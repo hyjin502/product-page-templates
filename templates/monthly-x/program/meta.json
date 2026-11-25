@@ -155,7 +155,7 @@
           "type": "text",
           "extract": false,
           "label": "세션 이름",
-          "maxChars": 20,
+          "maxChars": 30,
           "optional": true,
           "note": "파란 글씨 · 있으면 왼쪽 정렬 카드",
           "fig": {
