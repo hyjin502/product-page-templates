@@ -389,6 +389,10 @@ function plan(root, v, content, dev, warn) {
             if (kind.item) itemDecor(kind.item, it, list[i] || {}, ops);
             if (f.hug) ops.push({ op: 'hug', node: it }); // hug: 높이가 고정된 줄 · 카드를 내용 높이로(월간X 프로그램 PC Session 1 줄 207 · Session 3 카드 239)
           });
+          if (f.rail) { // rail: 시간표 왼쪽 세로 선(위치 고정 레이어)을 첫 줄 점 ~ 마지막 줄 점 길이로(월간X 프로그램 Frame 196)
+            const line = figBase(node, { layer: f.rail });
+            if (line) ops.push({ op: 'rail', node: line, items: items.filter((it, r) => rows[r] >= 0), dot: f.dot });
+          }
           if (!f.tail && val.length > items.length) warn(label + ': Figma 에 ' + items.length + '개만 있어서 ' + (val.length - items.length) + '개는 못 넣었어요');
         }
         continue;
@@ -542,9 +546,17 @@ async function run(ops, images, warn) {
           try { x[k] = ps.map((q) => { if (!(q.type === 'SOLID' && to.get(hx(q.color)))) return q; const r = Object.assign({}, q, { color: to.get(hx(q.color)).color }); delete r.boundVariables; return r; }); } catch (e) { /* 글꼴이 안 불러와진 글자 등은 건너뜀 */ } // 색 변수에 묶인 칠(HDS blue 등)은 변수 연결을 풀어야 새 색이 남아요
         }
       } else if (o.op === 'hug') {
-        for (const x of [n].concat(n.findAll ? n.findAll((y) => y.type === 'FRAME' || y.type === 'INSTANCE') : [])) {
+        for (const x of [n].concat(n.findAll ? n.findAll((y) => y.type === 'FRAME' || y.type === 'INSTANCE' || y.type === 'TEXT') : [])) {
+          if (x.type === 'TEXT') { // 높이 고정 글자 칸(월간X 프로그램 PC 점 목록 58 · 116) → 높이 자동, 폭은 그대로
+            if (x.textAutoResize === 'NONE' && x.parent && x.parent.layoutMode && x.parent.layoutMode !== 'NONE') { try { const fs = x.characters.length ? x.getRangeAllFontNames(0, x.characters.length) : [x.fontName]; for (const f2 of fs) if (f2 !== figma.mixed) await figma.loadFontAsync(f2); x.textAutoResize = 'HEIGHT'; } catch (e) { /* 그대로 */ } }
+            continue;
+          }
           if (x.layoutMode && x.layoutMode !== 'NONE' && x.layoutSizingVertical === 'FIXED') { try { x.layoutSizingVertical = 'HUG'; } catch (e) { /* 바꿀 수 없으면 그대로 */ } }
         }
+      } else if (o.op === 'rail') { // 첫 줄 점 가운데 ~ 마지막 줄 점 가운데
+        const mid = (it) => { const d = o.dot && it.findOne ? it.findOne((x) => x.name === o.dot) : null; return it.y + (d ? d.y + d.height / 2 : it.height / 2); };
+        const vis = o.items.filter((it) => it.visible);
+        if (vis.length > 1) { const a = mid(vis[0]), b = mid(vis[vis.length - 1]); n.y = a; n.resize(n.width, Math.max(1, b - a)); }
       } else if (o.op === 'textGrad') {
         const p = paint(o.css);
         if (p) n.fills = [{ type: 'GRADIENT_LINEAR', gradientTransform: [[1, 0, 0], [0, 1, 0]], gradientStops: [{ position: 0, color: { r: 1, g: 1, b: 1, a: 1 } }, { position: 1, color: { r: p.color.r, g: p.color.g, b: p.color.b, a: 1 } }] }];

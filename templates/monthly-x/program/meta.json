@@ -239,7 +239,9 @@
         "items": "Frame 195",
         "from": 1,
         "fit": "session",
-        "hug": true
+        "hug": true,
+        "rail": "Frame 196",
+        "dot": "Frame 194"
       }
     },
     "notes": {
