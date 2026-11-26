@@ -5,6 +5,7 @@
 .mh-faq__title { width: var(--body, 860px); max-width: 100%; }
 .mh-faq__list { display: flex; flex-direction: column; gap: 8px; width: var(--body, 860px); max-width: 100%; }
 .mh-faq__item { padding: 24px 32px; border-radius: 8px; background: var(--bg-surface, #fff); }
+.mh-faq--white .mh-faq__item { background: var(--bg-page); } /* 배경색이 흰색이면 질문 칸을 회색으로(제안값) */
 .mh-faq__q { display: flex; align-items: flex-start; gap: 16px; list-style: none; cursor: pointer; font-size: 16px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-100); }
 .mh-faq__q::-webkit-details-marker { display: none; }
 .mh-faq__q span { flex: 1; min-width: 0; }

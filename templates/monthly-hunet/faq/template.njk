@@ -1,5 +1,6 @@
-<section class="mh-faq">
-  <h2 class="mh-h mh-h--center mh-faq__title">{{ title | rt }}</h2>
+{% set bg = bgColor | hdsBg %}{% set tc = titleColor | hdsText %}
+<section class="mh-faq{% if bg and (bg | lower) in ['#ffffff', '#ffffffff'] %} mh-faq--white{% endif %}"{% if bg %} style="background: {{ bg }}"{% endif %}>
+  <h2 class="mh-h mh-h--center mh-faq__title"{% if tc %} style="color: {{ tc }}"{% endif %}>{{ title | rt }}</h2>
 {% if items.length %}
   <div class="mh-faq__list">
 {% for it in items %}

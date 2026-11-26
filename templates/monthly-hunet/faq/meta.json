@@ -27,6 +27,31 @@
         "layer": "자주 묻는 질문"
       }
     },
+    "titleColor": {
+      "type": "color",
+      "palette": "text",
+      "optional": true,
+      "extract": false,
+      "label": "제목 색",
+      "note": "비우면 시안(검정) · 어두운 배경이면 흰색",
+      "fig": {
+        "paint": "text",
+        "layer": "자주 묻는 질문"
+      }
+    },
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "default": "#f7f7f8",
+      "extract": false,
+      "label": "배경색",
+      "note": "흰색이면 질문 칸이 회색(bg-page)이 돼요",
+      "fig": {
+        "bg": true
+      }
+    },
     "items": {
       "type": "list",
       "extract": false,
