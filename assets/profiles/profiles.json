@@ -1,5 +1,5 @@
 {
-  "$comment": "자주 쓰는 프로필 사진(정사각) — Figma 「상품페이지 템플릿 시스템」 dxhWkGXnev5U2Q1nLISR3h · 「월간휴넷 템플릿」 페이지의 Profile 637:4284 의 「비율=정사각」. 편집기에서 슬롯 spec 에 profiles: true 인 사진 칸(히어로 연사 · 아젠다 사진)에 고르기로 나와요. 새 사람은 이 목록에 한 줄 + 300×300 jpg.",
+  "$comment": "자주 쓰는 프로필 사진(정사각) — Figma 「상품페이지 템플릿 시스템」 dxhWkGXnev5U2Q1nLISR3h · 「월간휴넷 템플릿」 페이지의 Profile 637:4284 의 「비율=정사각」. 편집기에서 슬롯 spec 에 profiles: true 인 사진 칸(히어로 연사 · 아젠다 사진)에 고르기로 나와요. 새 사람은 이 목록에 한 줄 + 300×300 jpg. anon: true = 실루엣(사람 아님) — 골라도 이름 칸을 채우지 않고 대체 텍스트도 비워요.",
   "profiles": [
     {
       "key": "p01",
@@ -96,6 +96,13 @@
       "name": "문주희",
       "src": "assets/profiles/p17.jpg",
       "figma": "775:7071"
+    },
+    {
+      "key": "p18",
+      "name": "실루엣 (남자)",
+      "src": "assets/profiles/p18.jpg",
+      "figma": "900:4209",
+      "anon": true
     }
   ]
 }

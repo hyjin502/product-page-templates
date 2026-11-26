@@ -1,0 +1,39 @@
+/* PC — Figma 세트 900:4208 · 흰 바탕(bgColor) · 위아래 120 · 본문 1200 · 제목 32 bold ↔ 내용 60
+   미리보기 3장(384×216 · 사이 24) 위에 위→아래 흰색 그라데이션(30% → 57.7% 지점부터 바탕색) · 가운데 자물쇠(40 · violet/700 · 둥근 8 · 아이콘 24 흰색)
+   미리보기 ↔ 안내 문구 ↔ 버튼 사이 20 · 안내 16 black-80 가운데 · 버튼 = action button lg(60 · 좌우 40 · 둥근 4 · 18 bold · button-neutral · 꺾쇠) */
+.mh-report { --mh-rp-bg: var(--bg-surface, #fff); display: flex; justify-content: center; padding: 120px var(--container-pad); background: var(--mh-rp-bg); }
+.mh-report__body { display: flex; flex-direction: column; align-items: center; gap: 60px; width: var(--body, 1200px); max-width: 100%; }
+.mh-report__title { width: 100%; }
+.mh-report__main { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+.mh-report__shots { position: relative; width: 100%; }
+.mh-report__list { display: flex; gap: 24px; margin: 0; padding: 0; list-style: none; }
+.mh-report__shot { position: relative; flex: 1 1 0; min-width: 0; aspect-ratio: 458 / 258; overflow: hidden; background: var(--bg-ghost, #f4f4f5); }
+.mh-report__shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mh-report__fade { position: absolute; inset: -1px; pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--mh-rp-bg) 30%, transparent) 1.3%, var(--mh-rp-bg) 57.7%); }
+.mh-report__lock { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; padding: 8px; border-radius: 8px; background: var(--violet-700, #6541f2); color: #fff; }
+.mh-report__lock svg { width: 24px; height: 24px; }
+.mh-report__desc { margin: 0; font-size: 16px; line-height: 1.6; letter-spacing: var(--tracking-tight); color: var(--t-80); text-align: center; }
+.mh-report__btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; height: 60px; padding: 0 40px; border-radius: 4px;
+  background: var(--btn-bg, var(--btn-neutral)); color: var(--btn-fg, #fff); font-size: 18px; font-weight: 700; line-height: 1.6; letter-spacing: var(--tracking-tight); text-decoration: none; white-space: nowrap; }
+.mh-report__btn svg { flex: none; width: 20px; height: 20px; }
+
+/* TB — 제안값 */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .mh-report { padding: 96px var(--container-pad); }
+  .mh-report__body { gap: 48px; }
+  .mh-report__list { gap: 16px; }
+}
+
+/* MO — Figma 시안 없음 · 제안값: 위 64 · 아래 80 · 양옆 16 · 제목 24 ↔ 내용 32 · 미리보기 3장 한 줄(사이 8) · 안내 14 · 버튼 전체 폭 56 · 16 */
+@media (max-width: 767px) {
+  .mh-report { padding: 64px 16px 80px; }
+  .mh-report__body { gap: 32px; }
+  .mh-report__title { font-size: 24px; }
+  .mh-report__main { gap: 16px; }
+  .mh-report__list { gap: 8px; }
+  .mh-report__lock { padding: 6px; }
+  .mh-report__lock svg { width: 20px; height: 20px; }
+  .mh-report__desc { font-size: 14px; }
+  .mh-report__btn { width: 100%; height: 56px; padding: 0 20px; font-size: 16px; white-space: normal; text-align: center; }
+}

@@ -125,7 +125,7 @@ function neededImages(page, devices) {
 /* ---------- fig: 자리로 찾기 — 레이어 이름이 문구라서 바뀌는 페이지 템플릿(월간휴넷)용. meta 슬롯의 "fig"
    at: 이 이름의 레이어 안에서(atNth 번째) · layer: 이 이름의 레이어(nth 번째) · text: 그 안 n 번째 글자 레이어(기본 0)
    like: 이름이 이 글자로 시작하는 글자 레이어만 · first: 그 안 첫 번째로 보이는 레이어 · lines: 줄마다 글자 레이어 하나씩(남는 레이어는 숨김) · self: 목록 항목 자신이 글자 레이어
-   items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · row: [칸 이름들] 사진 줄을 오른쪽부터 채움 · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
+   items: 이 이름 레이어의 바로 아래 자식 = 목록 항목("." = 섹션 자신 · itemsNth · from: 앞에서 n 개 건너뜀 · deep: 손자 · item: 그중 이 이름만 · itemLike: 이름이 이 글자로 시작하는 것만 · reverse: 거꾸로 · tail: 뒤쪽 값부터) · img: n 번째 이미지(-1 = 마지막, 위에 그려진 것) · row: [칸 이름들] 사진 줄을 오른쪽부터 채움 · fill: 그 레이어 자체를 이미지로 채움(안은 숨김)
    byCount: { 글자 레이어 수: 번호 } 항목 구성마다 다른 번호 · text 음수 = 뒤에서 · missing: Figma 에 없는 칸(값이 있으면 알림) · off: [레이어] 켜고 끄기가 꺼지면 숨김 · vis: { 값: [레이어] } 고른 값만 보임(when) · noCss: CSS 배경 프리셋이면 원본 그대로 · paint button|gradient · also: [같은 색 칠할 다른 자리]
    append: { size, style, lh, gap } — 칸이 없는 문구를 마지막 글자 레이어 뒤 새 문단으로 · bg · paint · tint · map: 색 슬롯(figColor) · accent: **굵게** 칠할 색을 이 칸 값으로 · format: "{live} ({channel})" · "{headingMo|heading}"(앞이 비면 뒤) · pc / mo: 기기마다 덮어쓰기 · skip: 그 기기엔 없음 */
 const figOf = (s, dev) => { const f = Object.assign({}, s.fig, s.fig[dev] || {}); return f.skip ? null : f; };
@@ -364,6 +364,7 @@ function plan(root, v, content, dev, warn) {
           let items = box && 'children' in box ? box.children.slice(f.from || 0) : [];
           if (f.deep) items = items.flatMap((r) => ('children' in r ? r.children.slice() : []));
           if (f.item) items = items.filter((n) => clean(n.name) === f.item);
+          if (f.itemLike) items = items.filter((n) => clean(n.name).startsWith(f.itemLike)); // itemLike: 이름이 이 글자로 시작하는 자식만(리포트 image 4·5·6 — 위에 겹친 그라데이션 칸은 빼고)
           if (f.reverse) items.reverse();
           const list = f.tail ? val.slice(-items.length) : val; // tail: Figma 칸이 적으면 뒤쪽 값부터(MO 는 마지막 버튼만)
           if (!items.length) { if (diff) warn(label + ': 목록 항목을 못 찾았어요'); continue; }

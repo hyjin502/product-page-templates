@@ -1111,7 +1111,7 @@ const hiddenBy = (s, item) => !!(s.hideWhen && item && Object.entries(s.hideWhen
 function profilePicker(path) {
   const list = REG.profiles || [];
   if (!list.length) return '';
-  return `<details class="hed-prof"><summary>프로필 사진에서 고르기 <span class="hed-f__opt">${list.length}명</span></summary><div class="hed-prof__grid">${list.map((p) => `<button type="button" class="hed-prof__b" ${attrs({ ...path, 'data-act': 'profile', 'data-src': p.src, 'data-name': p.name, title: p.name })}><img src="${esc(new URL(p.src, assetBase).href)}" alt="" loading="lazy"><span>${esc(p.name)}</span></button>`).join('')}</div></details>`;
+  return `<details class="hed-prof"><summary>프로필 사진에서 고르기 <span class="hed-f__opt">${list.length}명</span></summary><div class="hed-prof__grid">${list.map((p) => `<button type="button" class="hed-prof__b" ${attrs({ ...path, 'data-act': 'profile', 'data-src': p.src, 'data-name': p.name, 'data-anon': p.anon ? '1' : null, title: p.name })}><img src="${esc(new URL(p.src, assetBase).href)}" alt="" loading="lazy"><span>${esc(p.name)}</span></button>`).join('')}</div></details>`;
 }
 /** 목록 항목 안의 이미지 — 썸네일 · 파일 선택 · 지우기 · 되돌리기(샘플과 다르면) */
 function imageItem(path, s, val, label, smp) {
@@ -1671,13 +1671,14 @@ function bindEditorForm(ctx) {
       case 'focus-reset': if (e[p.f].pos) delete e[p.f].pos[p.dev]; break;
       case 'profile': {
         // 자주 쓰는 프로필 사진 — 이미지 칸에 넣고, 같은 항목에 이름 칸이 비어 있거나 샘플 자리 문구면 이름도 채워요
-        const ref = { src: hit.dataset.src, alt: hit.dataset.name };
+        const anon = !!hit.dataset.anon; // 실루엣(anon) — 이름 칸 · 대체 텍스트를 채우지 않아요
+        const ref = { src: hit.dataset.src, alt: anon ? '' : hit.dataset.name };
         if (p.i != null) {
           const it = e[p.f][p.i];
           it[p.k] = ref;
           const sItem = s.item || {};
           const nk = p.k.replace(/^image/, 'name'); // 사진 2 → 이름 2
-          if (sItem[nk] && (!String(it[nk] || '').trim() || /^이름\s*직급$/.test(String(it[nk]).trim()))) it[nk] = hit.dataset.name;
+          if (!anon && sItem[nk] && (!String(it[nk] || '').trim() || /^이름\s*직급$/.test(String(it[nk]).trim()))) it[nk] = hit.dataset.name;
         } else e[p.f][p.dev] = { kind: 'image', ...ref };
         break;
       }

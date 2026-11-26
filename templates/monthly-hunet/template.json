@@ -35,6 +35,14 @@
       "movable": true
     },
     {
+      "label": "리포트",
+      "pick": [
+        "report"
+      ],
+      "off": true,
+      "movable": true
+    },
+    {
       "label": "추가 섹션",
       "extra": [
         "image-block"

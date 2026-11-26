@@ -1,0 +1,30 @@
+{% from "hero/_macros.njk" import btnIcon %}
+{% set bg = bgColor | hdsBg %}{% set lc = lockColor | hdsColor %}{% set tc = titleColor | hdsText %}{% set dc = descColor | hdsText %}
+<section class="mh-report"{% if bg %} style="--mh-rp-bg: {{ bg }}"{% endif %}>
+  <div class="mh-report__body">
+    <h2 class="mh-h mh-h--center mh-report__title"{% if tc %} style="color: {{ tc }}"{% endif %}>{{ title | rt }}</h2>
+{% if images.length or desc or ctas.length %}
+    <div class="mh-report__main">
+{% if images.length %}
+      <div class="mh-report__shots">
+        <ul class="mh-report__list">
+{% for it in images %}
+          <li class="mh-report__shot" data-pick-item="images:{{ loop.index0 }}:image">{% if it.image and it.image.src %}<img src="{{ it.image.src }}" alt="{{ it.image.alt or '' }}">{% endif %}</li>
+{% endfor %}
+        </ul>
+        <span class="mh-report__fade" aria-hidden="true"></span>
+{% if showLock %}
+        <span class="mh-report__lock" aria-hidden="true"{% if lc %} style="background: {{ lc }}; color: {{ lockColor | hdsOn }}"{% endif %}>{{ 'hds-lock-01' | icon }}</span>
+{% endif %}
+      </div>
+{% endif %}
+{% if desc %}
+      <p class="mh-report__desc"{% if dc %} style="color: {{ dc }}"{% endif %}>{{ desc | rt }}</p>
+{% endif %}
+{% for c in ctas %}
+      <a class="mh-report__btn" href="{{ c.href or '#' }}" style="--btn-bg: {{ c.color | hdsColor }}; --btn-fg: {{ c.color | hdsOn }}">{{ c.label }}{{ btnIcon(c) }}</a>
+{% endfor %}
+    </div>
+{% endif %}
+  </div>
+</section>

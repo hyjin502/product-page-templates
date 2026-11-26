@@ -1,0 +1,182 @@
+{
+  "id": "monthly-hunet-report",
+  "section": "monthly-hunet",
+  "layout": "report",
+  "label": "리포트",
+  "order": 10,
+  "when": "신청자 혜택 리포트 — 흐리게 가린 리포트 미리보기 3장 + 자물쇠 + 안내 문구 + 신청 버튼",
+  "figma": {
+    "pc": "900:4208",
+    "mo": null,
+    "tb": null
+  },
+  "body": 1200,
+  "slots": {
+    "title": {
+      "type": "richtext",
+      "extract": false,
+      "label": "제목",
+      "maxLines": 2,
+      "maxChars": 30,
+      "mo": {
+        "maxLines": 2,
+        "maxChars": 16
+      },
+      "fig": {
+        "layer": "title"
+      }
+    },
+    "titleColor": {
+      "type": "color",
+      "palette": "text",
+      "optional": true,
+      "extract": false,
+      "label": "제목 색",
+      "note": "비우면 시안(검정) · 어두운 배경이면 흰색",
+      "fig": {
+        "paint": "text",
+        "layer": "title"
+      }
+    },
+    "images": {
+      "type": "list",
+      "extract": false,
+      "label": "리포트 미리보기",
+      "min": 0,
+      "max": 3,
+      "note": "위에서 아래로 흰색으로 흐려져요(시안 고정)",
+      "item": {
+        "image": {
+          "type": "image",
+          "label": "이미지",
+          "hint": "768×432 (가로 384 의 2배)",
+          "fig": {}
+        }
+      },
+      "fig": {
+        "items": "content",
+        "itemLike": "image"
+      }
+    },
+    "showLock": {
+      "type": "toggle",
+      "label": "자물쇠 표시",
+      "default": true,
+      "extract": false,
+      "fig": {
+        "off": [
+          "Frame 2147239022"
+        ]
+      }
+    },
+    "lockColor": {
+      "type": "color",
+      "palette": "700",
+      "optional": true,
+      "point": true,
+      "pointFallback": "violet/700",
+      "extract": false,
+      "label": "자물쇠 색",
+      "note": "「포인트」 = 페이지 포인트 컬러(시안대로면 violet/700)",
+      "fig": {
+        "paint": "fill",
+        "layer": "Frame 2147239022"
+      }
+    },
+    "desc": {
+      "type": "richtext",
+      "extract": false,
+      "optional": true,
+      "label": "안내 문구",
+      "maxLines": 2,
+      "maxChars": 70,
+      "mo": {
+        "maxLines": 4,
+        "maxChars": 24
+      },
+      "fig": {
+        "layer": "subtitle"
+      }
+    },
+    "descColor": {
+      "type": "color",
+      "palette": "text",
+      "optional": true,
+      "extract": false,
+      "label": "안내 문구 색",
+      "note": "비우면 시안(검정 80%)",
+      "fig": {
+        "paint": "text",
+        "layer": "subtitle"
+      }
+    },
+    "ctas": {
+      "type": "list",
+      "extract": false,
+      "label": "버튼",
+      "min": 0,
+      "max": 1,
+      "note": "비우면 버튼 없음",
+      "item": {
+        "label": {
+          "type": "text",
+          "label": "버튼 문구",
+          "maxChars": 30,
+          "fig": {
+            "text": 0
+          }
+        },
+        "href": {
+          "type": "url",
+          "label": "링크"
+        },
+        "color": {
+          "type": "color",
+          "default": "interaction/button-neutral",
+          "label": "배경색",
+          "fig": {
+            "skip": true
+          }
+        },
+        "icon": {
+          "type": "enum",
+          "values": [
+            "none",
+            "chevron-right",
+            "arrow-right",
+            "plus"
+          ],
+          "labels": {
+            "none": "없음",
+            "chevron-right": "꺾쇠 화살표",
+            "arrow-right": "화살표",
+            "plus": "더하기"
+          },
+          "default": "chevron-right",
+          "label": "오른쪽 아이콘",
+          "iconPrefix": "hds-",
+          "fig": {
+            "skip": true
+          }
+        }
+      },
+      "fig": {
+        "items": "Frame 2147239024",
+        "item": "action button"
+      }
+    },
+    "bgColor": {
+      "type": "color",
+      "palette": "bg",
+      "free": true,
+      "optional": true,
+      "default": "#ffffff",
+      "extract": false,
+      "label": "배경색",
+      "note": "흐림 효과도 이 색으로 바뀌어요",
+      "fig": {
+        "bg": true
+      }
+    }
+  }
+}
