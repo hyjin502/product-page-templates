@@ -16,7 +16,7 @@
       "type": "text",
       "extract": false,
       "label": "왼쪽 문구",
-      "maxChars": 40,
+      "maxChars": 50,
       "fig": {
         "pc": {
           "at": "Frame 55",

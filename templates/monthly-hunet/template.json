@@ -18,6 +18,14 @@
       ]
     },
     {
+      "label": "FAQ",
+      "pick": [
+        "faq"
+      ],
+      "off": true,
+      "movable": true
+    },
+    {
       "label": "추천 대상",
       "pick": [
         "check",
@@ -45,13 +53,6 @@
     "register",
     "benefits",
     "replay",
-    {
-      "label": "FAQ",
-      "pick": [
-        "faq"
-      ],
-      "off": true
-    },
     "sticky-cta"
   ]
 }
